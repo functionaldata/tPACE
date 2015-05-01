@@ -1,8 +1,12 @@
+#' Check if the options structure is valid
+#' 
+#' @param n is a total number of sample curves
+#' @param p is an initialized option list
+#' @return logical
+#' @examples 
+#' 1 + 3
+
 CheckOptions = function(p,n){
-  
-  # Check if the options structure is valid
-  # n : total number of sample curves
-  # p : initialized option list
   
   bwmu = p$bwmu;                bwmu_gcv = p$bwmu_gcv; 
   bwxcov = p$bwxcov;            bwxcov_gcv = p$bwxcov_gcv;
