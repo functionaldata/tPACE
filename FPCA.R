@@ -1,7 +1,7 @@
 #' Perform FPCA on the functional data 'y' recorderd over 'tt'. Using the options specified in 'p'
 #' 
-#' @param y is a n-by-1 list of vectors
-#' @param x is a n-by-1 list of vectors
+#' @param y is an n-by-1 list of vectors
+#' @param tt is an n-by-1 list of vectors
 #' @param p is an options structure
 #' @return FPCA class model
 #' @examples
@@ -22,7 +22,8 @@ FPCA = function(y, tt, p = SetOptions()){
     cat('FPCA has stopped.')
     return(TRUE);
   }
-  
+
+   
   # Conduct FPCA
   #X = PCA(y,tt, bwmu = p$bwmu, bwmu_gcv = p$bwmu_gcv, bwxcov = p$bwxcov,
   #    bwxcov_gcv = p$bwxcov_gcv, ntest1 = p$ntest1, ngrid1 = p$ngrid1, 
