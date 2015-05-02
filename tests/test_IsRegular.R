@@ -1,9 +1,11 @@
- cat("\nTests for 'IsRegular'")
+ cat("\nTests for 'minb'")
 
-test_that("basic valid lists arguments do not return any errors ", { 
-  expect_equal(IsRegular(list(c(1,2,3,4), c(1,2,3,4), c(1,2,3,4))), 2) 
-  expect_equal(IsRegular(list(c(1,2,3  ), c(1,2,3,4), c(1,2,3,4))), 1) 
-  expect_equal(IsRegular(list(c(1,2   ), c(1,2,3  ), c(1,2,3,4))), 0) 
+test_that("basic vector arguments do not return any errors ", { 
+  expect_equal( minb(c(1,2,3,4.1), -1)  0.55) 
+  expect_equal( minb(c(1,2,3,4.1),  1), 0.55)
+  expect_equal( minb(c(11,2,3,4.1), -1)  3.45)            
+  expect_equal( minb(c(11,2,3,4.1),  2), 6.90)
+  expect_equal( minb(c(1,2,3,4.1),   6), NaN)
 })
 
 # cat("Done")
