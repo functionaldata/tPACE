@@ -1,0 +1,7 @@
+plan:
+
+find R packages to do local linear smoothing: locfit
+CV/GCV
+testthat
+
+I see no rotation code in matlab PCA or mullwls. 
