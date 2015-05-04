@@ -6,9 +6,9 @@
 mapX1d <- function(x,y,newx){
   
   if( is.vector(y) ){
-    return(y[is.element(x,xn)])
+    return(y[is.element(x,newx)])
   }else if(is.matrix(y)){
-    return(y[is.element(x,xn),])
+    return(y[is.element(x,newx),])
   }else{
     warning('y cannot be empty!\n')
     return(NaN)
