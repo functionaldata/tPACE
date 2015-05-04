@@ -1,3 +1,36 @@
+#' Set the PCA option list
+#' 
+#' @param bwmu : bandwidth choice for mean function is using CV or GCV
+#' @param bwmu_gcv : bandwidth choice for mean function is GCV if bwmu = 0
+#' @param bwcov : bandwidth choice for covariance function is CV or GCV
+#' @param bwcov_gcv : bandwidth choice for covariance function is GCV if bwxcov = c(0,0)
+#' @param ntest1 : number of curves used for CV when choosing bandwidth 
+#' @param ngrid1 : number of support points for the covariance surface 
+#' @param selection_k : the method of choosing the number of principal components K
+#' @param FVE_threshold : Fraction-of-Variance-Explained
+#' @param maxk : maximum number of principal components to consider
+#' @param regular : do we have regular or sparse functional data
+#' @param error : error assumption with measurement error
+#' @param ngrid : number of support points in each direction of covariance surface 
+#' @param method : method to estimate the PC scores
+#' @param shrink : apply shrinkage to estimates of random coefficients (regular data only)
+#' @param newdata : new data points to estimate
+#' @param kernel : smoothing kernel choice
+#' @param numBins : number of bins
+#' @param yname : name of the variable analysed
+#' @param screePlot : make scree plot
+#' @param designPlot : make design plot
+#' @param corrPlot : make correlation plot
+#' @param rho : truncation threshold for the iterative residual  
+#' @param verbose : display diagnostic messages
+#' @param xmu : user-defined smoothed mean function 
+#' @param xcov : user-defined smoothed covariance function
+#' @param method_mu :  method to estimate mu
+#' @param out_percent : number in [0,1] indicating the out_percent data in the boundary
+#' @return an option list
+#' @examples 
+#' 1 + 3
+
 SetOptions = function(bwmu = 0, bwmu_gcv = 1, bwxcov = c(0,0), bwxcov_gcv = 1, 
     ntest1 = 30, ngrid1 = 30, selection_k = "BIC", FVE_threshold = 0.95,
     maxk = 20, regular = NULL, error = TRUE, ngrid = 51,
@@ -5,36 +38,6 @@ SetOptions = function(bwmu = 0, bwmu_gcv = 1, bwxcov = c(0,0), bwxcov_gcv = 1,
     numBins = NULL, yname = NULL, screePlot = FALSE, designPlot = FALSE, 
     corrPlot = FALSE,     rho = "cv", verbose = TRUE, xmu = NULL, xcov = NULL, 
     method_mu = 'PACE', out_percent = 0){
-  
-  # Set the PCA option structure.
-  # bwmu : bandwidth choice for mean function is using CV or GCV
-  # bwmu_gcv : bandwidth choice for mean function is GCV if bwmu = 0
-  # bwcov : bandwidth choice for covariance function is CV or GCV
-  # bwcov_gcv : bandwidth choice for covariance function is GCV if bwxcov = c(0,0)
-  # ntest1 : number of curves used for CV when choosing bandwidth 
-  # ngrid1 : number of support points for the covariance surface 
-  # selection_k : the method of choosing the number of principal components K
-  # FVE_threshold : Fraction-of-Variance-Explained
-  # maxk : maximum number of principal components to consider
-  # regular : do we have regular or sparse functional data
-  # error : error assumption with measurement error
-  # ngrid : number of support points in each direction of covariance surface 
-  # method : method to estimate the PC scores
-  # shrink : apply shrinkage to estimates of random coefficients (regular data only)
-  # newdata : new data points to estimate
-  # kernel : smoothing kernel choice
-  # numBins : number of bins
-  # yname : name of the variable analysed
-  # screePlot : make scree plot
-  # designPlot : make design plot
-  # corrPlot : make correlation plot
-  # rho : truncation threshold for the iterative residual  
-  # verbose : display diagnostic messages
-  # xmu : user-defined smoothed mean function 
-  # xcov : user-defined smoothed covariance function
-  # method_mu :  method to estimate mu
-  # out_percent : number in [0,1] indicating the out_percent data in the boundary
-  
   
   if(is.null(bwmu)){ # bandwidth choice for mean function is using CV or GCV
     bwmu = 0;   

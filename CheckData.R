@@ -1,9 +1,12 @@
+#' Check the form and basic structure of the functional data 'y' and the recorded times 'tt'.
+#' 
+#' @param y is a n-by-1 list of vectors
+#' @param tt is a n-by-1 list of vectors
+#' @return logical
+#' @examples 
+#' 1 + 3
+
 CheckData = function(y,tt){
-  
-  # Check the form and basic structure of the functional data 'y'
-  # and the recorded times 'tt'. 
-  # y : n-by-1 list of vectors
-  # tt : n-by-1 list of vectors 
   
   if(!is.list(y)){
     cat('Error: y should be list \n')

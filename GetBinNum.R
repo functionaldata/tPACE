@@ -1,4 +1,4 @@
-GetBinNum = function(n,m,regular,verbose ){
+GetBinNum = function(n, m, regular, verbose ){
   
   # Get the number of bins 
   # n : number of curves
@@ -7,17 +7,19 @@ GetBinNum = function(n,m,regular,verbose ){
   #     (dense (2), or  regular data with missing values (1) or sparse (0))
   # verbose : outpit diagnostics/progress
   
-  numBin = 0;
-  if (m <= 20)
+  numBin = NULL;
+  if (m <= 20){
     if (regular ==0){
       str = 'Median of ni';
     } else {
       str = 'Maximum of ni';
     }
-  if (verbose){
-    cat(str, 'is no more than 20! No binning is performed!\n');    
+    if (verbose){
+      cat(str, 'is no more than 20! No binning is performed!\n');    
+    }
+    return(NULL)
   }
-  return(NULL)
+
   
   if (m >400){
     numBin = 400;
@@ -35,5 +37,9 @@ GetBinNum = function(n,m,regular,verbose ){
     }
   }
   
+  if( verbose && is.null(numBins) ) {   
+    cat('No binning is needed!\n');
+  }
+
   return(numBin)
 }
