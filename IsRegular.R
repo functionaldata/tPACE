@@ -6,10 +6,10 @@ IsRegular = function(t){
   tt = unlist(t);
   f = length(tt)/length(unique(tt))/length(t);
   if (f == 1){
-    return(2);
+    return('Dense');
   } else if(f > 0.75){
-    return(1);
+    return('RegularWithMV');
   } else {
-    return(0);
+    return('Sparse');
   }
 }
