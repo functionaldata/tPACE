@@ -24,7 +24,8 @@ GetRawCov <- function(y,t,out1new, mu, regular, error){
   out1 <- sort(unique(unlist(t)))
   mu <- mapX1d(x = out1new, y = mu, newx = out1);
   count <- NULL 
-  if (regular == 'Sparse') {
+
+  if(regular == 'Sparse'){
   
     Ys = lapply(X = y, FUN=meshgrid)
     Xs = lapply(X = t, FUN=meshgrid)
@@ -53,7 +54,36 @@ GetRawCov <- function(y,t,out1new, mu, regular, error){
 
     win = ones(1, length(cxxn));
 
-  }
+  }else if(regular == 'Dense'){
+    
+    yy = t(matrix(unlist(y), length(y[[1]]), ncohort))
+    MU = matrix( rep(mu, times=3), nrow=4)
+    t1 = t[[1]]
+    yy = yy - MU;
+    cyy = t(yy) %*% yy / ncohort
+    cyy = as.vector(t(cyy))
+    cxxn = cyy;
+    xxyy = meshgrid(t1);
+
+    tpairn = matrix( c(xxyy$xx, xxyy$yy), length(xxyy$xx),2);
+
+    if(error){
+      tneq = which(xx1 != xx2)
+      indx = indx[tneq];
+      tpairn = tpairn[tneq,];
+      cxxn = cyy[tneq];     
+    }else{
+      cxxn = cyy;     
+    }
+
+    win = ones(1, length(cxxn));
+
+  }else if(regular == 'RegularWithMV'){
+    stop("This is not implemented yet. Contact Pantelis!")
+  }else {
+    stop("Invalid 'regular' argument type")
+  } 
+    
   result <- list( 'tpairn'=tpairn, 'cxxn'=cxxn, 'indx'=indx, 'win'=win,'cyy'=cyy,'count'=count);  
  
   class(result) <- "RawCov"
