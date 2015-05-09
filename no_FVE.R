@@ -27,8 +27,8 @@ library(gtools) # for error and warning message
 
 no_FVE <- function(xcov, FVE_threshold=0.85){
   numGrids = nrow(xcov)
-  opts.v0 = t(seq(0.1,0.9,length.out = numGrids))
-  d = eigs(xcov, k = numGrids-2, which = "LM")$values 
+  #opts.v0 = t(seq(0.1,0.9,length.out = numGrids))
+  d = eigs(xcov, k = numGrids-2, which = "LR")$values
   # at most ngrid-2 eigenvalues can be obtained for nonsymmetric or complex problems
   # "LM" corresponds to Largest Magnitude, another option may be "LR": Largest Real part
   
@@ -48,3 +48,4 @@ no_FVE <- function(xcov, FVE_threshold=0.85){
   no_opt = min(which(FVE > FVE_threshold))
   return(list(no_opt, FVE, lambda))
 }
+
