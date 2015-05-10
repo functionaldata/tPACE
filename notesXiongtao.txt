@@ -1,7 +1,19 @@
 plan:
 
 find R packages to do local linear smoothing: locfit
-CV/GCV
+CV/GCV: GCV can be done just by using gcv with a proper list of bandwidths.
+CV should be the same.
 testthat
+
+GCV: I'm not sure how to get the gcv of a subset of observations points
+(e.g. the diagonal elements in the covariance matrix). 
+Also, the bandwidth choice for matlab pc_covE (which smooths the diagonal
+elements and get the sigma estimate) does not look reasonable, as
+it uses just the bandwidth choice for the covariance itself, ignoring the rotation.
+
+We should add an option 'truncTo' such that we truncate the interval to what
+we want to analyze. Then in the truncated region points will be more
+abundant. This also may help reduce boundary effect as we make use of the
+points outside of the truncation region.
 
 I see no rotation code in matlab PCA or mullwls. 

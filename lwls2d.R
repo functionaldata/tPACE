@@ -25,12 +25,12 @@ lwls2d <- function(bw, kern='epan', xin, yin, win=NULL, xout1=NULL, xout2=NULL, 
     if (missing(win))
         win <- rep(1, nrow(datin))
 
-    # browser()
+    fit <- locfit(y ~ lp(x1, x2, h=bw, deg=1, scale=TRUE), data=datin, weights=win, kern=kern, ev=xout)
     if (class(xout)[1] == 'lf_evs') { # use locfit evaluation structure 
-        fit <- locfit(y ~ lp(x1, x2, h=bw, deg=1, scale=TRUE), data=datin, weights=win, kern=kern, ev=xout)
         ret <- fitted(fit, datin)
     } else {
-        fit <- locfit(y ~ lp(x1, x2, h=bw, deg=1, scale=TRUE), data=datin, weights=win, kern=kern)
+        # browser()
+        fit <- locfit(y ~ lp(x1, x2, h=bw, deg=1, scale=TRUE), data=datin, weights=win, kern=kern, ev=xout)
         ret <- predict(fit, xout)
     }
 
