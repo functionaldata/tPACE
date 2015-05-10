@@ -90,7 +90,7 @@ SetOptions = function(bwmu = 0, bwmu_gcv = 1, bwxcov = c(0,0), bwxcov_gcv = 1,
     newdata <- NULL
   }
   if(is.null(kernel)){ # smoothing kernel choice
-    if(regular == 2){
+    if(regular == "Dense"){
       kernel = "epan";   # kernel: Epanechnikov
     }else{
       kernel = "gauss";  # kernel: Gaussian

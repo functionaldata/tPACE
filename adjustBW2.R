@@ -3,7 +3,6 @@
 ##########################################################################
 # Input:  - kernel: 'gauss', 'epan' or other kernel type
 #         - bw_xcov: working bandwidth for covariance surface smoothing, a vector
-#         - npoly: (Not used)
 #         - nder: degree of derivative need to be estimated
 #         - regular: whether the functional data is dense and regular (2)
 #         - verbose: 
@@ -11,7 +10,7 @@
 # Output: - bw_xcov: bandwidth after adjustment, a vector
 ##########################################################################
 
-adjustBW2 <- function(kernel, bw_xcov, npoly, nder, regular, verbose){
+adjustBW2 <- function(kernel, bw_xcov, nder, regular, verbose){
   # for Gaussian kernel
   if(kernel == 'gauss'){
     if(regular == 2){

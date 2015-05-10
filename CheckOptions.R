@@ -71,7 +71,7 @@ CheckOptions = function(p,n){
     cat("Error: FPCA is aborted because the argument: maxk is invalid!\n");   
     return(TRUE);   
   } 
-  if( !( is.null(p$regular) || any(p$regular==c(1,2,3)) )){ 
+  if( !( is.null(p$regular) || any(p$regular==c("Sparse","DenseWithMV","Dense")) )){ 
     #do we have regualr or sparse functional data
     cat("Error: FPCA is aborted because the argument: regular is invalid!\n");     
     return(TRUE);     
