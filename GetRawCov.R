@@ -23,7 +23,8 @@ GetRawCov <- function(y,t,out1new, mu, regular, error){
   ncohort <- length(y);
   out1 <- sort(unique(unlist(t)))
   mu <- mapX1d(x = out1new, y = mu, newx = out1);
-  count <- NULL 
+  count <- NULL
+  indx = NULL 
 
   if(regular == 'Sparse'){
   
@@ -57,7 +58,7 @@ GetRawCov <- function(y,t,out1new, mu, regular, error){
   }else if(regular == 'Dense'){
     
     yy = t(matrix(unlist(y), length(y[[1]]), ncohort))
-    MU = matrix( rep(mu, times=3), nrow=4)
+    MU = t(matrix( rep(mu, times=length(y)), ncol=length(y)))
     t1 = t[[1]]
     yy = yy - MU;
     cyy = t(yy) %*% yy / ncohort
@@ -65,12 +66,11 @@ GetRawCov <- function(y,t,out1new, mu, regular, error){
     cxxn = cyy;
     xxyy = meshgrid(t1);
 
-    tpairn = matrix( c(xxyy$xx, xxyy$yy), length(xxyy$xx),2);
+    tpairn =  t(matrix( c(c(xxyy$X), c(xxyy$Y)), ncol = 2))
 
     if(error){
-      tneq = which(xx1 != xx2)
-      indx = indx[tneq];
-      tpairn = tpairn[tneq,];
+      tneq = which(tpairn[1,] != tpairn[2,])
+      tpairn = tpairn[,tneq];
       cxxn = cyy[tneq];     
     }else{
       cxxn = cyy;     
