@@ -8,9 +8,10 @@
 # xout2: a p2-vector of second output coordinate grid. If both xout1 and xout2 are unspecified then the output gridpoints are set to the input gridpoints.
 # xout: alternative specification of output points. a matrix of two columns.
 # returnFit: If TRUE, return the fitted locfit object for the convenience of future operations such as gcv. Use predict(fit) to obtain the fitted values.
+# ...: pass on to locfit
 # Returns a p1 by p2 matrix of fitted values.
 # Difference from mullwlsk: The local window is elliptical. There is no nwe argument. The kernels supported are different. No local bandwidth choice is supported as it is never actually called in Matlab PACE. 
-lwls2d <- function(bw, kern='epan', xin, yin, win=NULL, xout1=NULL, xout2=NULL, xout=NULL, returnFit=FALSE, scale=FALSE) {
+lwls2d <- function(bw, kern='epan', xin, yin, win=NULL, xout1=NULL, xout2=NULL, xout=NULL, returnFit=FALSE, scale=FALSE, ...) {
     datin <- data.frame(cbind(xin, as.numeric(yin)))
     names(datin) <- c('x1', 'x2', 'y')
 
@@ -27,11 +28,11 @@ lwls2d <- function(bw, kern='epan', xin, yin, win=NULL, xout1=NULL, xout2=NULL, 
         win <- rep(1, nrow(datin))
 
     if (class(xout)[1] == 'lf_evs') { # use locfit evaluation structure 
-        fit <- locfit(y ~ lp(x1, x2, h=bw, deg=1, scale=scale), data=datin, weights=win, kern=kern, ev=xout)
+        fit <- locfit(y ~ lp(x1, x2, h=bw, deg=1, scale=scale), data=datin, weights=win, kern=kern, ev=xout, ...)
         ret <- fitted(fit, datin)
     } else {
         # browser()
-        fit <- locfit(y ~ lp(x1, x2, h=bw, deg=1, scale=scale), data=datin, weights=win, kern=kern)
+        fit <- locfit(y ~ lp(x1, x2, h=bw, deg=1, scale=scale), data=datin, weights=win, kern=kern, ...)
         # plot(fit)
         ret <- predict(fit, xout)
     }
