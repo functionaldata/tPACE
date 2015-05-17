@@ -54,6 +54,7 @@ GetRawCov <- function(y,t,out1new, mu, regular, error){
     }
 
     win = ones(1, length(cxxn));
+    # count = getCount(tpairn)...
 
   }else if(regular == 'Dense'){
     
@@ -77,7 +78,6 @@ GetRawCov <- function(y,t,out1new, mu, regular, error){
     }
 
     win = ones(1, length(cxxn));
-
   }else if(regular == 'RegularWithMV'){
     stop("This is not implemented yet. Contact Pantelis!")
   }else {

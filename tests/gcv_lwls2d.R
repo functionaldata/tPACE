@@ -38,6 +38,7 @@ test_that('getGCVscores interface works', {
 # gcvlwls2d
 gcvlwls2d(t, rcov=rcov, kern='epan', h0=1)
 gcvlwls2d(t, rcov=rcov, kern='epan', h0=2)
+gcvlwls2d(t, rcov=rcov, kern='epan')
 
 h1 <- gcvlwls2d(samp1$tList, rcov=rcov1, kern='epan', h0=0.1)
 fit1 <- lwls2d(h1$h, kern='epan', xin=rcov1$tpairn, yin=rcov1$cxxn, returnFit=TRUE)
@@ -45,3 +46,12 @@ plot(fit1)
 
 debug(gcvlwls2d)
 undebug(gcvlwls2d)
+
+# use wiener process
+set.seed(1)
+pts <- seq(0, 1, by=0.05)
+samp3 <- wiener(200, pts, sparsify=2:7)
+rcov3 <- GetRawCov(samp3$yList, samp3$tList, pts, rep(0, length(pts)), 'Sparse', FALSE)
+h3 <- gcvlwls2d(samp3$tList, kern='epan', rcov=rcov3)
+fit3 <- lwls2d(h3$h, kern='epan', xin=rcov3$tpairn, yin=rcov3$cxxn, returnFit=TRUE)
+plot(fit3)

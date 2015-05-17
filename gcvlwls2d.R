@@ -1,4 +1,4 @@
-gcvlwls2d <- function(tt, ngrid=NULL, regular=rcov$regular, error=rcov$error, kern, rcov, h0=getMinb(tt, regular=rcov$regular), verbose=TRUE) {
+gcvlwls2d <- function(tt, ngrid=NULL, regular=rcov$regular, error=rcov$error, kern, rcov, h0=getMinb(rcov, regular=rcov$regular, out1=sort(unique(unlist(tt)))), verbose=TRUE) {
 # TODO: Consider rewrite the function into a more general form. The current implementation is too specific and works only for smoothing raw covariance.
 
 # Returns: a list of length 2, containing the optimal bandwidth and the gcv score.
@@ -23,7 +23,8 @@ if (kern == 'gauss') {
 if (is.null(h0))
     stop('the data is too sparse, no suitable bandwidth can be found! Try Gaussian Kernel instead!\n')
 
-# TODO: improve this initial choice
+# TODO: improve this initial choice. The initial h0 may not be that good. The search scheme may be too rough if there are a lot number of observations.
+h0 <- min(h0, r/4)
 if (h0 < r/4) {    
     q <- (r / (4 * h0)) ^ (1/9)
 } else if (h0 < r/2) {
