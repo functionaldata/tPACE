@@ -84,7 +84,7 @@ GetRawCov <- function(y,t,out1new, mu, regular, error){
     stop("Invalid 'regular' argument type")
   } 
     
-  result <- list( 'tpairn'=tpairn, 'cxxn'=cxxn, 'indx'=indx, 'win'=win,'cyy'=cyy,'count'=count);  
+  result <- list( 'tpairn'=tpairn, 'cxxn'=cxxn, 'indx'=indx, 'win'=win,'cyy'=cyy,'count'=count, 'error'=error, 'regular'=regular);  
  
   class(result) <- "RawCov"
   return(result)

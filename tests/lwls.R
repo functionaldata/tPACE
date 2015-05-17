@@ -69,3 +69,5 @@ test_that('weight works', {
                  c(-0.075034417378891,  0.123584297605571,   0.353323309535711, 0.573996912896636,   0.232449699086771))
 
 })
+
+# test when h is large the implementations are the same.
