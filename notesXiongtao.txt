@@ -1,28 +1,18 @@
 plan:
+Change the implementation of lwls1d and lwls2d. Do not use locfit.
 
-find R packages to do local linear smoothing: locfit
-CV/GCV: GCV can be done just by using gcv with a proper list of bandwidths.
-CV should be the same.
-testthat
-
-GCV: I'm not sure how to get the gcv of a subset of observations points
-(e.g. the diagonal elements in the covariance matrix). 
-Also, the bandwidth choice for matlab pc_covE (which smooths the diagonal
-elements and get the sigma estimate) does not look reasonable, as
-it uses just the bandwidth choice for the covariance itself, ignoring the rotation.
 I don't know what the GCV implementation is in the matlab version. ASK Hans.
-
-lwls2d: the locfit package only support one bandwidth. The 2D neighborhood
-is selected to be circle rather than a square. We may add this option by
-scale option in `lp`.
 
 We should add an option 'truncTo' such that we truncate the interval to what
 we want to analyze. Then in the truncated region points will be more
 abundant. This also may help reduce boundary effect as we make use of the
 points outside of the truncation region.
 
-I see no rotation code in matlab PCA or mullwls. 
+For dataset with large number observations we are better-off storing the count data rather than the unbinned raw covariance.
 
+What is maxk in locfit? How to set it?
+
+rotateLwls2d: Use the correct (described) method in Yao 2005, rather than following the matlab/formula in Yao 2005.
 
 To Pantelis: ------
     bScr = gcvScores[bInd]
@@ -32,5 +22,5 @@ should be changed to
     bOpt = max(bwCandidates[bInd]);
 
 Why don't we remove win in getRawCov.m?
-
+getCount
 -----------

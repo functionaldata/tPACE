@@ -10,7 +10,7 @@
 # xout: a vector of output x-coordinate grid.
 # returnFit: If TRUE, return the fitted locfit object for the convenience of future operations such as gcv. Use predict(fit) to obtain the fitted values.
 # Difference from lwls.m: There is no nwe argument. The kernels supported are different. No local bandwidth choice is supported as it is never actually called in Matlab PACE.
-lwls1d <- function(bw, kern='epan', npoly=1, nder=0, xin, yin, win=NULL, xout=dat(), returnFit=FALSE) {
+lwls1d <- function(bw, kern='epan', npoly=1, nder=0, xin, yin, win=NULL, xout=dat(), returnFit=FALSE, ...) {
     if (npoly < nder)
         stop('Degree of Polynomial should be no less than the order of derivative')
 
@@ -27,7 +27,7 @@ lwls1d <- function(bw, kern='epan', npoly=1, nder=0, xin, yin, win=NULL, xout=da
     if (missing(win))
         win <- rep(1, length(xin))
 
-    fit <- locfit(y ~ lp(x, h=bw, deg=npoly), datin, weights=win, deriv=nder, ev=xout, kern=kern)
+    fit <- locfit(y ~ lp(x, h=bw, deg=npoly), datin, weights=win, deriv=nder, ev=xout, kern=kern, maxk=500, ...) # maxk: space allocation
 
     if (returnFit)
         return(fit)

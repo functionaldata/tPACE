@@ -108,7 +108,7 @@ getGCVscores <- function(bw, ...) {
 # ...: passed on to lwls2d
     
     fit <- lwls2d(bw, ..., returnFit=TRUE)
-    return(gcv(fit)['gcv'])
+    return(gcv(fit, maxk=fit$frame$maxk)['gcv'])
 
 }
 

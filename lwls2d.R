@@ -24,15 +24,21 @@ lwls2d <- function(bw, kern='epan', xin, yin, win=NULL, xout1=NULL, xout2=NULL, 
     if (class(xout)[1] != 'lf_evs')
         colnames(xout) <- names(datin)[1:2]
 
-    if (missing(win))
+    if (missing(win) || is.null(win))
         win <- rep(1, nrow(datin))
 
+    # decide space allocation
+    uniqPts <- sort(unique(datin$x1))
+    r <- diff(range(uniqPts))
+    maxk <- round((2 * bw / r * length(uniqPts))^2 * 4)
+    
+    
     if (class(xout)[1] == 'lf_evs') { # use locfit evaluation structure 
-        fit <- locfit(y ~ lp(x1, x2, h=bw, deg=1, scale=scale), data=datin, weights=win, kern=kern, ev=xout, ...)
+        fit <- locfit(y ~ lp(x1, x2, h=bw, deg=1, scale=scale), data=datin, weights=win, kern=kern, ev=xout, maxk=maxk, ...)
         ret <- fitted(fit, datin)
     } else {
         # browser()
-        fit <- locfit(y ~ lp(x1, x2, h=bw, deg=1, scale=scale), data=datin, weights=win, kern=kern, ...)
+        fit <- locfit(y ~ lp(x1, x2, h=bw, deg=1, scale=scale), data=datin, weights=win, kern=kern, maxk=maxk, ...)
         # plot(fit)
         ret <- predict(fit, xout)
     }
