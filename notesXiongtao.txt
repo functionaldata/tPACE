@@ -1,3 +1,5 @@
+Write convertPhiMu
+
 plan:
 Change the implementation of lwls1d and lwls2d. Do not use locfit.
 
@@ -11,6 +13,7 @@ points outside of the truncation region.
 For dataset with large number observations we are better-off storing the count data rather than the unbinned raw covariance.
 
 What is maxk in locfit? How to set it?
+We implement up to 1024 grid points, for example.
 
 rotateLwls2d: Use the correct (described) method in Yao 2005, rather than following the matlab/formula in Yao 2005.
 

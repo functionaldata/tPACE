@@ -57,6 +57,7 @@ BinData = function(y,t,regular,verbose,numBins){
     res = GetBinnedCurve(t[[i]], y[[i]], numBins, TRUE, TRUE, a0, b0);
     BinDataOutput$newt[i] = res$midpoint;   
     BinDataOutput$newy[i] = res$newy;      
+  }
   if (verbose){ 
     cat("We finished binning the data in the time domain [", a0,",", b0, "] using", numBins, "bins.\n" )
   } 
