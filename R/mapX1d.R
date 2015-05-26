@@ -1,9 +1,8 @@
-
 # Map (x,y) to (newx,newy)
-# x, y : vectors of 1 * n
+# x    : a vector of 1 * n
+# y    : a vector of 1 * n or a n * p matrix
 # newx : vector of 1 * m
-# newy : vector of 1*m
-# mapX1d <- function(x,y,newx){
+# newy : vector of 1 * m or a matrix of m * p
   
   # if( is.vector(y) ){
     # return(y[is.element(x,newx)])
@@ -21,8 +20,11 @@ mapX1d <- function(x, y, newx) {
         
     if (min(newx) + 100 * .Machine$double.eps < min(x) || max(newx) > max(x) + 100 * .Machine$double.eps)
         warning('Extrapolation occured')
-
-    newy <- approxExtrap(x, y, newx, method='linear')$y
+    if (is.vector(y))
+        newy <- approxExtrap(x, y, newx, method='linear')$y
+    else {
+        newy <- apply(y, 2, function(yy) approxExtrap(x, yy, newx, method='linear')$y)
+    }
     
     return(newy)
 }
