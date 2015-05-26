@@ -31,7 +31,7 @@ GetSmoothedMeanCurve <- function (y, t, out1, out21, p){
         } 
       } else {
         # get the bandwidth using CV to estimnate the mean function (below)
-        # bw_mu = cvfda_lwls(y,t,kernel,1,1,0,regular,verbose); # Not implemented ## TO DO      
+        bw_mu = cvlwls(x=y, tt=t, kernel= kernel, npoly=npoly, nder=nder, regular='Sparse'); # Not implemented ## TO DO      
       }
     }
     # Get the mean function using the bandwith estimated above:
