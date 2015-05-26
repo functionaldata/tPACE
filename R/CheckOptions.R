@@ -24,12 +24,12 @@ CheckOptions = function(p,n){
   out_percent = p$out_percent;  xcov = p$xcov
   
   
-  if(  !( (length(p$bwmu)==1) &  is.numeric(p$bwmu) & (0>=p$bwmu) ) ){ 
+  if(  !( (length(p$bwmu)==1) &  is.numeric(p$bwmu) & (0<=p$bwmu) ) ){ 
     # bandwidth choice for mean function is using CV or GCV
     cat("Error: FPCA is aborted because the argument: bwmu  is invalid!\n"); 
     return(TRUE);   
   }
-  if( !(  any(p$bwmu_gcv == c(1,2,3)) )){ 
+  if( !(  any(p$bwmu_gcv == c(0,1,2)) )){ 
     # bandwidth choice for mean function is GCV if bwmu = 0
     cat("Error: FPCA is aborted because the argument: bwmu_gcv is invalid!\n"); 
     return(TRUE);   
