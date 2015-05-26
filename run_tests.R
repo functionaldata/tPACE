@@ -1,11 +1,14 @@
-library('testthat')
+library(devtools)
+load_all()
 
-source('CheckData.R')
-source('CreateEigenfncts.R')
-source('CreateTrueMean.R')
-source('IsRegular.R')
+# library('testthat')
 
-filesToSource = list.files('tests/',pattern="*.R", full.names=T)
-sapply(filesToSource, source)
+# source('CheckData.R')
+# source('CreateEigenfncts.R')
+# source('CreateTrueMean.R')
+# source('IsRegular.R')
 
-test_dir('tests', reporter = 'Summary')
+# filesToSource = list.files('tests/',pattern="*.R", full.names=T)
+# sapply(filesToSource, source)
+
+# test_dir('tests', reporter = 'Summary')
