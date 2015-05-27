@@ -1,5 +1,5 @@
 # This version takes a 1 by bwlen candidate bandwidth vector input, rather than finding out the candidates itself.
-gcvlwls2d <- function(t_all, ngrid, regular, error, kern, rcov,
+gcvlwls2d1 <- function(t_all, ngrid, regular, error, kern, rcov,
                       verbose=FALSE, bwCandidates) {
 # get the regression model
     r <- max(t_all) - min(t_all)

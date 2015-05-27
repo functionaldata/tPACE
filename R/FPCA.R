@@ -9,7 +9,7 @@
 
 
 
-FPCA = function(y, tt, p = SetOptions()){
+FPCA = function(y, t, p = SetOptions()){
   
   # FPCA checks the data validity for the PCA function. 
   if( CheckData(y,t) ){

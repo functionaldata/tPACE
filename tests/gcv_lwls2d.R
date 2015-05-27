@@ -1,16 +1,17 @@
 options(error=recover)
 library(locfit)
 library(pracma)
-source('../GetRawCov.R')
-source('../mapX1d.R')
-source('../IsRegular.R')
+library(testthat)
+source('R/GetRawCov.R')
+source('R/mapX1d.R')
+source('R/IsRegular.R')
 
 # GetRawCov
-load('../data/dataForGetRawCov.RData')
+load('data/dataForGetRawCov.RData')
 rcov <- GetRawCov(y,t, sort(unlist(t)), mu,'Sparse',FALSE) #Matches ML output
 # rm(t, y)
 
-source('../wiener.R')
+source('R/wiener.R')
 set.seed(1)
 pts <- seq(0, 1, by=0.01)
 samp1 <- wiener(100, pts, sparsify=5:10)
