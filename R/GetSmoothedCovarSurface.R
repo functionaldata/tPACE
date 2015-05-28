@@ -9,6 +9,9 @@ GetSmoothedCovarSurface <- function(y, t, out1, mu, p){
   if (any(p$bwxcov ==0)){
     ... 
     }
-   
+    
+
+  result <- list(  'rawcov'= rcov, 'smocov' = ..., 'bw_smocov' = ... );
+  class(result) <- "SCS"  
   }
 

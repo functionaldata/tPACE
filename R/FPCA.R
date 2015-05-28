@@ -38,6 +38,7 @@ FPCA = function(y, t, p = SetOptions()){
 
 
   # Get the smoothed covariance surface
+  # mu: the smoothed mean curve evaluated at times 'out1'
   mu = smcObj$mu
   scsObj = GetSmoothedCovarSurface(y, t, out1, mu, p) 
 

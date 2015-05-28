@@ -1,7 +1,6 @@
 getEigens <- function(xcov,out1,out21,noeig, varargin){
 #   function [lambda, phi, eigen, noeig] = getEigens(xcov,out1,out21,noeig, varargin)
-
- 
+#   noeig \approx  maxk
 
   h=diff(range(out21))/(length(out21)-1);
 
