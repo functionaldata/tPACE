@@ -1,4 +1,4 @@
-BinData = function(y,t,regular,verbose,numBins){
+BinData = function(y,t,p){
   
   # Bin the data 'y'
   # y : n-by-1 list of vectors
@@ -8,38 +8,32 @@ BinData = function(y,t,regular,verbose,numBins){
   # verbose gives warning messages
   # numBins: number of bins (if set)
 
-  if( !(  any(regular == c(1,2,0)) )){  
-    cat("Error: BinData is aborted because the argument: regular is invalid!\n");  
-    return(TRUE);   
-  }
-
   BinDataOutput <- list( newy <- NULL, newt <- NULL);
-  
+
+  regular = p$regular;
+  verbose = p$verbose;  
+
   n = length(t);
   ni = sapply(FUN= length,t);
   
-  if (is.null(regular)){
-    regular = 0;
-  }
-  
-  if (is.null(verbose)){
-    verbose = TRUE;
-  }
-  
-  if (regular == 0){
+  if (regular == 'Sparse'){
     m = median(ni)
   } else {
     m = max(ni);
   }
   
+  # Check the number of bins automatically
   if (is.null(numBins)){
     numBins = GetBinNum(n,m,regular,verbose)
   }else if( numBins <1){
-    cat("Warning: number of bins must be positive integer! Reset to default number of bins now!\n")
+    cat("Warning: number of bins must be positive integer! We reset to the default number of bins!\n")
     numBins = GetBinNum(n,m,regular,verbose)
   }
-
+  
+  # If it is determined to be NULL return the unbinned data
   if (is.null(numBins)){
+    BinDataOutput$newt = t;
+    BinDataOutput$newy = y;
     return( BinDataOutput )
   }
      
@@ -49,18 +43,11 @@ BinData = function(y,t,regular,verbose,numBins){
   a0 = min(tt);
   b0 = max(tt);
   
-  if (verbose){
-    cat("We start binning the data!\n")
-  } 
-  
   for (i in 1:n){
     res = GetBinnedCurve(t[[i]], y[[i]], numBins, TRUE, TRUE, a0, b0);
     BinDataOutput$newt[i] = res$midpoint;   
     BinDataOutput$newy[i] = res$newy;      
   }
-  if (verbose){ 
-    cat("We finished binning the data in the time domain [", a0,",", b0, "] using", numBins, "bins.\n" )
-  } 
   
   return( BinDataOutput )
 }

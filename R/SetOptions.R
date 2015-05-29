@@ -1,9 +1,9 @@
 #' Set the PCA option list
 #' 
 #' @param bwmu : bandwidth choice for mean function is using CV or GCV
-#' @param bwmu_gcv : bandwidth choice for mean function is GCV if bwmu = 0
+#' @param bwmu_gcv : bandwidth choice method for mean function is GCV if bwmu = 0
 #' @param bwcov : bandwidth choice for covariance function is CV or GCV
-#' @param bwcov_gcv : bandwidth choice for covariance function is GCV if bwxcov = c(0,0)
+#' @param bwcov_gcv : bandwidth choice method for covariance function is GCV if bwxcov = c(0,0)
 #' @param ntest1 : number of curves used for CV when choosing bandwidth 
 #' @param ngrid1 : number of support points for the covariance surface 
 #' @param selection_k : the method of choosing the number of principal components K
@@ -27,29 +27,30 @@
 #' @param xcov : user-defined smoothed covariance function
 #' @param method_mu :  method to estimate mu
 #' @param out_percent : number in [0,1] indicating the out_percent data in the boundary
+#' @param use_binned_data : 'FORCE' (Enforce the # of bins), 'AUTO' (Select the # of  bins automatically), 'OFF' (Do not bin)
 #' @return an option list
 #' @examples 
 #' 1 + 3
 
-SetOptions = function(bwmu = 0, bwmu_gcv = 1, bwxcov = c(0,0), bwxcov_gcv = 1, 
+SetOptions = function(bwmu = 0, bwmu_gcv = NULL, bwxcov = c(0,0), bwxcov_gcv = NULL, 
     ntest1 = 30, ngrid1 = 30, selection_k = "BIC", FVE_threshold = 0.95,
     maxk = 20, regular = NULL, error = TRUE, ngrid = 51,
     method = "CE", shrink = FALSE, newdata = NULL, kernel = "gauss", 
     numBins = NULL, yname = NULL, screePlot = FALSE, designPlot = FALSE, 
     corrPlot = FALSE,     rho = "cv", verbose = TRUE, xmu = NULL, xcov = NULL, 
-    method_mu = 'PACE', out_percent = 0){
+    method_mu = 'PACE', out_percent = 0, use_binned_data = NULL){
   
   if(is.null(bwmu)){ # bandwidth choice for mean function is using CV or GCV
     bwmu = 0;   
   }
   if(is.null(bwmu_gcv)){ # bandwidth choice for mean function is GCV if bwmu = 0
-    bwmu_gcv = 1;  
+    bwmu_gcv = 'GMeanAndGCV';  
   }
   if(is.null(bwxcov)){ # bandwidth choice for covariance function is CV or GCV
     bwxcov = c(0,0); 
   }
   if(is.null(bwxcov_gcv)){  # bandwidth choice for covariance function is GCV if bwxcov = c(0,0)
-    bwxcov_gcv = 1;
+    bwxcov_gcv = 'GMeanAndGCV';
   }
   if(is.null(ntest1)){ # number of curves used for CV when choosing bandwidth 
     ntest1 = 30;
@@ -154,14 +155,18 @@ SetOptions = function(bwmu = 0, bwmu_gcv = 1, bwxcov = c(0,0), bwxcov_gcv = 1,
   }  
   if(!is.null(numBins)){ 
     if(numBins < 10){   # Check suitability of number of bins
-      cat("Number of bins must be at least +10! No binning will be performed!\n");
-      numBins = 0;
+      cat("Number of bins must be at least +10!!\n");
+      numBins = NULL;
     }
-  }  
+  }
+  if(is.null(use_binned_data)){ 
+    use_binned_data = 'AUTO';
+  }
+    
   return( list(bwmu = bwmu, bwmu_gcv = bwmu_gcv, bwxcov = bwxcov, bwxcov_gcv = bwxcov_gcv,
           ntest1 = ntest1, ngrid1 = ngrid1, selection_k = selection_k, FVE_threshold = FVE_threshold,
           maxk = maxk, regular = regular, error = error, ngrid = ngrid, 
           method = method, shrink = shrink, newdata = newdata, kernel = kernel, corrPlot = corrPlot,	
           numBins = numBins, yname = yname, screePlot = screePlot, designPlot = designPlot, rho = rho, 
-          verbose = verbose, xmu = xmu, xcov = xcov, method_mu= method_mu, out_percent = out_percent) )
+          verbose = verbose, xmu = xmu, xcov = xcov, method_mu= method_mu, out_percent = out_percent, use_binned_data = use_binned_data) )
 }
