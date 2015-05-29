@@ -27,3 +27,8 @@ should be changed to
 Why don't we remove win in getRawCov.m?
 getCount
 -----------
+
+Hans:
+Add a crosssectional option.
+Binning
+Check boundary effects
