@@ -1,17 +1,11 @@
 options(error=recover)
-library(locfit)
-library(pracma)
 library(testthat)
-source('R/GetRawCov.R')
-source('R/mapX1d.R')
-source('R/IsRegular.R')
 
 # GetRawCov
 load('data/dataForGetRawCov.RData')
 rcov <- GetRawCov(y,t, sort(unlist(t)), mu,'Sparse',FALSE) #Matches ML output
 # rm(t, y)
 
-source('R/wiener.R')
 set.seed(1)
 pts <- seq(0, 1, by=0.01)
 samp1 <- wiener(100, pts, sparsify=5:10)
@@ -45,8 +39,6 @@ h1 <- gcvlwls2d(samp1$tList, rcov=rcov1, kern='epan', h0=0.1)
 fit1 <- lwls2d(h1$h, kern='epan', xin=rcov1$tpairn, yin=rcov1$cxxn, returnFit=TRUE)
 plot(fit1)
 
-debug(gcvlwls2d)
-undebug(gcvlwls2d)
 
 # use wiener process
 set.seed(1)

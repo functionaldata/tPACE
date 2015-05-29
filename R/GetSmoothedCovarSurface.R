@@ -1,18 +1,40 @@
-GetSmoothedCovarSurface <- function(y, t, out1, mu, p){
+GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, p, useBins=FALSE) {
 
-# TODO: pass in only the options needed, rather than p itself.
+  # TODO: pass in only the options needed, rather than p itself.
   regular = p$regular
   error = p$error
-   
+  kern <- p$kernel
+  bwxcov <- p$bwxcov
+  bwxcov_gcv <- p$bwxcov_gcv
+
   # Get raw covariance   
-  rawcov <- GetRawCov(y, t, out1, mu, regular, error)
+  rcov <- GetRawCov(y, t, obsGrid, mu, regular, error)
 
-  if (any(p$bwxcov ==0)){
-    ... 
+  # TODO: bin rcov
+  
+  if (bwxcov == 0) { # bandwidth selection
+    if (bwxcov_gcv %in% c('GCV', 'GMeanAndGCV')) {
+      gcvObj <- gcvlwls2d(t, kern=kern, rcov=rcov, useBins=useBins, verbose=p$verbose)
+      bwCov <- gcvObj$h
+      if (bwxcov_gcv == 'GMeanAndGCV') {
+        bwCov <- sqrt(bwCov * gcvObj$minBW)
+      }  
+    } else if (bwxcov_gcv == 'CV') { # CV 10 fold
+      gcvObj <- gcvlwls2d(t, kern=kern, rcov=rcov, useBins=useBins, verbose=p$verbose, CV='10fold')
+      bwCov <- gcvObj$opth
     }
-    
-
-  result <- list( rawcov= rawcov, smocov = smocov, bwCov = bwCov );
-  class(result) <- "SCS"  
+  } else if (bwxcov != 0) {
+    bwCov <- bwxcov
   }
+
+  smoothCov <- lwls2d(bwCov, kern, xin=rcov$tpairn, yin=rcov$cxxn, xout1=regGrid, xout2=regGrid)
+  
+  # TODO: add Hao's sigma smoother
+
+
+  res <- list( rawCov= rcov, smoothCov = smoothCov, bwCov = bwCov, sigma2 = NULL);
+  class(res) <- "SmoothCov"  
+  
+  return(res)
+}
 

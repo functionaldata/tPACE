@@ -32,7 +32,7 @@
 #' @examples 
 #' 1 + 3
 
-SetOptions = function(bwmu = 0, bwmu_gcv = NULL, bwxcov = c(0,0), bwxcov_gcv = NULL, 
+SetOptions = function(bwmu = 0, bwmu_gcv = NULL, bwxcov = 0, bwxcov_gcv = NULL, 
     ntest1 = 30, ngrid1 = 30, selection_k = "BIC", FVE_threshold = 0.95,
     maxk = 20, regular = NULL, error = TRUE, ngrid = 51,
     method = "CE", shrink = FALSE, newdata = NULL, kernel = "gauss", 
@@ -47,7 +47,7 @@ SetOptions = function(bwmu = 0, bwmu_gcv = NULL, bwxcov = c(0,0), bwxcov_gcv = N
     bwmu_gcv = 'GMeanAndGCV';  
   }
   if(is.null(bwxcov)){ # bandwidth choice for covariance function is CV or GCV
-    bwxcov = c(0,0); 
+    bwxcov = 0; 
   }
   if(is.null(bwxcov_gcv)){  # bandwidth choice for covariance function is GCV if bwxcov = c(0,0)
     bwxcov_gcv = 'GMeanAndGCV';
