@@ -38,9 +38,7 @@ GetBinnedCurve <- function(x, y, M = 10, isMnumBin = TRUE,
     }
     
     zList = list(newy = newy, count = count)
-    return( zList );
-    
-    
+    return( zList );     
   }
   
   # Auxilary function 'GetResMisOne'

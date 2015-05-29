@@ -22,14 +22,20 @@ CheckOptions = function(p,n){
   verbose = p$verbose;          corrPlot = p$corrPlot;
   xmu = p$xmu;                  method_mu = p$method_mu;
   out_percent = p$out_percent;  xcov = p$xcov
+                                use_binned_data = p$use_binned_data;
   
   
+  if( !(  any(p$use_binned_data == c('FORCE','AUTO','OFF')) )){ 
+    # Force, turn off or automatically decide about the use of bin data
+    cat("Error: FPCA is aborted because the argument: use_binned_data is invalid!\n"); 
+    return(TRUE);   
+  }
   if(  !( (length(p$bwmu)==1) &  is.numeric(p$bwmu) & (0<=p$bwmu) ) ){ 
     # bandwidth choice for mean function is using CV or GCV
     cat("Error: FPCA is aborted because the argument: bwmu  is invalid!\n"); 
     return(TRUE);   
   }
-  if( !(  any(p$bwmu_gcv == c(0,1,2)) )){ 
+  if( !(  any(p$bwmu_gcv == c('CV','GCV','GMeanAndGCV')) )){ 
     # bandwidth choice for mean function is GCV if bwmu = 0
     cat("Error: FPCA is aborted because the argument: bwmu_gcv is invalid!\n"); 
     return(TRUE);   
@@ -39,7 +45,7 @@ CheckOptions = function(p,n){
     cat("Error: FPCA is aborted because the argument: bwxcov is invalid!\n"); 
     return(TRUE);   
   }
-  if( !(  any(p$bwxcov_gcv == c(1,2,3)) )){ 
+  if( !(  any(p$bwxcov_gcv == c('CV','GCV','GMeanAndGCV') ) )){ 
     # bandwidth choice for covariance function is GCV if bwxcov = c(0,0)
     cat("Error: FPCA is aborted because the argument: bwxcov_gcv is invalid!\n");  
     return(TRUE);   
@@ -106,9 +112,14 @@ CheckOptions = function(p,n){
     cat("Error: FPCA is aborted because the argument: kernel is invalid!\n");   
     return(TRUE);   
   }
-  if( !( is.numeric(p$numBins) || is.null(p$numBins) )  ){  
+  if( !( ( is.numeric(p$numBins) && (p$numBins>1)) || is.null(p$numBins) )  ){  
     # Check suitability of number of bins
     cat("Error: FPCA is aborted because the argument: numBins is invalid!\n");   
+    return(TRUE);       
+  }
+  if( ( ( p$use_binned_data == 'FORCE') &&  is.null(p$numBins) ) ){  
+    # Check that we have a number of the bins if we force binning
+    cat("Error: FPCA is aborted because the argument: numBins is NULL but you FORCE binning!\n");   
     return(TRUE);       
   }
   if(!is.character(p$yname)){ 

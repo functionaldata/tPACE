@@ -26,6 +26,14 @@ FPCA = function(y, t, p = SetOptions()){
   }
 
 
+  # Bin the data (potentially):
+  if ( p$use_binned_data != 'OFF'){ 
+      BinnedDataset <- GetBinnedDataset(y,t,p)
+      y = BinnedDataset$y;
+      t = BinnedDataset$t; 
+  }
+
+
   # Generate basic grids:
   # out1:  the unique sorted pooled time points of the sample and the new data
   # out21: the grid of time points for which the smoothed covariance surface assumes values
