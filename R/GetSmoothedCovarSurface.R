@@ -11,7 +11,7 @@ GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, p, useBins=FALSE
   rcov <- GetRawCov(y, t, obsGrid, mu, regular, error)
 
   # TODO: bin rcov
-  if (
+  # if (
   
   if (bwxcov == 0) { # bandwidth selection
     if (bwxcov_gcv %in% c('GCV', 'GMeanAndGCV')) {
