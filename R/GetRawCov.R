@@ -10,7 +10,7 @@ GetRawCov <- function(y,t,out1new, mu, regular, error){
 #                  FALSE without measurement error assumption
 # 
 #  Output res: a list that contains tpairn, cxxn, indx,win and cyy
-#     tpairn:  2 * N  vector denotes the  pairs of time points for subject 
+#     tpairn:  N * 2  vector denotes the  pairs of time points for subject 
 #                 concatenating as two vectors 
 #                if error = 1, all (t_ij, t_ij) will be removed  
 #       cxxn:    1 * N vector of raw covariance corresponding to tpairn      
@@ -18,13 +18,16 @@ GetRawCov <- function(y,t,out1new, mu, regular, error){
 #        win:    1 * N weight matrix for the 2-D smoother for covariance function
 #        cyy:    1 * M vector of raw covariance corresponding to all pairs of time points,
 #                i.e., it is the same as cxxn if error = 0
+#       diag:    if error == TRUE: 2-column matrix recording raw covariance along the diagonal direction (col 2)
+#                and the corresponding observed time points (col 1)   
+#                if error == FALSE: NULL
 
- 
   ncohort <- length(y);
   out1 <- sort(unique(unlist(t)))
   mu <- mapX1d(x = out1new, y = mu, newx = out1);
   count <- NULL
   indx = NULL 
+  diag = NULL
 
   if(regular == 'Sparse'){
   
@@ -42,11 +45,13 @@ GetRawCov <- function(y,t,out1new, mu, regular, error){
 
     indx = unlist(sapply( 1:10, function(x) rep(x,  (unlist(lapply(length, X= y))[x])^2) ))
 
-    tpairn = matrix( c(xx1, xx2), length(xx1),2);
+    tpairn = matrix( c(xx1, xx2), nrow=length(xx1), ncol=2);
 
     if(error){
       tneq = which(xx1 != xx2)
+      teq = which(xx1 == xx2)
       indx = indx[tneq];
+      diag = matrix(c(tpairn[teq,1], cyy[teq]), ncol = 2)
       tpairn = tpairn[tneq,];
       cxxn = cyy[tneq];     
     }else{
@@ -70,8 +75,10 @@ GetRawCov <- function(y,t,out1new, mu, regular, error){
     tpairn =  (matrix( c(c(xxyy$X), c(xxyy$Y)), ncol = 2))
 
     if(error){
-      tneq = which(tpairn[1,] != tpairn[2,])
-      tpairn = tpairn[,tneq];
+      tneq = which(tpairn[,1] != tpairn[,2])
+      teq = which(tpairn[,1] == tpairn[,2])
+      diag = matrix(c(tpairn[teq,1], cyy[teq]), ncol = 2)
+      tpairn = tpairn[tneq,];
       cxxn = cyy[tneq];     
     }else{
       cxxn = cyy;     
@@ -84,7 +91,8 @@ GetRawCov <- function(y,t,out1new, mu, regular, error){
     stop("Invalid 'regular' argument type")
   } 
     
-  result <- list( 'tpairn'=tpairn, 'cxxn'=cxxn, 'indx'=indx, 'win'=win,'cyy'=cyy,'count'=count, 'error'=error, 'regular'=regular);  
+  result <- list( 'tpairn' = tpairn, 'cxxn' = cxxn, 'indx' = indx, 'win' = win,
+   'cyy' = cyy, 'diag' = diag, 'count' = count, 'error' = error, 'regular' = regular);  
  
   class(result) <- "RawCov"
   return(result)
