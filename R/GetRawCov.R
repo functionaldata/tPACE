@@ -67,7 +67,7 @@ GetRawCov <- function(y,t,out1new, mu, regular, error){
     cxxn = cyy;
     xxyy = meshgrid(t1);
 
-    tpairn =  t(matrix( c(c(xxyy$X), c(xxyy$Y)), ncol = 2))
+    tpairn =  (matrix( c(c(xxyy$X), c(xxyy$Y)), ncol = 2))
 
     if(error){
       tneq = which(tpairn[1,] != tpairn[2,])
