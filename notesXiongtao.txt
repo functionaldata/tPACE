@@ -25,5 +25,10 @@ should be changed to
     bOpt = max(bwCandidates[bInd]);
 
 Why don't we remove win in getRawCov.m?
-getCount
+Why grid1 in SetOptions?
 -----------
+
+Hans said:
+Add a crosssectional option.
+Binning
+Check boundary effects

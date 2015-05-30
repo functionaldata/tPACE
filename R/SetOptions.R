@@ -32,6 +32,7 @@
 #' @examples 
 #' 1 + 3
 
+<<<<<<< HEAD
 SetOptions = function(y, t, p){ 
 
 
@@ -50,6 +51,15 @@ SetOptions = function(y, t, p){
   xmu = p$xmu;                  method_mu = p$method_mu;
   out_percent = p$out_percent;  xcov = p$xcov
                                 use_binned_data = p$use_binned_data;
+=======
+SetOptions = function(bwmu = 0, bwmu_gcv = NULL, bwxcov = 0, bwxcov_gcv = NULL, 
+    ntest1 = 30, ngrid1 = 30, selection_k = "BIC", FVE_threshold = 0.95,
+    maxk = 20, regular = NULL, error = TRUE, ngrid = 51,
+    method = "CE", shrink = FALSE, newdata = NULL, kernel = "gauss", 
+    numBins = NULL, yname = NULL, screePlot = FALSE, designPlot = FALSE, 
+    corrPlot = FALSE,     rho = "cv", verbose = TRUE, xmu = NULL, xcov = NULL, 
+    method_mu = 'PACE', out_percent = 0, use_binned_data = NULL){
+>>>>>>> 53bab3236bede4bf9c5d2616f80312accb4dacdb
   
   if(is.null(bwmu)){ # bandwidth choice for mean function is using CV or GCV
     bwmu = 0;   
@@ -58,7 +68,7 @@ SetOptions = function(y, t, p){
     bwmu_gcv = 'GMeanAndGCV';  
   }
   if(is.null(bwxcov)){ # bandwidth choice for covariance function is CV or GCV
-    bwxcov = c(0,0); 
+    bwxcov = 0; 
   }
   if(is.null(bwxcov_gcv)){  # bandwidth choice for covariance function is GCV if bwxcov = c(0,0)
     bwxcov_gcv = 'GMeanAndGCV';

@@ -7,8 +7,6 @@
 #' @examples
 #' 1 + 3
 
-
-
 FPCA = function(y, t, p = NULL){
   
   # FPCA checks the data validity for the PCA function. 
@@ -49,7 +47,7 @@ FPCA = function(y, t, p = NULL){
   # Get the smoothed covariance surface
   # mu: the smoothed mean curve evaluated at times 'out1'
   mu = smcObj$mu
-  scsObj = GetSmoothedCovarSurface(y, t, out1, mu, p) 
+  scsObj = GetSmoothedCovarSurface(y, t, mu, out1, out21, p) 
 
 
   # Get the results for the eigen-analysis
