@@ -30,7 +30,7 @@ CheckOptions = function(t,p,n){
     return(TRUE);   
   }
   if(  !( (length(p$bwmu)==1) &&  is.numeric(p$bwmu) && (0<=p$bwmu) ) ){ 
-    # bandwidth choice for mean function is using CV or GCV
+    # bandwidth Bhoice for mean function is using CV or GCV
     cat("Error: FPCA is aborted because the argument: bwmu  is invalid!\n"); 
     return(TRUE);   
   }
@@ -39,7 +39,7 @@ CheckOptions = function(t,p,n){
     cat("Error: FPCA is aborted because the argument: bwmu_gcv is invalid!\n"); 
     return(TRUE);   
   }
-  if(!(length(p$bwxcov)==2) &&  is.numeric(p$bwxcov) && (all(p$bwxcov>=0))){ 
+  if(!(length(p$bwxcov)==1) &&  is.numeric(p$bwxcov) && (all(p$bwxcov>=0))){ 
     # bandwidth choice for covariance function is CV or GCV
     cat("Error: FPCA is aborted because the argument: bwxcov is invalid!\n"); 
     return(TRUE);   

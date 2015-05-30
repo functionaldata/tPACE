@@ -24,14 +24,15 @@ GetSmoothedMeanCurve <- function (y, t, out1, out21, p){
     } else {
       if( any(bwmu_gcv == c('GCV','GMeanAndGCV') )){
         # get the bandwidth using GCV
-        bw_mu =  gcvlwls1d1(yy = y, tt = t, kernel = kernel, npoly = npoly, nder = nder, regular = p$regular )    
-        if ( isempty(bw_mu$bOpt)){ 
+        bw_mu =  unlist(gcvlwls1d1(yy = y, tt = t, kernel = kernel, npoly = npoly, nder = nder, regular = p$regular) )[1]    
+        if ( isempty(bw_mu)){ 
           stop('The data is too sparse to estimate a mean function. Get more data!\n')
          }
-         # get the geometric mean between the minimum bandwidth and GCV bandwidth to estimnate the mean function (below)
+         bw_mu = adjustBW1(kernel=kernel,bopt=bw_mu,npoly=npoly,regular=p$regular,nder=nder)
+         # get the geometric mean between the minimum bandwidth and GCV bandwidth to estimnate the mean function (below)         
          if ( bwmu_gcv == 'GMeanAndGCV') {
            minbw = minb( unlist(t),2)
-           bw_mu = sqrt(minbw*bw_mu$bOpt);
+           bw_mu = sqrt(minbw*bw_mu);
         } 
       } else {
         # get the bandwidth using CV to estimnate the mean function (below)

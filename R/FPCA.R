@@ -7,7 +7,7 @@
 #' @examples
 #' 1 + 3
 
-FPCA = function(y, t, p = NULL){
+FPCA = function(y, t, p = CreateOptions()){
   
   # FPCA checks the data validity for the PCA function. 
   if( CheckData(y,t) ){
@@ -15,8 +15,10 @@ FPCA = function(y, t, p = NULL){
     return(FALSE);
   }  
  
+
   # FPCA sets the options structure that are still NULL
   p = SetOptions(y, t, p);
+
   
   # FPCA checks the options validity for the PCA function. 
   numOfCurves = length(y);
