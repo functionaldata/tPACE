@@ -9,18 +9,20 @@
 
 
 
-FPCA = function(y, t, p = SetOptions()){
+FPCA = function(y, t, p = NULL){
   
   # FPCA checks the data validity for the PCA function. 
   if( CheckData(y,t) ){
     cat('FPCA has stopped.')
     return(FALSE);
   }  
-
+ 
+  # FPCA sets the options structure that are still NULL
+  p = SetOptions(y, t, p);
   
   # FPCA checks the options validity for the PCA function. 
   numOfCurves = length(y);
-  if( CheckOptions(p,numOfCurves) ){
+  if( CheckOptions(t, p,numOfCurves) ){
     cat('FPCA has stopped.')
     return(FALSE);
   }
@@ -29,10 +31,9 @@ FPCA = function(y, t, p = SetOptions()){
   # Bin the data (potentially):
   if ( p$use_binned_data != 'OFF'){ 
       BinnedDataset <- GetBinnedDataset(y,t,p)
-      y = BinnedDataset$y;
-      t = BinnedDataset$t; 
+      y = BinnedDataset$newy;
+      t = BinnedDataset$newt; 
   }
-
 
   # Generate basic grids:
   # out1:  the unique sorted pooled time points of the sample and the new data
