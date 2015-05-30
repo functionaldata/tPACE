@@ -1,4 +1,4 @@
-#' Check if the options structure is valid
+#' Check if the options structure is valid and set the ones that are NULL
 #' 
 #' @param n is a total number of sample curves
 #' @param p is an initialized option list
@@ -6,7 +6,7 @@
 #' @examples 
 #' 1 + 3
 
-CheckOptions = function(p,n){
+CheckOptions = function(t,p,n){
   
   bwmu = p$bwmu;                bwmu_gcv = p$bwmu_gcv; 
   bwxcov = p$bwxcov;            bwxcov_gcv = p$bwxcov_gcv;
@@ -23,14 +23,13 @@ CheckOptions = function(p,n){
   xmu = p$xmu;                  method_mu = p$method_mu;
   out_percent = p$out_percent;  xcov = p$xcov
                                 use_binned_data = p$use_binned_data;
-  
-  
+    
   if( !(  any(p$use_binned_data == c('FORCE','AUTO','OFF')) )){ 
     # Force, turn off or automatically decide about the use of bin data
     cat("Error: FPCA is aborted because the argument: use_binned_data is invalid!\n"); 
     return(TRUE);   
   }
-  if(  !( (length(p$bwmu)==1) &  is.numeric(p$bwmu) & (0<=p$bwmu) ) ){ 
+  if(  !( (length(p$bwmu)==1) &&  is.numeric(p$bwmu) && (0<=p$bwmu) ) ){ 
     # bandwidth choice for mean function is using CV or GCV
     cat("Error: FPCA is aborted because the argument: bwmu  is invalid!\n"); 
     return(TRUE);   
@@ -40,7 +39,7 @@ CheckOptions = function(p,n){
     cat("Error: FPCA is aborted because the argument: bwmu_gcv is invalid!\n"); 
     return(TRUE);   
   }
-  if(!(length(p$bwxcov)==2) &  is.numeric(p$bwxcov) & (all(p$bwxcov>=0))){ 
+  if(!(length(p$bwxcov)==2) &&  is.numeric(p$bwxcov) && (all(p$bwxcov>=0))){ 
     # bandwidth choice for covariance function is CV or GCV
     cat("Error: FPCA is aborted because the argument: bwxcov is invalid!\n"); 
     return(TRUE);   
@@ -50,29 +49,31 @@ CheckOptions = function(p,n){
     cat("Error: FPCA is aborted because the argument: bwxcov_gcv is invalid!\n");  
     return(TRUE);   
   }
-  if( !( (length(p$ntest1)==1) &  is.numeric(p$ntest1) & (1<=p$ntest1) & (p$ntest1<n) )){ 
+  if( !( (length(p$ntest1)==1) &&  is.numeric(p$ntest1) && (1<=p$ntest1) && (p$ntest1<n) )){ 
     # number of curves used for CV when choosing bandwidth  
     cat("Error: FPCA is aborted because the argument: ntest1 is invalid!\n");  
     return(TRUE);   
   }
-  if( !( (length(p$ngrid1)==1) &  is.numeric(p$ngrid1) & (1<=p$ngrid1) & (p$ngrid1<90) ) ){ 
+  if( !( (length(p$ngrid1)==1) &&  is.numeric(p$ngrid1) && (1<=p$ngrid1) && (p$ngrid1<90) ) ){ 
     # number of support points for the covariance surface 
     cat("Error: FPCA is aborted because the argument: ngrid1 is invalid!\n");  
     return(TRUE);   
   }
   if( !(any(p$selection_k == c('FVE','AIC','BIC')))){
-    if ( !( is.numeric(p$selection_k) &  (length(p$selection_k)==1) & (1>=p$selection_k) & (p$selection_k<n) )){          
+    if ( !( is.numeric(p$selection_k) &&  (length(p$selection_k)==1) && (1>=p$selection_k) && (p$selection_k<n) )){          
       # the method of choosing the number of principal components K
       cat("Error: FPCA is aborted because the argument: selection_k is invalid!\n");  
       return(TRUE);   
     }
   }
-  if( !( (length(p$FVE_threshold)==1) &  is.numeric(p$FVE_threshold) & (0<=p$FVE_threshold) & (p$FVE_threshold<=1) )){  
-    # the Fraction-of-Variance-Explained
-    cat("Error: FPCA is aborted because the argument: FVE_threshold is invalid!\n"); 
-    return(TRUE);    
+  if(  ( (length(p$FVE_threshold)==1) &&  is.numeric(p$FVE_threshold) ) ){
+    if ( (0<=p$FVE_threshold) && (p$FVE_threshold<=1) ){  
+      # the Fraction-of-Variance-Explained
+      cat("Error: FPCA is aborted because the argument: FVE_threshold is invalid!\n"); 
+      return(TRUE);   
+    } 
   }
-  if( !( (length(p$maxk)==1) &  is.numeric(p$maxk) & (1<=p$maxk) & (p$maxk<=n) )){  
+  if( !( (length(p$maxk)==1) &&  is.numeric(p$maxk) && (1<=p$maxk) && (p$maxk<=n) )){  
     # maximum number of principal components to consider
     cat("Error: FPCA is aborted because the argument: maxk is invalid!\n");   
     return(TRUE);   
@@ -82,12 +83,16 @@ CheckOptions = function(p,n){
     cat("Error: FPCA is aborted because the argument: regular is invalid!\n");     
     return(TRUE);     
   }   
+  if( ( is.null(p$regular)  )){ 
+ cat("Erroblaasdlf")
+    p$regular = IsRegular(t)
+  }   
   if(!is.logical(p$error)){ 
     # error assumption with measurement error 
     cat("Error: FPCA is aborted because the error option is invalid!\n");   
     return(TRUE);   
   }
-  if( !( (length(p$ngrid)==1) &  is.numeric(p$ngrid) & (1<=p$ngrid) & (p$ngrid>p$maxk) ) ){
+  if( !( (length(p$ngrid)==1) &&  is.numeric(p$ngrid) && (1<=p$ngrid) && (p$ngrid>p$maxk) ) ){
     # number of support points in each direction of covariance surface  
     cat("Error: FPCA is aborted because the argument: ngrid is invalid!\n");    
     return(TRUE);     
@@ -102,7 +107,7 @@ CheckOptions = function(p,n){
     cat("Error: FPCA is aborted because the argument: shrink is invalid!\n");   
     return(TRUE);   
   }
-  if (! (  is.null(p$newdata) || (is.numeric(p$newdata) & is.vector(p$newdata)))){
+  if (! (  is.null(p$newdata) || (is.numeric(p$newdata) && is.vector(p$newdata)))){
     # new time vector to evaluate the final estimates
     cat("Error: FPCA is aborted because the argument: newdata is invalid!\n");       
     return(TRUE);     
@@ -153,7 +158,7 @@ CheckOptions = function(p,n){
     cat("Error: FPCA is aborted because the argument: verbose is invalid!\n");    
     return(TRUE);    
   }
-  if (! (  is.null(p$xmu) || (is.numeric(p$xmu) & is.vector(p$xmu)))){      
+  if (! (  is.null(p$xmu) || (is.numeric(p$xmu) && is.vector(p$xmu)))){      
     # display diagnostic messages
     cat("Error: FPCA is aborted because the argument: xmu is invalid!\n");     
     return(TRUE);   
@@ -163,7 +168,7 @@ CheckOptions = function(p,n){
     cat("Error: FPCA is aborted because the argument: method_mu is invalid!\n");     
     return(TRUE);   
   }
-  if( !( (length(p$out_percent)==1) &  is.numeric(p$out_percent) & (0<=p$out_percent) & (p$out_percent<=1) )){ 
+  if( !( (length(p$out_percent)==1) &&  is.numeric(p$out_percent) && (0<=p$out_percent) && (p$out_percent<=1) )){ 
     # display diagnostic messages
     cat("Error: FPCA is aborted because the argument: out_percent is invalid!\n");    
     return(TRUE);    

@@ -32,6 +32,26 @@
 #' @examples 
 #' 1 + 3
 
+<<<<<<< HEAD
+SetOptions = function(y, t, p){ 
+
+
+  bwmu = p$bwmu;                bwmu_gcv = p$bwmu_gcv; 
+  bwxcov = p$bwxcov;            bwxcov_gcv = p$bwxcov_gcv;
+  ntest1 = p$ntest1;            ngrid1 = p$ngrid1; 
+  selection_k = p$selection_k;  FVE_threshold = p$FVE_threshold;
+  maxk = p$maxk;                
+  regular = p$regular;          error = p$error; 
+  ngrid = p$ngrid;              method = p$method; 
+  shrink = p$shrink;            newdata = p$newdata; 
+  kernel = p$kernel;            numBins = p$numBins; 
+  yname = p$yname;              screePlot = p$screePlot; 
+  designPlot = p$designPlot;    rho = p$rho;
+  verbose = p$verbose;          corrPlot = p$corrPlot;
+  xmu = p$xmu;                  method_mu = p$method_mu;
+  out_percent = p$out_percent;  xcov = p$xcov
+                                use_binned_data = p$use_binned_data;
+=======
 SetOptions = function(bwmu = 0, bwmu_gcv = NULL, bwxcov = 0, bwxcov_gcv = NULL, 
     ntest1 = 30, ngrid1 = 30, selection_k = "BIC", FVE_threshold = 0.95,
     maxk = 20, regular = NULL, error = TRUE, ngrid = 51,
@@ -39,6 +59,7 @@ SetOptions = function(bwmu = 0, bwmu_gcv = NULL, bwxcov = 0, bwxcov_gcv = NULL,
     numBins = NULL, yname = NULL, screePlot = FALSE, designPlot = FALSE, 
     corrPlot = FALSE,     rho = "cv", verbose = TRUE, xmu = NULL, xcov = NULL, 
     method_mu = 'PACE', out_percent = 0, use_binned_data = NULL){
+>>>>>>> 53bab3236bede4bf9c5d2616f80312accb4dacdb
   
   if(is.null(bwmu)){ # bandwidth choice for mean function is using CV or GCV
     bwmu = 0;   
@@ -53,22 +74,22 @@ SetOptions = function(bwmu = 0, bwmu_gcv = NULL, bwxcov = 0, bwxcov_gcv = NULL,
     bwxcov_gcv = 'GMeanAndGCV';
   }
   if(is.null(ntest1)){ # number of curves used for CV when choosing bandwidth 
-    ntest1 = 30;
+    ntest1 = min(30, length(y)-1);
   }
   if(is.null(ngrid1)){ # number of support points for the covariance surface 
     ngrid1 = 30;
   }
   if(is.null(selection_k)){ # the method of choosing the number of principal components K
-    selection_k = "BIC";
+    selection_k = "AIC";
   }
   if(selection_k == "FVE" && is.null(FVE_threshold)){  # the Fraction-of-Variance-Explained
     FVE_threshold = 0.95;
   }
   if(is.null(maxk)){ # maximum number of principal components to consider
-    maxk = 20;   
+    maxk = min(20, length(y)-1);   
   }
   if(is.null(regular)){ #do we have regular or sparse functional data
-    regular = NULL;    
+    regular = IsRegular(t);    
   }
   if(is.null(error)){ # error assumption with measurement error
     error = TRUE;    
