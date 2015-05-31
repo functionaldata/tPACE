@@ -34,23 +34,22 @@
 
 SetOptions = function(y, t, p){ 
 
-  bwmu = p$bwmu;                bwmu_gcv = p$bwmu_gcv; 
-  bwxcov = p$bwxcov;            bwxcov_gcv = p$bwxcov_gcv;
-  ntest1 = p$ntest1;            ngrid1 = p$ngrid1; 
-  selection_k = p$selection_k;  FVE_threshold = p$FVE_threshold;
-  maxk = p$maxk;                
-  regular = p$regular;          error = p$error; 
-  ngrid = p$ngrid;              method = p$method; 
-  shrink = p$shrink;            newdata = p$newdata; 
-  kernel = p$kernel;            numBins = p$numBins; 
-  yname = p$yname;              screePlot = p$screePlot; 
-  designPlot = p$designPlot;    rho = p$rho;
-  verbose = p$verbose;          corrPlot = p$corrPlot;
-  xmu = p$xmu;                  method_mu = p$method_mu;
-  out_percent = p$out_percent;  xcov = p$xcov
-                                use_binned_data = p$use_binned_data;
+  bwmu =p[['bwmu']];                bwmu_gcv =p[['bwmu_gcv']]; 
+  bwxcov =p[['bwxcov']];            bwxcov_gcv =p[['bwxcov_gcv']];
+  ntest1 =p[['ntest1']];            ngrid1 =p[['ngrid1']]; 
+  selection_k =p[['selection_k']];  FVE_threshold =p[['FVE_threshold']];
+  maxk =p[['maxk']];                
+  regular =p[['regular']];          error =p[['error']];
+  ngrid =p[['ngrid']];              method =p[['method']];
+  shrink =p[['shrink']];            newdata =p[['newdata']] ;
+  kernel =p[['kernel']];            numBins =p[['numBins']];
+  yname =p[['yname']];              screePlot =p[['screePlot']];
+  designPlot =p[['designPlot']];    rho =p[['rho']];
+  verbose =p[['verbose']];          corrPlot =p[['corrPlot']];
+  xmu =p[['xmu']];                  method_mu =p[['method_mu']];
+  out_percent =p[['out_percent']];  xcov =p[['xcov']];
+                                    use_binned_data =p[['use_binned_data']];
 
-  
   if(is.null(bwmu)){ # bandwidth choice for mean function is using CV or GCV
     bwmu = 0;   
   }
@@ -155,10 +154,10 @@ SetOptions = function(y, t, p){
   if(is.null(out_percent)){ # number in [0,1] indicating if we leave out out_percent data in the boundary
     out_percent <- 0
   }  
-  if(error == FALSE && (selection_k == "AIC" || selection_k == "BIC")){ # Check suitability of information criterion
-    cat('When assume no measurement error, cannot use "AIC" or "BIC". Reset to "BIC" now!\n')
-    selection_k = "BIC" 
-  }
+  # if(error == FALSE && (selection_k == "AIC" || selection_k == "BIC")){ # Check suitability of information criterion
+  #  cat('When assume no measurement error, cannot use "AIC" or "BIC". Reset to "BIC" now!\n')
+  #  selection_k = "BIC" 
+  #}
   kernNames = c("rect", "gauss", "epan", "gausvar", "quar");
   if(!(kernel %in% kernNames)){ # Check suitability of kernel
     cat(paste('kernel', kernel, 'is unrecognizable! Reset to Epanechnikov kernel now!\n')); 

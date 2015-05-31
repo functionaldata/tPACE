@@ -17,11 +17,11 @@ CheckData = function(y,tt){
     return(TRUE);
   }
   if(any(is.na(unlist(y)))){
-    cat('Error: y cannont contain NA/NaN entries\n')
+    cat('Error: y cannot contain NA/NaN entries\n')
     return(TRUE);
   }
   if(any(is.na(unlist(tt)))){
-    cat('Error: tt cannont contain NA/NaN entries\n')
+    cat('Error: tt cannot contain NA/NaN entries\n')
     return(TRUE);
   } 
   ni_y = unlist(lapply(y,function(x) sum(!is.na(x))))

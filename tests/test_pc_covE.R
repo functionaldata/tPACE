@@ -1,6 +1,3 @@
-devtools::load_all()
-library(testthat)
-
 p0 <- CreateOptions(regular='Sparse', error=TRUE, kernel='epan')
 p1 <- CreateOptions(regular='Dense', error=TRUE, kernel='epan')
 
