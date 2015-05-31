@@ -1,8 +1,8 @@
 GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, p, useBins=FALSE) {
 
   # TODO: pass in only the options needed, rather than p itself.
-  regular = p$regular
-  error = p$error
+  regular <- p$regular
+  error <- p$error
   kern <- p$kernel
   bwxcov <- p$bwxcov
   bwxcov_gcv <- p$bwxcov_gcv
@@ -17,13 +17,13 @@ GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, p, useBins=FALSE
   
   if (bwxcov == 0) { # bandwidth selection
     if (bwxcov_gcv %in% c('GCV', 'GMeanAndGCV')) { # GCV
-      gcvObj <- gcvlwls2d(t, kern=kern, rcov=rcov, useBins=useBins, verbose=p$verbose)
+      gcvObj <- gcvlwls2d(obsGrid, kern=kern, rcov=rcov, useBins=useBins, verbose=p$verbose)
       bwCov <- gcvObj$h
       if (bwxcov_gcv == 'GMeanAndGCV') {
         bwCov <- sqrt(bwCov * gcvObj$minBW)
       }  
     } else if (bwxcov_gcv == 'CV') { # CV 10 fold
-      gcvObj <- gcvlwls2d(t, kern=kern, rcov=rcov, useBins=useBins, verbose=p$verbose, CV='10fold')
+      gcvObj <- gcvlwls2d(obsGrid, kern=kern, rcov=rcov, useBins=useBins, verbose=p$verbose, CV='10fold')
       bwCov <- gcvObj$h
     }
   } else if (bwxcov != 0) {

@@ -1,9 +1,9 @@
-gcvlwls2d <- function(tt, ngrid=NULL, regular=rcov$regular, error=rcov$error, kern, rcov, h0=NULL, useBins=FALSE, verbose=TRUE, CV=FALSE) {
+gcvlwls2d <- function(obsGrid, ngrid=NULL, regular=rcov$regular, error=rcov$error, kern, rcov, h0=NULL, useBins=FALSE, verbose=TRUE, CV=FALSE) {
 # TODO: Consider rewrite the function into a more general form. The current implementation is too specific and works only for smoothing raw covariance.
 # TODO: implement useBins 
 
 # Returns: a list of length 2, containing the optimal bandwidth and the gcv score.
-# tt: input time points. 
+# obsGrid: observation points. 
 # ngrid: I think this should not be used in the gcv function.
 # CV: whether to use CV rather than GCV. Supported values are '[k]fold', where '[k]' is a integer.
 
@@ -12,10 +12,9 @@ gcvlwls2d <- function(tt, ngrid=NULL, regular=rcov$regular, error=rcov$error, ke
 # verbose is unused for now
 # this is incompatible with PACE because the GCV is calculated in a different way.
   
-  t <- unlist(tt)
-  r <- diff(range(t)) * sqrt(2) # sqrt(2) because the window is circular.
+  r <- diff(range(obsGrid)) * sqrt(2) # sqrt(2) because the window is circular.
 
-  minBW <- getMinb(rcov, regular=rcov$regular, out1=sort(unique(unlist(tt))))
+  minBW <- getMinb(rcov, regular=rcov$regular, out1=obsGrid)
 
   if (missing(h0)) {
     h0 <- minBW
