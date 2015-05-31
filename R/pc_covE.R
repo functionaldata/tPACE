@@ -20,10 +20,6 @@
 # xvar:		smoothed cov along diagonal without measurement error
 # yvar: 	smoothed cov along diagonal with measurement error
 
-<<<<<<< HEAD
-=======
-# library(caTools)
->>>>>>> origin/master
 pc_covE = function(out1, out21, bw_xcov, cut = 1, kernel = 'epan', rcov){
 	a0 = min(out1)
 	b0 = max(out1)
