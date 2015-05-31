@@ -155,10 +155,10 @@ SetOptions = function(y, t, p){
   if(is.null(out_percent)){ # number in [0,1] indicating if we leave out out_percent data in the boundary
     out_percent <- 0
   }  
-  if(error == FALSE && (selection_k == "AIC" || selection_k == "BIC")){ # Check suitability of information criterion
-    cat('When assume no measurement error, cannot use "AIC" or "BIC". Reset to "BIC" now!\n')
-    selection_k = "BIC" 
-  }
+  # if(error == FALSE && (selection_k == "AIC" || selection_k == "BIC")){ # Check suitability of information criterion
+  #  cat('When assume no measurement error, cannot use "AIC" or "BIC". Reset to "BIC" now!\n')
+  #  selection_k = "BIC" 
+  #}
   kernNames = c("rect", "gauss", "epan", "gausvar", "quar");
   if(!(kernel %in% kernNames)){ # Check suitability of kernel
     cat(paste('kernel', kernel, 'is unrecognizable! Reset to Epanechnikov kernel now!\n')); 

@@ -63,7 +63,7 @@ test_that('Can return fit object', {
 
 
 test_that('weight works', {
-    win <- rep(1, length(x))
+    win <- matrix(1, nrow(datin))
     win[1:3] <- 2
     expect_equal(lwls1d(0.3, 'epan', xin=x, yin=y, win=win, xout=c(0, 0.15, 0.35, 0.55, 3)), 
                  c(-0.075034417378891,  0.123584297605571,   0.353323309535711, 0.573996912896636,   0.232449699086771))

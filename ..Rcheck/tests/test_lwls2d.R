@@ -1,4 +1,6 @@
+library(testthat)
 library(locfit)
+source('../lwls2d.R')
 data(ethanol)
 
 fitRef <- locfit(NOx~lp(C, E, h=0.5, deg=1, scale=TRUE), data=ethanol, kern='epan')
