@@ -22,8 +22,6 @@
 # Note that FVE and lambda might be smaller if some of the eigenvalues are negative
 # or complex numbers.
 # This function uses rARPACK library for eigen-decomposition
-library(rARPACK)
-library(gtools) # for error and warning message
 
 no_FVE <- function(xcov, FVE_threshold=0.85){
   numGrids = nrow(xcov)

@@ -11,6 +11,7 @@ GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, p, useBins=FALSE
   rcov <- GetRawCov(y, t, obsGrid, mu, regular, error)
 
   # TODO: bin rcov
+  # if (
   
   if (bwxcov == 0) { # bandwidth selection
     if (bwxcov_gcv %in% c('GCV', 'GMeanAndGCV')) {
@@ -21,7 +22,7 @@ GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, p, useBins=FALSE
       }  
     } else if (bwxcov_gcv == 'CV') { # CV 10 fold
       gcvObj <- gcvlwls2d(t, kern=kern, rcov=rcov, useBins=useBins, verbose=p$verbose, CV='10fold')
-      bwCov <- gcvObj$opth
+      bwCov <- gcvObj$h
     }
   } else if (bwxcov != 0) {
     bwCov <- bwxcov

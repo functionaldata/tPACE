@@ -16,11 +16,14 @@
 ######
 # Output: a list/struct of
 ######
-# sigma:	estimated variance of measurement error
+# sigma2:	estimated variance of measurement error
 # xvar:		smoothed cov along diagonal without measurement error
 # yvar: 	smoothed cov along diagonal with measurement error
 
-library(caTools)
+<<<<<<< HEAD
+=======
+# library(caTools)
+>>>>>>> origin/master
 pc_covE = function(out1, out21, bw_xcov, cut = 1, kernel = 'epan', rcov){
 	a0 = min(out1)
 	b0 = max(out1)
@@ -63,20 +66,20 @@ pc_covE = function(out1, out21, bw_xcov, cut = 1, kernel = 'epan', rcov){
 	#eqind1 = which(expgrid[,1] == expgrid[,2])
 
 	if(cut == 0){
-		sigma = trapz(out21, yvar - xvar) / lint
+		sigma2 = trapz(out21, yvar - xvar) / lint
 	} else if(cut == 1){
 		a = a0 + lint * 0.25
 		b = a0 + lint * 0.75
 		ind1 = intersect(which(out21 > a), which(out21 < b))
 		yvar1 = yvar[ind1]
 		xvar1 = xvar[ind1]
-		sigma = trapz(out21[ind1], yvar1 - xvar1) * 2 / lint
+		sigma2 = trapz(out21[ind1], yvar1 - xvar1) * 2 / lint
 	}
 
-	if(sigma < 0){
-		warning("Warning: estimated sigma is negative, reset to zero now!")
-		sigma = 0
+	if(sigma2 < 0){
+		warning("Warning: estimated sigma2 is negative, reset to zero now!")
+		sigma2 = 0
 	}
 
-	return(list('sigma' = sigma, 'xvar' = xvar, 'yvar' = yvar))
+	return(list('sigma2' = sigma2, 'xvar' = xvar, 'yvar' = yvar))
 }

@@ -1,6 +1,6 @@
 gcvlwls2d <- function(tt, ngrid=NULL, regular=rcov$regular, error=rcov$error, kern, rcov, h0=NULL, useBins=FALSE, verbose=TRUE, CV=FALSE) {
 # TODO: Consider rewrite the function into a more general form. The current implementation is too specific and works only for smoothing raw covariance.
-# TODO: implement useBin 
+# TODO: implement useBins 
 
 # Returns: a list of length 2, containing the optimal bandwidth and the gcv score.
 # tt: input time points. 
@@ -103,7 +103,7 @@ gcvlwls2d <- function(tt, ngrid=NULL, regular=rcov$regular, error=rcov$error, ke
   }
 
   ret <- list(h=opth, gcv=optgcv, minBW=minBW)
-  if (CV == TRUE)
+  if (CV != FALSE)
     names(ret)[2] <- 'cv'
   
   return(ret)
