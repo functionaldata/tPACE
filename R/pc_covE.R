@@ -31,8 +31,7 @@ pc_covE = function(out1, out21, bw_xcov, cut = 1, kernel = 'epan', rcov){
 
   # get smoothed covariance surface for x(t) using lwls2d
 
-  tneq = which(tpairn[,1] != tpairn[,2])
-  cyy = rcov$cyy
+  cxxn = rcov$cxxn # off-diagonal terms
 
   if(length(rcov$count) != 0){
     # for regular="RegularwithMV" case, the raw covariance
@@ -40,11 +39,10 @@ pc_covE = function(out1, out21, bw_xcov, cut = 1, kernel = 'epan', rcov){
     # individual sums for each element in the matrix.
     # for regular="Dense" case, the divider is n for
     # each subject.
-    cyy = cyy / rcov.count
+    cxxn = cxxn / rcov.count
   }
 
-  cxx = cyy[tneq] # off-diagnal terms
-  win1 = rep(1, length(cxx))
+  win1 = rep(1, length(cxxn))
 
   # get smoothed variance function for y(t) (observed) using lwls1d
   win2 = rep(1, nrow(rcovdiag))
@@ -56,7 +54,7 @@ pc_covE = function(out1, out21, bw_xcov, cut = 1, kernel = 'epan', rcov){
   # Estimate variance of measurement error term
   # use quadratic form on diagonal to estimate Var(x(t))
   xvar = rotateLwls2d(bw = bw_xcov[1], kern = kernel, 
-    xin = tpairn[tneq,], yin = cxx, win = win1, xout = cbind(out21, out22))
+    xin = tpairn, yin = cxxn, win = win1, xout = cbind(out21, out22))
 
   #expgrid = expand.grid(xout1, xout2)
   #eqind1 = which(expgrid[,1] == expgrid[,2])
