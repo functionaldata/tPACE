@@ -1,4 +1,4 @@
-gcvlwls2d <- function(obsGrid, ngrid=NULL, regular=rcov$regular, error=rcov$error, kern, rcov, h0=NULL, useBins=FALSE, verbose=TRUE, CV=FALSE) {
+gcvlwls2d <- function(obsGrid, ngrid=NULL, regular=rcov$regular, error=rcov$error, kern, rcov, h0=NULL, verbose=TRUE, CV=FALSE) {
 # TODO: Consider rewrite the function into a more general form. The current implementation is too specific and works only for smoothing raw covariance.
 # TODO: implement useBins 
 
@@ -60,7 +60,10 @@ gcvlwls2d <- function(obsGrid, ngrid=NULL, regular=rcov$regular, error=rcov$erro
   
   while (!leave && iter < maxIter) {
     if (CV == FALSE) {
-      Scores <- sapply(bw, getGCVscores, kern=kern, xin=rcov$tpairn, yin=rcov$cxxn, win=as.numeric(rcov$win)) 
+      if (class(rcov) == 'BinnedRawCov')
+        Scores <- sapply(bw, getGCVscores, kern=kern, xin=rcov$tPairs, yin=rcov$meanVals, win=rcov$count)
+      else
+        Scores <- sapply(bw, getGCVscores, kern=kern, xin=rcov$tpairn, yin=rcov$cxxn, win=as.numeric(rcov$win)) 
     } else {
       Scores <- sapply(bw, getCVscores, partition=partition, kern=kern, xin=rcov$tpairn, yin=rcov$cxxn, win=as.numeric(rcov$win)) 
     }
@@ -112,9 +115,13 @@ gcvlwls2d <- function(obsGrid, ngrid=NULL, regular=rcov$regular, error=rcov$erro
 
 getGCVscores <- function(bw, ...) {
 # ...: passed on to lwls2d
-  
+  browser() 
   fit <- lwls2d(bw, ..., returnFit=TRUE)
-  return(gcv(fit, maxk=fit$frame$maxk)['gcv'])
+  
+  # get gcv with weight
+  if (# all weight are the same)
+  GCV <- gcv(fit, maxk=fit$frame$maxk)['gcv']
+  return()
 
 }
 
@@ -135,3 +142,4 @@ getCVscores <- function(bw, partition, xin, yin, ...) {
   
   return(sum(cvSubSum))
 }
+

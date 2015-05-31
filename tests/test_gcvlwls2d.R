@@ -1,8 +1,9 @@
+devtools::load_all()
 options(error=recover)
 library(testthat)
 
 # GetRawCov
-load('data/dataForGetRawCov.RData')
+load('../data/dataForGetRawCov.RData')
 rcov <- GetRawCov(y,t, sort(unlist(t)), mu,'Sparse',FALSE) #Matches ML output
 # rm(t, y)
 
@@ -44,24 +45,34 @@ plot(fit1)
 set.seed(1)
 pts <- seq(0, 1, by=0.05)
 samp3 <- wiener(200, pts, sparsify=2:7)
-rcov3 <- GetRawCov(samp3$yList, samp3$tList, pts, rep(0, length(pts)), 'Sparse', error=FALSE)
-system.time(h3 <- gcvlwls2d(samp3$tList, kern='epan', rcov=rcov3))
+rcov3 <- GetRawCov(samp3$yList, sort(unique(unlist(samp3$tList))), pts, rep(0, length(pts)), 'Sparse', error=FALSE)
+system.time(h3 <- gcvlwls2d(sort(unique(unlist(samp3$tList))), kern='epan', rcov=rcov3))
 fit3 <- lwls2d(h3$h, kern='epan', xin=rcov3$tpairn, yin=rcov3$cxxn, returnFit=TRUE)
 plot(fit3)
 
 # Error=TRUE
 samp4 <- samp3
 samp4$yList <- lapply(samp4$yList, function(x) x + rnorm(length(x)))
-rcov4 <- GetRawCov(samp3$yList, samp3$tList, pts, rep(0, length(pts)), 'Sparse', error=TRUE)
+rcov4 <- GetRawCov(samp3$yList, sort(unique(unlist(samp3$tList))), pts, rep(0, length(pts)), 'Sparse', error=TRUE)
 h4 <- gcvlwls2d(samp4$tList, kern='span', rcov=rcov4)
 fit4 <- lwls2d(h4$h, kern='epan', xin=rcov4$tpairn, yin=rcov4$cxxn, returnFit=TRUE)
 plot(fit4)
 
 # CV
 set.seed(3)
-system.time(h5 <- gcvlwls2d(samp3$tList, rcov=rcov3, kern='epan', CV='10fold'))
+system.time(h5 <- gcvlwls2d(sort(unique(unlist(samp3$tList))), rcov=rcov3, kern='epan', CV='10fold'))
 fit5 <- lwls2d(h5$h, kern='epan', xin=rcov3$tpairn, yin=rcov3$cxxn, returnFit=TRUE)
 plot(fit5)
 
 lcv(fit3)
 tmp <- caret::createFolds(rcov3$cxxn, k=10)
+
+# Binned rcov = rcov
+brcov3 <- BinRawCov(rcov3)
+h3 <- gcvlwls2d(sort(unique(unlist(samp3$tList))), kern='epan', rcov=rcov3)
+h3 <- gcvlwls2d(sort(unique(unlist(samp3$tList))), kern='epan', rcov=brcov3)
+trace(gcvlwls2d, browser, at=10)
+untrace(gcvlwls2d)
+trace(getGCVscores, quote(browser()))
+untrace(getGCVscores)
+debug(getGCVscores)
