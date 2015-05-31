@@ -44,8 +44,8 @@ plot(fit1)
 # use wiener process
 set.seed(1)
 pts <- seq(0, 1, by=0.05)
-samp3 <- wiener(200, pts, sparsify=2:7)
-rcov3 <- GetRawCov(samp3$yList, sort(unique(unlist(samp3$tList))), pts, rep(0, length(pts)), 'Sparse', error=FALSE)
+samp3 <- wiener(500, pts, sparsify=20)
+rcov3 <- GetRawCov(samp3$yList, samp3$tList, pts, rep(0, length(pts)), 'Sparse', error=FALSE)
 system.time(h3 <- gcvlwls2d(sort(unique(unlist(samp3$tList))), kern='epan', rcov=rcov3))
 fit3 <- lwls2d(h3$h, kern='epan', xin=rcov3$tpairn, yin=rcov3$cxxn, returnFit=TRUE)
 plot(fit3)
@@ -53,8 +53,8 @@ plot(fit3)
 # Error=TRUE
 samp4 <- samp3
 samp4$yList <- lapply(samp4$yList, function(x) x + rnorm(length(x)))
-rcov4 <- GetRawCov(samp3$yList, sort(unique(unlist(samp3$tList))), pts, rep(0, length(pts)), 'Sparse', error=TRUE)
-h4 <- gcvlwls2d(samp4$tList, kern='span', rcov=rcov4)
+rcov4 <- GetRawCov(samp3$yList, samp3$tList, pts, rep(0, length(pts)), 'Sparse', error=TRUE)
+h4 <- gcvlwls2d(sort(unique(unlist(samp4$tList))), kern='span', rcov=rcov4)
 fit4 <- lwls2d(h4$h, kern='epan', xin=rcov4$tpairn, yin=rcov4$cxxn, returnFit=TRUE)
 plot(fit4)
 
@@ -69,10 +69,8 @@ tmp <- caret::createFolds(rcov3$cxxn, k=10)
 
 # Binned rcov = rcov
 brcov3 <- BinRawCov(rcov3)
-h3 <- gcvlwls2d(sort(unique(unlist(samp3$tList))), kern='epan', rcov=rcov3)
-h3 <- gcvlwls2d(sort(unique(unlist(samp3$tList))), kern='epan', rcov=brcov3)
-trace(gcvlwls2d, browser, at=10)
-untrace(gcvlwls2d)
-trace(getGCVscores, quote(browser()))
-untrace(getGCVscores)
-debug(getGCVscores)
+system.time(h3 <- gcvlwls2d(sort(unique(unlist(samp3$tList))), kern='epan', rcov=rcov3))
+system.time(h3bin <- gcvlwls2d(sort(unique(unlist(samp3$tList))), kern='epan', rcov=brcov3))
+test_that('GCV on Binned rcov = rcov', {
+  expect_equal(h3, h3bin)
+})

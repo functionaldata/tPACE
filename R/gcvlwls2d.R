@@ -61,7 +61,7 @@ gcvlwls2d <- function(obsGrid, ngrid=NULL, regular=rcov$regular, error=rcov$erro
   while (!leave && iter < maxIter) {
     if (CV == FALSE) {
       if (class(rcov) == 'BinnedRawCov')
-        Scores <- sapply(bw, getGCVscores, kern=kern, xin=rcov$tPairs, yin=rcov$meanVals, win=rcov$count)
+        Scores <- sapply(bw, getGCVscores, kern=kern, xin=rcov$tPairs, yin=rcov$meanVals, win=rcov$count, RSS=rcov$RSS)
       else
         Scores <- sapply(bw, getGCVscores, kern=kern, xin=rcov$tpairn, yin=rcov$cxxn, win=as.numeric(rcov$win)) 
     } else {
@@ -113,15 +113,19 @@ gcvlwls2d <- function(obsGrid, ngrid=NULL, regular=rcov$regular, error=rcov$erro
 }
 
 
-getGCVscores <- function(bw, ...) {
+getGCVscores <- function(bw, xin, yin, win, RSS=NULL, ...) {
 # ...: passed on to lwls2d
-  browser() 
-  fit <- lwls2d(bw, ..., returnFit=TRUE)
+# RSS: for implementing GCV of binned rcov.
+  # browser() 
+  fit <- lwls2d(bw, xin=xin, yin=yin, win=win, ..., returnFit=TRUE)
   
   # get gcv with weight
-  if (# all weight are the same)
-  GCV <- gcv(fit, maxk=fit$frame$maxk)['gcv']
-  return()
+  if (all(abs(win - win[1]) < 1e-14)) # all weights are the same
+    GCV <- GetGCV(fit)
+  else {
+    GCV <- GetGCV(fit, RSS, win)
+  }
+  return(GCV)
 
 }
 
@@ -143,3 +147,14 @@ getCVscores <- function(bw, partition, xin, yin, ...) {
   return(sum(cvSubSum))
 }
 
+GetGCV <- function(fit, RSS=NULL, win=NULL) {
+  if (is.null(win)) {
+    n <- fit$mi["n"]
+    GCV <- -2 * n * fit$dp['lk'] / (n - fit$dp['df1'])^2
+  } else {
+    n <- sum(win)
+    GCV <- n * (-2 * fit$dp['lk'] + sum(RSS)) / (n - fit$dp['df1'])^2
+  }
+  
+  return(unname(GCV))
+}
