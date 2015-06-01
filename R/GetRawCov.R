@@ -58,7 +58,7 @@ GetRawCov <- function(y,t,out1new, mu, regular, error){
       cxxn = cyy;     
     }
 
-    win = ones(1, length(cxxn));
+    # win = ones(1, length(cxxn));
     # count = getCount(tpairn)...
 
   }else if(regular == 'Dense'){
@@ -84,14 +84,14 @@ GetRawCov <- function(y,t,out1new, mu, regular, error){
       cxxn = cyy;     
     }
 
-    win = ones(1, length(cxxn));
+   # win = ones(1, length(cxxn));
   }else if(regular == 'RegularWithMV'){
     stop("This is not implemented yet. Contact Pantelis!")
   }else {
     stop("Invalid 'regular' argument type")
   } 
     
-  result <- list( 'tpairn' = tpairn, 'cxxn' = cxxn, 'indx' = indx, 'win' = win,
+  result <- list( 'tpairn' = tpairn, 'cxxn' = cxxn, 'indx' = indx, # 'win' = win,
    'cyy' = cyy, 'diag' = diag, 'count' = count, 'error' = error, 'regular' = regular);  
  
   class(result) <- "RawCov"

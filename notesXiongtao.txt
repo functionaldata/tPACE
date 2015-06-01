@@ -17,14 +17,7 @@ We implement up to 1024 grid points, for example.
 
 rotateLwls2d: Use the correct (described) method in Yao 2005, rather than following the matlab/formula in Yao 2005.
 
-To Pantelis: ------
-    bScr = gcvScores[bInd]
-    bOpt = bwCandidates[bInd]; 
-should be changed to 
-    bScr = gcvScores[bInd][1]
-    bOpt = max(bwCandidates[bInd]);
-
-Why don't we remove win in getRawCov.m?
+ 
 Why grid1 in SetOptions?
 Regular case and RegularWM: use matrix, since we need to implement crosssectional.
 -----------
