@@ -26,6 +26,11 @@ should be changed to
 
 Why don't we remove win in getRawCov.m?
 Why grid1 in SetOptions?
+Regular case and RegularWM: use matrix, since we need to implement crosssectional.
+-----------
+To Hao:
+Implement bin count for pc_covE
+
 -----------
 
 Hans said:
