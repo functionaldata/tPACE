@@ -1,8 +1,9 @@
 # In stead of the getMinb.m functionality we can garantee minimal number of neighboring points in here.
+# TODO: distMat is memory inefficient.
 getMinb <- function(rcov, out1, regular=rcov$regular, npoly=1, minUniqPts=3, minPts=6) {
   # browser()
   if (regular == 'Sparse') {
-    dstar <- minb(out1, 2 + npoly); # rough 1D initial value 
+    dstar <- minb(out1, 2 + npoly) # rough 1D initial value 
     # get count matrix: TODO rewrite this using rcov$count
     if (class(rcov) == 'RawCov') {
       countRes <- getCount(rcov$tpairn)

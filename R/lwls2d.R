@@ -30,7 +30,8 @@ lwls2d <- function(bw, kern='epan', xin, yin, win=NULL, xout1=NULL, xout2=NULL, 
   # decide space allocation
   uniqPts <- sort(unique(datin$x1))
   r <- diff(range(uniqPts))
-  maxk <- round((2 * bw / r * length(uniqPts))^2 * 4)
+  # maxk <- round((2 * bw / r * length(uniqPts))^2 * 4)
+  maxk <- length(uniqPts) ^ 2 / 5
   
   
   if (class(xout)[1] == 'lf_evs') { # use locfit evaluation structure 

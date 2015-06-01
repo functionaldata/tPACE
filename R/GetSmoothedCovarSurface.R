@@ -32,10 +32,13 @@ GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, p, useBins=FALSE
 
   smoothCov <- lwls2d(bwCov, kern, xin=rcov$tpairn, yin=rcov$cxxn, xout1=regGrid, xout2=regGrid)
   
-  # TODO: add Hao's sigma smoother
+  # TODO: add cut argument
+  if (error)
+    sigma2 <- pc_covE(obsGrid, regGrid, bwCov, kernel=kern, rcov=rcov)$sigma2
+  else 
+    sigma2 <- NULL
 
-
-  res <- list( rawCov= rcov, smoothCov = smoothCov, bwCov = bwCov, sigma2 = NULL);
+  res <- list( rawCov= rcov, smoothCov = smoothCov, bwCov = bwCov, sigma2 = sigma2);
   class(res) <- "SmoothCov"  
   
   return(res)

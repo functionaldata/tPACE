@@ -54,7 +54,7 @@ pts <- seq(0, 1, by=0.05)
 regGrid <- seq(0, 1, by=0.1)
 n <- 100
 sampSparse <- wiener(n, pts)
-sampSparse <- sampSparse + rnorm(n * length(pts), sd=5)
+sampSparse <- sampSparse + rnorm(n * length(pts), sd=0.4)
 sampSparse <- sparsify(sampSparse, pts, 2:7)
 p2 <- SetOptions(sampSparse$yList, sampSparse$tList, list(regular='Sparse', error=TRUE, kernel='epan'))
 mu3 <- rep(0, length(pts))
