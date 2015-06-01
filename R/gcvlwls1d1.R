@@ -70,8 +70,8 @@ gcvlwls1d1 <- function(yy,tt, kernel, npoly, nder, regular, verbose=TRUE) {
   }
 
   bInd = which(gcvScores == min(gcvScores));
-  bScr = gcvScores[bInd]
-  bOpt = bwCandidates[bInd]; 
+  bScr = gcvScores[bInd][1]
+  bOpt = max(bwCandidates[bInd]); 
   
   if( bOpt == r){
     warning("data is too sparse, optimal bandwidth includes all the data!You may want to change to Gaussian kernel!\n")
