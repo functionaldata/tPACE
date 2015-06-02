@@ -1,4 +1,4 @@
-GetBinnedDataset <- function (y, t, p){
+GetBinnedDataset <- function (y, t, optns){
    
   # Bin the data 'y'
   # y : n-by-1 list of vectors
@@ -6,9 +6,9 @@ GetBinnedDataset <- function (y, t, p){
 
   BinDataOutput <- list( newy <- NULL, newt <- NULL);
 
-  regular = p$regular;
-  verbose = p$verbose;  
-  numBins = p$numBins;
+  dataType = optns$dataType;
+  verbose = optns$verbose;  
+  numBins = optns$numBins;
   tt = unlist(t);  
   a0 = min(tt);
   b0 = max(tt);
@@ -16,15 +16,15 @@ GetBinnedDataset <- function (y, t, p){
   n = length(t);
   ni = sapply(FUN= length,t);
   
-  if (regular == 'Sparse'){
+  if (dataType == 'Sparse'){
     m = median(ni)
   } else {
     m = max(ni);
   }
   
   # Determine the number of bins automatically if numBins is null
-  if (is.null(numBins) && p$use_binned_data =='AUTO'){
-    numBins = GetBinNum(n,m,regular,verbose)
+  if (is.null(numBins) && optns$useBinnedData =='AUTO'){
+    numBins = GetBinNum(n,m,dataType,verbose)
     # and if it is still NULL return the unbinned data
     if (is.null(numBins)){
       BinDataOutput$newt = t;

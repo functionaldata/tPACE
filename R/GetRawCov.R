@@ -1,11 +1,11 @@
-GetRawCov <- function(y,t,out1new, mu, regular, error){
+GetRawCov <- function(y,t,obsGridnew, mu, dataType, error){
 #  obtain raw covariance
 #  Input y :       1*n cell array of the observed repeated measurements from n subjects
 #  Input t :       1*n cell array of the observed time points from n subjects
-#  Input out1new:  1*m vector of time points correspond to mu
+#  Input obsGridnew:  1*m vector of time points correspond to mu
 #  Input mu:       1*m vector of fitted mean functions from Step I, corresponding to
 #                 pooled unique time points from t
-#  Input regular: Output of IsRegular()
+#  Input dataType: Output of IsRegular()
 #  Input error:    TRUE with measurement error assumption
 #                  FALSE without measurement error assumption
 # 
@@ -23,13 +23,13 @@ GetRawCov <- function(y,t,out1new, mu, regular, error){
 #                if error == FALSE: NULL
 
   ncohort <- length(y);
-  out1 <- sort(unique(unlist(t)))
-  mu <- mapX1d(x = out1new, y = mu, newx = out1);
+  obsGrid <- sort(unique(unlist(t)))
+  mu <- mapX1d(x = obsGridnew, y = mu, newx = obsGrid);
   count <- NULL
   indx = NULL 
   diag = NULL
 
-  if(regular == 'Sparse'){
+  if(dataType == 'Sparse'){
   
     Ys = lapply(X = y, FUN=meshgrid)
     Xs = lapply(X = t, FUN=meshgrid)
@@ -61,7 +61,7 @@ GetRawCov <- function(y,t,out1new, mu, regular, error){
     # win = ones(1, length(cxxn));
     # count = getCount(tpairn)...
 
-  }else if(regular == 'Dense'){
+  }else if(dataType == 'Dense'){
     
     yy = t(matrix(unlist(y), length(y[[1]]), ncohort))
     MU = t(matrix( rep(mu, times=length(y)), ncol=length(y)))
@@ -85,14 +85,14 @@ GetRawCov <- function(y,t,out1new, mu, regular, error){
     }
 
    # win = ones(1, length(cxxn));
-  }else if(regular == 'RegularWithMV'){
+  }else if(dataType == 'RegularWithMV'){
     stop("This is not implemented yet. Contact Pantelis!")
   }else {
-    stop("Invalid 'regular' argument type")
+    stop("Invalid 'dataType' argument type")
   } 
     
   result <- list( 'tpairn' = tpairn, 'cxxn' = cxxn, 'indx' = indx, # 'win' = win,
-   'cyy' = cyy, 'diag' = diag, 'count' = count, 'error' = error, 'regular' = regular);  
+   'cyy' = cyy, 'diag' = diag, 'count' = count, 'error' = error, 'dataType' = dataType);  
  
   class(result) <- "RawCov"
   return(result)

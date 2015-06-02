@@ -4,16 +4,16 @@
 #         - bopt: working bandwidth for mean function smoothing
 #         - npoly: (Not used)
 #         - nder: degree of derivative need to be estimated
-#         - regular: whether the functional data is dense and regular ("Dense")
+#         - dataType: whether the functional data is dense and dataType ("Dense")
 #         - verbose: 
 ##########################################################################
 # Output: - bopt: bandwidth after adjustment
 ##########################################################################
 
-adjustBW1 <- function(kernel, bopt, npoly, nder, regular, verbose){
+adjustBW1 <- function(kernel, bopt, npoly, nder, dataType, verbose){
   # for Gaussian kernel
   if(kernel == 'gauss'){
-    if(regular == "Dense"){
+    if(dataType == "Dense"){
       bwmu_fac = c(1.1, 0.8, 0.8)
     }
     else bwmu_fac = c(1.1, 1.2, 2)
@@ -26,7 +26,7 @@ adjustBW1 <- function(kernel, bopt, npoly, nder, regular, verbose){
   }
   # for Epanechnikov kernel
   if(kernel == 'epan'){
-    if(regular == "Dense"){
+    if(dataType == "Dense"){
       bwmu_fac = c(1.1, 1.0, 1.1)
     }
     else bwmu_fac = c(1.1, 1.2, 1.5)

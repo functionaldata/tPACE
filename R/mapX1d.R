@@ -2,7 +2,7 @@
 # x    : a vector of 1 * n
 # y    : a vector of 1 * n or a n * p matrix
 # newx : vector of 1 * m
-# newy : vector of 1 * m or a matrix of m * p
+# newy : vector of 1 * m or a matrix of m * optns$
   
   # if( is.vector(y) ){
     # return(y[is.element(x,newx)])
@@ -16,7 +16,7 @@
 
 mapX1d <- function(x, y, newx) {
     if (!all(newx %in% x)) 
-        warning('Interpolation occured: you might want to increase the out1 coverage')
+        warning('Interpolation occured: you might want to increase the obsGrid coverage')
         
     if (min(newx) + 100 * .Machine$double.eps < min(x) || max(newx) > max(x) + 100 * .Machine$double.eps)
         warning('Extrapolation occured')

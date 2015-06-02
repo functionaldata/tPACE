@@ -1,4 +1,4 @@
-gcvlwls1d0 <- function(yy,tt, kernel, npoly, nder, regular, verbose=TRUE) {
+gcvlwls1d0 <- function(yy,tt, kernel, npoly, nder, dataType, verbose=TRUE) {
 # This function computes the optimal bandwidth choice for the mean
 # function use GCV method by pooling the longitudinal data together. 
 # verbose is unused for now
@@ -11,14 +11,14 @@ gcvlwls1d0 <- function(yy,tt, kernel, npoly, nder, regular, verbose=TRUE) {
   N = length(t);
   
   # Specify the starting bandwidth candidates
-  if ( regular == "Sparse") {
+  if ( dataType == "Sparse") {
     dstar = minb(t, npoly+2);
     if ( dstar > r*0.25){
       dstar = dstar * 0.75;
       warning( c( "The min bandwidth choice is too big, reduce to ", dstar, "!\n"))
     }
     h0 = 2.5 * dstar;
-  }else if(regular == "DenseWithMV"){
+  }else if(dataType == "DenseWithMV"){
     h0 = 2.0 * minb(t, npoly+1);
   } else {
     h0 = 1.5 * minb(t,npoly+1);

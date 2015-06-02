@@ -1,14 +1,14 @@
 # Translation of convertMuPhi.m
 # One may rather just call mapX1d than using convertMuPhi.
 
-convertMuPhi <- function(t, out1, mu, phi, regular) {
+convertMuPhi <- function(t, obsGrid, mu, phi, dataType) {
 
-    if (regular == 'Dense') {
-        muSub <- mapX1d(out1, mu, t[[1]])
-        phiSub <- mapX1d(out1, phi, t[[1]])
+    if (dataType == 'Dense') {
+        muSub <- mapX1d(obsGrid, mu, t[[1]])
+        phiSub <- mapX1d(obsGrid, phi, t[[1]])
     } else {
-        muSub <- lapply(t, function(tt) mapX1d(out1, mu, tt))
-        phiSub <- lapply(t, function(tt) mapX1d(out1, phi, tt))
+        muSub <- lapply(t, function(tt) mapX1d(obsGrid, mu, tt))
+        phiSub <- lapply(t, function(tt) mapX1d(obsGrid, phi, tt))
     }
     
     return(list(muSub = muSub, phiSub = phiSub))

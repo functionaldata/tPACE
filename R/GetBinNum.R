@@ -1,15 +1,15 @@
-GetBinNum = function(n, m, regular, verbose ){
+GetBinNum = function(n, m, dataType, verbose ){
   
   # Get the number of bins 
   # n : number of curves
   # m : median or max value of number of time-points
-  # regular : indicator about structure of the data 
-  #     (dense (2), or  regular data with missing values (1) or sparse (0))
+  # dataType : indicator about structure of the data 
+  #     (dense (2), or  dataType data with missing values (1) or sparse (0))
   # verbose : outpit diagnostics/progress
   
   numBin = NULL;
   if (m <= 20){
-    if (regular ==0){
+    if (dataType ==0){
       str = 'Median of ni';
     } else {
       str = 'Maximum of ni';

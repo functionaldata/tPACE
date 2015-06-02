@@ -1,36 +1,36 @@
-GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, p, useBins=FALSE) {
+GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, optns, useBins=FALSE) {
 
   # TODO: pass in only the options needed, rather than p itself.
-  regular <- p$regular
-  error <- p$error
-  kern <- p$kernel
-  bwxcov <- p$bwxcov
-  bwxcov_gcv <- p$bwxcov_gcv
+  dataType <- optns$dataType
+  error <- optns$error
+  kern <- optns$kernel
+  bwuserCov <- optns$bwuserCov
+  bwuserCovGcv <- optns$bwuserCovGcv
 
   # Get raw covariance   
-  rcov <- GetRawCov(y, t, obsGrid, mu, regular, error)
+  rcov <- GetRawCov(y, t, obsGrid, mu, dataType, error)
 
   # TODO: bin rcov
-  # If bwxcov_gcv == 'CV' then we must use the unbinned rcov.
-  if (useBins && bwxcov_gcv != 'CV')
+  # If bwuserCovGcv == 'CV' then we must use the unbinned rcov.
+  if (useBins && bwuserCovGcv != 'CV')
     rcov <- BinRawCov(rcov)
   
-  if (bwxcov == 0) { # bandwidth selection
-    if (bwxcov_gcv %in% c('GCV', 'GMeanAndGCV')) { # GCV
-      gcvObj <- gcvlwls2d(obsGrid, kern=kern, rcov=rcov, verbose=p$verbose)
+  if (bwuserCov == 0) { # bandwidth selection
+    if (bwuserCovGcv %in% c('GCV', 'GMeanAndGCV')) { # GCV
+      gcvObj <- gcvlwls2d(obsGrid, kern=kern, rcov=rcov, verbose=optns$verbose)
       bwCov <- gcvObj$h
-      if (bwxcov_gcv == 'GMeanAndGCV') {
+      if (bwuserCovGcv == 'GMeanAndGCV') {
         bwCov <- sqrt(bwCov * gcvObj$minBW)
       }  
-    } else if (bwxcov_gcv == 'CV') { # CV 10 fold
-      gcvObj <- gcvlwls2d(obsGrid, kern=kern, rcov=rcov, verbose=p$verbose, CV='10fold')
+    } else if (bwuserCovGcv == 'CV') { # CV 10 fold
+      gcvObj <- gcvlwls2d(obsGrid, kern=kern, rcov=rcov, verbose=optns$verbose, CV='10fold')
       bwCov <- gcvObj$h
     }
-  } else if (bwxcov != 0) {
-    bwCov <- bwxcov
+  } else if (bwuserCov != 0) {
+    bwCov <- bwuserCov
   }
 
-  smoothCov <- lwls2d(bwCov, kern, xin=rcov$tpairn, yin=rcov$cxxn, xout1=regGrid, xout2=regGrid)
+  smoothCov <- lwls2d(bwCov, kern, xin=rcov$tpairn, yin=rcov$cxxn, xobsGrid=regGrid, xout2=regGrid)
   
   # TODO: add cut argument
   if (error)
