@@ -17,6 +17,16 @@ noErr <- GetSmoothedCovarSurface(samp3$yList, samp3$tList, mu3, pts, regGrid, p0
 p1 <- SetOptions(samp3$yList, samp3$tList, CreateOptions(regular='Sparse', error=TRUE, kernel='epan'))
 Err <- GetSmoothedCovarSurface(samp3$yList, samp3$tList, mu3, pts, regGrid, p1, useBins=FALSE)
 
+# unit tests: test the interface.
+rcov3 <- GetRawCov(samp3$yList, samp3$tList, pts, mu3, p1$regular, p1$error)
+tmp <- gcvlwls2d(pts, kern='epan', rcov=rcov3)
+gcvBW3 <- sqrt(tmp$h * tmp$minBW)
+sigma23 <- pc_covE(pts, regGrid, gcvBW3, kernel='epan', rcov=rcov3)$sigma2
+test_that('Smooth Cov Surface interface is right', {
+  expect_equal(rcov3, Err$rawCov)
+  expect_equal(gcvBW3, Err$bwCov)
+  expect_equal(sigma23, Err$sigma2)
+})
 
 # cross-sectional
 tmp1 <- do.call(rbind, samp3$yList)
@@ -33,4 +43,3 @@ p3 <- SetOptions(samp3$yList, samp3$tList, CreateOptions(bwxcov_gcv='CV', regula
 system.time(tmp3 <- GetSmoothedCovarSurface(samp3$yList, samp3$tList, mu3, pts, regGrid, p3, useBins=FALSE))
 sum((diag(tmp3$smoothCov) - seq(0, 1, by=0.1))^2)
 
-# unit tests: test the interface.

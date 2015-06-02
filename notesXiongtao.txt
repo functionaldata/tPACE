@@ -19,6 +19,11 @@ rotateLwls2d: Use the correct (described) method in Yao 2005, rather than follow
 
  
 Why grid1 in SetOptions?
+Regular case and RegularWM: use matrix, since we need to implement crosssectional.
+-----------
+To Hao:
+Implement bin count for pc_covE
+
 -----------
 
 Hans said:
