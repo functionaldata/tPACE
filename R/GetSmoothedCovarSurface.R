@@ -38,7 +38,7 @@ GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, p, useBins=FALSE
   else 
     sigma2 <- NULL
 
-  res <- list( rawCov= rcov, smoothCov = smoothCov, bwCov = bwCov, sigma2 = sigma2);
+  res <- list( rawCov= rcov, smoothCov = (smoothCov + t(SmoothCov)) / 2, bwCov = bwCov, sigma2 = sigma2);
   class(res) <- "SmoothCov"  
   
   return(res)
