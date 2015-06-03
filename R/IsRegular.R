@@ -1,6 +1,6 @@
 IsRegular = function(t){
   
-  # Check the if we have dense (2), or  regular data with missing values (1) or sparse (0) data
+  # Check the if we have dense (2), or  dataType data with missing values (1) or sparse (0) data
   # t : n-by-1 list of vectors 
   
   tt = unlist(t);

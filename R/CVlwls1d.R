@@ -1,4 +1,4 @@
-cvlwls1d <- function(x, t, kernel, npoly, nder, regular ){
+cvlwls1d <- function(x, t, kernel, npoly, nder, dataType ){
 
   ncohort = length(t);
   tt  = unlist(t);
@@ -12,7 +12,7 @@ cvlwls1d <- function(x, t, kernel, npoly, nder, regular ){
   rang = b0-a0;
   dstar = minb(tt, npoly+2);
 
-  if (regular != 'Dense'){
+  if (dataType != 'Dense'){
    h0 = 2.5*dstar;
   } else {
    h0 = dstar;
@@ -34,7 +34,7 @@ cvlwls1d <- function(x, t, kernel, npoly, nder, regular ){
   
   ave = rep(0, length(t[[1]]));
   
-  if (regular == 'Dense'){
+  if (dataType == 'Dense'){
     for (i in 1:ncohort){
       ave = ave + t[[i]]/ncohort;
     }
@@ -52,7 +52,7 @@ cvlwls1d <- function(x, t, kernel, npoly, nder, regular ){
         win=rep(1,length(tt));
         win[ind==i]=0;        
         
-        if (regular=='Dense') {
+        if (dataType=='Dense') {
             xxn=(ave*ncohort-t[[i]])/(ncohort-1);
             ttn=t[[1]];
             win=ones(1,length(t[[1]]));

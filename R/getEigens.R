@@ -1,12 +1,12 @@
-getEigens <- function(xcov,out1,out21,noeig, varargin){
-#   function [lambda, phi, eigen, noeig] = getEigens(xcov,out1,out21,noeig, varargin)
-#   noeig \approx  maxk
+getEigens <- function(userCov,obsGrid,regGrid,noeig, varargin){
+#   function [lambda, phi, eigen, noeig] = getEigens(userCov,obsGrid,regGrid,noeig, varargin)
+#   noeig \approx  maxK
 
-  h=diff(range(out21))/(length(out21)-1);
+  h=diff(range(regGrid))/(length(regGrid)-1);
 
-  numGrids = nrow(xcov)
-  #opts.v0 = t(seq(0.1,0.9,length.out = numGrids))
-  eigsOutput = eigs(xcov, k = numGrids-2, which = "LR")
+  numGrids = nrow(userCov)
+  #optns.v0 = t(seq(0.1,0.9,length.out = numGrids))
+  eigsOutput = eigs(userCov, k = numGrids-2, which = "LR")
   d = eigsOutput$values
   eigenV = eigsOutput$vectors
   # at most ngrid-2 eigenvalues can be obtained for nonsymmetric or complex problems
@@ -36,17 +36,17 @@ getEigens <- function(xcov,out1,out21,noeig, varargin){
   lambda = h * d;
 
   # normalized eigen functions
-  eigenV = apply(eigenV,2, function(x) x / sqrt(trapz(out21,(x)^2)) )
+  eigenV = apply(eigenV,2, function(x) x / sqrt(trapz(regGrid,(x)^2)) )
   eigenV = apply(eigenV,2, function(x) if (x[1] <= x[2]){ x }else{ -x} )
   
   # interpolate from the normalized eigenfunctions
-  phi = apply(eigenV,2, function(x) interp1(x= out21, y= x, xi=out1, method="spline"))
+  phi = apply(eigenV,2, function(x) interp1(x= regGrid, y= x, xi=obsGrid, method="spline"))
   if (noeig ==1){
     phi = t(phi)
   }
   
   # normalized smoothed eigenfunctions
-  phi  = apply(phi,2, function(x) x / sqrt(trapz(out1,(x)^2)) )
+  phi  = apply(phi,2, function(x) x / sqrt(trapz(obsGrid,(x)^2)) )
 
   return( list(lambda = lambda, phi = phi, eigen = eigenV, noeig = noeig) )
 }

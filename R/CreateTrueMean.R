@@ -1,4 +1,4 @@
-CreateTrueMean = function(tt,p){
+CreateTrueMean = function(tt,optns){
   # old mu_true
   
   tt[!(tt >= 0 & tt <= p)] = 0

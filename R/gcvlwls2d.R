@@ -1,4 +1,4 @@
-gcvlwls2d <- function(obsGrid, ngrid=NULL, regular=rcov$regular, error=rcov$error, kern, rcov, h0=NULL, verbose=TRUE, CV=FALSE) {
+gcvlwls2d <- function(obsGrid, ngrid=NULL, dataType=rcov$dataType, error=rcov$error, kern, rcov, h0=NULL, verbose=TRUE, CV=FALSE) {
 # TODO: Consider rewrite the function into a more general form. The current implementation is too specific and works only for smoothing raw covariance.
 # TODO: implement useBins 
 
@@ -14,7 +14,7 @@ gcvlwls2d <- function(obsGrid, ngrid=NULL, regular=rcov$regular, error=rcov$erro
   
   r <- diff(range(obsGrid)) * sqrt(2) # sqrt(2) because the window is circular.
 
-  minBW <- getMinb(rcov, regular=rcov$regular, out1=obsGrid)
+  minBW <- getMinb(rcov, dataType=rcov$dataType, obsGrid=obsGrid)
 
   if (missing(h0)) {
     h0 <- minBW
@@ -94,7 +94,7 @@ gcvlwls2d <- function(obsGrid, ngrid=NULL, regular=rcov$regular, error=rcov$erro
         q <- (newr[ind] / h0) ^ (1/9)
         bw <- q ^ (0:9) * h0
         if (verbose) {
-          cat('New bwxcov candidates:\n')
+          cat('New bwuserCov candidates:\n')
           print(bw)
         }
 

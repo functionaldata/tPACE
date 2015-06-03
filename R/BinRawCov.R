@@ -1,5 +1,5 @@
 BinRawCov <- function(rcov) {
-  # rcov: Assumes rcov has entries on a regular grid.
+  # rcov: Assumes rcov has entries on a dataType grid.
   # Returns: 
   
   rcov$tpairn <- round(rcov$tpairn, 13)
@@ -24,7 +24,7 @@ BinRawCov <- function(rcov) {
     diagRSS[is.na(diagRSS)] <- 0
   }
   
-  res <- list(tPairs=tPairs, meanVals=meanVals, RSS=RSS, tDiag=tDiag, diagMeans=diagMeans, diagRSS=diagRSS, count=count, diagCount=diagCount, error=rcov$error, regular=rcov$regular)
+  res <- list(tPairs=tPairs, meanVals=meanVals, RSS=RSS, tDiag=tDiag, diagMeans=diagMeans, diagRSS=diagRSS, count=count, diagCount=diagCount, error=rcov$error, dataType=rcov$dataType)
   class(res) <- 'BinnedRawCov'
   
   return(res)

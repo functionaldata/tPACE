@@ -14,10 +14,10 @@ rotateLwls2d <- function(bw, kern='epan', xin, yin, win=NULL, xout) {
   # decide space allocation
   # uniqPts <- sort(unique(datin$x1))
   # r <- diff(range(uniqPts))
-  # maxk <- round((2 * bw / r * length(uniqPts))^2 * 4)
+  # maxK <- round((2 * bw / r * length(uniqPts))^2 * 4)
   
   # browser()
-  # fit <- locfit(y ~ lp(x1, x2, h=bw, deg=2, scale=FALSE), data=datin, weights=win, kern=kern) # , maxk=maxk)
+  # fit <- locfit(y ~ lp(x1, x2, h=bw, deg=2, scale=FALSE), data=datin, weights=win, kern=kern) # , maxK=maxK)
   # val <- predict(fit, xout)
   val <- smooth.lf(lp(xin[, 1], xin[, 2], h=bw), yin, xout, direct=FALSE, deg=2, maxk=500, kern=kern, weights=win)$y
   
