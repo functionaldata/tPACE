@@ -20,7 +20,7 @@
 # xvar:    smoothed cov along diagonal without measurement error
 # yvar:   smoothed cov along diagonal with measurement error
 
-pc_covE = function(obsGrid, regGrid, bw_userCov, rotationCut, kernel = 'epan', rcov){
+pc_covE = function(obsGrid, regGrid, bw_userCov, rotationCut=c(0, 1), kernel = 'epan', rcov){
   a0 = min(obsGrid)
   b0 = max(obsGrid)
   lint = b0 - a0

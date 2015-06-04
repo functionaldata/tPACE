@@ -54,6 +54,6 @@ no_FVE <- function(userCov, FVEthreshold=0.85, returnEVec=FALSE, verbose=FALSE){
   if (!returnEVec)
     eVec <- NULL
     
-  return(list(no_opt=no_opt, FVE=FVE, lambda=lambda, eVec=eVec))
+  return(list(no_opt=no_opt, FVE=FVE[1:no_opt], lambda=lambda, eVec=eVec))
 }
 

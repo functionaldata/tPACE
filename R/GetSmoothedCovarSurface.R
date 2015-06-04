@@ -6,31 +6,39 @@ GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, optns, useBins=F
   kern <- optns$kernel
   bwuserCov <- optns$bwuserCov
   bwuserCovGcv <- optns$bwuserCovGcv
+  verbose <- optns$verbose
 
   # Get raw covariance   
   rcov <- GetRawCov(y, t, obsGrid, mu, dataType, error)
 
-  # TODO: bin rcov
-  # If bwuserCovGcv == 'CV' then we must use the unbinned rcov.
-  if (useBins && bwuserCovGcv != 'CV')
+  if (useBins && bwuserCovGcv == 'CV')
+    stop('If bwuserCovGcv == \'CV\' then we must use the unbinned rcov.')
+
+  if (useBins)
     rcov <- BinRawCov(rcov)
   
   if (bwuserCov == 0) { # bandwidth selection
     if (bwuserCovGcv %in% c('GCV', 'GMeanAndGCV')) { # GCV
-      gcvObj <- gcvlwls2d(obsGrid, kern=kern, rcov=rcov, verbose=optns$verbose)
+      gcvObj <- gcvlwls2d(obsGrid, kern=kern, rcov=rcov, verbose=verbose)
       bwCov <- gcvObj$h
       if (bwuserCovGcv == 'GMeanAndGCV') {
         bwCov <- sqrt(bwCov * gcvObj$minBW)
       }  
     } else if (bwuserCovGcv == 'CV') { # CV 10 fold
-      gcvObj <- gcvlwls2d(obsGrid, kern=kern, rcov=rcov, verbose=optns$verbose, CV='10fold')
+      gcvObj <- gcvlwls2d(obsGrid, kern=kern, rcov=rcov,
+                          verbose=optns$verbose, CV='10fold')
       bwCov <- gcvObj$h
     }
   } else if (bwuserCov != 0) {
     bwCov <- bwuserCov
   }
 
-  smoothCov <- lwls2d(bwCov, kern, xin=rcov$tpairn, yin=rcov$cxxn, xobsGrid=regGrid, xout2=regGrid)
+  if (!useBins)
+    smoothCov <- lwls2d(bwCov, kern, xin=rcov$tpairn, yin=rcov$cxxn,
+                        xobsGrid=regGrid, xout2=regGrid)
+  else 
+    smoothCov <- lwls2d(bwCov, kern, xin=rcov$tPairs, yin=rcov$meanVals,
+                        win=rcov$count, xobsGrid=regGrid, xout2=regGrid)
   
   # TODO: add cut argument
   if (error)
@@ -38,7 +46,7 @@ GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, optns, useBins=F
   else 
     sigma2 <- NULL
 
-  res <- list( rawCov= rcov, smoothCov = (smoothCov + t(SmoothCov)) / 2, bwCov = bwCov, sigma2 = sigma2);
+  res <- list( rawCov= rcov, smoothCov = (smoothCov + t(smoothCov)) / 2, bwCov = bwCov, sigma2 = sigma2);
   class(res) <- "SmoothCov"  
   
   return(res)

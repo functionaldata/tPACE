@@ -2,16 +2,17 @@
 # Values:
 # phi: a nRegGrid * no_FVE
 
-GetEigenAnalysisResults <- function(smoothCov, regGrid, noeig, optns) {
+GetEigenAnalysisResults <- function(smoothCov, regGrid, optns) {
 #   noeig \approx  maxK
 
-  FVE <- optns$FVEthreshold
+  noeig <- optns$maxK
+  FVEthreshold <- optns$FVEthreshold
   verbose <- optns$verbose
   
   gridSize <- regGrid[2] - regGrid[1]
   numGrids <- nrow(smoothCov)
   
-  FVEObj <- no_FVE(smoothCov, FVEthreshold, returnEVec=TRUE, verbose=verbose)
+  FVEObj <- no_FVE(smoothCov, FVEthreshold=FVEthreshold, returnEVec=TRUE, verbose=verbose)
   #optns.v0 <- t(seq(0.1,0.9,length.out = numGrids))
   d <- FVEObj$lambda
   eigenV <- FVEObj$eVec
@@ -41,5 +42,6 @@ GetEigenAnalysisResults <- function(smoothCov, regGrid, noeig, optns) {
   # # normalized smoothed eigenfunctions
   # phi  <- apply(phi,2, function(x) x / sqrt(trapz(obsGrid,(x)^2)) )
 
-  return( list(lambda = lambda, phi = phi, noeig = noeig, FVE=FVEObj$FVE[FVEObj$no_FVE], no_FVE=FVEObj$no_FVE) )
+  return(list(lambda = lambda, phi = phi, FVE=FVEObj$FVE[length(FVEObj$FVE)],
+              kChoosen=FVEObj$no_opt))
 }
