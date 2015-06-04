@@ -13,9 +13,10 @@
 # Output:
 ######
 # no_opt:         positive integer, the best number of PCs chosen with FVE criterion 
-# FVE:            nRegGrid * 1 vector, the dth entry corresponds to the cumulative 
+# FVE:            no_opt * 1 vector, the dth entry corresponds to the cumulative 
 #                 percentage of variation explained by the first d PCs
-# lambda:         nRegGrid * 1 vector of the positive eigenvalues in a decreasing order
+# lambda:         no_opt * 1 vector of the positive eigenvalues in a decreasing order
+# eVec:           (unnormalized) A nRegGrid * no_opt matrix of eigenvectors 
 #                 obtained from the eigen decomposition of the smooth covariance
 #                 matrix userCov
 #
@@ -23,27 +24,36 @@
 # or complex numbers.
 # This function uses rARPACK library for eigen-decomposition
 
-no_FVE <- function(userCov, FVEthreshold=0.85){
+no_FVE <- function(userCov, FVEthreshold=0.85, returnEVec=FALSE, verbose=FALSE){
   numGrids = nrow(userCov)
   #optns.v0 = t(seq(0.1,0.9,length.out = numGrids))
-  d = eigs(userCov, k = numGrids-2, which = "LR")$values
+  eigObj <- eigs(userCov, k = numGrids-2, which = "LR")
   # at most ngrid-2 eigenvalues can be obtained for nonsymmetric or complex problems
   # "LM" corresponds to Largest Magnitude, another option may be "LR": Largest Real part
+  d <- eigObj$values
+  eVec <- eigObj$vectors
   
-  idx = which(is.complex(d)) # to remove any imaginary eigenvalues
-  if(invalid(idx) == FALSE){ # if there are any imaginary eigenvalues
-    stop(sprintf("%d eigenvalues are complex. The estimated auto-covairance surface is not symmetric!",length(idx)))
+  if(any(is.complex(d))){ # if there are any imaginary eigenvalues
+    stop(sprintf("Some eigenvalues are complex. The estimated auto-covairance surface is not symmetric!"))
   }
   
-  idx = which(d <= 0) # to remove nonpositive eigenvalues
-  if(invalid(idx) == FALSE){ # if there are any nonpositive eigenvalues
-    warning(sprintf("Warning: %d real eigenvalues are negative or zero and are removed!",length(idx)))
-    d = d[d > 0]
+  idx <- (d <= 0) # to remove nonpositive eigenvalues
+  if(sum(idx) > 0) { # if there are any nonpositive eigenvalues
+    if (verbose)
+      warning(sprintf("Warning: %d real eigenvalues are negative or zero and are removed!", sum(idx)))
   }
   
-  lambda = d # eigenvalues to output
-  FVE = cumsum(lambda)/sum(lambda) # cumulative FVE to output
-  no_opt = min(which(FVE > FVEthreshold))
-  return(list(no_opt, FVE, lambda))
+  d <- d[!idx] 
+  eVec <- eVec[, !idx]
+  FVE <- cumsum(d) / sum(d) # cumulative FVE to output
+  no_opt <- min(which(FVE >= FVEthreshold))
+
+  lambda <- d[1:no_opt]
+  eVec <- eVec[, 1:no_opt]
+  
+  if (!returnEVec)
+    eVec <- NULL
+    
+  return(list(no_opt=no_opt, FVE=FVE, lambda=lambda, eVec=eVec))
 }
 

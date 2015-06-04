@@ -7,19 +7,13 @@ no_FVE change things
 
 I don't know what the GCV implementation is in the matlab version. ASK Hans.
 
-We should add an option 'truncTo' such that we truncate the interval to what
-we want to analyze. Then in the truncated region points will be more
-abundant. This also may help reduce boundary effect as we make use of the
-points outside of the truncation region.
-
-For dataset with large number observations we are better-off storing the count data rather than the unbinned raw covariance.
-
 What is maxk in locfit? How to set it?
 We implement up to 1024 grid points, for example.
 
 rotateLwls2d: Use the correct (described) method in Yao 2005, rather than following the matlab/formula in Yao 2005.
 
- 
+We still need to modify the FVE options.
+
 Why grid1 in SetOptions?
 Regular case and RegularWM: use matrix, since we need to implement crosssectional.
 -----------
