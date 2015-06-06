@@ -20,3 +20,4 @@ debug(GetEigenAnalysisResults)
 p1 <- SetOptions(samp3$yList, samp3$tList, CreateOptions(dataType='Sparse', error=TRUE, kernel='epan'))
 Err <- GetSmoothedCovarSurface(samp3$yList, samp3$tList, mu3, pts, regGrid, p1, useBins=FALSE)
 
+# TEst integrate to one.

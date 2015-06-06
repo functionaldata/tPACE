@@ -7,6 +7,15 @@ GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, optns, useBins=F
   bwuserCov <- optns$bwuserCov
   bwuserCovGcv <- optns$bwuserCovGcv
   verbose <- optns$verbose
+  outPercent <- optns$outPercent
+  buff <- .Machine$double.eps * 10
+  rangeGrid <- range(regGrid)
+  minGrid <- rangeGrid[1]
+  maxGrid <- rangeGrid[2]
+  cutRegGrid <- regGrid[regGrid > minGrid + diff(rangeGrid) * outPercent[1] -
+                        buff | 
+                        regGrid < minGrid + diff(rangeGrid) * outPercent[2] +
+                        buff]
 
   # Get raw covariance   
   rcov <- GetRawCov(y, t, obsGrid, mu, dataType, error)
@@ -35,10 +44,10 @@ GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, optns, useBins=F
 
   if (!useBins)
     smoothCov <- lwls2d(bwCov, kern, xin=rcov$tpairn, yin=rcov$cxxn,
-                        xobsGrid=regGrid, xout2=regGrid)
+                        xobsGrid=cutRegGrid, xout2=cutRegGrid)
   else 
     smoothCov <- lwls2d(bwCov, kern, xin=rcov$tPairs, yin=rcov$meanVals,
-                        win=rcov$count, xobsGrid=regGrid, xout2=regGrid)
+                        win=rcov$count, xobsGrid=cutRegGrid, xout2=cutRegGrid)
   
   # TODO: add cut argument
   if (error)
