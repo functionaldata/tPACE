@@ -15,8 +15,8 @@
 # }
 
 mapX1d <- function(x, y, newx) {
-    if (!all(newx %in% x)) 
-        warning('Interpolation occured: you might want to increase the obsGrid coverage')
+    # if (!all(newx %in% x)) 
+        # warning('Interpolation occured: you might want to increase the obsGrid coverage')
         
     if (min(newx) + 100 * .Machine$double.eps < min(x) || max(newx) > max(x) + 100 * .Machine$double.eps)
         warning('Extrapolation occured')

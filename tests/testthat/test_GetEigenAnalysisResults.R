@@ -29,7 +29,7 @@ test_that('Eigenfunctions are orthonormal', {
 })
 
 
-# with error
-p1 <- SetOptions(samp3$yList, samp3$tList, CreateOptions(dataType='Sparse', error=TRUE, kernel='epan'))
-Err <- GetSmoothedCovarSurface(samp3$yList, samp3$tList, mu3, pts, regGrid, p1, useBins=FALSE)
+# # with error
+# p1 <- SetOptions(samp3$yList, samp3$tList, CreateOptions(dataType='Sparse', error=TRUE, kernel='epan'))
+# Err <- GetSmoothedCovarSurface(samp3$yList, samp3$tList, mu3, pts, regGrid, p1, useBins=FALSE)
 

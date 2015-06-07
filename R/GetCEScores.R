@@ -1,4 +1,7 @@
-GetCEScores <- function(y, t, optns, mu, obsGrid, lambda, phi, sigma2) {
+# obsGrid: supports fittedCov and phi. May be a truncated version.
+# Assumes each tVec in t are all supported on obsGrid.
+# return: ret is a 2 by n array, with the first row containing the xiEst and second row containing the xiVar.
+GetCEScores <- function(y, t, optns, mu, obsGrid, fittedCov, lambda, phi, sigma2) {
 
   if (length(lambda) != ncol(phi))
     stop('No of eigenvalues is not the same as the no of eigenfunctions.')
@@ -19,19 +22,27 @@ GetCEScores <- function(y, t, optns, mu, obsGrid, lambda, phi, sigma2) {
 
 GetMuPhiSig <- function(t, obsGrid, mu, phi, Sigma_Y) {
 
+  obsGrid <- round(obsGrid, 14)
   ret <- lapply(t, function(tvec) {
-    ind <- match(tvec, obsGrid)
+    ind <- match(round(tvec, 14), obsGrid)
     if (sum(is.na(ind)) != 0)
       stop('Time point not found in obsGrid.')
     
-    return(list(muVec=mu[ind], phiMat=phi[ind, ], Sigma_Yi=Sigma_Y[ind, ind]))
+    return(list(muVec=mu[ind], phiMat=phi[ind, , drop=FALSE], Sigma_Yi=Sigma_Y[ind, ind, drop=FALSE]))
   })
 
   return(ret)
 }
 
 
-GetIndCEScores <- function(yVec, muVec, lamVec, phiMat, Sigma_Yi) {
+GetIndCEScores <- function(yVec, muVec, lamVec, phiMat, Sigma_Yi,
+                           verbose=FALSE) {
+  if (length(yVec) == 0) {
+    if (verbose)
+      warnings('Empty observation found, possibly due to truncation')
+
+    return(list(xiEst=NULL, xiVar=NULL))
+  }
 
   Lam <- diag(lamVec)
   LamPhi <- Lam %*% t(phiMat)
@@ -39,5 +50,5 @@ GetIndCEScores <- function(yVec, muVec, lamVec, phiMat, Sigma_Yi) {
   xiEst <- LamPhiSig %*% matrix(yVec - muVec, ncol=1)
   xiVar <- Lam - LamPhi %*% t(LamPhiSig)
 
-  return(xiEst=xiEst, xiVar=xiVar)
+  return(list(xiEst=xiEst, xiVar=xiVar))
 }

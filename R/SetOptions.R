@@ -74,6 +74,8 @@ SetOptions = function(y, t, optns){
   }
   if(selectionMethod == "FVE" && is.null(FVEthreshold)){  # the Fraction-of-Variance-Explained
     FVEthreshold = 0.95;
+  } else {
+    FVEthreshold = 0.9999;
   }
   if(is.null(maxK)){ # maximum number of principal components to consider
     maxK = min(20, length(y)-1);   

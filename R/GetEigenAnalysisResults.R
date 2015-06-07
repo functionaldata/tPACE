@@ -37,10 +37,8 @@ GetEigenAnalysisResults <- function(smoothCov, regGrid, optns) {
   })
   lambda <- gridSize * d;
 
-  
-  # # normalized smoothed eigenfunctions
-  # phi  <- apply(phi,2, function(x) x / sqrt(trapz(obsGrid,(x)^2)) )
+  fittedCov <- phi %*% diag(lambda) %*% t(phi)
 
   return(list(lambda = lambda, phi = phi, FVE=FVEObj$FVE[length(FVEObj$FVE)],
-              kChoosen=FVEObj$no_opt))
+              kChoosen=FVEObj$no_opt, fittedCov=fittedCov))
 }
