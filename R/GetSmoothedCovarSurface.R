@@ -1,3 +1,4 @@
+# The output outGrid of this function is the (potentially) truncated greid.
 GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, optns, useBins=FALSE) {
 
   # TODO: pass in only the options needed, rather than p itself.
@@ -7,13 +8,15 @@ GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, optns, useBins=F
   bwuserCov <- optns$bwuserCov
   bwuserCovGcv <- optns$bwuserCovGcv
   verbose <- optns$verbose
+
+# get the truncation of the output grids.
   outPercent <- optns$outPercent
   buff <- .Machine$double.eps * 10
   rangeGrid <- range(regGrid)
   minGrid <- rangeGrid[1]
   maxGrid <- rangeGrid[2]
   cutRegGrid <- regGrid[regGrid > minGrid + diff(rangeGrid) * outPercent[1] -
-                        buff | 
+                        buff & 
                         regGrid < minGrid + diff(rangeGrid) * outPercent[2] +
                         buff]
 
@@ -49,13 +52,12 @@ GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, optns, useBins=F
     smoothCov <- lwls2d(bwCov, kern, xin=rcov$tPairs, yin=rcov$meanVals,
                         win=rcov$count, xobsGrid=cutRegGrid, xout2=cutRegGrid)
   
-  # TODO: add cut argument
   if (error)
     sigma2 <- pc_covE(obsGrid, regGrid, bwCov, kernel=kern, rcov=rcov)$sigma2
   else 
     sigma2 <- NULL
 
-  res <- list( rawCov= rcov, smoothCov = (smoothCov + t(smoothCov)) / 2, bwCov = bwCov, sigma2 = sigma2);
+  res <- list( rawCov= rcov, smoothCov = (smoothCov + t(smoothCov)) / 2, bwCov = bwCov, sigma2 = sigma2, outGrid = cutRegGrid);
   class(res) <- "SmoothCov"  
   
   return(res)

@@ -49,12 +49,11 @@ FPCA = function(y, t, optns = CreateOptions()){
   # Get the smoothed covariance surface
   # mu: the smoothed mean curve evaluated at times 'obsGrid'
   mu = smcObj$mu
-  truncatedRegGrid = ...;
-  scsObj = GetSmoothedCovarSurface(y, t, mu, obsGrid, truncatedRegGrid, optns) 
+  scsObj = GetSmoothedCovarSurface(y, t, mu, obsGrid, regGrid, optns) 
 
 
   # Get the results for the eigen-analysis
-  eigObj = GetEigenAnalysisResults(y,t, scsObj, regGrid, optns)
+  eigObj = GetEigenAnalysisResults(y,t, scsObj, scsObj$outGrid, optns)
 
 
   # Make the return object X

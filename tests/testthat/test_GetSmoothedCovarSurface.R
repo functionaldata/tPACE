@@ -43,3 +43,12 @@ p3 <- SetOptions(samp3$yList, samp3$tList, CreateOptions(bwxcov_gcv='CV', dataTy
 system.time(tmp3 <- GetSmoothedCovarSurface(samp3$yList, samp3$tList, mu3, pts, regGrid, p3, useBins=FALSE))
 sum((diag(tmp3$smoothCov) - seq(0, 1, by=0.1))^2)
 
+# truncation.
+pTrunc <- SetOptions(samp3$yList, samp3$tList, CreateOptions(dataType='Sparse', error=FALSE, kernel='epan', outPercent=c(0.01, 0.99)))
+noErrTrunc <- GetSmoothedCovarSurface(samp3$yList, samp3$tList, mu3, pts, regGrid, pTrunc, useBins=FALSE)
+test_that('Cov Surface truncation works', {
+  expect_equal(noErr$smoothedCov[2:10, 2:10], noErrTrunc$smoothedCov)
+  expect_equal(noErr$rawCov, noErrTrunc$rawCov)
+  expect_equal(noErr$bwCov, noErrTrunc$bwCov)
+  expect_equal(noErr$sigma2, noErrTrunc$sigma2)
+})

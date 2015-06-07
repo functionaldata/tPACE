@@ -1,6 +1,7 @@
 # noeig: \approx maxK. The maximal number of eigenfunctions to use for implmentation.
 # Values:
 # phi: a nRegGrid * no_FVE
+# The input smoothCov is possibly truncated.
 
 GetEigenAnalysisResults <- function(smoothCov, regGrid, optns) {
 #   noeig \approx  maxK
@@ -26,18 +27,16 @@ GetEigenAnalysisResults <- function(smoothCov, regGrid, optns) {
   eigenV <- eigenV[, 1:noeig];
   d <- d[1:noeig];
 
-  phi <- eigenV / sqrt(gridSize);
+# normalization
+  phi <- apply(eigenV, 2, function(x) {
+                    x <- x / sqrt(trapz(regGrid, x^2)) 
+                    if (x[1] <= x[2])
+                      return(x)
+                    else
+                      return(-x)
+  })
   lambda <- gridSize * d;
 
-  # # normalized eigen functions
-  # eigenV <- apply(eigenV,2, function(x) x / sqrt(trapz(regGrid,(x)^2)) )
-  # eigenV <- apply(eigenV,2, function(x) if (x[1] <= x[2]){ x }else{ -x} )
-  
-  # # interpolate from the normalized eigenfunctions
-  # phi <- apply(eigenV,2, function(x) interp1(x= regGrid, y= x, xi=obsGrid, method="spline"))
-  # if (noeig ==1){
-    # phi <- t(phi)
-  # }
   
   # # normalized smoothed eigenfunctions
   # phi  <- apply(phi,2, function(x) x / sqrt(trapz(obsGrid,(x)^2)) )
