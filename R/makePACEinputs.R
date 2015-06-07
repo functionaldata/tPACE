@@ -8,8 +8,8 @@
 makePACEinputs <- function(IDs, tVec, yVec){
 
  uniqueIDs <- unique(IDs) 
- Lt <- sapply( uniqueIDs, function(x) tVec[ which(IDs == x)], USE.NAMES=FALSE)
- Ly <- sapply( uniqueIDs, function(x) yVec[ which(IDs == x)], USE.NAMES=FALSE)
+ Lt <- lapply( uniqueIDs, function(x) tVec[ which(IDs == x)])
+ Ly <- lapply( uniqueIDs, function(x) yVec[ which(IDs == x)])
  Lid <- as.list(uniqueIDs)
  L <- list( Lid = Lid, Ly = Ly, Lt = Lt)
 
