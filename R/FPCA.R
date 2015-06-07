@@ -51,6 +51,8 @@ FPCA = function(y, t, optns = CreateOptions()){
   mu = smcObj$mu
   scsObj = GetSmoothedCovarSurface(y, t, mu, obsGrid, regGrid, optns) 
 
+# convert things
+# convert phi and fittedCov to obsGrid.
 
   # Get the results for the eigen-analysis
   eigObj = GetEigenAnalysisResults(y,t, scsObj, scsObj$outGrid, optns)

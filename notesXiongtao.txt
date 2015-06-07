@@ -2,8 +2,7 @@ Write convertPhiMu
 
 plan:
 Change the implementation of lwls1d and lwls2d. Do not use locfit.
-Incorportate the truncation 
-no_FVE change things
+What is shrink?
 
 I don't know what the GCV implementation is in the matlab version. ASK Hans.
 
