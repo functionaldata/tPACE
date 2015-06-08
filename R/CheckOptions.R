@@ -67,7 +67,7 @@ CheckOptions = function(t,optns,n){
     }
   }
   if(  ( (length(optns$FVEthreshold)==1) &&  is.numeric(optns$FVEthreshold) ) ){
-    if ( (0<=optns$FVEthreshold) && (optns$FVEthreshold<=1) ){  
+    if (!( (0<=optns$FVEthreshold) && (optns$FVEthreshold<=1) ) ){  
       # the Fraction-of-Variance-Explained
       cat("Error: FPCA is aborted because the argument: FVEthreshold is invalid!\n"); 
       return(TRUE);   
