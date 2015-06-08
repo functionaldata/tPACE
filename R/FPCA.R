@@ -51,13 +51,13 @@ FPCA = function(y, t, optns = CreateOptions()){
   mu = smcObj$mu
   scsObj = GetSmoothedCovarSurface(y, t, mu, obsGrid, regGrid, optns) 
 
-# internal working regular grid. This may be a truncated version of the regGrid.
+  # internal working regular grid. This may be a truncated version of the regGrid.
   workGrid <- scsObj$outGrid
 
   # Get the results for the eigen-analysis
-  eigObj = GetEigenAnalysisResults(y,t, scsObj, workGrid, optns)
+  eigObj = GetEigenAnalysisResults(smoothCov = scsObj$smoothCov, workGrid, optns)
 
-# truncated obsGrid, and observations. Empty observation due to truncation has length 0.
+  # truncated obsGrid, and observations. Empty observation due to truncation has length 0.
   if (!all.equal(optns$outPercent, c(0, 1))) {
     buff <- .Machine$double.eps * 10
     obsGrid <- obsGrid[obsGrid >= min(workGrid) - buff &
@@ -67,12 +67,12 @@ FPCA = function(y, t, optns = CreateOptions()){
     t <- tmp$y
   }
 
-# convert things
-# convert phi and fittedCov to obsGrid.
+  # convert things
+  # convert phi and fittedCov to obsGrid.
   phiObs <- ConvertSupport(workGrid, obsGrid, eigObj$phi)
   CovObs <- ConvertSupport(workGrid, obsGrid, eigObj$fittedCov)
 
-# Get scores
+  # Get scores
 
   # Make the return object X
   X <- list( 'sigma' = scsObj$sigma, 'eigVal' = eigObj$eigVal, 'eigFunc' = eigObj$eigFunc, 'mu' = smcObj$mu, 

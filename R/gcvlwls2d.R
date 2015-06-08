@@ -14,7 +14,7 @@ gcvlwls2d <- function(obsGrid, ngrid=NULL, dataType=rcov$dataType, error=rcov$er
   
   r <- diff(range(obsGrid)) * sqrt(2) # sqrt(2) because the window is circular.
 
-  minBW <- getMinb(rcov, dataType=rcov$dataType, obsGrid=obsGrid)
+  minBW <- getMinb(t, dataType=rcov$dataType, obsGrid=obsGrid)
 
   if (missing(h0)) {
     h0 <- minBW

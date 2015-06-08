@@ -40,3 +40,4 @@ Thumbs.db
 # .RData 
 *.swp
 *.swo
+*.mat

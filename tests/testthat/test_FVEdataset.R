@@ -45,37 +45,4 @@ optns = CreateOptions()
   # Get the smoothed mean curve
   smcObj = GetSmoothedMeanCurve(y, t, obsGrid, regGrid, optns)
  
-  # Writing out the GetSmootherCovarSurface.R
-  useBins = FALSE
-  dataType <- optns$dataType
-  error <- optns$error
-  kern <- optns$kernel
-  bwuserCov <- optns$bwuserCov
-  bwuserCovGcv <- optns$bwuserCovGcv
-  verbose <- optns$verbose
-
-# get the truncation of the output grids.
-  outPercent <- optns$outPercent
-  buff <- .Machine$double.eps * 10
-  rangeGrid <- range(regGrid)
-  minGrid <- rangeGrid[1]
-  maxGrid <- rangeGrid[2]
-  cutRegGrid <- regGrid[regGrid > minGrid + diff(rangeGrid) * outPercent[1] -
-                        buff & 
-                        regGrid < minGrid + diff(rangeGrid) * outPercent[2] +
-                        buff]
-
-  # Get raw covariance   
-  rcov <- GetRawCov(y, t, obsGrid, mu, dataType, error)
-
-  if (useBins && bwuserCovGcv == 'CV'){
-    stop('If bwuserCovGcv == \'CV\' then we must use the unbinned rcov.')
-  }
-  
-  if (useBins){
-    rcov <- BinRawCov(rcov)
-}
-
-
-  r <- diff(range(obsGrid)) * sqrt(2) # sqrt(2) because the window is circular.
 
