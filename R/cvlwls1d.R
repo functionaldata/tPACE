@@ -1,8 +1,8 @@
-cvlwls1d <- function(x, t, kernel, npoly, nder, dataType ){
+cvlwls1d <- function(yy, tt, kernel, npoly, nder, dataType ){
 
   ncohort = length(t);
   tt  = unlist(t);
-  xx  = unlist(x);
+  xx  = unlist(yy);
   ind = unlist(lapply( 1:length(t), function(j) rep(j, times=length(t[[j]]))));
 
   ttn=tt;

@@ -1,4 +1,4 @@
-gcvlwls2d <- function(obsGrid, ngrid=NULL, dataType=rcov$dataType, error=rcov$error, kern, rcov, h0=NULL, verbose=TRUE, CV=FALSE) {
+gcvlwls2d <- function(obsGrid, ngrid=NULL, dataType=rcov$dataType, error=rcov$error, kern, rcov, h0=NULL, verbose=TRUE, CV=FALSE, t) {
 # TODO: Consider rewrite the function into a more general form. The current implementation is too specific and works only for smoothing raw covariance.
 # TODO: implement useBins 
 
