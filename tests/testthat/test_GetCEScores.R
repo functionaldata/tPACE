@@ -10,10 +10,13 @@ lamVec <- c(6, 1)
 phiMat <- diag(1, 2)
 Sigma_Yi <- diag(10, 2)
 test_that('GetIndCEScores works', {
-  expect_equal(GetIndCEScores(yVec, muVec, lamVec, phiMat, Sigma_Yi), 
+  expect_equal(GetIndCEScores(yVec, muVec, lamVec, phiMat, Sigma_Yi)[1:2], 
                list(xiEst=matrix(c(0.6, -0.1)), xiVar=diag(c(2.4, 0.9))))
-  expect_equal(GetIndCEScores(integer(0), muVec, lamVec, phiMat, Sigma_Yi), list(xiEst=NULL, xiVar=NULL))
+  expect_equal(GetIndCEScores(integer(0), muVec, lamVec, phiMat, Sigma_Yi)[1:2], list(xiEst=NULL, xiVar=NULL))
+  expect_equal(GetIndCEScores(yVec, muVec, lamVec, phiMat, Sigma_Yi, newyInd=1)$fittedY, matrix(0))
 })
+
+GetIndCEScores(yVec[1], muVec[1], lamVec, phiMat[1, , drop=FALSE], Sigma_Yi[1, 1, drop=FALSE], newyInd=1)
 
 # Set up
 set.seed(1)
@@ -50,7 +53,8 @@ expect_equal(sapply(tmp, function(x) length(x$muVec)), sapply(truncSamp$y, lengt
 # Test GetCEScores: compare to Matlab
 y <- list(c(1, 2), 4, c(0, 2, 3))
 t <- list(c(1.5, 2.5), 2, c(1, 1.5, 2.5))
-mu <- rep(0, 7)
+# mu <- rep(0, 7)
+mu <- seq(0, 3, length.out=7)
 obsGrid <- seq(0, 3, length.out=7)
 pts <- seq(0, 1, length.out=7)
 phi <- cbind(sin(2 * pi * pts), cos(2 * pi * pts))
@@ -61,9 +65,10 @@ tmp <- GetCEScores(y, t, list(), mu, obsGrid, fittedCov, lambda, phi, sigma2)
 test_that('GetCEScores for sparse case matches Matlab', {
 # xiEst are the same
   expect_equal(t(do.call(cbind, tmp[1, ])), 
-               matrix(c(-2.463692959041937, -4.035846541908064,
-                        -2.411388100357868, -0.646551724137931,
-                        -0.388349514563107, -1.362275449101796), 3, 2))
+               matrix(c(0.709244942754497,  0.337643678160920,
+                        -2.017923270954032, -0.194174757281554,
+                        -1.011227267892009, -0.329341317365270), 3, 2,
+                      byrow=TRUE))
 # xiVar are the same
   expect_equal(unlist(tmp[2, ]), c(0.568965517241379, 0.149314724790420,
                                    0.149314724790420, 0.281609195402299,
@@ -71,6 +76,8 @@ test_that('GetCEScores for sparse case matches Matlab', {
                                    -0.504480817738509, 0.951456310679612,
                                    0.341317365269461, 0.155573425829540,
                                    0.155573425829540, 0.281437125748503))
+# fitted Y_i are the same 
+  expect_equal(unlist(tmp[3, ]), c(1.162356321839080,  2.054597701149425, 3.844660194174757, 0.288922155688622, 1.829341317365270, 3.211077844311377))
 })
 
 # # Matlab code:
@@ -78,7 +85,8 @@ test_that('GetCEScores for sparse case matches Matlab', {
 # t = y;
 # y{1} = [1, 2]; y{2} = [4]; y{3} = [0, 2, 3]; 
 # t{1} = [1.5, 2.5]; t{2} = [2]; t{3} = [1, 1.5, 2.5];
-# mu = zeros(1, 7); 
+# # mu = zeros(1, 7); 
+# mu = linspace(0, 3, 7); 
 # out1 = linspace(0, 3, 7); 
 # pts = linspace(0, 1, 7); 
 # phi = [sin(2 * pi * pts)', cos(2 * pi * pts)'];
@@ -91,9 +99,9 @@ test_that('GetCEScores for sparse case matches Matlab', {
 # shrink = 0;
 # regular = 0;
 # rho = 0;
-# [xi_est, xi_var, ~] = getScores1(y, t, mu, phi, lambda, sigma, sigma_new, noeig, error, method, shrink, out1, regular, rho)
+# [xi_est, xi_var, ypred] = getScores1(y, t, mu, phi, lambda, sigma, sigma_new, noeig, error, method, shrink, out1, regular, rho)
 
 
 
 # no error case. This observation has a singular Sigma_Yi, which should not work in theory.
-tmp1 <- GetCEScores(y[3], t[3], list(), mu, obsGrid, fittedCov, lambda, phi, 0)
+# tmp1 <- GetCEScores(y[3], t[3], list(), mu, obsGrid, fittedCov, lambda, phi, 0)

@@ -20,7 +20,7 @@
 #' @param screePlot : make scree plot
 #' @param designPlot : make design plot
 #' @param corrPlot : make correlation plot
-#' @param rho : truncation threshold for the iterative residual  
+#' @param rho : truncation threshold for the iterative residual. Either 'cv': choose rho by leave-one-observation out cross-validation; 'no': for not using the iterative sigma2 estimate, or a numerica value.
 #' @param verbose : display diagnostic messages (default = FALSE)
 #' @param userMu : user-defined smoothed mean function 
 #' @param userCov : user-defined smoothed covariance function

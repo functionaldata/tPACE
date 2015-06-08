@@ -1,6 +1,6 @@
 # obsGrid: supports fittedCov and phi. May be a truncated version.
 # Assumes each tVec in t are all supported on obsGrid.
-# return: ret is a 2 by n array, with the first row containing the xiEst and second row containing the xiVar.
+# return: ret is a 2 by n array, with the first row containing the xiEst and second row containing the xiVar. 
 GetCEScores <- function(y, t, optns, mu, obsGrid, fittedCov, lambda, phi, sigma2) {
 
   if (length(lambda) != ncol(phi))
@@ -35,13 +35,31 @@ GetMuPhiSig <- function(t, obsGrid, mu, phi, Sigma_Y) {
 }
 
 
-GetIndCEScores <- function(yVec, muVec, lamVec, phiMat, Sigma_Yi,
-                           verbose=FALSE) {
+GetIndCEScores <- function(yVec, muVec, lamVec, phiMat, Sigma_Yi, newyInd=NULL,
+                            verbose=FALSE) {
+
   if (length(yVec) == 0) {
     if (verbose)
       warnings('Empty observation found, possibly due to truncation')
 
-    return(list(xiEst=NULL, xiVar=NULL))
+      return(list(xiEst=NULL, xiVar=NULL, fittedY=NULL))
+  }
+
+# When an individual has only one observation, the leave-one-out predicted Y is NA.
+  if (length(yVec) == 1 && !is.null(newyInd)) {
+    newPhi <- matrix(NA, ncol=length(lamVec))
+    newMu <- NA
+  }
+
+  if (!is.null(newyInd) && length(yVec) != 1) {
+    newy <- yVec[newyInd]
+    newPhi <- phiMat[newyInd, , drop=FALSE]
+    newMu <- muVec[newyInd]
+
+    yVec <- yVec[-newyInd]
+    muVec <- muVec[-newyInd]
+    phiMat <- phiMat[-newyInd, , drop=FALSE]
+    Sigma_Yi <- Sigma_Yi[-newyInd, -newyInd, drop=FALSE]
   }
 
   Lam <- diag(lamVec)
@@ -50,5 +68,12 @@ GetIndCEScores <- function(yVec, muVec, lamVec, phiMat, Sigma_Yi,
   xiEst <- LamPhiSig %*% matrix(yVec - muVec, ncol=1)
   xiVar <- Lam - LamPhi %*% t(LamPhiSig)
 
-  return(list(xiEst=xiEst, xiVar=xiVar))
+
+  fittedY <- if(is.null(newyInd)) 
+    muVec + phiMat %*% xiEst else 
+      newMu + newPhi %*% xiEst
+
+  ret <- list(xiEst=xiEst, xiVar=xiVar, fittedY=fittedY)
+
+  return(ret)
 }
