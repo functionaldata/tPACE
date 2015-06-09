@@ -22,7 +22,7 @@ system.time(brcov3 <- BinRawCov(rcov3))
 xout1 <- seq(0, 1, by=0.5)
 
 test_that('Matlab version is similar to R version',
-  expect_equal(as.numeric(lwls2d(0.3, kern='epan', rcov3$tpairn, rcov3$cxxn, xout1=xout1, xout2=xout1)), c(-0.0600,  0.0159,  0.0177,  0.0159,  0.4618,  0.5665,  0.0177,  0.5665,  1.1844), tolerance=0.1)
+  expect_equal(as.numeric(lwls2d(0.3, kern='epan', rcov3$tPairs, rcov3$cxxn, xout1=xout1, xout2=xout1)), c(-0.0600,  0.0159,  0.0177,  0.0159,  0.4618,  0.5665,  0.0177,  0.5665,  1.1844), tolerance=0.1)
 )
 
 # Sparse case
@@ -37,7 +37,7 @@ xout1 <- seq(0, 1, by=0.1)
 
 
 test_that('Estimated value should be close to the true value', {
-  expect_equal(diag(lwls2d(0.3, kern='epan', rcov3$tpairn, rcov3$cxxn, xout1=xout1, xout2=xout1)), xout1, tolerance=0.15)
+  expect_equal(diag(lwls2d(0.3, kern='epan', rcov3$tPairs, rcov3$cxxn, xout1=xout1, xout2=xout1)), xout1, tolerance=0.15)
   expect_equal(diag(lwls2d(0.3, kern='epan', brcov3$tPairs, brcov3$meanVals, brcov3$count, xout1=xout1, xout2=xout1)), xout1, tolerance=0.15)
 })
 
@@ -52,7 +52,7 @@ system.time(brcov4 <- BinRawCov(rcov4))
 xout1 <- seq(0, 1, by=0.1)
 
 test_that('Estimated value should be close to the true value', {
-  expect_equal(diag(lwls2d(0.1, kern='epan', rcov4$tpairn, rcov4$cxxn, xout1=xout1, xout2=xout1)), xout1, tolerance=0.1)
+  expect_equal(diag(lwls2d(0.1, kern='epan', rcov4$tPairs, rcov4$cxxn, xout1=xout1, xout2=xout1)), xout1, tolerance=0.1)
   expect_equal(diag(lwls2d(0.1, kern='epan', brcov4$tPairs, brcov4$meanVals, brcov4$count, xout1=xout1, xout2=xout1)), xout1, tolerance=0.1)
 })
 
@@ -61,4 +61,4 @@ test_that('Estimated value should be close to the true value', {
 
 # randWeights <- sample(1:3, n, replace=TRUE)
 # library(R.matlab)
-# writeMat('../data/data2Dsmoothers.mat', xin=rcov3$tpairn, yin=rcov3$cxxn, diagx=rcov3$diag[, 1], diagy=rcov3$diag[, 2], win=randWeights, xout1=xout1)
+# writeMat('../data/data2Dsmoothers.mat', xin=rcov3$tPairs, yin=rcov3$cxxn, diagx=rcov3$diag[, 1], diagy=rcov3$diag[, 2], win=randWeights, xout1=xout1)

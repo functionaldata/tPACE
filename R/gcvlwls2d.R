@@ -63,9 +63,9 @@ gcvlwls2d <- function(obsGrid, ngrid=NULL, dataType=rcov$dataType, error=rcov$er
       if (class(rcov) == 'BinnedRawCov')
         Scores <- sapply(bw, getGCVscores, kern=kern, xin=rcov$tPairs, yin=rcov$meanVals, win=rcov$count, RSS=rcov$RSS)
       else
-        Scores <- sapply(bw, getGCVscores, kern=kern, xin=rcov$tpairn, yin=rcov$cxxn) 
+        Scores <- sapply(bw, getGCVscores, kern=kern, xin=rcov$tPairs, yin=rcov$cxxn) 
     } else {
-      Scores <- sapply(bw, getCVscores, partition=partition, kern=kern, xin=rcov$tpairn, yin=rcov$cxxn) 
+      Scores <- sapply(bw, getCVscores, partition=partition, kern=kern, xin=rcov$tPairs, yin=rcov$cxxn) 
     }
     optInd <- which.min(Scores)
     opth <- bw[optInd]

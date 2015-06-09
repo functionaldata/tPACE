@@ -8,8 +8,8 @@ rcov <- GetRawCov(y,t, sort(unlist(t)), mu,'Sparse',FALSE) #Matches ML output
 # getGCVscores
 test_that('getGCVscores interface works', {
     expect_equal(
-        getGCVscores(2, kern='epan', xin=rcov$tpairn, yin=rcov$cxxn, win=as.numeric(rcov$win)), 
-        unname(gcv(rcov$cxxn ~ lp(rcov$tpairn[, 1], rcov$tpairn[, 2], deg=1, h=2), kern='epan')['gcv'])
+        getGCVscores(2, kern='epan', xin=rcov$tPairs, yin=rcov$cxxn, win=as.numeric(rcov$win)), 
+        unname(gcv(rcov$cxxn ~ lp(rcov$tPairs[, 1], rcov$tPairs[, 2], deg=1, h=2), kern='epan')['gcv'])
     )
 })
 
@@ -20,7 +20,7 @@ pts <- seq(0, 1, by=0.05)
 samp3 <- wiener(100, pts, sparsify=20)
 rcov3 <- GetRawCov(samp3$yList, samp3$tList, pts, rep(0, length(pts)), 'Sparse', error=FALSE)
 system.time(h3 <- gcvlwls2d(sort(unique(unlist(samp3$tList))), kern='epan', rcov=rcov3))
-fit3 <- lwls2d(h3$h, kern='epan', xin=rcov3$tpairn, yin=rcov3$cxxn, returnFit=TRUE)
+fit3 <- lwls2d(h3$h, kern='epan', xin=rcov3$tPairs, yin=rcov3$cxxn, returnFit=TRUE)
 plot(fit3)
 
 # Binned rcov = rcov
@@ -36,7 +36,7 @@ brcov4 <- BinRawCov(rcov4)
 
 h4 <- gcvlwls2d(sort(unique(unlist(samp4$tList))), kern='span', rcov=rcov4)
 h4bin <- gcvlwls2d(sort(unique(unlist(samp4$tList))), kern='span', rcov=brcov4)
-# fit4 <- lwls2d(h4$h, kern='epan', xin=rcov4$tpairn, yin=rcov4$cxxn, returnFit=TRUE)
+# fit4 <- lwls2d(h4$h, kern='epan', xin=rcov4$tPairs, yin=rcov4$cxxn, returnFit=TRUE)
 # plot(fit4)
 
 test_that('GCV on Binned rcov = rcov', {
@@ -47,7 +47,7 @@ test_that('GCV on Binned rcov = rcov', {
 # CV
 set.seed(3)
 system.time(h5 <- gcvlwls2d(sort(unique(unlist(samp3$tList))), rcov=rcov3, kern='epan', CV='10fold'))
-fit5 <- lwls2d(h5$h, kern='epan', xin=rcov3$tpairn, yin=rcov3$cxxn, returnFit=TRUE)
+fit5 <- lwls2d(h5$h, kern='epan', xin=rcov3$tPairs, yin=rcov3$cxxn, returnFit=TRUE)
 plot(fit5)
 
 lcv(fit3)

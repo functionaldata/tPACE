@@ -2,10 +2,10 @@ devtools::load_all();
 
 FVEdata <- read.table("http://www.hsph.harvard.edu/fitzmaur/ala2e/fev1.txt", col.names=c('SubjectID', 'Height', 'Age', 'InitialHeight', 'InitialAge', 'LogFEV1'), skip=42  );
 
-B = makePACEinputs(IDs= FVEdata$SubjectID, tVec=FVEdata$Age, yVec=FVEdata$LogFEV1);
+mySample = makePACEinputs(IDs= FVEdata$SubjectID, tVec=FVEdata$Age, yVec=FVEdata$LogFEV1);
 
-y= B$Ly
-t= B$Lt;
+y= mySample$Ly
+t= mySample$Lt;
 
 optns = CreateOptions()
 
@@ -45,4 +45,26 @@ optns = CreateOptions()
   # Get the smoothed mean curve
   smcObj = GetSmoothedMeanCurve(y, t, obsGrid, regGrid, optns)
  
+
+  # Get the smoothed covariance surface
+  # mu: the smoothed mean curve evaluated at times 'obsGrid'
+  mu = smcObj$mu
+  scsObj = GetSmoothedCovarSurface(y, t, mu, obsGrid, regGrid, optns) 
+
+  # workGrid: possibly truncated version of the regGrid; truncation would occur during smoothing
+  workGrid <- scsObj$outGrid
+
+  # Get the results for the eigen-analysis
+  eigObj = GetEigenAnalysisResults(smoothCov = scsObj$smoothCov, workGrid, optns)
+
+  # truncated obsGrid, and observations. Empty observation due to truncation has length 0.
+  if (!all.equal(optns$outPercent, c(0, 1))) {
+    buff <- .Machine$double.eps * 10
+    obsGrid <- obsGrid[obsGrid >= min(workGrid) - buff &
+                            obsGrid <= max(workGrid) + buff]
+    tmp <- TruncateObs(y, t, obsGrid)
+    y <- tmp$y
+    t <- tmp$y
+  }
+
 

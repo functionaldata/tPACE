@@ -51,7 +51,7 @@ FPCA = function(y, t, optns = CreateOptions()){
   mu = smcObj$mu
   scsObj = GetSmoothedCovarSurface(y, t, mu, obsGrid, regGrid, optns) 
 
-  # internal working regular grid. This may be a truncated version of the regGrid.
+  # workGrid: possibly truncated version of the regGrid; truncation would occur during smoothing
   workGrid <- scsObj$outGrid
 
   # Get the results for the eigen-analysis

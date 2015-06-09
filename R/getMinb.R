@@ -11,7 +11,7 @@ getMinb <- function(t, obsGrid, dataType=rcov$dataType, npoly=1, minUniqPts=3, m
       dstar <- minb(obsGrid, 2 + npoly) # rough 1D initial value 
 
       if (class(rcov) == 'RawCov') {
-        countRes <- getCount(rcov$tpairn)
+        countRes <- getCount(rcov$tPairs)
         count <- countRes[, 3]
         distMat <- as.matrix(dist(countRes[, 1:2]))
       } else if (class(rcov) == 'BinnedRawCov') {
@@ -44,6 +44,7 @@ getMinb <- function(t, obsGrid, dataType=rcov$dataType, npoly=1, minUniqPts=3, m
       tmp1[idx, idx] = 1
     }
     res = tmp1 - diag(n_obs);
+    # First and last timepoint are always considered observed
     res[c(1, n_obs),] = 1;  
     ids = matrix(res > 0); 
     b = matrix( rep(obsGrid, n_obs), nrow=n_obs)

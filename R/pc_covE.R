@@ -33,7 +33,7 @@ pc_covE = function(obsGrid, regGrid, bw_userCov, rotationCut=c(0, 1), kernel = '
     which(regGrid < a0 + lint * rotationCut[2]))]
   out22 = rcutGrid
 
-  tpairn = rcov$tpairn # time points pairs for raw covariance
+  tPairs = rcov$tPairs # time points pairs for raw covariance
   rcovdiag = rcov$diag # get raw covariance along diagonal direction
 
   # get smoothed covariance surface for x(t) using lwls2d
@@ -61,7 +61,7 @@ pc_covE = function(obsGrid, regGrid, bw_userCov, rotationCut=c(0, 1), kernel = '
   # Estimate variance of measurement error term
   # use quadratic form on diagonal to estimate Var(x(t))
   xvar = rotateLwls2d(bw = bw_userCov[1], kern = kernel, 
-    xin = tpairn, yin = cxxn, win = win1, xout = cbind(rcutGrid, out22))
+    xin = tPairs, yin = cxxn, win = win1, xout = cbind(rcutGrid, out22))
 
   sigma2 = trapz(rcutGrid, yvar - xvar) / (lint * rcutprop)
 

@@ -46,6 +46,8 @@ GetSmoothedMeanCurve <- function (y, t, obsGrid, regGrid, optns){
   
   result <- list( 'mu' = mu, 'muDense'= muDense, 'bw_mu' = bw_mu);
   class(result) <- "SMC"
+  # Garbage Collection
+  gc()
   return(result)
 }
 
