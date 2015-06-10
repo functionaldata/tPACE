@@ -22,13 +22,13 @@ gcvlwls2d <- function(obsGrid, ngrid=NULL, dataType=rcov$dataType, error=rcov$er
   
   if (kern == 'gauss') {
     if (is.null(h0))
-    stop('Not implemented')
+      stop('Not implemented')
     
     h0 = h0 * 0.2;
   }
 
   if (is.null(h0))
-  stop('the data is too sparse, no suitable bandwidth can be found! Try Gaussian Kernel instead!\n')
+    stop('the data is too sparse, no suitable bandwidth can be found! Try Gaussian Kernel instead!\n')
 
   # TODO: improve this initial choice. The initial h0 may not be that good. The search scheme may be too rough if there are a lot number of observations.
   h0 <- min(h0, r/4)

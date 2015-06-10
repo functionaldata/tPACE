@@ -12,11 +12,12 @@
 #' @param dataType : do we have dataType or sparse functional data ('Sparse', 'Dense', 'DenseWithMV', 'p>>n')
 #' @param error : having measurement error
 #' @param nRegGrid : number of support points in each direction of covariance surface 
-#' @param method : method to estimate the PC scores
+#' @param method : method to estimate the PC scores. Either 'CE' (default) or 'IN'
 #' @param shrink : apply shrinkage to estimates of random coefficients (dataType data only)
 #' @param newdata : new data points to estimate
 #' @param kernel : smoothing kernel choice
 #' @param numBins : number of bins
+#' @param useBins: testing purpose: whether to bin the same observed time points when 2D smoothing
 #' @param screePlot : make scree plot
 #' @param designPlot : make design plot
 #' @param corrPlotType: which correlation plot ('Fitted', 'Raw', 'Smoothed')
@@ -51,7 +52,7 @@ SetOptions = function(y, t, optns){
   userMu =optns[['userMu']];                  methodMu =optns[['methodMu']];
   outPercent =optns[['outPercent']];  userCov =optns[['userCov']];
   rotationCut =optns[['rotationCut']];    useBinnedData =optns[['useBinnedData']];
-  corrPlotType =optns[['corrPlotType']];
+  corrPlotType =optns[['corrPlotType']]; useBins = optns[['useBins']]
 
   if(is.null(bwmu)){ # bandwidth choice for mean function is using CV or GCV
     bwmu = 0;   
@@ -180,6 +181,10 @@ SetOptions = function(y, t, optns){
   if(is.null(useBinnedData)){ 
     useBinnedData = 'AUTO';
   }
+  if (is.null(useBins)) {
+    useBins <- FALSE
+  }
+ 
   if(is.null(corrPlotType)){ 
     corrPlotType = 'Fitted';
   }
@@ -188,6 +193,6 @@ SetOptions = function(y, t, optns){
           ntest1 = ntest1, ngrid1 = ngrid1, selectionMethod = selectionMethod, FVEthreshold = FVEthreshold,
           maxK = maxK, dataType = dataType, error = error, nRegGrid = nRegGrid, rotationCut = rotationCut,
           method = method, shrink = shrink, newdata = newdata, kernel = kernel, corrPlot = corrPlot, corrPlotType = corrPlotType,	
-          numBins = numBins, yname = yname, screePlot = screePlot, designPlot = designPlot, rho = rho, 
+          numBins = numBins, useBins = useBins, yname = yname, screePlot = screePlot, designPlot = designPlot, rho = rho, 
           verbose = verbose, userMu = userMu, userCov = userCov, methodMu= methodMu, outPercent = outPercent, useBinnedData = useBinnedData) )
 }

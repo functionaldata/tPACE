@@ -148,7 +148,7 @@ CheckOptions = function(t,optns,n){
     cat("Error: FPCA is aborted because the argument: corrPlot is invalid!\n");   
     return(TRUE);    
   }
-  if(!(any(optns$rho == c('cv-random','cv','none')))){ 
+  if(!(any(optns$rho == c('cv-random', 'cv', 'none', 'no')))){ 
     # truncation threshold for the iterative residual that is used 
     cat("Error: FPCA is aborted because the argument: rho is invalid!\n");     
     return(TRUE);   

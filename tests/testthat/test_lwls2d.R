@@ -1,4 +1,4 @@
-library(locfit)
+devtools::load_all()
 data(ethanol)
 
 fitRef <- locfit(NOx~lp(C, E, h=0.5, deg=1, scale=TRUE), data=ethanol, kern='epan')
@@ -56,7 +56,8 @@ test_that('Estimated value should be close to the true value', {
   expect_equal(diag(lwls2d(0.1, kern='epan', brcov4$tPairs, brcov4$meanVals, brcov4$count, xout1=xout1, xout2=xout1)), xout1, tolerance=0.1)
 })
 
-
+xout2 <- c(0, 0.5, 1)
+lwls2d(0.3, kern='rect', rcov3$tPairs, rcov3$cxxn, xout1=xout2, xout2=xout2)
 
 
 # randWeights <- sample(1:3, n, replace=TRUE)

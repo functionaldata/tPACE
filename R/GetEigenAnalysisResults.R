@@ -20,8 +20,7 @@ GetEigenAnalysisResults <- function(smoothCov, regGrid, optns) {
     
   if (noeig > length(d)) {
     noeig <- length(d);
-    warning(sprintf("Warning: at most %d number of PC can be selected!", 
-            noeig))
+    warning(sprintf("At most %d number of PC can be selected!", noeig))
   }
 
   eigenV <- eigenV[, 1:noeig];

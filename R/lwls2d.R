@@ -4,22 +4,22 @@
 # xin: an n by 2 dataframe or matrix of x-coordinate.
 # yin: a vector of y-coordinate.
 # win: a vector of weights on the observations. The number of count as in (maybe) raw covariance should be integrated into win.
-# xobsGrid: a p1-vector of first output coordinate grid.
-# xout2: a p2-vector of second output coordinate grid. If both xobsGrid and xout2 are unspecified then the output gridpoints are set to the input gridpoints.
+# xout1: a p1-vector of first output coordinate grid.
+# xout2: a p2-vector of second output coordinate grid. If both xout1 and xout2 are unspecified then the output gridpoints are set to the input gridpoints.
 # xout: alternative specification of output points. a matrix of two columns.
 # returnFit: If TRUE, return the fitted locfit object for the convenience of future operations such as gcv. Use predict(fit) to obtain the fitted values.
 # ...: pass on to locfit
 # Returns a p1 by p2 matrix of fitted values.
 # Difference from mullwlsk: The local window is elliptical. There is no nwe argument. The kernels supported are different. No local bandwidth choice is supported as it is never actually called in Matlab PACE. 
-lwls2d <- function(bw, kern='epan', xin, yin, win=NULL, xobsGrid=NULL, xout2=NULL, xout=NULL, returnFit=FALSE, scale=FALSE, ...) {
+lwls2d <- function(bw, kern='epan', xin, yin, win=NULL, xout1=NULL, xout2=NULL, xout=NULL, returnFit=FALSE, scale=FALSE, ...) {
   datin <- data.frame(cbind(xin, as.numeric(yin)))
   names(datin) <- c('x1', 'x2', 'y')
 
   if (missing(xout)) {
-    if (missing(xobsGrid) && missing(xout2))
+    if (missing(xout1) && missing(xout2))
       xout <- as.matrix(datin[, -3])
     else
-      xout <- as.matrix(expand.grid(xobsGrid, xout2))
+      xout <- as.matrix(expand.grid(xout1, xout2))
   }
   if (class(xout)[1] != 'lf_evs')
     colnames(xout) <- names(datin)[1:2]
@@ -31,7 +31,7 @@ lwls2d <- function(bw, kern='epan', xin, yin, win=NULL, xobsGrid=NULL, xout2=NUL
   uniqPts <- sort(unique(datin$x1))
   r <- diff(range(uniqPts))
   # maxk <- round((2 * bw / r * length(uniqPts))^2 * 4)
-  maxKLocfit <- length(uniqPts) ^ 2 / 5
+  maxKLocfit <- max(length(uniqPts) ^ 2, 5 * nrow(datin))
   
   
   if (class(xout)[1] == 'lf_evs') { # use locfit evaluation structure 
@@ -44,8 +44,8 @@ lwls2d <- function(bw, kern='epan', xin, yin, win=NULL, xobsGrid=NULL, xout2=NUL
     ret <- predict(fit, xout)
   }
   
-  if (!missing(xobsGrid) && !missing(xout2)) {
-    ret <- matrix(ret, length(xobsGrid), length(xout2))
+  if (!missing(xout1) && !missing(xout2)) {
+    ret <- matrix(ret, length(xout1), length(xout2))
   }
 
   if (returnFit)

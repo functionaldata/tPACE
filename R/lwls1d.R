@@ -27,7 +27,7 @@ lwls1d <- function(bw, kern='epan', npoly=1, nder=0, xin, yin, win=NULL, xout=da
     if (missing(win))
         win <- rep(1, length(xin))
 
-    fit <- locfit(y ~ lp(x, h=bw, deg=npoly), datin, weights=win, deriv=nder, ev=xout, kern=kern, maxk=500, ...) # maxK: space allocation
+    fit <- locfit(y ~ lp(x, h=bw, deg=npoly), datin, weights=win, deriv=nder, ev=xout, kern=kern, maxk=500, ...) # maxk: space allocation
 
     if (returnFit)
         return(fit)

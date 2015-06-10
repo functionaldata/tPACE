@@ -49,8 +49,9 @@ FPCA = function(y, t, optns = CreateOptions()){
   # Get the smoothed covariance surface
   # mu: the smoothed mean curve evaluated at times 'obsGrid'
   mu = smcObj$mu
-  scsObj = GetSmoothedCovarSurface(y, t, mu, obsGrid, regGrid, optns) 
-
+  scsObj = GetSmoothedCovarSurface(y, t, mu, obsGrid, regGrid, optns, optns$useBins) 
+  sigma2 <- scsObj$sigma2
+  
   # workGrid: possibly truncated version of the regGrid; truncation would occur during smoothing
   workGrid <- scsObj$outGrid
 
@@ -67,16 +68,27 @@ FPCA = function(y, t, optns = CreateOptions()){
     t <- tmp$y
   }
 
-  # convert things
   # convert phi and fittedCov to obsGrid.
-  phiObs <- ConvertSupport(workGrid, obsGrid, eigObj$phi)
-  CovObs <- ConvertSupport(workGrid, obsGrid, eigObj$fittedCov)
+  phiObs <- ConvertSupport(workGrid, obsGrid, phi=eigObj$phi)
+  CovObs <- ConvertSupport(workGrid, obsGrid, Cov=eigObj$fittedCov)
 
   # Get scores
+  if (optns$rho != 'no') {
+    rho <- GetRho(y, t, optns, mu, obsGrid, CovObs, eigObj$lambda, phiObs, sigma2)
+    sigma2 <- rho
+  }
+  
+  if (optns$method == 'CE') {
+    scoresObj <- GetCEScores(y, t, optns, mu, obsGrid, CovObs, eigObj$lambda, phiObs, sigma2)
+    
+  } else if (optns$method == 'IN') {
+    stop(' IN method not implemented yet')
+  }
 
-  # Make the return object X
-  X <- list( 'sigma' = scsObj$sigma, 'eigVal' = eigObj$eigVal, 'eigFunc' = eigObj$eigFunc, 'mu' = smcObj$mu, 
-             'smoothedCov' = scsObj$smoothCov, 'fittedCov' = eigObj$fittedCov)
+  # Make the return object ret
+  ret <- list(sigma2=scsObj$sigma2, lambda=eigObj$lambda, phi=eigObj$phi, xiEst=do.call(rbind, scoresObj[1, ]), xiVar=scoresObj[2, ], 
+    # fittedY = scoresObj[3, ], 
+    obsGrid=obsGrid, mu=mu, workGrid=workGrid, smoothedCov=scsObj$smoothCov, fittedCov=eigObj$fittedCov, optns=optns, bwMu=smcObj$bw_mu, bwCov=scsObj$bwCov)
 
-  return(X); 
+  return(ret); 
 }

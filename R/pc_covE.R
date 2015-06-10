@@ -40,7 +40,7 @@ pc_covE = function(obsGrid, regGrid, bw_userCov, rotationCut=c(0, 1), kernel = '
 
   cxxn = rcov$cxxn # off-diagonal terms
 
-  if(length(rcov$count) != 0){
+  if(length(rcov$count) != 0 && class(rcov)[1] != 'BinnedRawCov'){
     # for dataType="RegularwithMV" case, the raw covariance
     # matrix needs to be divided by the number of 
     # individual sums for each element in the matrix.
@@ -49,9 +49,17 @@ pc_covE = function(obsGrid, regGrid, bw_userCov, rotationCut=c(0, 1), kernel = '
     cxxn = cxxn / rcov.count
   }
 
-  win1 = rep(1, length(cxxn))
+  if (class(rcov)[1] == 'BinnedRawCov')
+    win1 <- rcov$count
+  else    
+    win1 = rep(1, length(cxxn))
 
   # get smoothed variance function for y(t) (observed) using lwls1d
+  if (class(rcov)[1] == 'BinnedRawCov') {
+    rcovdiag <- cbind(rcov$tDiag, rcov$diagMeans)
+    win2 <- rcov$diagCount
+    cxxn <- rcov$meanVals
+  } else
   win2 = rep(1, nrow(rcovdiag))
 
   # yvar is the smoothed variance function along the diagonal line

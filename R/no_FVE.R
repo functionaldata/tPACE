@@ -40,7 +40,7 @@ no_FVE <- function(userCov, FVEthreshold=0.85, returnEVec=FALSE, verbose=FALSE){
   idx <- (d <= 0) # to remove nonpositive eigenvalues
   if(sum(idx) > 0) { # if there are any nonpositive eigenvalues
     if (verbose)
-      warning(sprintf("Warning: %d real eigenvalues are negative or zero and are removed!", sum(idx)))
+      warning(sprintf("%d real eigenvalues are negative or zero and are removed!", sum(idx)))
   }
   
   d <- d[!idx] 
