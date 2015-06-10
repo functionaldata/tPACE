@@ -34,16 +34,19 @@ GetRawCov <- function(y,t,obsGridnew, mu, dataType, error){
     Ys = lapply(X = y, FUN=meshgrid)
     Xs = lapply(X = t, FUN=meshgrid)
 
+    # vectorise the grids for y & t
     xx1 = unlist(do.call(rbind, lapply(Xs, '[', 'X')) )
     xx2 = unlist(do.call(rbind, lapply(Xs, '[', 'Y')) ) 
     yy2 = unlist(do.call(rbind, lapply(Ys, '[', 'Y')) )
     yy1 = unlist(do.call(rbind, lapply(Ys, '[', 'X')) )
-
+    
+    # get id1/2 such that xx1/2 = q(id1/2), where q = unique(xx1/2)
     id1 = apply(X= sapply(X=xx1, FUN='==',  ...=sort(unique(xx1)) ),MARGIN=2, FUN=which)
     id2 = apply(X= sapply(X=xx2, FUN='==',  ...=sort(unique(xx2)) ),MARGIN=2, FUN=which)
     cyy = ( yy1 - mu[ id1]) * (yy2 - mu[id2] )
-
-    indx = unlist(sapply( 1:10, function(x) rep(x,  (unlist(lapply(length, X= y))[x])^2) ))
+    
+    # index for subject i
+    indx = unlist(sapply( 1:length(y), function(x) rep(x,  (unlist(lapply(length, X= y))[x])^2) ))
 
     tPairs = matrix( c(xx1, xx2), nrow=length(xx1), ncol=2);
 
