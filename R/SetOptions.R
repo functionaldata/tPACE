@@ -19,6 +19,7 @@
 #' @param numBins : number of bins
 #' @param screePlot : make scree plot
 #' @param designPlot : make design plot
+#' @param corrPlotType: which correlation plot ('Fitted', 'Raw', 'Smoothed')
 #' @param corrPlot : make correlation plot
 #' @param rho : truncation threshold for the iterative residual  
 #' @param verbose : display diagnostic messages (default = FALSE)
@@ -50,7 +51,7 @@ SetOptions = function(y, t, optns){
   userMu =optns[['userMu']];                  methodMu =optns[['methodMu']];
   outPercent =optns[['outPercent']];  userCov =optns[['userCov']];
   rotationCut =optns[['rotationCut']];    useBinnedData =optns[['useBinnedData']];
-  corrPlotType =opts[['corrPlotType']];
+  corrPlotType =optns[['corrPlotType']];
 
   if(is.null(bwmu)){ # bandwidth choice for mean function is using CV or GCV
     bwmu = 0;   
