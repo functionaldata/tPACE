@@ -1,4 +1,7 @@
 Write convertPhiMu
+fix warning in GetEigenAnalysisResults
+try rectangular kernel in Matlab and R
+mapX1d use interp1
 
 plan:
 Change the implementation of lwls1d and lwls2d. Do not use locfit.
