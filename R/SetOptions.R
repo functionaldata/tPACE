@@ -19,6 +19,7 @@
 #' @param numBins : number of bins
 #' @param screePlot : make scree plot
 #' @param designPlot : make design plot
+#' @param corrPlotType: which correlation plot ('Fitted', 'Raw', 'Smoothed')
 #' @param corrPlot : make correlation plot
 #' @param rho : truncation threshold for the iterative residual. Either 'cv': choose rho by leave-one-observation out cross-validation; 'no': for not using the iterative sigma2 estimate, or a numerica value.
 #' @param verbose : display diagnostic messages (default = FALSE)
@@ -50,6 +51,7 @@ SetOptions = function(y, t, optns){
   userMu =optns[['userMu']];                  methodMu =optns[['methodMu']];
   outPercent =optns[['outPercent']];  userCov =optns[['userCov']];
   rotationCut =optns[['rotationCut']];    useBinnedData =optns[['useBinnedData']];
+  corrPlotType =optns[['corrPlotType']];
 
   if(is.null(bwmu)){ # bandwidth choice for mean function is using CV or GCV
     bwmu = 0;   
@@ -70,12 +72,12 @@ SetOptions = function(y, t, optns){
     ngrid1 = 30;
   }
   if(is.null(selectionMethod)){ # the method of choosing the number of principal components K
-    selectionMethod = "AIC";
+    #  TODO : Possibly have user-defined selection methods for the # of FPCs and we keep
+    # an internal FVE-based method for us
+    selectionMethod = "FVE";
   }
   if(selectionMethod == "FVE" && is.null(FVEthreshold)){  # the Fraction-of-Variance-Explained
-    FVEthreshold = 0.95;
-  } else {
-    FVEthreshold = 0.9999;
+     FVEthreshold = 0.9999;
   }
   if(is.null(maxK)){ # maximum number of principal components to consider
     maxK = min(20, length(y)-1);   
@@ -178,11 +180,14 @@ SetOptions = function(y, t, optns){
   if(is.null(useBinnedData)){ 
     useBinnedData = 'AUTO';
   }
+  if(is.null(corrPlotType)){ 
+    corrPlotType = 'Fitted';
+  }
     
   return( list(bwmu = bwmu, bwmuGcv = bwmuGcv, bwuserCov = bwuserCov, bwuserCovGcv = bwuserCovGcv,
           ntest1 = ntest1, ngrid1 = ngrid1, selectionMethod = selectionMethod, FVEthreshold = FVEthreshold,
           maxK = maxK, dataType = dataType, error = error, nRegGrid = nRegGrid, rotationCut = rotationCut,
-          method = method, shrink = shrink, newdata = newdata, kernel = kernel, corrPlot = corrPlot,	
+          method = method, shrink = shrink, newdata = newdata, kernel = kernel, corrPlot = corrPlot, corrPlotType = corrPlotType,	
           numBins = numBins, yname = yname, screePlot = screePlot, designPlot = designPlot, rho = rho, 
           verbose = verbose, userMu = userMu, userCov = userCov, methodMu= methodMu, outPercent = outPercent, useBinnedData = useBinnedData) )
 }

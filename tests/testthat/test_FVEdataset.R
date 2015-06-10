@@ -2,10 +2,10 @@ devtools::load_all();
 
 FVEdata <- read.table("http://www.hsph.harvard.edu/fitzmaur/ala2e/fev1.txt", col.names=c('SubjectID', 'Height', 'Age', 'InitialHeight', 'InitialAge', 'LogFEV1'), skip=42  );
 
-B = makePACEinputs(IDs= FVEdata$SubjectID, tVec=FVEdata$Age, yVec=FVEdata$LogFEV1);
+mySample = makePACEinputs(IDs= FVEdata$SubjectID, tVec=FVEdata$Age, yVec=FVEdata$LogFEV1);
 
-y= B$Ly
-t= B$Lt;
+y= mySample$Ly
+t= mySample$Lt;
 
 optns = CreateOptions()
 
@@ -45,37 +45,26 @@ optns = CreateOptions()
   # Get the smoothed mean curve
   smcObj = GetSmoothedMeanCurve(y, t, obsGrid, regGrid, optns)
  
-  # Writing out the GetSmootherCovarSurface.R
-  useBins = FALSE
-  dataType <- optns$dataType
-  error <- optns$error
-  kern <- optns$kernel
-  bwuserCov <- optns$bwuserCov
-  bwuserCovGcv <- optns$bwuserCovGcv
-  verbose <- optns$verbose
 
-# get the truncation of the output grids.
-  outPercent <- optns$outPercent
-  buff <- .Machine$double.eps * 10
-  rangeGrid <- range(regGrid)
-  minGrid <- rangeGrid[1]
-  maxGrid <- rangeGrid[2]
-  cutRegGrid <- regGrid[regGrid > minGrid + diff(rangeGrid) * outPercent[1] -
-                        buff & 
-                        regGrid < minGrid + diff(rangeGrid) * outPercent[2] +
-                        buff]
+  # Get the smoothed covariance surface
+  # mu: the smoothed mean curve evaluated at times 'obsGrid'
+  mu = smcObj$mu
+  scsObj = GetSmoothedCovarSurface(y, t, mu, obsGrid, regGrid, optns) 
 
-  # Get raw covariance   
-  rcov <- GetRawCov(y, t, obsGrid, mu, dataType, error)
+  # workGrid: possibly truncated version of the regGrid; truncation would occur during smoothing
+  workGrid <- scsObj$outGrid
 
-  if (useBins && bwuserCovGcv == 'CV'){
-    stop('If bwuserCovGcv == \'CV\' then we must use the unbinned rcov.')
+  # Get the results for the eigen-analysis
+  eigObj = GetEigenAnalysisResults(smoothCov = scsObj$smoothCov, workGrid, optns)
+
+  # truncated obsGrid, and observations. Empty observation due to truncation has length 0.
+  if (!all.equal(optns$outPercent, c(0, 1))) {
+    buff <- .Machine$double.eps * 10
+    obsGrid <- obsGrid[obsGrid >= min(workGrid) - buff &
+                            obsGrid <= max(workGrid) + buff]
+    tmp <- TruncateObs(y, t, obsGrid)
+    y <- tmp$y
+    t <- tmp$y
   }
-  
-  if (useBins){
-    rcov <- BinRawCov(rcov)
-}
 
-
-  r <- diff(range(obsGrid)) * sqrt(2) # sqrt(2) because the window is circular.
 

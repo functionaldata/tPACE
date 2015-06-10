@@ -42,6 +42,8 @@ GetBinnedDataset <- function (y, t, optns){
   }
      
   result <- list( 't' = BinDataOutput$newt, 'y' = BinDataOutput$newy);
+  # Garbage Collection
+  gc()
   return(result)
 }
 

@@ -9,11 +9,11 @@ GetRawCov <- function(y,t,obsGridnew, mu, dataType, error){
 #  Input error:    TRUE with measurement error assumption
 #                  FALSE without measurement error assumption
 # 
-#  Output res: a list that contains tpairn, cxxn, indx,win and cyy
-#     tpairn:  N * 2  vector denotes the  pairs of time points for subject 
+#  Output res: a list that contains tPairs, cxxn, indx,win and cyy
+#     tPairs:  N * 2  vector denotes the  pairs of time points for subject 
 #                 concatenating as two vectors 
 #                if error = 1, all (t_ij, t_ij) will be removed  
-#       cxxn:    1 * N vector of raw covariance corresponding to tpairn      
+#       cxxn:    1 * N vector of raw covariance corresponding to tPairs      
 #       indx:    1 * N vector of indices for each subject
 #        win:    1 * N weight matrix for the 2-D smoother for covariance function
 #        cyy:    1 * M vector of raw covariance corresponding to all pairs of time points,
@@ -34,32 +34,35 @@ GetRawCov <- function(y,t,obsGridnew, mu, dataType, error){
     Ys = lapply(X = y, FUN=meshgrid)
     Xs = lapply(X = t, FUN=meshgrid)
 
+    # vectorise the grids for y & t
     xx1 = unlist(do.call(rbind, lapply(Xs, '[', 'X')) )
     xx2 = unlist(do.call(rbind, lapply(Xs, '[', 'Y')) ) 
     yy2 = unlist(do.call(rbind, lapply(Ys, '[', 'Y')) )
     yy1 = unlist(do.call(rbind, lapply(Ys, '[', 'X')) )
-
+    
+    # get id1/2 such that xx1/2 = q(id1/2), where q = unique(xx1/2)
     id1 = apply(X= sapply(X=xx1, FUN='==',  ...=sort(unique(xx1)) ),MARGIN=2, FUN=which)
     id2 = apply(X= sapply(X=xx2, FUN='==',  ...=sort(unique(xx2)) ),MARGIN=2, FUN=which)
     cyy = ( yy1 - mu[ id1]) * (yy2 - mu[id2] )
+    
+    # index for subject i
+    indx = unlist(sapply( 1:length(y), function(x) rep(x,  (unlist(lapply(length, X= y))[x])^2) ))
 
-    indx = unlist(sapply( 1:10, function(x) rep(x,  (unlist(lapply(length, X= y))[x])^2) ))
-
-    tpairn = matrix( c(xx1, xx2), nrow=length(xx1), ncol=2);
+    tPairs = matrix( c(xx1, xx2), nrow=length(xx1), ncol=2);
 
     if(error){
       tneq = which(xx1 != xx2)
       teq = which(xx1 == xx2)
       indx = indx[tneq];
-      diag = matrix(c(tpairn[teq,1], cyy[teq]), ncol = 2)
-      tpairn = tpairn[tneq,];
+      diag = matrix(c(tPairs[teq,1], cyy[teq]), ncol = 2)
+      tPairs = tPairs[tneq,];
       cxxn = cyy[tneq];     
     }else{
       cxxn = cyy;     
     }
 
     # win = ones(1, length(cxxn));
-    # count = getCount(tpairn)...
+    # count = getCount(tPairs)...
 
   }else if(dataType == 'Dense'){
     
@@ -72,13 +75,13 @@ GetRawCov <- function(y,t,obsGridnew, mu, dataType, error){
     cxxn = cyy;
     xxyy = meshgrid(t1);
 
-    tpairn =  (matrix( c(c(xxyy$X), c(xxyy$Y)), ncol = 2))
+    tPairs =  (matrix( c(c(xxyy$X), c(xxyy$Y)), ncol = 2))
 
     if(error){
-      tneq = which(tpairn[,1] != tpairn[,2])
-      teq = which(tpairn[,1] == tpairn[,2])
-      diag = matrix(c(tpairn[teq,1], cyy[teq]), ncol = 2)
-      tpairn = tpairn[tneq,];
+      tneq = which(tPairs[,1] != tPairs[,2])
+      teq = which(tPairs[,1] == tPairs[,2])
+      diag = matrix(c(tPairs[teq,1], cyy[teq]), ncol = 2)
+      tPairs = tPairs[tneq,];
       cxxn = cyy[tneq];     
     }else{
       cxxn = cyy;     
@@ -91,7 +94,7 @@ GetRawCov <- function(y,t,obsGridnew, mu, dataType, error){
     stop("Invalid 'dataType' argument type")
   } 
     
-  result <- list( 'tpairn' = tpairn, 'cxxn' = cxxn, 'indx' = indx, # 'win' = win,
+  result <- list( 'tPairs' = tPairs, 'cxxn' = cxxn, 'indx' = indx, # 'win' = win,
    'cyy' = cyy, 'diag' = diag, 'count' = count, 'error' = error, 'dataType' = dataType);  
  
   class(result) <- "RawCov"

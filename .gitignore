@@ -40,5 +40,5 @@ Thumbs.db
 # .RData 
 *.swp
 *.swo
-*~
-*.bak
+#*.mat
+.Rhistory
