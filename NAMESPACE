@@ -1,1 +1,3 @@
 exportPattern("^[[:alpha:]]+")
+useDynLib(tPACE) 
+importFrom(Rcpp, evalCpp)

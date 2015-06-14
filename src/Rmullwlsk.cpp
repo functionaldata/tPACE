@@ -7,12 +7,15 @@
 // [[Rcpp::depends(RcppEigen)]]
 // [[Rcpp::export]]
 
+
 Eigen::MatrixXd Rmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const std::string kernel_type, const Eigen::Map<Eigen::MatrixXd> & tPairs, const Eigen::Map<Eigen::MatrixXd> & cxxn, const Eigen::Map<Eigen::VectorXd> & win,  const Eigen::Map<Eigen::VectorXd> & xgrid, const Eigen::Map<Eigen::VectorXd> & ygrid){ 
 
   // tPairs : xin (in MATLAB code)
   // cxxn : yin (in MATLAB code)
   // xgrid: out1 (in MATLAB code)
   // ygrid: out2 (in MATLAB code)
+
+  const double invSqrt2pi=  1./(sqrt(2.*M_PI));
 
   // Map the kernel name so we can use switches  
   std::map<std::string,int> possibleKernels; 
@@ -96,27 +99,31 @@ Eigen::MatrixXd Rmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const std::st
         llx.row(1) = (lx.row(1).array() - ygrid(i))/bw(1); 
 
         //define the kernel used 
+
         switch (KernelName){
           case 1: // Epan
-            temp=  ((1-llx.row(0).array().pow(2))*(1- llx.row(1).array().pow(2))).array() * ((9./16)*lw).transpose().array(); 
+            temp=  ((1-llx.row(0).array().pow(2))*(1- llx.row(1).array().pow(2))).array() * 
+                   ((9./16)*lw).transpose().array(); 
             break;  
           case 2 : // Rect
             temp=(lw.array())*.25 ; 
             break;
-          case 3 : // Gauss //this and the following kernels are not tested. DO NOT USE!
-            temp =  ((-.5*(llx.row(1).array().pow(2))).exp())/(sqrt(2.*M_PI))  *   
-              ((-.5*(llx.row(0).array().pow(2))).exp())/(sqrt(2.*M_PI))  *
-              (lw.array()); 
+          case 3 : // Gauss
+            temp = ((-.5*(llx.row(1).array().pow(2))).exp()) * invSqrt2pi  *   
+                   ((-.5*(llx.row(0).array().pow(2))).exp()) * invSqrt2pi  *
+                   (lw.transpose().array()); 
             break;
-          case 4 : // GaussVar
-            temp =  ((((-.5*llx.row(0)).array()).exp())/(sqrt(2.*M_PI))).array() * 
-              ((((-.5*llx.row(1)).array()).exp())/(sqrt(2.*M_PI))).array() * 
-              (lw.array()) * ((1.5- (((.5) * llx.row(1)).array())).array()) *
-              ((1.25- (((.25) * llx.row(0)).array())).array());
+          case 4 : // GausVar
+            temp = (lw.transpose().array()) * 
+		   ((-0.5 * llx.row(0).array().pow(2)).array().exp() * invSqrt2pi).array() *
+                   ((-0.5 * llx.row(1).array().pow(2)).array().exp() * invSqrt2pi).array() * 
+                   (1.25 - (0.25 * (llx.row(0).array().pow(2))).array())  * 
+                   (1.50 - (0.50 * (llx.row(1).array().pow(2))).array()); 
             break;
           case 5 :  // Quar
-            temp =  (lw.array()) * ((1-llx.row(0).array()).array().pow(2)) *
-              ((1-llx.row(1).array()).array().pow(2))*(225./256.);
+              temp = (lw.transpose().array()) * 
+                     ((1.-llx.row(0).array().pow(2)).array().pow(2)).array() *
+                     ((1.-llx.row(1).array().pow(2)).array().pow(2)).array() * (225./256.);
             break;
         } 
 
