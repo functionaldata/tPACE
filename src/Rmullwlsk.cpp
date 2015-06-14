@@ -22,10 +22,22 @@ Eigen::MatrixXd Rmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const std::st
   possibleKernels["epan"]    = 1;   possibleKernels["rect"]    = 2;
   possibleKernels["gauss"]   = 3;   possibleKernels["gausvar"] = 4; 
   possibleKernels["quar"]    = 5; 
-  int KernelName =  possibleKernels.find(kernel_type )->second; //Set kernel choice
+   
+  // The following test is here for completeness, we mightwant to move it up a 
+  // level (in the wrapper) in the future. 
 
+  // If the kernel_type key exists set KernelName appropriately
+  int KernelName = 0;
+  if ( possibleKernels.count( kernel_type ) != 0){ 
+    KernelName = possibleKernels.find( kernel_type )->second; //Set kernel choice
+  } else {
+  // otherwise use "epan"as the kernel_type 
+    Rcpp::Rcout << "Kernel_type argument was not set correctly; Epanechnikov kernel used." << std::endl;
+    KernelName = possibleKernels.find( "epan" )->second;;
+  }
 
   // Check that we do not have zero weights // Should do a try-catch here
+  // Again this might be best moved a level-up. 
   if ( !(win.all()) ){  // 
     Rcpp::Rcout << "Cases with zero-valued windows are not yet implemented" << std::endl;
     return (tPairs);
