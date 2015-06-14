@@ -45,21 +45,19 @@ Eigen::MatrixXd Rmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const std::st
         //construct listX as vectors / size is unknown originally
         std::vector <unsigned int> list1, list2; 
         for (unsigned int y = 0; y != tPairs.cols(); y++){ 
-          if ( (tPairs(0,y) >= (xgrid(j) -(bw(0)-pow(10,-6))) ) && (tPairs(0,y) <= (xgrid(j) + (bw(0)+ pow(10,-6)))) ) {
+          if ( std::abs( tPairs(0,y) - xgrid(j) ) <= (bw(0)+ pow(10,-6))  ) {
+          // legacy MATLAB equivalent form :  
+          // if ( (tPairs(0,y) >= (xgrid(j) -(bw(0)+pow(10,-6)))) & (tPairs(0,y) <= (xgrid(j) + (bw(0)+ pow(10,-6))))) {
             list1.push_back(y);
           }         
-          if ( (tPairs(1,y) >= (ygrid(i) -(bw(1)-pow(10,-6))) ) && (tPairs(1,y) <= (ygrid(i) + (bw(1)+ pow(10,-6)))) ) {
+          if ( std::abs( tPairs(1,y) - ygrid(i) ) <= (bw(1)+ pow(10,-6))  ) {
             list2.push_back(y);
           }
         }
-
+  
         //get intersection between the two lists 
-        std::set_intersection(list1.begin(), list1.begin() + list1.size(), list2.begin(), list2.begin() + list2.size(), std::back_inserter(indx));     
-        
-        // Maybe be redundant  
-        list2.clear();
-        list1.clear();
-
+        std::set_intersection(list1.begin(), list1.begin() + list1.size(), list2.begin(), list2.begin() + list2.size(), std::back_inserter(indx));   
+  
       } else{ // just get the whole deal
         for (unsigned int y = 0; y != tPairs.cols(); ++y){
           indx.push_back(y);
@@ -67,7 +65,6 @@ Eigen::MatrixXd Rmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const std::st
       }  
 
       unsigned int indxSize = indx.size();
-      indx.clear(); // Again this clear maybe redundant / check in future
       Eigen::VectorXd lw(indxSize);  
       Eigen::VectorXd ly(indxSize);
       Eigen::MatrixXd lx(2,indxSize);
@@ -104,7 +101,7 @@ Eigen::MatrixXd Rmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const std::st
             temp=  ((1-llx.row(0).array().pow(2))*(1- llx.row(1).array().pow(2))).array() * ((9./16)*lw).transpose().array(); 
             break;  
           case 2 : // Rect
-            temp=(lw.array())*.25 ; //this might be wrong.
+            temp=(lw.array())*.25 ; 
             break;
           case 3 : // Gauss //this and the following kernels are not tested. DO NOT USE!
             temp =  ((-.5*(llx.row(1).array().pow(2))).exp())/(sqrt(2.*M_PI))  *   

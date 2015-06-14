@@ -13,15 +13,28 @@ library(testthat)
 # did not make a difference numericallly (small systems anyway)
 
 # These check out OK.
-U = test_that(" basic Epanetchnikov inputs match MATLAB output for different bandwidths", { 
+U = test_that("basic Epanetchnikov inputs match MATLAB output for different bandwidths", { 
 
 AA = Rmullwlsk(2* IN$bw,t(IN$tPairs),cxxn=IN$cxxn, xgrid=IN$regGrid, ygrid=IN$regGrid, kernel_type='epan',win=rep(1,38))
 BB = Rmullwlsk( c(5,3),t(IN$tPairs),cxxn=IN$cxxn, xgrid=IN$regGrid, ygrid=IN$regGrid, kernel_type='epan',win=rep(1,38))
 CC = Rmullwlsk( c(13.3,23.3),t(IN$tPairs),cxxn=IN$cxxn, xgrid=IN$regGrid, ygrid=IN$regGrid, kernel_type='epan',win=rep(1,38))
 
-  expect_equal(sum(AA ) ,-3.777751915321487e+02 , tolerance = 1e-12,scale = 1)
-  expect_equal(sum(BB ) , -3.540768950285936e+02, tolerance = 1e-15,scale = 1)
-  expect_equal(sum(CC ) ,  -3.761635853631063e+02, tolerance = 1e-12,scale = 1)
+  expect_equal(sum(AA), -3.777751915321487e+02, tolerance = 1e-12,scale = 1)
+  expect_equal(sum(BB), -3.540768950285936e+02, tolerance = 1e-15,scale = 1)
+  expect_equal(sum(CC),  -3.761635853631063e+02, tolerance = 1e-12,scale = 1)
+})
+
+ 
+# These check out OK.
+V = test_that("basic rectangular inputs match MATLAB output for different bandwidths", { 
+
+AA = Rmullwlsk(2* IN$bw,t(IN$tPairs),cxxn=IN$cxxn, xgrid=IN$regGrid, ygrid=IN$regGrid, kernel_type='rect',win=rep(1,38))
+BB = Rmullwlsk( c(5,3),t(IN$tPairs),cxxn=IN$cxxn, xgrid=IN$regGrid, ygrid=IN$regGrid, kernel_type='rect',win=rep(1,38))
+CC = Rmullwlsk( c(13.3,23.3),t(IN$tPairs),cxxn=IN$cxxn, xgrid=IN$regGrid, ygrid=IN$regGrid, kernel_type='rect',win=rep(1,38))
+
+  expect_equal(sum(AA), -3.288244527254398e+02, tolerance = 1e-12,scale = 1)
+  expect_equal(sum(BB), -3.333882366681741e+02, tolerance = 1e-11,scale = 1)
+  expect_equal(sum(CC), -3.732842331060850e+02, tolerance = 1e-12,scale = 1)
 })
 
  
