@@ -44,3 +44,5 @@ Thumbs.db
 .Rhistory
 *~
 *.bak
+*.o
+*.so
