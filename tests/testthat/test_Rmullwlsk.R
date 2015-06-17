@@ -90,13 +90,27 @@ S = test_that("strictly positive window weights inputs match MATLAB output for d
 
 
 # These check out OK.
-T = test_that("incoherent kernel_types fall back to Epanechnikov kernels", {
+T = test_that("incoherent kernel_types fall back to Epanechnikov kernels and give correct warnings", {
 
   AA = Rmullwlsk( c(3,4), t(IN$tPairs),cxxn=IN$cxxn, xgrid=IN$regGrid, ygrid=IN$regGrid, kernel_type='epan', win=sin(seq(1,38))+3)
   aa = Rmullwlsk( c(3,4), t(IN$tPairs),cxxn=IN$cxxn, xgrid=IN$regGrid, ygrid=IN$regGrid, kernel_type='boom3', win=sin(seq(1,38))+3)
 
   expect_equal(sum(AA), sum(aa), tolerance = 1e-15,scale = 1)
+  expect_warning(  Rmullwlsk(5.2* IN$bw,t(IN$tPairs),cxxn=IN$cxxn, xgrid=IN$regGrid, ygrid=IN$regGrid, kernel_type='epaffn',win=rep(1,38)), "Kernel_type argument was not set correctly; Epanechnikov kernel used.")
+
 })
+
+
+
+Y = test_that("Small bandwidths give correct error", {
+
+  expect_error(  Rmullwlsk(0.2* IN$bw,t(IN$tPairs),cxxn=IN$cxxn, xgrid=IN$regGrid, ygrid=IN$regGrid, kernel_type='epan',win=rep(1,38)), "No enough points in local window, please increase bandwidth.")
+
+})
+
+
+
+
 
 
 

@@ -30,7 +30,8 @@ Eigen::MatrixXd Rrotatedmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const 
     KernelName = possibleKernels.find( kernel_type )->second; //Set kernel choice
   } else {
   // otherwise use "epan"as the kernel_type 
-    Rcpp::Rcout << "Kernel_type argument was not set correctly; Epanechnikov kernel used." << std::endl;
+  // Rcpp::Rcout << "Kernel_type argument was not set correctly; Epanechnikov kernel used." << std::endl;
+    Rcpp::warning("Kernel_type argument was not set correctly; Epanechnikov kernel used.");
     KernelName = possibleKernels.find( "epan" )->second;;
   }
 
@@ -127,9 +128,6 @@ Eigen::MatrixXd Rrotatedmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const 
           break;
       } 
       
-      
-    // Rcpp::Rcout << " temp : " << std::endl<< temp << std::endl;   
-
       // make the design matrix
       Eigen::MatrixXd X(indxSize ,3);
       X.setOnes();    
@@ -143,8 +141,8 @@ Eigen::MatrixXd Rrotatedmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const 
     } else if ( ly.size() == 1) { 
       mu(i) = ly(0);
     } else {
-      Rcpp::Rcout <<"Not a single point in local window, please increase bandwidth." << std::endl;   
-      return (tPairs);
+      //Rcpp::Rcout <<"The meter value is:" << meter << std::endl;  
+      Rcpp::stop("No enough points in local window, please increase bandwidth.");
     }
   } 
 
