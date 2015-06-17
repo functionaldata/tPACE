@@ -148,6 +148,7 @@ Eigen::MatrixXd Rmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const std::st
         Eigen::VectorXd beta = llt_XTWX.solve(X.transpose() * temp.asDiagonal() * ly);
         mu(i,j)=beta(0); 
       } else {
+      // should stop instead
         Rcpp::Rcout <<"No enough points in local window, please increase bandwidth." << std::endl;  
         Rcpp::Rcout <<"The meter value is:" << meter << std::endl;  
         return (tPairs);

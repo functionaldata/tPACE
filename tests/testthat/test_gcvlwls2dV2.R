@@ -1,0 +1,107 @@
+devtools::load_all()
+options(error=recover)
+library(testthat)
+
+load('data/dataForGetRawCov.RData')
+# TOO SPARSE: THIS HAS PROBLEM as the getMinb is too small.
+rcov <- GetRawCov(y,t, sort(unlist(t)), mu,'Sparse',FALSE) 
+
+set.seed(1)
+pts <- seq(0, 1, by=0.05)
+samp3 <- wiener(100, pts, sparsify=2:7)
+rcov3 <- GetRawCov(samp3$yList, samp3$tList, pts, rep(0, length(pts)), 'Sparse', error=FALSE)
+brcov3 <- BinRawCov(rcov3)
+obsGrid <- sort(unique(unlist(samp3$tList)))
+regGrid <- seq(min(obsGrid), max(obsGrid), length.out=101)
+g1 <- gcvlwls2dV2(obsGrid, regGrid, kern='epan', rcov=rcov3, t=samp3$tList)
+g2 <- gcvlwls2dV2(obsGrid, regGrid, kern='epan', rcov=brcov3, t=samp3$tList)
+test_that('Binning works for matlab GCV', {
+  expect_equal(g1, g2)
+})
+
+names(samp3$tList) <- 1:length(samp3$tList)
+names(samp3$yList) <- names(samp3$tList)
+samp3$tList <- lapply(samp3$tList, matrix, nrow=1)
+samp3$yList <- lapply(samp3$yList, matrix, nrow=1)
+R.matlab::writeMat('samp3.mat', y=samp3$yList, t=samp3$tList)
+# GCV values matches matlab, but procedures for optimal GCV BW choice are different.
+
+# DOES NOT WORK
+# gcvlwls2dV2(obsGrid, regGrid, kern='epan', rcov=rcov, t=t)
+# debug(gcvlwls2dV2)
+# debug(getGCVscoresV2)
+
+# # getGCVscores
+# test_that('getGCVscores interface works', {
+    # expect_equal(
+        # getGCVscores(2, kern='epan', xin=rcov$tPairs, yin=rcov$cxxn, win=as.numeric(rcov$win)), 
+        # unname(gcv(rcov$cxxn ~ lp(rcov$tPairs[, 1], rcov$tPairs[, 2], deg=1, h=2), kern='epan')['gcv'])
+    # )
+# })
+
+
+# # use wiener process
+# set.seed(1)
+# pts <- seq(0, 1, by=0.05)
+# samp3 <- wiener(100, pts, sparsify=2:7)
+# rcov3 <- GetRawCov(samp3$yList, samp3$tList, pts, rep(0, length(pts)), 'Sparse', error=FALSE)
+# system.time(h3 <- gcvlwls2d(sort(unique(unlist(samp3$tList))), kern='epan', rcov=rcov3))
+# fit3 <- lwls2d(h3$h, kern='epan', xin=rcov3$tPairs, yin=rcov3$cxxn, returnFit=TRUE)
+# plot(fit3)
+
+# # Binned rcov = rcov
+# brcov3 <- BinRawCov(rcov3)
+# system.time(h3 <- gcvlwls2d(sort(unique(unlist(samp3$tList))), kern='epan', rcov=rcov3))
+# system.time(h3bin <- gcvlwls2d(sort(unique(unlist(samp3$tList))), kern='epan', rcov=brcov3))
+
+# # Error=TRUE
+# samp4 <- samp3
+# samp4$yList <- lapply(samp4$yList, function(x) x + rnorm(length(x)))
+# rcov4 <- GetRawCov(samp3$yList, samp3$tList, pts, rep(0, length(pts)), 'Sparse', error=TRUE)
+# brcov4 <- BinRawCov(rcov4)
+
+# h4 <- gcvlwls2d(sort(unique(unlist(samp4$tList))), kern='span', rcov=rcov4)
+# h4bin <- gcvlwls2d(sort(unique(unlist(samp4$tList))), kern='span', rcov=brcov4)
+# # fit4 <- lwls2d(h4$h, kern='epan', xin=rcov4$tPairs, yin=rcov4$cxxn, returnFit=TRUE)
+# # plot(fit4)
+
+# test_that('GCV on Binned rcov = rcov', {
+  # expect_equal(h3, h3bin)
+  # expect_equal(h4, h4bin)
+# })
+
+# # CV
+# set.seed(3)
+# system.time(h5 <- gcvlwls2d(sort(unique(unlist(samp3$tList))), rcov=rcov3, kern='epan', CV='10fold'))
+# fit5 <- lwls2d(h5$h, kern='epan', xin=rcov3$tPairs, yin=rcov3$cxxn, returnFit=TRUE)
+# plot(fit5)
+
+# lcv(fit3)
+# tmp <- caret::createFolds(rcov3$cxxn, k=10)
+
+# # Consistency test: slow
+# set.seed(1)
+# pts <- seq(0, 1, by=0.01)
+# outPts <- seq(0, 1, by=0.1)
+# samp5 <- wiener(500, pts, sparsify=20)
+# rcov5 <- GetRawCov(samp5$yList, samp5$tList, pts, rep(0, length(pts)), 'Sparse', error=FALSE)
+# brcov5 <- BinRawCov(rcov5)
+# system.time(h5bin <- gcvlwls2d(sort(unique(unlist(samp5$tList))), kern='epan', rcov=brcov5))
+# # system.time(h5 <- gcvlwls2d(sort(unique(unlist(samp5$tList))), kern='epan', rcov=rcov5))
+# tmp <- lwls2d(h5bin$h, 'epan', brcov5$tPairs, brcov5$meanVals, brcov5$count, xout1=outPts, xout2=outPts)
+# test_that('gcvlwls2d smooth it well', {
+  # expect_equal(diag(tmp), outPts, tolerance=0.1)
+# })
+
+# # Consistency test: Dense
+# set.seed(1)
+# pts <- seq(0, 1, by=0.01)
+# outPts <- seq(0, 1, by=0.1)
+# samp6 <- wiener(10000, pts, sparsify=length(pts))
+# rcov6 <- GetRawCov(samp6$yList, samp6$tList, pts, rep(0, length(pts)), 'Dense', error=FALSE)
+# brcov6 <- BinRawCov(rcov6)
+# system.time(h6bin <- gcvlwls2d(sort(unique(unlist(samp6$tList))), kern='epan', rcov=brcov6))
+# tmp <- lwls2d(h6bin$h, 'epan', brcov6$tPairs, brcov6$meanVals, brcov6$count, xout1=outPts, xout2=outPts)
+# test_that('gcvlwls2d smooth it well', {
+  # expect_equal(diag(tmp), outPts, tolerance=0.02)
+# })

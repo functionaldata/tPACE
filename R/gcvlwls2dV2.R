@@ -1,0 +1,175 @@
+gcvlwls2dV2 <- function(obsGrid, regGrid, ngrid=NULL, dataType=rcov$dataType, error=rcov$error, kern, rcov, h0=NULL, verbose=TRUE, CV=FALSE, t) {
+
+# Returns: a list of length 2, containing the optimal bandwidth and the gcv score.
+# obsGrid: observation points. 
+# ngrid: I think this should not be used in the gcv function.
+# CV: whether to use CV rather than GCV. Supported values are '[k]fold', where '[k]' is a integer.
+
+# This function computes the optimal bandwidth choice for the covariance surface. 
+# function use GCV method by pooling the longitudinal data together. 
+# verbose is unused for now
+# this is incompatible with PACE because the GCV is calculated in a different way.
+  
+  r <- diff(range(obsGrid)) * sqrt(2) # sqrt(2) because the window is circular.
+
+  minBW <- getMinb(t, dataType=rcov$dataType, obsGrid=obsGrid)
+
+  if (missing(h0)) {
+    h0 <- minBW
+  }
+  
+  if (kern == 'gauss') {
+    if (is.null(h0))
+      stop('Not implemented')
+    
+    h0 = h0 * 0.2;
+  }
+
+  if (is.null(h0))
+    stop('the data is too sparse, no suitable bandwidth can be found! Try Gaussian Kernel instead!\n')
+
+  # TODO: improve this initial choice. The initial h0 may not be that good. The search scheme may be too rough if there are a lot number of observations.
+  h0 <- min(h0, r/4)
+  if (h0 < r/4) {    
+    q <- (r / (4 * h0)) ^ (1/9)
+  } else if (h0 < r/2) {
+    q <- (r / (2 * h0)) ^ (1/9)
+  } else if (h0 < r) {
+    q <- (r / h0) ^ (1/9)
+  } else {
+    stop('Data is too sparse. The minimal bandwidth is the range of data')
+  }
+
+  bw <- (q ^ (0:9)) * h0 # from h0 to r / 4
+
+  opth <- h0
+
+  leave <- FALSE
+  iter <- 0
+  maxIter <- 1 # ??
+  
+  if (CV != FALSE) {
+    useKfold <- regexpr('fold', CV)
+    if (useKfold != -1) {
+      fold <- as.integer(substr(CV, 1, useKfold - 1))
+      partition <- caret::createFolds(rcov$cxxn, k=fold)
+    }
+  }
+  
+  while (!leave && iter < maxIter) {
+    if (CV == FALSE) {
+      if (class(rcov) == 'BinnedRawCov')
+        Scores <- sapply(bw, getGCVscoresV2, kern=kern, xin=rcov$tPairs, yin=rcov$meanVals, win=rcov$count, regGrid=regGrid, RSS=rcov$RSS)
+      else
+        Scores <- sapply(bw, getGCVscoresV2, kern=kern, xin=rcov$tPairs, yin=rcov$cxxn, regGrid=regGrid) 
+    } else {
+      Scores <- sapply(bw, getCVscoresV2, partition=partition, kern=kern, xin=rcov$tPairs, yin=rcov$cxxn) 
+    }
+    optInd <- which.min(Scores)
+    opth <- bw[optInd]
+    optgcv <- Scores[optInd]
+    
+    if (opth >= r - 1e-12) {
+      leave <- TRUE
+      stop('Data is too sparse. The optimal bandwidth equals to the range of input time points. Try Gaussian kernel.')
+    }
+    # else if (opth < r) {
+      
+      if (optInd != length(bw) && !is.infinite(optgcv))
+      leave <- TRUE            
+      else if (is.infinite(optgcv)) {
+        if (verbose)
+        warnings('Data is too sparse, retry with larger bandwidths!')
+        h0 <- bw[10] * 1.01
+      } else if (opth == bw[length(bw)]) {
+        warning('Optimal bandwidth not found in the candidate bandwidths. Retry with larger bandwidths')
+        h0 <- bw[9] 
+      }
+      
+      if (!leave) {
+        newr <- seq(0.5, 1, by=0.05) * r # ??? this can be quite slow
+        ind <- which(newr > h0)[1]
+        q <- (newr[ind] / h0) ^ (1/9)
+        bw <- q ^ (0:9) * h0
+        if (verbose) {
+          cat('New bwuserCov candidates:\n')
+          print(bw)
+        }
+
+        iter <- iter + 1
+      }
+  # }
+    
+  }
+
+  ret <- list(h=opth, gcv=optgcv, minBW=minBW)
+  if (CV != FALSE)
+    names(ret)[2] <- 'cv'
+  
+  return(ret)
+
+}
+
+
+getGCVscoresV2 <- function(bw, kern, xin, yin, win=NULL, regGrid, RSS=NULL, ...) {
+# ...: passed on to lwls2d
+# RSS: for implementing GCV of binned rcov.
+  # browser() 
+  if (is.null(win))
+    win <- rep(1, length(yin))
+    
+  fit <- lwls2dV2(bw, kern, xin=xin, yin=yin, win=win, xout1=regGrid, xout2=regGrid)
+  obsFit <- interp2(regGrid, regGrid, fit, xin[, 1], xin[, 2])
+  
+  # residual sum of squares
+  res <- sum((yin - obsFit) ^ 2 * win)
+  if (!is.null(RSS))
+    res <- res + sum(RSS)
+  
+  # kernel at x=0
+  k0 <- KernelAt0(kern)
+  N <- sum(win)
+  r <- diff(range(xin[, 1]))
+  bottom <- 1 - (1 / N) * (r * k0 / bw)^2
+  GCV <- res / bottom^2
+
+  return(GCV)
+}
+
+
+# k-fold CV
+# partition: a list of testset observation indices, returned by caret::createFolds
+# ...: passed on to lwls2d
+getCVscoresV2 <- function(bw, partition, xin, yin, ...) {
+
+  stop('does not work until 2D smoother on a n by 2 matrix gridpoints is implemented')
+  n <- length(yin)
+  
+  # browser()
+  cvSubSum <- sapply(partition, function(testSet) {
+    # browser()
+    fit <- lwls2dV2(bw, xin=xin, yin=yin, subset=-testSet, ..., returnFit=TRUE)
+    cvSubSum <- (yin[testSet] - predict(fit, newdata=xin[testSet, ]))^2
+    return(sum(cvSubSum))
+  })
+  
+  return(sum(cvSubSum))
+}
+
+# ??? Why is this not the 2D kernel
+KernelAt0 <- function(kern) {
+  if (kern == 'quar')
+    k0 <- 0.9375
+  else if (kern == 'epan')
+    k0 <- 0.75
+  else if (kern == 'rect')
+    k0 <- 0.5
+  else if (kern == 'gausvar')
+    k0 <- 0.498677850501791
+  else if (kern == 'gauss')
+    k0 <- 0.398942280401433
+  else
+    stop('Unknown kernel')
+    
+  return(k0)
+}

@@ -1,8 +1,4 @@
-Write convertPhiMu
-fix warning in GetEigenAnalysisResults
-try rectangular kernel in Matlab and R
-mapX1d use interp1
-When data is too regular, not using binning would have space allocation problem.
+The structure of mullwlsk is strange (invalid). One should check minimal neighbor requirement outside.
 
 plan:
 Change the implementation of lwls1d and lwls2d. Do not use locfit.

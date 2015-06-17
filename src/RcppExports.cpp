@@ -23,3 +23,20 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// Rrotatedmullwlsk
+Eigen::MatrixXd Rrotatedmullwlsk(const Eigen::Map<Eigen::VectorXd>& bw, const std::string kernel_type, const Eigen::Map<Eigen::MatrixXd>& tPairs, const Eigen::Map<Eigen::MatrixXd>& cxxn, const Eigen::Map<Eigen::VectorXd>& win, const Eigen::Map<Eigen::MatrixXd>& xygrid, const unsigned int npoly);
+RcppExport SEXP tPACE_Rrotatedmullwlsk(SEXP bwSEXP, SEXP kernel_typeSEXP, SEXP tPairsSEXP, SEXP cxxnSEXP, SEXP winSEXP, SEXP xygridSEXP, SEXP npolySEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type bw(bwSEXP);
+    Rcpp::traits::input_parameter< const std::string >::type kernel_type(kernel_typeSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd>& >::type tPairs(tPairsSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd>& >::type cxxn(cxxnSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type win(winSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd>& >::type xygrid(xygridSEXP);
+    Rcpp::traits::input_parameter< const unsigned int >::type npoly(npolySEXP);
+    __result = Rcpp::wrap(Rrotatedmullwlsk(bw, kernel_type, tPairs, cxxn, win, xygrid, npoly));
+    return __result;
+END_RCPP
+}
