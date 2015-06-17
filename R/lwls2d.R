@@ -31,7 +31,7 @@ lwls2d <- function(bw, kern='epan', xin, yin, win=NULL, xout1=NULL, xout2=NULL, 
   uniqPts <- sort(unique(datin$x1))
   r <- diff(range(uniqPts))
   # maxk <- round((2 * bw / r * length(uniqPts))^2 * 4)
-  maxKLocfit <- max(length(uniqPts) ^ 2, 5 * nrow(datin))
+  maxKLocfit <- 2000
   
   
   if (class(xout)[1] == 'lf_evs') { # use locfit evaluation structure 

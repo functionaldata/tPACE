@@ -86,7 +86,7 @@ FPCA = function(y, t, optns = CreateOptions()){
   }
 
   # Make the return object ret
-  ret <- list(sigma2=scsObj$sigma2, lambda=eigObj$lambda, phi=eigObj$phi, xiEst=do.call(rbind, scoresObj[1, ]), xiVar=scoresObj[2, ], 
+  ret <- list(sigma2=scsObj$sigma2, lambda=eigObj$lambda, phi=eigObj$phi, xiEst=t(do.call(cbind, scoresObj[1, ])), xiVar=scoresObj[2, ], 
     # fittedY = scoresObj[3, ], 
     obsGrid=obsGrid, mu=mu, workGrid=workGrid, smoothedCov=scsObj$smoothCov, fittedCov=eigObj$fittedCov, optns=optns, bwMu=smcObj$bw_mu, bwCov=scsObj$bwCov)
 
