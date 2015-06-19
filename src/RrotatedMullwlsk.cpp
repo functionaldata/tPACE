@@ -7,7 +7,7 @@
 // [[Rcpp::depends(RcppEigen)]]
 // [[Rcpp::export]]
 
-Eigen::MatrixXd Rrotatedmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const std::string kernel_type, const Eigen::Map<Eigen::MatrixXd> & tPairs, const Eigen::Map<Eigen::MatrixXd> & cxxn, const Eigen::Map<Eigen::VectorXd> & win,  const Eigen::Map<Eigen::MatrixXd> & xygrid, const unsigned int npoly){ 
+Eigen::MatrixXd Rrotatedmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const std::string kernel_type, const Eigen::Map<Eigen::MatrixXd> & tPairs, const Eigen::Map<Eigen::MatrixXd> & cxxn, const Eigen::Map<Eigen::VectorXd> & win,  const Eigen::Map<Eigen::MatrixXd> & xygrid, const unsigned int npoly, const bool & bwCheck){ 
 
   // tPairs : xin (in MATLAB code)
   // cxxn : yin (in MATLAB code)
@@ -91,7 +91,7 @@ Eigen::MatrixXd Rrotatedmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const 
     }
 
 
-    if (ly.size()>=npoly+1.){
+    if (ly.size()>=npoly+1 && !bwCheck ){
 
     //computing weight matrix 
       Eigen::VectorXd temp(indxSize);
@@ -138,14 +138,23 @@ Eigen::MatrixXd Rrotatedmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const 
       mu(i)=beta(0); 
      //Rcpp::Rcout << " mu : " <<  " " << beta(0) << std::endl;   
      //Rcpp::Rcout << " X : " <<  " " << X << std::endl;   
-    } else if ( ly.size() == 1) { 
+    } else if ( ly.size() == 1 && !bwCheck) { 
       mu(i) = ly(0);
-    } else {
+    } else if ( ly.size() != 1 && (ly.size() < npoly+1)  ){
       //Rcpp::Rcout <<"The meter value is:" << meter << std::endl;  
-      Rcpp::stop("No enough points in local window, please increase bandwidth.");
+      //Rcpp::stop("No enough points in local window, please increase bandwidth.");
+      Eigen::MatrixXd checker(1,1); 
+      checker(0,0) = 0.; 
+      return(checker);
     }
   } 
-
+  
+  if (bwCheck){
+     Eigen::MatrixXd checker(1,1); 
+     checker(0,0) = 1.; 
+     return(checker);
+  }
+  
   return ( mu ); 
 }
 
