@@ -31,7 +31,7 @@ pc_covE = function(obsGrid, regGrid, bw_userCov, rotationCut=c(0, 1), kernel = '
   }
   rcutGrid = regGrid[intersect(which(regGrid > a0 + lint * rotationCut[1]),
     which(regGrid < a0 + lint * rotationCut[2]))]
-  out22 = rcutGrid
+  out22 = rcutGrid # Xiongtao: out22 is redundant?
 
   tPairs = rcov$tPairs # time points pairs for raw covariance
   rcovdiag = rcov$diag # get raw covariance along diagonal direction

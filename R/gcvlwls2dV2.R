@@ -1,5 +1,7 @@
 gcvlwls2dV2 <- function(obsGrid, regGrid, ngrid=NULL, dataType=rcov$dataType, error=rcov$error, kern, rcov, h0=NULL, verbose=TRUE, CV=FALSE, t) {
 
+# TODO:? get the residual values only within truncated regGrid
+
 # Returns: a list of length 2, containing the optimal bandwidth and the gcv score.
 # obsGrid: observation points. 
 # ngrid: I think this should not be used in the gcv function.
