@@ -147,6 +147,7 @@ Eigen::MatrixXd Rmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const std::st
         X.col(1) = lx.row(0).array() - xgrid(j);
         X.col(2) = lx.row(1).array() - ygrid(i); 
         Eigen::LLT<Eigen::MatrixXd> llt_XTWX(X.transpose() * temp.asDiagonal() *X);
+        // The solver should stop if the value is NaN. See the HOLE example in gcvlwls2dV2.
         Eigen::VectorXd beta = llt_XTWX.solve(X.transpose() * temp.asDiagonal() * ly);
         mu(i,j)=beta(0); 
       } else if(meter < 3){

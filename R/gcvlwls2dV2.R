@@ -83,9 +83,10 @@ gcvlwls2dV2 <- function(obsGrid, regGrid, ngrid=NULL, dataType=rcov$dataType, er
           break
         }
       }
-    } else {
+    } else if (CV != FALSE) { 
       Scores <- sapply(bw, getCVscoresV2, partition=partition, kern=kern, xin=rcov$tPairs, yin=rcov$cxxn) 
     }
+    
     optInd <- which.min(Scores)
     opth <- bw[optInd]
     optgcv <- Scores[optInd]
@@ -146,6 +147,10 @@ getGCVscoresV2 <- function(bw, kern, xin, yin, win=NULL, regGrid, RSS=NULL, ...)
   })
 
   if (is.infinite(fit[1]))
+    return(Inf)
+    
+  # workaround for degenerate case.
+  if (any(is.nan(fit)))
     return(Inf)
 
   obsFit <- interp2(regGrid, regGrid, fit, xin[, 1], xin[, 2])
