@@ -6,7 +6,11 @@ IsRegular = function(t){
   tt = unlist(t);
   f = length(tt)/length(unique(tt))/length(t);
   if (f == 1){
-    return('Dense');
+    if(length(unique(diff(t[[1]]))) == 1){
+      return('Dense');
+    } else {
+      stop('Functional observations are dense but not regular! dataType = "Dense" is invalid!')
+    }
   } else if(f > 0.75){
     return('RegularWithMV');
   } else {
