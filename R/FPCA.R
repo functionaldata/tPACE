@@ -74,6 +74,8 @@ FPCA = function(y, t, optns = CreateOptions()){
 
     # workGrid: possibly truncated version of the regGrid; truncation would occur during smoothing
     workGrid <- scsObj$outGrid
+  } else {
+    stop('dataType = "DenseWithMV", "p>>n" are not implemented yet!')
   }
 
   # Get the results for the eigen-analysis
