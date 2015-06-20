@@ -1,0 +1,29 @@
+# This function obtains the cross sectional mean function at observed grid
+# for dense regular functional data
+
+######
+# Input:
+######  
+#  ymat: matrix of dense regular functional data
+#  optns: options for FPCA function
+######
+# Output: 
+######
+#  a SMC object containing:
+#    - mu: p-dim vector of mean function estimation, i.e. on observed grid
+#    - NULL for other entries
+##########################################################################
+
+GetMeanDense <- function(ymat, optns){
+  # Check optns
+  if(optns$dataType != 'Dense'){
+    stop('Cross sectional mean is only applicable for option: dataType = "Dense"!')
+  }
+  mu = colMeans(ymat)
+  ret = list('mu' = mu, 'muDense' = NULL, 'mu_bw' = NULL)
+  class(ret) = "SMC"
+
+  # Garbage Collection
+  gc()
+  return(ret)
+}
