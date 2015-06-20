@@ -28,32 +28,53 @@ FPCA = function(y, t, optns = CreateOptions()){
   }
 
 
-  # Bin the data (potentially):
-  if ( optns$useBinnedData != 'OFF'){ 
-      BinnedDataset <- GetBinnedDataset(y,t,optns)
-      y = BinnedDataset$newy;
-      t = BinnedDataset$newt; 
+  if(optns$dataType == 'Dense'){
+    # Only applicable to Dense and Regular functional data! 
+    
+    # cross sectional mean and sample covariance for dense case
+    # assume no measurement error.
+    ymat = List2Mat(y)
+
+    # Define time grids
+    obsGrid = sort(t[[1]])
+    regGrid = obsGrid
+    workGrid = obsGrid
+
+    # get cross sectional mean and sample cov
+    smcObj = GetMeanDense(ymat, optns)
+    mu = smcObj$mu
+    scsObj = GetCovDense(ymat, mu, optns)
+
+  } else if(optns$dataType == 'Sparse'){
+    # For Sparse case
+    
+    # Bin the data (potentially):
+    if ( optns$useBinnedData != 'OFF'){ 
+        BinnedDataset <- GetBinnedDataset(y,t,optns)
+        y = BinnedDataset$newy;
+        t = BinnedDataset$newt; 
+    }
+
+    # Generate basic grids:
+    # obsGrid:  the unique sorted pooled time points of the sample and the new data
+    # regGrid: the grid of time points for which the smoothed covariance surface assumes values
+    obsGrid = sort(unique( c(unlist(t), optns$newdata)));
+    regGrid = seq(min(obsGrid), max(obsGrid),length.out = optns$nRegGrid);
+
+
+    # Get the smoothed mean curve
+    smcObj = GetSmoothedMeanCurve(y, t, obsGrid, regGrid, optns)
+
+
+    # Get the smoothed covariance surface
+    # mu: the smoothed mean curve evaluated at times 'obsGrid'
+    mu = smcObj$mu
+    scsObj = GetSmoothedCovarSurface(y, t, mu, obsGrid, regGrid, optns, optns$useBins) 
+    sigma2 <- scsObj$sigma2
+
+    # workGrid: possibly truncated version of the regGrid; truncation would occur during smoothing
+    workGrid <- scsObj$outGrid
   }
-
-  # Generate basic grids:
-  # obsGrid:  the unique sorted pooled time points of the sample and the new data
-  # regGrid: the grid of time points for which the smoothed covariance surface assumes values
-  obsGrid = sort(unique( c(unlist(t), optns$newdata)));
-  regGrid = seq(min(obsGrid), max(obsGrid),length.out = optns$nRegGrid);
-
-
-  # Get the smoothed mean curve
-  smcObj = GetSmoothedMeanCurve(y, t, obsGrid, regGrid, optns)
-
-
-  # Get the smoothed covariance surface
-  # mu: the smoothed mean curve evaluated at times 'obsGrid'
-  mu = smcObj$mu
-  scsObj = GetSmoothedCovarSurface(y, t, mu, obsGrid, regGrid, optns, optns$useBins) 
-  sigma2 <- scsObj$sigma2
-  
-  # workGrid: possibly truncated version of the regGrid; truncation would occur during smoothing
-  workGrid <- scsObj$outGrid
 
   # Get the results for the eigen-analysis
   eigObj = GetEigenAnalysisResults(smoothCov = scsObj$smoothCov, workGrid, optns)
@@ -72,23 +93,22 @@ FPCA = function(y, t, optns = CreateOptions()){
   phiObs <- ConvertSupport(workGrid, obsGrid, phi=eigObj$phi)
   CovObs <- ConvertSupport(workGrid, obsGrid, Cov=eigObj$fittedCov)
 
-  # Get scores
-  if (optns$rho != 'no') {
-    rho <- GetRho(y, t, optns, mu, obsGrid, CovObs, eigObj$lambda, phiObs, sigma2)
-    sigma2 <- rho
-  }
-  
+  # Get scores  
   if (optns$method == 'CE') {
+    if (optns$rho != 'no') {
+      rho <- GetRho(y, t, optns, mu, obsGrid, CovObs, eigObj$lambda, phiObs, sigma2)
+      sigma2 <- rho
+    }
+
     scoresObj <- GetCEScores(y, t, optns, mu, obsGrid, CovObs, eigObj$lambda, phiObs, sigma2)
-    
+
   } else if (optns$method == 'IN') {
-    stop(' IN method not implemented yet')
+    scoresObj <- GetINScores(ymat, t, optns, mu, eigObj$lambda, phiObs)
   }
 
-  # Make the return object ret
-  ret <- list(sigma2=scsObj$sigma2, lambda=eigObj$lambda, phi=eigObj$phi, xiEst=t(do.call(cbind, scoresObj[1, ])), xiVar=scoresObj[2, ], 
-    # fittedY = scoresObj[3, ], 
-    obsGrid=obsGrid, mu=mu, workGrid=workGrid, smoothedCov=scsObj$smoothCov, fittedCov=eigObj$fittedCov, optns=optns, bwMu=smcObj$bw_mu, bwCov=scsObj$bwCov)
+  # Make the return object by MakeResultFPCA
+  ret <- MakeResultFPCA(optns, smcObj, mu, scsObj, eigObj,
+  scoresObj, obsGrid, workGrid)
 
   return(ret); 
 }
