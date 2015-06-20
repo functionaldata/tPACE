@@ -1,3 +1,4 @@
+# Uses Pantelis' cpp code.
 # 2 dimensional local weighted least squares smoother. Only local linear smoother is implemented (no higher order, no derivative). 
 # bw: bandwidth, a scalar or a vector of length 2.
 # kern: kernel used: 'gauss', 'rect', 'gausvar', 'epan' (default), 'quar'
@@ -34,7 +35,7 @@ lwls2dV2 <- function(bw, kern='epan', xin, yin, win=NULL, xout1=NULL, xout2=NULL
     xout2 <- sort(unique(xin[, 2]))
   
 
-  ret <- Rmullwlsk(bw, kern, t(xin), yin, win, xout1, xout2)
+  ret <- Rmullwlsk(bw, kern, t(xin), yin, win, xout1, xout2, FALSE)
   
   return(ret)
 }

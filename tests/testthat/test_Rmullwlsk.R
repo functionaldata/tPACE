@@ -112,8 +112,8 @@ expect_equal(as.numeric( Rmullwlsk(2.2* IN$bw,t(IN$tPairs),cxxn=IN$cxxn, xgrid=I
 expect_equal(as.numeric( Rmullwlsk(0.2* IN$bw,t(IN$tPairs),cxxn=IN$cxxn, xgrid=IN$regGrid, ygrid=IN$regGrid, kernel_type='epan',win=rep(1,38), bwCheck = 1)), 0)
 expect_equal(as.numeric( Rmullwlsk(2.2* IN$bw,t(IN$tPairs),cxxn=IN$cxxn, xgrid=IN$regGrid, ygrid=IN$regGrid, kernel_type='epan',win=rep(1,38), bwCheck = 1)), 1)
 
-expect_equal(as.numeric( Rmullwlsk(0.2* IN$bw,t(IN$tPairs),cxxn=IN$cxxn, xgrid=IN$regGrid, ygrid=IN$regGrid, kernel_type='epan',win=rep(1,38), bwCheck = 0)), 0)
-expect_equal(as.numeric( Rmullwlsk(0.2* IN$bw,t(IN$tPairs),cxxn=IN$cxxn, xgrid=IN$regGrid, ygrid=IN$regGrid, kernel_type='epan',win=rep(1,38), bwCheck = FALSE)), 0)
+expect_equal(as.numeric( Rmullwlsk(0.2* IN$bw,t(IN$tPairs),cxxn=IN$cxxn, xgrid=IN$regGrid, ygrid=IN$regGrid, kernel_type='epan',win=rep(1,38), bwCheck = 1)), 0)
+expect_equal(as.numeric( Rmullwlsk(0.2* IN$bw,t(IN$tPairs),cxxn=IN$cxxn, xgrid=IN$regGrid, ygrid=IN$regGrid, kernel_type='epan',win=rep(1,38), bwCheck = TRUE)), 0)
 
 })
 

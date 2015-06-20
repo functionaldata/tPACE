@@ -1,3 +1,4 @@
+# Uses Pantelis' cpp code.
 # 2 dimensional local weighted least squares smoother. Only local linear smoother is implemented (no higher order, no derivative). 
 # bw: bandwidth, a scalar.
 # kern: kernel used: 'gauss', 'rect', 'tria', 'epan' (default), 'quar', 'trwt', or 'tcub'. (See \url{http://en.wikipedia.org/wiki/Kernel_%28statistics%29#In_non-parametric_statistics})

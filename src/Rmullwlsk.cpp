@@ -151,10 +151,13 @@ Eigen::MatrixXd Rmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const std::st
         mu(i,j)=beta(0); 
       } else if(meter < 3){
         // Rcpp::Rcout <<"The meter value is:" << meter << std::endl;  
-        Eigen::MatrixXd checker(1,1);
-	checker(0,0) = 0.;
-        return(checker);
-        //Rcpp::stop("No enough points in local window, please increase bandwidth.");
+        if (bwCheck) {
+            Eigen::MatrixXd checker(1,1);
+            checker(0,0) = 0.;
+            return(checker);
+        } else {
+            Rcpp::stop("No enough points in local window, please increase bandwidth.");
+        }
       }
     }
   }
