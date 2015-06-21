@@ -1,3 +1,5 @@
+devtools::load_all()
+
 p0 <- CreateOptions(dataType='Sparse', error=TRUE, kernel='epan')
 p1 <- CreateOptions(dataType='Dense', error=TRUE, kernel='epan')
 
@@ -16,16 +18,16 @@ mu3 <- rep(0, length(pts))
 rcovSparse <- GetRawCov(sampSparse$yList, sampSparse$tList, pts, mu3, p0$dataType, error=p0$error)
 tmpSparse <- GetSmoothedCovarSurface(sampSparse$yList, sampSparse$tList, mu3, pts, regGrid,
                                      p0, useBins=FALSE)
-pccovE_Sparse <- pc_covE(out1 = pts, out21 = seq(0,1,length.out=nrow(tmpSparse$smoothCov)), 
-                         bw_xcov = tmpSparse$bwCov, cut = 1, kernel = p0$kernel, rcov = rcovSparse)
+pccovE_Sparse <- pc_covE(pts, seq(0,1,length.out=nrow(tmpSparse$smoothCov)), 
+                         bw_userCov = tmpSparse$bwCov, rotationCut = c(0, 1), kernel = p0$kernel, rcov = rcovSparse)
 pccovE_Sparse$sigma2
 
 ## Dense Case
 rcovDense <- GetRawCov(sampDense$yList, sampDense$tList, pts, mu3, p1$dataType, error=p1$error)
 tmpDense <- GetSmoothedCovarSurface(sampDense$yList, sampDense$tList, mu3, pts, regGrid,
                                      p1, useBins=FALSE)
-pccovE_Dense <- pc_covE(out1 = pts, out21 = seq(0,1,length.out=nrow(tmpDense$smoothCov)), 
-                         bw_xcov = tmpDense$bwCov, cut = 1, kernel = p1$kernel, rcov = rcovDense)
+pccovE_Dense <- pc_covE(pts, seq(0,1,length.out=nrow(tmpDense$smoothCov)), 
+                         bw_userCov = tmpDense$bwCov, rotationCut = c(0, 1), kernel = p1$kernel, rcov = rcovDense)
 pccovE_Dense$sigma2
 
 ## Tests added by Xiongtao
@@ -45,7 +47,7 @@ rcovDense <- GetRawCov(sampDense$yList, sampDense$tList, pts, mu3, p1$dataType, 
 tmpDense <- GetSmoothedCovarSurface(sampDense$yList, sampDense$tList, mu3, pts, regGrid, p1, useBins=FALSE)
 
 
-pccovE_Dense <- pc_covE(out1 = pts, out21 = seq(0,1,length.out=nrow(tmpDense$smoothCov)), bw_xcov = tmpDense$bwCov, cut = 1, kernel = p1$kernel, rcov = rcovDense)
+pccovE_Dense <- pc_covE(pts, seq(0,1,length.out=nrow(tmpDense$smoothCov)), bw_userCov = tmpDense$bwCov, rotationCut = c(0, 1), kernel = p1$kernel, rcov = rcovDense)
 sqrt(pccovE_Dense$sigma2)
 
 ## Sparse
@@ -62,5 +64,5 @@ mu3 <- rep(0, length(pts))
 rcovSparse <- GetRawCov(sampSparse$yList, sampSparse$tList, pts, mu3, p2$dataType, error=p2$error)
 tmpSparse <- GetSmoothedCovarSurface(sampSparse$yList, sampSparse$tList, mu3, pts, regGrid, p2, useBins=FALSE)
 
-pccovE_Sparse <- pc_covE(out1 = pts, out21 = seq(0,1,length.out=nrow(tmpSparse$smoothCov)), bw_xcov = tmpSparse$bwCov, cut = 1, kernel = p2$kernel, rcov = rcovSparse)
+pccovE_Sparse <- pc_covE(pts, seq(0,1,length.out=nrow(tmpSparse$smoothCov)), bw_userCov = tmpSparse$bwCov, rotationCut = c(0, 1), kernel = p2$kernel, rcov = rcovSparse)
 sqrt(pccovE_Sparse$sigma2)

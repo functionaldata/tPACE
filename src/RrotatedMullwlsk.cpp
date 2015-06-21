@@ -12,6 +12,7 @@ Eigen::MatrixXd Rrotatedmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const 
   // tPairs : xin (in MATLAB code)
   // cxxn : yin (in MATLAB code)
   // xygrid: d (in MATLAB code)
+  // npoly: redundant?
 
   const double invSqrt2pi=  1./(sqrt(2.*M_PI));
 
@@ -138,14 +139,14 @@ Eigen::MatrixXd Rrotatedmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const 
       mu(i)=beta(0); 
      //Rcpp::Rcout << " mu : " <<  " " << beta(0) << std::endl;   
      //Rcpp::Rcout << " X : " <<  " " << X << std::endl;   
-    } else if ( ly.size() == 1 && !bwCheck) { 
+    } else if ( ly.size() == 1 && !bwCheck) { // Why only one but not two is handled?
       mu(i) = ly(0);
-    } else if ( ly.size() != 1 && (ly.size() < npoly+1)  ){
+    } else if ( ly.size() != 1 && (ly.size() < npoly+1) && !bwCheck ){
       //Rcpp::Rcout <<"The meter value is:" << meter << std::endl;  
-      //Rcpp::stop("No enough points in local window, please increase bandwidth.");
-      Eigen::MatrixXd checker(1,1); 
-      checker(0,0) = 0.; 
-      return(checker);
+      Rcpp::stop("No enough points in local window, please increase bandwidth.");
+      // Eigen::MatrixXd checker(1,1); 
+      // checker(0,0) = 0.; 
+      // return(checker);
     }
   } 
   

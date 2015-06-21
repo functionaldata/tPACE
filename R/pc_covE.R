@@ -68,7 +68,7 @@ pc_covE = function(obsGrid, regGrid, bw_userCov, rotationCut=c(0, 1), kernel = '
 
   # Estimate variance of measurement error term
   # use quadratic form on diagonal to estimate Var(x(t))
-  xvar = rotateLwls2d(bw = bw_userCov[1], kern = kernel, 
+  xvar = rotateLwls2dV2(bw = bw_userCov[1], kern = kernel, 
     xin = tPairs, yin = cxxn, win = win1, xout = cbind(rcutGrid, out22))
 
   sigma2 = trapz(rcutGrid, yvar - xvar) / (lint * rcutprop)
