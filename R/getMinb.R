@@ -50,7 +50,7 @@ getMinb <- function(t, obsGrid, dataType=rcov$dataType, npoly=1, minUniqPts=3, m
     b = matrix( rep(obsGrid, n_obs), nrow=n_obs)
     # Use half of the largest difference between two consequative points in the same 
     # as curve as your candidate bandwith. We do no worry about the difference
-    # between to [t_j(end) - t_{1+j}(1)] because this will be negative.
+    # between to [t_j(end) - t_{1+j}(1)] because this will be negative. This bandwidth tends to be conservative (too large).
     dstar = max(dstar, max(diff(b[ids])/2));
   } else if (dataType == 'RegularWithMV') {
     dstar <- minb(obsGrid, 1 + npoly) * 2;
