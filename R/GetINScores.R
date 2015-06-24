@@ -20,7 +20,7 @@ GetINScores <- function(ymat, t, optns, mu, lambda, phi){
   }
 
   n = nrow(ymat)
-  t = t[[1]] # get observed time grid
+  t = sort(unique(unlist(t))) # get observed time grid
   mumat = matrix(rep(mu, n), nrow = n, byrow = TRUE)
   cymat = ymat - mumat
 

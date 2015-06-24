@@ -36,7 +36,7 @@ FPCA = function(y, t, optns = CreateOptions()){
     ymat = List2Mat(y)
 
     # Define time grids
-    obsGrid = sort(t[[1]])
+    obsGrid = sort(unique(unlist(t)))
     regGrid = obsGrid
     workGrid = obsGrid
 
