@@ -19,7 +19,7 @@ GetMeanDense <- function(ymat, optns){
   if(optns$dataType != 'Dense'){
     stop('Cross sectional mean is only applicable for option: dataType = "Dense"!')
   }
-  mu = colMeans(ymat)
+  mu = colMeans(ymat, na.rm = TRUE) # use non-missing data only
   ret = list('mu' = mu, 'muDense' = NULL, 'mu_bw' = NULL)
   class(ret) = "SMC"
 

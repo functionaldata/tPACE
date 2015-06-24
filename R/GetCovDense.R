@@ -20,10 +20,8 @@ GetCovDense <- function(ymat, mu, optns){
     stop('Sample Covariance is only applicable for option: dataType = "Dense"!')
   }
   n = nrow(ymat)
-  mumat = matrix(rep(mu, n), byrow = TRUE, nrow = n)
-  cymat = ymat - mumat
-  cov = t(cymat) %*% cymat / (n-1) # sample covariance
-  
+  cov = cov(ymat, use = 'pairwise.complete.obs') # sample variance using non-missing data
+
   ret = list('rawCov' = NULL, 'smoothCov' = cov, 'bwCov' = NULL,
    'sigma2' = NULL, outGrid = NULL)
   class(ret) = "SmoothCov"
