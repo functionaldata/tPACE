@@ -99,10 +99,12 @@ SetOptions = function(y, t, optns){
     } else if(dataType == 'Sparse'){
       shrink = FALSE;
       method = "CE";
-    } else {
-      warning("SetOptions: method set to 'CE' for dataType other than 'Dense' or 'Sparse'!");
+    } else if(dataType == 'DenseWithMV'){
       shrink = FALSE;
-      method = "CE";
+      method = "IN";
+    } else { # for dataType = p>>n
+      shrink = FALSE;
+      method = "IN";
     }
   }
   if(is.null(shrink)){ # apply shrinkage to estimates of random coefficients (dataType data only)
