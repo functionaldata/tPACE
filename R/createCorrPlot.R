@@ -19,7 +19,7 @@ createCorrPlot = function(yy, corrPlotType = 'Fitted', isInteractive = FALSE){
       warning('Warning: Input is not a valid FPCA or FPCder output.')
       return()
     } else if(no_opt == 1){
-      warning('Warning: Correlation surface is not available when only one principal component is used.')
+      warning('Warning: Covariance surface is not available when only one principal component is used.')
       return()
     }
   }
@@ -44,11 +44,11 @@ createCorrPlot = function(yy, corrPlotType = 'Fitted', isInteractive = FALSE){
     if(corrPlotType == 'Fitted'){
       persp3d(workGrid, workGrid, covSurf, col = 'blue',
         xlab = 't', ylab = 't', zlab = 'Fitted Correlation Surface',
-        main = paste('Fitted correlation surface for function', yname))
+        main = paste('Fitted covariance surface for function', yname))
     } else if(corrPlotType == 'Smoothed'){
       persp3d(workGrid, workGrid, covSurf, col = 'blue',
         xlab = 't', ylab = 't', zlab = 'Smoothed Correlation Surface',
-        main = paste('Smoothed correlation surface for function', yname))
+        main = paste('Smoothed covariance surface for function', yname))
     } else if(corrPlotType == 'Raw'){
       tPairs = covSurf$tPairs
       cxxn = covSurf$cxxn
@@ -60,11 +60,11 @@ createCorrPlot = function(yy, corrPlotType = 'Fitted', isInteractive = FALSE){
     if(corrPlotType == 'Fitted'){
       persp3D(workGrid, workGrid, covSurf,
         xlab = 't', ylab = 't', zlab = 'Fitted Correlation Surface',
-        main = paste('Fitted correlation surface for function', yname))
+        main = paste('Fitted covariance surface for function', yname))
     } else if(corrPlotType == 'Smoothed'){
       persp3D(workGrid, workGrid, covSurf,
         xlab = 't', ylab = 't', zlab = 'Smoothed Correlation Surface',
-        main = paste('Smoothed correlation surface for function', yname))      
+        main = paste('Smoothed covariance surface for function', yname))      
     } else if(corrPlotType == 'Raw'){
       tPairs = covSurf$tPairs
       cxxn = covSurf$cxxn

@@ -8,12 +8,13 @@
 // [[Rcpp::export]]
 
 
-Eigen::MatrixXd Rmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const std::string kernel_type, const Eigen::Map<Eigen::MatrixXd> & tPairs, const Eigen::Map<Eigen::MatrixXd> & cxxn, const Eigen::Map<Eigen::VectorXd> & win,  const Eigen::Map<Eigen::VectorXd> & xgrid, const Eigen::Map<Eigen::VectorXd> & ygrid){ 
+Eigen::MatrixXd Rmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const std::string kernel_type, const Eigen::Map<Eigen::MatrixXd> & tPairs, const Eigen::Map<Eigen::MatrixXd> & cxxn, const Eigen::Map<Eigen::VectorXd> & win,  const Eigen::Map<Eigen::VectorXd> & xgrid, const Eigen::Map<Eigen::VectorXd> & ygrid, const bool & bwCheck){ 
 
   // tPairs : xin (in MATLAB code)
   // cxxn : yin (in MATLAB code)
   // xgrid: out1 (in MATLAB code)
   // ygrid: out2 (in MATLAB code)
+  // bwCheck : boolean/ cause the function to simply run the bandwidth check.
 
   const double invSqrt2pi=  1./(sqrt(2.*M_PI));
 
@@ -32,7 +33,8 @@ Eigen::MatrixXd Rmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const std::st
     KernelName = possibleKernels.find( kernel_type )->second; //Set kernel choice
   } else {
   // otherwise use "epan"as the kernel_type 
-    Rcpp::Rcout << "Kernel_type argument was not set correctly; Epanechnikov kernel used." << std::endl;
+    //Rcpp::Rcout << "Kernel_type argument was not set correctly; Epanechnikov kernel used." << std::endl;
+    Rcpp::warning("Kernel_type argument was not set correctly; Epanechnikov kernel used.");
     KernelName = possibleKernels.find( "epan" )->second;;
   }
 
@@ -104,7 +106,7 @@ Eigen::MatrixXd Rmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const std::st
       }
    
       //computing weight matrix 
-      if (meter >=  3) { 
+      if (meter >=  3 && !bwCheck) { 
         Eigen::VectorXd temp(indxSize);
         Eigen::MatrixXd llx(2, indxSize );  
         llx.row(0) = (lx.row(0).array() - xgrid(j))/bw(0);  
@@ -145,17 +147,28 @@ Eigen::MatrixXd Rmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const std::st
         X.col(1) = lx.row(0).array() - xgrid(j);
         X.col(2) = lx.row(1).array() - ygrid(i); 
         Eigen::LLT<Eigen::MatrixXd> llt_XTWX(X.transpose() * temp.asDiagonal() *X);
+        // The solver should stop if the value is NaN. See the HOLE example in gcvlwls2dV2.
         Eigen::VectorXd beta = llt_XTWX.solve(X.transpose() * temp.asDiagonal() * ly);
         mu(i,j)=beta(0); 
-      } else {
-      // should stop instead
-        Rcpp::Rcout <<"No enough points in local window, please increase bandwidth." << std::endl;  
-        Rcpp::Rcout <<"The meter value is:" << meter << std::endl;  
-        return (tPairs);
+      } else if(meter < 3){
+        // Rcpp::Rcout <<"The meter value is:" << meter << std::endl;  
+        if (bwCheck) {
+            Eigen::MatrixXd checker(1,1);
+            checker(0,0) = 0.;
+            return(checker);
+        } else {
+            Rcpp::stop("No enough points in local window, please increase bandwidth.");
+        }
       }
     }
   }
- 
+
+  if (bwCheck){
+     Eigen::MatrixXd checker(1,1); 
+     checker(0,0) = 1.; 
+     return(checker);
+  }
+    
   // Something like the following should be faster I will look up this in the future.
   // m1=  mu.triangularView<StrictlyUpper>().transpose();
   // m2=  mu.triangularView<Upper>()  ; 

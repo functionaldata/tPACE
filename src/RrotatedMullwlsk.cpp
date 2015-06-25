@@ -7,11 +7,12 @@
 // [[Rcpp::depends(RcppEigen)]]
 // [[Rcpp::export]]
 
-Eigen::MatrixXd Rrotatedmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const std::string kernel_type, const Eigen::Map<Eigen::MatrixXd> & tPairs, const Eigen::Map<Eigen::MatrixXd> & cxxn, const Eigen::Map<Eigen::VectorXd> & win,  const Eigen::Map<Eigen::MatrixXd> & xygrid, const unsigned int npoly){ 
+Eigen::MatrixXd Rrotatedmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const std::string kernel_type, const Eigen::Map<Eigen::MatrixXd> & tPairs, const Eigen::Map<Eigen::MatrixXd> & cxxn, const Eigen::Map<Eigen::VectorXd> & win,  const Eigen::Map<Eigen::MatrixXd> & xygrid, const unsigned int npoly, const bool & bwCheck){ 
 
   // tPairs : xin (in MATLAB code)
   // cxxn : yin (in MATLAB code)
   // xygrid: d (in MATLAB code)
+  // npoly: redundant?
 
   const double invSqrt2pi=  1./(sqrt(2.*M_PI));
 
@@ -30,7 +31,8 @@ Eigen::MatrixXd Rrotatedmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const 
     KernelName = possibleKernels.find( kernel_type )->second; //Set kernel choice
   } else {
   // otherwise use "epan"as the kernel_type 
-    Rcpp::Rcout << "Kernel_type argument was not set correctly; Epanechnikov kernel used." << std::endl;
+  // Rcpp::Rcout << "Kernel_type argument was not set correctly; Epanechnikov kernel used." << std::endl;
+    Rcpp::warning("Kernel_type argument was not set correctly; Epanechnikov kernel used.");
     KernelName = possibleKernels.find( "epan" )->second;;
   }
 
@@ -90,7 +92,7 @@ Eigen::MatrixXd Rrotatedmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const 
     }
 
 
-    if (ly.size()>=npoly+1.){
+    if (ly.size()>=npoly+1 && !bwCheck ){
 
     //computing weight matrix 
       Eigen::VectorXd temp(indxSize);
@@ -127,9 +129,6 @@ Eigen::MatrixXd Rrotatedmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const 
           break;
       } 
       
-      
-    // Rcpp::Rcout << " temp : " << std::endl<< temp << std::endl;   
-
       // make the design matrix
       Eigen::MatrixXd X(indxSize ,3);
       X.setOnes();    
@@ -140,14 +139,23 @@ Eigen::MatrixXd Rrotatedmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const 
       mu(i)=beta(0); 
      //Rcpp::Rcout << " mu : " <<  " " << beta(0) << std::endl;   
      //Rcpp::Rcout << " X : " <<  " " << X << std::endl;   
-    } else if ( ly.size() == 1) { 
+    } else if ( ly.size() == 1 && !bwCheck) { // Why only one but not two is handled?
       mu(i) = ly(0);
-    } else {
-      Rcpp::Rcout <<"Not a single point in local window, please increase bandwidth." << std::endl;   
-      return (tPairs);
+    } else if ( ly.size() != 1 && (ly.size() < npoly+1) && !bwCheck ){
+      //Rcpp::Rcout <<"The meter value is:" << meter << std::endl;  
+      Rcpp::stop("No enough points in local window, please increase bandwidth.");
+      // Eigen::MatrixXd checker(1,1); 
+      // checker(0,0) = 0.; 
+      // return(checker);
     }
   } 
-
+  
+  if (bwCheck){
+     Eigen::MatrixXd checker(1,1); 
+     checker(0,0) = 1.; 
+     return(checker);
+  }
+  
   return ( mu ); 
 }
 

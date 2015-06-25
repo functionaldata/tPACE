@@ -93,8 +93,19 @@ SetOptions = function(y, t, optns){
     nRegGrid = 51;    
   }
   if(is.null(method)){ # method to estimate the PC scores
-    shrink = FALSE;
-    method = "CE";   
+    if(dataType == 'Dense'){
+      shrink = FALSE;
+      method = "IN";
+    } else if(dataType == 'Sparse'){
+      shrink = FALSE;
+      method = "CE";
+    } else if(dataType == 'DenseWithMV'){
+      shrink = FALSE;
+      method = "IN";
+    } else { # for dataType = p>>n
+      shrink = FALSE;
+      method = "IN";
+    }
   }
   if(is.null(shrink)){ # apply shrinkage to estimates of random coefficients (dataType data only)
     shrink = FALSE;
@@ -102,9 +113,6 @@ SetOptions = function(y, t, optns){
   if(shrink == TRUE && (error != TRUE || method != "IN")){ # Check for valid shrinkage choice
     cat('shrinkage method only had effects when method = "IN" and error = TRUE! Reset to shrink = FALSE now!\n');
     shrink = FALSE      
-  }
-  if(is.null(newdata)){ # new data points to estimnate
-    newdata <- NULL
   }
   if(is.null(kernel)){ # smoothing kernel choice
     if(dataType == "Dense"){

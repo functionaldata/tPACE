@@ -1,5 +1,7 @@
 gcvlwls2dV2 <- function(obsGrid, regGrid, ngrid=NULL, dataType=rcov$dataType, error=rcov$error, kern, rcov, h0=NULL, verbose=TRUE, CV=FALSE, t) {
 
+# TODO:? get the residual values only within truncated regGrid
+
 # Returns: a list of length 2, containing the optimal bandwidth and the gcv score.
 # obsGrid: observation points. 
 # ngrid: I think this should not be used in the gcv function.
@@ -8,7 +10,7 @@ gcvlwls2dV2 <- function(obsGrid, regGrid, ngrid=NULL, dataType=rcov$dataType, er
 # This function computes the optimal bandwidth choice for the covariance surface. 
 # function use GCV method by pooling the longitudinal data together. 
 # verbose is unused for now
-# this is incompatible with PACE because the GCV is calculated in a different way.
+# this follows exactly the matlab 2D gcv selector.
   
   r <- diff(range(obsGrid)) * sqrt(2) # sqrt(2) because the window is circular.
 
@@ -56,27 +58,50 @@ gcvlwls2dV2 <- function(obsGrid, regGrid, ngrid=NULL, dataType=rcov$dataType, er
     }
   }
   
+  minBWInvalid <- FALSE
   while (!leave && iter < maxIter) {
+    if (minBWInvalid)
+      minBW <- bw[1]
+
     if (CV == FALSE) {
-      if (class(rcov) == 'BinnedRawCov')
-        Scores <- sapply(bw, getGCVscoresV2, kern=kern, xin=rcov$tPairs, yin=rcov$meanVals, win=rcov$count, regGrid=regGrid, RSS=rcov$RSS)
-      else
-        Scores <- sapply(bw, getGCVscoresV2, kern=kern, xin=rcov$tPairs, yin=rcov$cxxn, regGrid=regGrid) 
-    } else {
+      Scores <- rep(Inf, length(bw))
+# try the bandwidths large to small in order to save time due to sparseness in the windows.
+      for (i in rev(seq_along(bw))) {
+        h <- bw[i]
+
+        if (class(rcov) == 'BinnedRawCov')
+          Scores[i] <- getGCVscoresV2(h, kern, rcov$tPairs, rcov$meanVals, win=rcov$count, regGrid=regGrid, RSS=rcov$RSS)
+        else
+          Scores[i] <- getGCVscoresV2(h, kern, rcov$tPairs, rcov$cxxn, regGrid=regGrid)
+
+        if (is.infinite(Scores[i])) {
+          minBWInvalid <- TRUE
+          if (i < length(bw)) {
+            if (minBWInvalid) {
+              minBW <- bw[i + 1]
+              minBWInvalid <- FALSE
+            }
+          }
+          break
+        }
+      }
+    } else if (CV != FALSE) { 
       Scores <- sapply(bw, getCVscoresV2, partition=partition, kern=kern, xin=rcov$tPairs, yin=rcov$cxxn) 
     }
+    
     optInd <- which.min(Scores)
     opth <- bw[optInd]
     optgcv <- Scores[optInd]
     
     if (opth >= r - 1e-12) {
+      minBW <- r
       leave <- TRUE
       stop('Data is too sparse. The optimal bandwidth equals to the range of input time points. Try Gaussian kernel.')
     }
     # else if (opth < r) {
       
       if (optInd != length(bw) && !is.infinite(optgcv))
-      leave <- TRUE            
+        leave <- TRUE            
       else if (is.infinite(optgcv)) {
         if (verbose)
         warnings('Data is too sparse, retry with larger bandwidths!')
@@ -118,7 +143,18 @@ getGCVscoresV2 <- function(bw, kern, xin, yin, win=NULL, regGrid, RSS=NULL, ...)
   if (is.null(win))
     win <- rep(1, length(yin))
     
-  fit <- lwls2dV2(bw, kern, xin=xin, yin=yin, win=win, xout1=regGrid, xout2=regGrid)
+  fit <- tryCatch(lwls2dV2(bw, kern, xin=xin, yin=yin, win=win, xout1=regGrid, xout2=regGrid), error=function(err) {
+               warning('Invalid bandwidth. Try enlarging the window size.')
+               return(Inf)
+  })
+
+  if (is.infinite(fit[1]))
+    return(Inf)
+    
+  # workaround for degenerate case.
+  if (any(is.nan(fit)))
+    return(Inf)
+
   obsFit <- interp2(regGrid, regGrid, fit, xin[, 1], xin[, 2])
   
   # residual sum of squares

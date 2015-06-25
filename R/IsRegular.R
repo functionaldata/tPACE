@@ -5,8 +5,13 @@ IsRegular = function(t){
   
   tt = unlist(t);
   f = length(tt)/length(unique(tt))/length(t);
+  tt = tt[!is.na(tt)]
   if (f == 1){
-    return('Dense');
+    if(length(unique(signif(diff(sort(unique(tt))), digit = 4))) == 1){
+      return('Dense');
+    } else {
+      stop('Functional observations are dense but not regular! dataType = "Dense" is invalid!')
+    }
   } else if(f > 0.75){
     return('RegularWithMV');
   } else {
