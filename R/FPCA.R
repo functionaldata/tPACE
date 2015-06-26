@@ -13,8 +13,7 @@ FPCA = function(y, t, optns = CreateOptions()){
   if( CheckData(y,t) ){
     cat('FPCA has stopped.')
     return(FALSE);
-  }  
- 
+  }
 
   # FPCA sets the options structure that are still NULL
   optns = SetOptions(y, t, optns);
@@ -28,8 +27,9 @@ FPCA = function(y, t, optns = CreateOptions()){
   }
 
 
-  if(optns$dataType == 'Dense'){
-    # Only applicable to Dense and Regular functional data! 
+  if(optns$dataType == 'Dense' || optns$dataType == 'DenseWithMV'){
+    # Only applicable to Dense and Regular functional data,
+    # or Dense data with Missing Values 
     
     # cross sectional mean and sample covariance for dense case
     # assume no measurement error.
@@ -38,12 +38,14 @@ FPCA = function(y, t, optns = CreateOptions()){
     # Define time grids
     obsGrid = sort(unique(unlist(t)))
     regGrid = obsGrid
-    workGrid = obsGrid
+    workGrid = seq(min(obsGrid), max(obsGrid), length.out = optns$nRegGrid)
 
     # get cross sectional mean and sample cov
     smcObj = GetMeanDense(ymat, optns)
     mu = smcObj$mu
+    smcObj$muDense = ConvertSupport(obsGrid, workGrid, mu = mu)
     scsObj = GetCovDense(ymat, mu, optns)
+    scsObj$smoothCov = ConvertSupport(obsGrid, workGrid, Cov = scsObj$smoothCov)
 
   } else if(optns$dataType == 'Sparse'){
     # For Sparse case
@@ -75,7 +77,7 @@ FPCA = function(y, t, optns = CreateOptions()){
     # workGrid: possibly truncated version of the regGrid; truncation would occur during smoothing
     workGrid <- scsObj$outGrid
   } else {
-    stop('dataType = "DenseWithMV", "p>>n" are not implemented yet!')
+    stop('not implemented for dataType = "p>>n" yet!')
   }
 
   # Get the results for the eigen-analysis

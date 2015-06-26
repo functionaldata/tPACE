@@ -90,7 +90,12 @@ SetOptions = function(y, t, optns){
     error = TRUE;    
   }
   if(is.null(nRegGrid)){ # number of support points in each direction of covariance surface 
-    nRegGrid = 51;    
+    if(dataType == 'Dense' || dataType == 'DenseWithMV'){
+      tt = unlist(t)
+      nRegGrid = length(unique(signif(tt[!is.na(tt)],6)));
+    } else { # for Sparse and p>>n
+      nRegGrid = 51;
+    }    
   }
   if(is.null(method)){ # method to estimate the PC scores
     if(dataType == 'Dense'){

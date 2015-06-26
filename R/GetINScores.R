@@ -28,7 +28,7 @@ GetINScores <- function(ymat, t, optns, mu, lambda, phi){
 
   # Get Scores xiEst
   for(i in 1:length(lambda)){
-  	tempmat = cymat * matrix(rep(phi[,i],n), nrow = n, byrow = TRUE)
+    tempmat = cymat * matrix(rep(phi[,i],n), nrow = n, byrow = TRUE)
     xiEst[,i] = sapply(1:n, function(j) trapz(x = t[!is.na(tempmat[j,])], y = tempmat[j, !is.na(tempmat[j,])]))
   }
 
