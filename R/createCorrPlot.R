@@ -1,4 +1,4 @@
-# This function creates the correlation surface plot based on the
+# This function creates the covariance surface plot based on the
 # results from FPCA() or FPCder()
 ######
 # Input
@@ -14,8 +14,8 @@
 createCorrPlot = function(yy, corrPlotType = 'Fitted', isInteractive = FALSE){
   # Check if plotting covariance surface for fitted covariance surface is proper
   if(corrPlotType == 'Fitted'){
-    no_opt = length(yy$eigVal)
-    if(no_opt == NULL){
+    no_opt = length(yy$lambda)
+    if(length(no_opt) == 0){
       warning('Warning: Input is not a valid FPCA or FPCder output.')
       return()
     } else if(no_opt == 1){
@@ -43,11 +43,11 @@ createCorrPlot = function(yy, corrPlotType = 'Fitted', isInteractive = FALSE){
   if(isInteractive){ # Interactive Plot
     if(corrPlotType == 'Fitted'){
       persp3d(workGrid, workGrid, covSurf, col = 'blue',
-        xlab = 't', ylab = 't', zlab = 'Fitted Correlation Surface',
+        xlab = 't', ylab = 't', zlab = 'Fitted Covariance Surface',
         main = paste('Fitted covariance surface for function', yname))
     } else if(corrPlotType == 'Smoothed'){
       persp3d(workGrid, workGrid, covSurf, col = 'blue',
-        xlab = 't', ylab = 't', zlab = 'Smoothed Correlation Surface',
+        xlab = 't', ylab = 't', zlab = 'Smoothed Covariance Surface',
         main = paste('Smoothed covariance surface for function', yname))
     } else if(corrPlotType == 'Raw'){
       tPairs = covSurf$tPairs
@@ -59,11 +59,11 @@ createCorrPlot = function(yy, corrPlotType = 'Fitted', isInteractive = FALSE){
   } else { # Static plot
     if(corrPlotType == 'Fitted'){
       persp3D(workGrid, workGrid, covSurf,
-        xlab = 't', ylab = 't', zlab = 'Fitted Correlation Surface',
+        xlab = 't', ylab = 't', zlab = 'Fitted Covariance Surface',
         main = paste('Fitted covariance surface for function', yname))
     } else if(corrPlotType == 'Smoothed'){
       persp3D(workGrid, workGrid, covSurf,
-        xlab = 't', ylab = 't', zlab = 'Smoothed Correlation Surface',
+        xlab = 't', ylab = 't', zlab = 'Smoothed Covariance Surface',
         main = paste('Smoothed covariance surface for function', yname))      
     } else if(corrPlotType == 'Raw'){
       tPairs = covSurf$tPairs
