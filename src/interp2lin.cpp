@@ -62,41 +62,11 @@ Eigen::VectorXd interp2lin( const Eigen::Map<Eigen::VectorXd> & xin, const Eigen
     ya(1) = *y1;
     ya(0) = *--y1;
   
-    unsigned int foundAll = 0;
-  
-    // Find the associated z values/save them in za (4-by-1)
-    for (unsigned int i = 0; i != nXGrid; ++i){
-      for (unsigned int j = 0; j != nYGrid; ++j){ 
+    za(0) =  zin( (std::find(&xin[0], &xin[nXGrid], xa(0)) -&xin[0]) * nXGrid + (std::find(&yin[0], &yin[nXGrid], ya(0)) -&yin[0]));
+    za(1) =  zin( (std::find(&xin[0], &xin[nXGrid], xa(0)) -&xin[0]) * nXGrid + (std::find(&yin[0], &yin[nXGrid], ya(1)) -&yin[0]));
+    za(2) =  zin( (std::find(&xin[0], &xin[nXGrid], xa(1)) -&xin[0]) * nXGrid + (std::find(&yin[0], &yin[nXGrid], ya(0)) -&yin[0]));
+    za(3) =  zin( (std::find(&xin[0], &xin[nXGrid], xa(1)) -&xin[0]) * nXGrid + (std::find(&yin[0], &yin[nXGrid], ya(1)) -&yin[0]));
 
-        if (xa(0) == xin(i) && ya(0) == yin(j)) {
-          za(0) = zin(j+ i* nXGrid );
-          foundAll++; 
-          continue;
-        }
-  
-        if (xa(0) == xin(i) && ya(1) == yin(j)) {
-          za(1) = zin(j+ i* nXGrid); 
-          foundAll++;
-          continue;
-        }
-  
-        if (xa(1) == xin(i) && ya(0) == yin(j)) {
-          za(2) = zin(j+ i* nXGrid); 
-          foundAll++;
-          continue;
-        }
-         
-        if (xa(1) == xin(i) && ya(1) == yin(j)) {
-          za(3) = zin(j+ i* nXGrid);  
-          foundAll++; 
-          continue;
-        }
-      }  
-      if ( foundAll == 4 ) {
-        break;
-      } 
-    }
-     
     // Column 2  
     A(0,1) = xa(0);   A(1,1) = xa(0);
     A(2,1) = xa(1);   A(3,1) = xa(1);
@@ -109,7 +79,7 @@ Eigen::VectorXd interp2lin( const Eigen::Map<Eigen::VectorXd> & xin, const Eigen
   
     fq << 1 , xou(u), you(u), xou(u)*you(u);
   
-     // Rcpp::Rcout << "xa: " << xa.transpose() << ", ya: " << ya.transpose()  << ", za: " << za.transpose() << ", fq: " << fq << std::endl;
+    // Rcpp::Rcout << "xa: " << xa.transpose() << ", ya: " << ya.transpose()  << ", za: " << za.transpose() << ", fq: " << fq << std::endl;
   
     result(u) = fq * A.colPivHouseholderQr().solve(za);
   
