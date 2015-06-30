@@ -1,8 +1,8 @@
 # setwd('misc/', bwCheck = FALSE) 
 
 library(Rcpp)
-sourceCpp('src/RrotatedMullwlsk.cpp')
-load('data/InputForRotatedMllwlskInCpp.RData')
+sourceCpp('../../src/RrotatedMullwlsk.cpp')
+load('../../data/InputForRotatedMllwlskInCpp.RData')
 
 library(testthat)
 

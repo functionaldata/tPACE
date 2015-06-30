@@ -8,7 +8,7 @@ samp3 <- sparsify(samp3, pts, 5:10)
 rcov3 <- GetRawCov(samp3$yList, samp3$tList, pts, rep(0, length(pts)), 'Sparse', error=TRUE)
 brcov3 <- BinRawCov(rcov3)
 
-gcv3 <- gcvlwls2d(pts, kern='epan', rcov=brcov3)
+gcv3 <- gcvlwls2d(pts, kern='epan', rcov=brcov3, t=samp3$tList)
 # rotate fit is worse
 fit3 <- lwls2d(gcv3$h, kern='epan', xin=brcov3$tPairs, yin=brcov3$meanVals, win=brcov3$count, xout=cbind(outPts, outPts))
 sum((fit3 - outPts)^2)
@@ -36,5 +36,3 @@ val1 <- rotateLwls2d(0.12, 'epan', datin[, 1:2], yin, xout=cbind(gridPoints, gri
 plot(val1)
 
 
-debug(rotateLwls2d)
-undebug(rotateLwls2d)

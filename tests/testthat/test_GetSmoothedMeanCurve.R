@@ -1,6 +1,6 @@
  cat("\nTests for 'GetSmoothedMeanCurve.R'")
 
-load('data/dataGeneratedByExampleSeed123.RData')
+load('../../data/dataGeneratedByExampleSeed123.RData')
 
 test_that("basic that the Epan. kernel gives the same results as MATLAB", {
 

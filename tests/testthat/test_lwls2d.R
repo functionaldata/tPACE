@@ -62,4 +62,4 @@ lwls2d(0.3, kern='rect', rcov3$tPairs, rcov3$cxxn, xout1=xout2, xout2=xout2)
 
 # randWeights <- sample(1:3, n, replace=TRUE)
 # library(R.matlab)
-# writeMat('../data/data2Dsmoothers.mat', xin=rcov3$tPairs, yin=rcov3$cxxn, diagx=rcov3$diag[, 1], diagy=rcov3$diag[, 2], win=randWeights, xout1=xout1)
+# writeMat('../../../data/data2Dsmoothers.mat', xin=rcov3$tPairs, yin=rcov3$cxxn, diagx=rcov3$diag[, 1], diagy=rcov3$diag[, 2], win=randWeights, xout1=xout1)

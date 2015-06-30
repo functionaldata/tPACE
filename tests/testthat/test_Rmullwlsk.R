@@ -1,5 +1,5 @@
 # setwd('misc/') 
-load('data/InputFormMllwlskInCpp.RData')
+load('../../data/InputFormMllwlskInCpp.RData')
 if( !exists('Rmullwlsk') ) {
   library(Rcpp)
   sourceCpp('src/Rmullwlsk.cpp')
