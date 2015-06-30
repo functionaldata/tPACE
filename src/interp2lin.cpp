@@ -25,9 +25,9 @@ Eigen::VectorXd interp2lin( const Eigen::Map<Eigen::VectorXd> & xin, const Eigen
   } else if ( nUnknownPoints != you.size() ){
     Rcpp::stop("Output Y-grid does not have the same number of points as Output X-grid.");
   } else if ( xin.minCoeff() >  xou.minCoeff() ){
-    Rcpp::stop("Output X-grid  is outside the lower ragne of the input X-grid.");
+    Rcpp::stop("Output X-grid  is outside the lower range of the input X-grid.");
   } else if ( yin.minCoeff() >  you.minCoeff() ){
-    Rcpp::stop("Output X-grid  is outside the lower ragne of the input X-grid.");
+    Rcpp::stop("Output X-grid  is outside the lower range of the input X-grid.");
   } else if ( xin.maxCoeff() <  xou.maxCoeff() ){
     Rcpp::stop("Output X-grid  is outside the upper ragne of the input X-grid.");
   } else if ( yin.maxCoeff() <  you.maxCoeff() ){
