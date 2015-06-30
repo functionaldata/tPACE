@@ -1,6 +1,6 @@
 #include <RcppEigen.h>
-#include <algorithm>    // to get std::lower_bound
-#include <iterator>     // to get std::iterator
+#include <algorithm>    // to get the intersect and sort
+#include <iterator>     // std::iterator, std::input_iterator_tag
 
 // [[Rcpp::depends(RcppEigen)]]
 // [[Rcpp::export]]
@@ -9,19 +9,17 @@ Eigen::VectorXd interp2lin( const Eigen::Map<Eigen::VectorXd> & xin, const Eigen
 
   // Setting up initial values
 
-  const unsigned int nXGrid = xin.size();
-  const unsigned int nYGrid = yin.size();
-  const unsigned int nKnownPoints = nXGrid * nYGrid;
+  const unsigned int nKnownPoints = xin.size();
   const unsigned int nUnknownPoints = xou.size();
  
   Eigen::VectorXd result(nUnknownPoints);
 
   // Preliminary checks
 
-  if ( nXGrid != nYGrid ){
+  if ( nKnownPoints != yin.size() ){
     Rcpp::stop("Input Y-grid does not have the same number of points as Input X-grid.");
   } else if ( nKnownPoints != zin.size() ) {  
-    Rcpp::stop("Input Z-grid does not have the same number of points as the product of #Input Y-grid times #Input X-grid.");
+    Rcpp::stop("Input Z-grid does not have the same number of points as Input X-grid squared.");
   } else if ( nUnknownPoints != you.size() ){
     Rcpp::stop("Output Y-grid does not have the same number of points as Output X-grid.");
   } else if ( xin.minCoeff() >  xou.minCoeff() ){
@@ -35,8 +33,14 @@ Eigen::VectorXd interp2lin( const Eigen::Map<Eigen::VectorXd> & xin, const Eigen
   } 
 
   // The actual interpolation routine
-  // Check: https://en.wikipedia.org/wiki/Bilinear_interpolation#Alternative_algorithm
-  // for a quick reference
+
+  // Make sorted copies of xin & xou
+
+  Eigen::VectorXd xinput = xin;
+  std::sort( &xinput[0], &xinput[nKnownPoints]);
+
+  Eigen::VectorXd yinput = yin;
+  std::sort( &yinput[0], &yinput[nKnownPoints]);
 
   Eigen::RowVector4d fq;
   Eigen::Vector2d xa;
@@ -50,53 +54,51 @@ Eigen::VectorXd interp2lin( const Eigen::Map<Eigen::VectorXd> & xin, const Eigen
   
     // Find the appropriate x coordinates/save them in xa (2-by-1)
     // Get iterator pointing to the first element which is not less than xou(u)
-    const double* x1 = std::lower_bound(&xin[0], &xin[nXGrid], xou(u)); 
+    double* x1 = std::lower_bound(&xinput[0], &xinput[nKnownPoints], xou(u)); 
     xa(1) = *x1;
     xa(0) = *--x1;
   
-    // I feel there is a bug around here. But I cannot smoke it out.
+    // I suspect there is a bug around here.
   
     // Find the appropriate y coordinates/save them in ya (2-by-1)
     // Get iterator pointing to the first element which is not less than za(u)
-    const double* y1 = std::lower_bound(&yin[0], &yin[nYGrid], you(u)); 
+    double* y1 = std::lower_bound(&yinput[0], &yinput[nKnownPoints], you(u)); 
     ya(1) = *y1;
     ya(0) = *--y1;
   
     unsigned int foundAll = 0;
   
     // Find the associated z values/save them in za (4-by-1)
-    for (unsigned int i = 0; i != nXGrid; ++i){
-      for (unsigned int j = 0; j != nYGrid; ++j){ 
-
-        if (xa(0) == xin(i) && ya(0) == yin(j)) {
-          za(0) = zin(j+ i* nXGrid );
-          foundAll++; 
-          continue;
-        }
+    for (unsigned int i = 0; i !=nKnownPoints; ++i){ 
+      if (xa(0) == xin(i) && ya(0) == yin(i)) {
+        za(0) = zin(i);
+        foundAll++; 
+        continue;
+      }
   
-        if (xa(0) == xin(i) && ya(1) == yin(j)) {
-          za(1) = zin(j+ i* nXGrid); 
-          foundAll++;
-          continue;
-        }
+      if (xa(0) == xin(i) && ya(1) == yin(i)) {
+        za(1) = zin(i); 
+        foundAll++;
+        continue;
+      }
   
-        if (xa(1) == xin(i) && ya(0) == yin(j)) {
-          za(2) = zin(j+ i* nXGrid); 
-          foundAll++;
-          continue;
-        }
-         
-        if (xa(1) == xin(i) && ya(1) == yin(j)) {
-          za(3) = zin(j+ i* nXGrid);  
-          foundAll++; 
-          continue;
-        }
-      }  
+      if (xa(1) == xin(i) && ya(0) == yin(i)) {
+        za(2) = zin(i); 
+        foundAll++;
+        continue;
+      }
+       
+      if (xa(1) == xin(i) && ya(1) == yin(i)) {
+        za(3) = zin(i);  
+        foundAll++; 
+        continue;
+      }
+  
       if ( foundAll == 4 ) {
         break;
       } 
-    }
-     
+    } 
+  
     // Column 2  
     A(0,1) = xa(0);   A(1,1) = xa(0);
     A(2,1) = xa(1);   A(3,1) = xa(1);
@@ -109,7 +111,7 @@ Eigen::VectorXd interp2lin( const Eigen::Map<Eigen::VectorXd> & xin, const Eigen
   
     fq << 1 , xou(u), you(u), xou(u)*you(u);
   
-     // Rcpp::Rcout << "xa: " << xa.transpose() << ", ya: " << ya.transpose()  << ", za: " << za.transpose() << ", fq: " << fq << std::endl;
+   // Rcpp::Rcout << "xa: " << xa.transpose() << ", ya: " << ya.transpose()  << ", za: " << za.transpose() << ", fq: " << fq << std::endl;
   
     result(u) = fq * A.colPivHouseholderQr().solve(za);
   
