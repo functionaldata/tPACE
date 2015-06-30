@@ -10,7 +10,7 @@ ConvertSupport <- function(fromGrid, toGrid, mu=NULL, Cov=NULL, phi=NULL) {
     return(mapX1d(fromGrid, mu, toGrid))
   } else if (!is.null(Cov)) {
     gd <- meshgrid(toGrid)
-    ret <- matrix(interp2(fromGrid, fromGrid, Cov, gd$X, gd$Y), nrow=length(toGrid))
+    ret <- matrix(interp2lin(fromGrid, fromGrid, Cov, gd$X, gd$Y), nrow=length(toGrid))
     return(ret)
   } else if (!is.null(phi)) {
     return(mapX1d(fromGrid, phi, toGrid))

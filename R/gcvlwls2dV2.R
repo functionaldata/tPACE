@@ -155,7 +155,7 @@ getGCVscoresV2 <- function(bw, kern, xin, yin, win=NULL, regGrid, RSS=NULL, ...)
   if (any(is.nan(fit)))
     return(Inf)
 
-  obsFit <- interp2(regGrid, regGrid, fit, xin[, 1], xin[, 2])
+  obsFit <- interp2lin(regGrid, regGrid, fit, xin[, 1], xin[, 2])
   
   # residual sum of squares
   res <- sum((yin - obsFit) ^ 2 * win)

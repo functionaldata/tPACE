@@ -1,4 +1,5 @@
 # setwd('misc/') 
+# devtools::load_all()
 
 library(testthat)
 
@@ -35,4 +36,28 @@ U = test_that("basic pracma::interp2 (extended) example gives same output ", {
 })
 
 
- 
+x <- linspace(-1, 4, 101)
+y <- linspace(-1, 4, 101)
+mgrid <- meshgrid(x, y)
+Z <- mgrid$X^2 + 2*mgrid$Y + 3
+xout <- linspace(-1, 4, 200)
+meshOut <- meshgrid(xout)
+xp <- meshOut$X
+yp <- meshOut$Y
+method <- "linear"
+system.time({AA = interp2(x, y, Z, xp, yp, method)})
+system.time({BB = interp2lin( x, y, Z, xp, yp)})
+expect_equal(sum(AA), sum(BB), tolerance = 2e-15)
+
+x <- linspace(-1, 4, 1001)
+y <- linspace(-1, 4, 1001)
+mgrid <- meshgrid(x, y)
+Z <- mgrid$X^2 + 2*mgrid$Y + 3
+xout <- linspace(-1, 4, 100)
+meshOut <- meshgrid(xout)
+xp <- meshOut$X
+yp <- meshOut$Y
+method <- "linear"
+system.time({AA = interp2(x, y, Z, xp, yp, method)})
+system.time({BB = interp2lin( x, y, Z, xp, yp)})
+expect_equal(sum(AA), sum(BB), tolerance = 2e-15)
