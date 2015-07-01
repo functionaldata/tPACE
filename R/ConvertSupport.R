@@ -1,11 +1,19 @@
 # This function is used to convert the support of mu/phi/cov etc, to and from obsGrid and regGrid.
 # If one wants to convert both mu and phi, it should be called one at a time.
+# fromGrid and toGrid should be sorted.
 # mu: any vector of a function
 # phi: any matrix, each column containing a function to be interpolated.
 # Cov: any matrix supported on fromGrid * fromGrid, to be interpolated to toGrid * toGrid. 
 
 ConvertSupport <- function(fromGrid, toGrid, mu=NULL, Cov=NULL, phi=NULL) {
 
+  # In case the range of toGrid is larger than fromGrid due to numeric error
+  buff <- .Machine$double.eps * 100
+  if (abs(toGrid[1] - fromGrid[1]) < buff)
+    toGrid[1] <- fromGrid[1]
+  if (abs(toGrid[length(toGrid)] - fromGrid[length(fromGrid)]) < buff)
+    toGrid[length(toGrid)] <- fromGrid[length(fromGrid)]
+    
   if (!is.null(mu)) {# convert mu
     return(mapX1d(fromGrid, mu, toGrid))
   } else if (!is.null(Cov)) {
