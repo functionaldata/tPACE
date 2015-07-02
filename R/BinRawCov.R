@@ -2,7 +2,7 @@ BinRawCov <- function(rcov) {
   # rcov: Assumes rcov has entries on a dataType grid.
   # Returns: 
   
-  rcov$tPairs <- round(rcov$tPairs, 13)
+  rcov$tPairs <- signif(rcov$tPairs, 14)
   
   # Get the count, mean raw cov, and residual sum of squares at each pair of observed time points.
   tmp <- tapply(rcov$cxxn, list(rcov$tPairs[, 1], rcov$tPairs[, 2]), function(yy) c(mean(yy), length(yy), var(yy) * (length(yy) - 1)), simplify=FALSE)

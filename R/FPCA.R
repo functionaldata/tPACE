@@ -85,7 +85,7 @@ FPCA = function(y, t, optns = CreateOptions()){
 
   # truncated obsGrid, and observations. Empty observation due to truncation has length 0.
   if (!all.equal(optns$outPercent, c(0, 1))) {
-    buff <- .Machine$double.eps * 100
+    buff <- .Machine$double.eps * max(abs(obsGrid)) * 3
     obsGrid <- obsGrid[obsGrid >= min(workGrid) - buff &
                             obsGrid <= max(workGrid) + buff]
     tmp <- TruncateObs(y, t, obsGrid)

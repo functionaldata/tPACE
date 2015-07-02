@@ -8,7 +8,7 @@
 ConvertSupport <- function(fromGrid, toGrid, mu=NULL, Cov=NULL, phi=NULL) {
 
   # In case the range of toGrid is larger than fromGrid due to numeric error
-  buff <- .Machine$double.eps * 100
+  buff <- .Machine$double.eps * max(abs(fromGrid)) * 3
   if (abs(toGrid[1] - fromGrid[1]) < buff)
     toGrid[1] <- fromGrid[1]
   if (abs(toGrid[length(toGrid)] - fromGrid[length(fromGrid)]) < buff)
