@@ -94,14 +94,13 @@ Eigen::MatrixXd Rrotatedmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const 
 
     if (ly.size()>=npoly+1 && !bwCheck ){
 
-    //computing weight matrix 
+      //computing weight matrix 
       Eigen::VectorXd temp(indxSize);
       Eigen::MatrixXd llx(2, indxSize );  
       llx.row(0) = (lx.row(0).array() - rxygrid(0,i))/bw(0);  
       llx.row(1) = (lx.row(1).array() - rxygrid(1,i))/bw(1); 
  
       //define the kernel used 
-    
       switch (KernelName){
         case 1: // Epan
           temp=  ((1-llx.row(0).array().pow(2))*(1- llx.row(1).array().pow(2))).array() * 
@@ -137,16 +136,16 @@ Eigen::MatrixXd Rrotatedmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const 
       Eigen::LDLT<Eigen::MatrixXd> ldlt_XTWX(X.transpose() * temp.asDiagonal() *X);
       Eigen::VectorXd beta = ldlt_XTWX.solve(X.transpose() * temp.asDiagonal() * ly);
       mu(i)=beta(0); 
-     //Rcpp::Rcout << " mu : " <<  " " << beta(0) << std::endl;   
-     //Rcpp::Rcout << " X : " <<  " " << X << std::endl;   
     } else if ( ly.size() == 1 && !bwCheck) { // Why only one but not two is handled?
       mu(i) = ly(0);
-    } else if ( ly.size() != 1 && (ly.size() < npoly+1) && !bwCheck ){
-      //Rcpp::Rcout <<"The meter value is:" << meter << std::endl;  
-      Rcpp::stop("No enough points in local window, please increase bandwidth.");
-      // Eigen::MatrixXd checker(1,1); 
-      // checker(0,0) = 0.; 
-      // return(checker);
+    } else if ( ly.size() != 1 && (ly.size() < npoly+1) ) {
+      if ( bwCheck ){
+        Eigen::MatrixXd checker(1,1); 
+        checker(0,0) = 0.; 
+        return(checker);
+      } else {  
+        Rcpp::stop("No enough points in local window, please increase bandwidth.");
+      }
     }
   } 
   
