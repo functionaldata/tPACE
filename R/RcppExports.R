@@ -5,10 +5,6 @@ interp2lin <- function(xin, yin, zin, xou, you) {
     .Call('tPACE_interp2lin', PACKAGE = 'tPACE', xin, yin, zin, xou, you)
 }
 
-interp2lin2 <- function(xin, yin, zin, xou, you) {
-    .Call('tPACE_interp2lin2', PACKAGE = 'tPACE', xin, yin, zin, xou, you)
-}
-
 Rmullwlsk <- function(bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck) {
     .Call('tPACE_Rmullwlsk', PACKAGE = 'tPACE', bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck)
 }

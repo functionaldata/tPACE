@@ -1,8 +1,6 @@
 # setwd('misc/', bwCheck = FALSE) 
 
 library(Rcpp)
-sourceCpp('../../src/RrotatedMullwlsk.cpp')
-load('../../data/InputForRotatedMllwlskInCpp.RData')
 
 library(testthat)
 
@@ -105,16 +103,19 @@ T = test_that("incoherent kernel_types fall back to Epanechnikov kernels and giv
 
 Y = test_that("Small bandwidths give correct error", {
 
-  # expect_error( Rrotatedmullwlsk(bw =c(0.3,0.4), tPairs=IN$tPairs, cxxn= IN$cxxn, win= sin(seq(1,38))+3, xygrid=IN$xygrid, npoly=IN$npoly, kernel_type= 'rect', bwCheck = FALSE), "No enough points in local window, please increase bandwidth.")
-
   expect_equal( as.numeric( Rrotatedmullwlsk(bw =c(0.3,0.4), tPairs=IN$tPairs, cxxn= IN$cxxn, win= sin(seq(1,38))+3, xygrid=IN$xygrid, npoly=IN$npoly, kernel_type= 'rect', bwCheck = TRUE)), 0)
   expect_equal( as.numeric( Rrotatedmullwlsk(bw =c(9.3,9.4), tPairs=IN$tPairs, cxxn= IN$cxxn, win= sin(seq(1,38))+3, xygrid=IN$xygrid, npoly=IN$npoly, kernel_type= 'rect', bwCheck = TRUE)), 1)
   
   expect_equal( as.numeric( Rrotatedmullwlsk(bw =c(0.3,0.4), tPairs=IN$tPairs, cxxn= IN$cxxn, win= sin(seq(1,38))+3, xygrid=IN$xygrid, npoly=IN$npoly, kernel_type= 'rect', bwCheck = 1)), 0)
   expect_equal( as.numeric( Rrotatedmullwlsk(bw =c(9.3,9.4), tPairs=IN$tPairs, cxxn= IN$cxxn, win= sin(seq(1,38))+3, xygrid=IN$xygrid, npoly=IN$npoly, kernel_type= 'rect', bwCheck = 1)), 1)
   
-  expect_equal( as.numeric( Rrotatedmullwlsk(bw =c(0.3,0.4), tPairs=IN$tPairs, cxxn= IN$cxxn, win= sin(seq(1,38))+3, xygrid=IN$xygrid, npoly=IN$npoly, kernel_type= 'rect', bwCheck = 0)), 0)
-  expect_equal( as.numeric( Rrotatedmullwlsk(bw =c(0.3,0.4), tPairs=IN$tPairs, cxxn= IN$cxxn, win= sin(seq(1,38))+3, xygrid=IN$xygrid, npoly=IN$npoly, kernel_type= 'rect', bwCheck = FALSE)), 0)
+ #  expect_equal( as.numeric( Rrotatedmullwlsk(bw =c(0.3,0.4), tPairs=IN$tPairs, cxxn= IN$cxxn, win= sin(seq(1,38))+3, xygrid=IN$xygrid, npoly=IN$npoly, kernel_type= 'rect', bwCheck = 0)), 0)
+ #  expect_equal( as.numeric( Rrotatedmullwlsk(bw =c(0.3,0.4), tPairs=IN$tPairs, cxxn= IN$cxxn, win= sin(seq(1,38))+3, xygrid=IN$xygrid, npoly=IN$npoly, kernel_type= 'rect', bwCheck = FALSE)), 0)
+
+  expect_error( Rrotatedmullwlsk(bw =c(0.3,0.4), tPairs=IN$tPairs, cxxn= IN$cxxn, win= sin(seq(1,38))+3, xygrid=IN$xygrid, npoly=IN$npoly, kernel_type= 'rect', bwCheck = FALSE), "No enough points in local window, please increase bandwidth.")
+  expect_error( Rrotatedmullwlsk(bw =c(0.3,0.4), tPairs=IN$tPairs, cxxn= IN$cxxn, win= sin(seq(1,38))+3, xygrid=IN$xygrid, npoly=IN$npoly, kernel_type= 'rect', bwCheck = 0), "No enough points in local window, please increase bandwidth.")
+
+
 
 })
 

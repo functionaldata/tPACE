@@ -25,17 +25,16 @@ Eigen::VectorXd interp2lin( const Eigen::Map<Eigen::VectorXd> & xin, const Eigen
     Rcpp::stop("Input Z-grid does not have the same number of points as the product of #Input Y-grid times #Input X-grid.");
   } else if ( nUnknownPoints != you.size() ){
     Rcpp::stop("Output Y-grid does not have the same number of points as Output X-grid.");
-  }
-  /* else if ( xin.minCoeff() >  xou.minCoeff() ){
-    Rcpp::stop("Output X-grid  is outside the lower range of the input X-grid.");
+  } else if ( xin.minCoeff() >  xou.minCoeff() ){
+    Rcpp::warning("Output X-grid  is outside the lower range of the input X-grid.");
   } else if ( yin.minCoeff() >  you.minCoeff() ){
-    Rcpp::stop("Output X-grid  is outside the lower range of the input X-grid.");
+    Rcpp::warning("Output X-grid  is outside the lower range of the input X-grid.");
   } else if ( xin.maxCoeff() <  xou.maxCoeff() ){
-    Rcpp::stop("Output X-grid  is outside the upper ragne of the input X-grid.");
+    Rcpp::warning("Output X-grid  is outside the upper ragne of the input X-grid.");
   } else if ( yin.maxCoeff() <  you.maxCoeff() ){
-    Rcpp::stop("Output X-grid  is outside the upper ragne of the input X-grid.");
+    Rcpp::warning("Output X-grid  is outside the upper ragne of the input X-grid.");
   } 
-  */
+  
  
   const double ymin = yin.minCoeff();
   const double xmin = xin.minCoeff();
@@ -71,10 +70,15 @@ Eigen::VectorXd interp2lin( const Eigen::Map<Eigen::VectorXd> & xin, const Eigen
       xa(0) = *--x1;
       ya(0) = *--y1;
 
-      za(0) =  zin( (std::find(&xin[0], &xin[nXGrid], xa(0)) -&xin[0]) * nXGrid + (std::find(&yin[0], &yin[nXGrid], ya(0)) -&yin[0]));
-      za(1) =  zin( (std::find(&xin[0], &xin[nXGrid], xa(0)) -&xin[0]) * nXGrid + (std::find(&yin[0], &yin[nXGrid], ya(1)) -&yin[0]));
-      za(2) =  zin( (std::find(&xin[0], &xin[nXGrid], xa(1)) -&xin[0]) * nXGrid + (std::find(&yin[0], &yin[nXGrid], ya(0)) -&yin[0]));
-      za(3) =  zin( (std::find(&xin[0], &xin[nXGrid], xa(1)) -&xin[0]) * nXGrid + (std::find(&yin[0], &yin[nXGrid], ya(1)) -&yin[0]));
+      const double* x1p = std::find(&xin[0], &xin[nXGrid], xa(1));
+      const double* y1p = std::find(&yin[0], &yin[nXGrid], ya(1));
+      const double* x0p = x1p - 1;
+      const double* y0p = y1p - 1;
+
+      za(0) = zin( (x0p -&xin[0]) * nXGrid + (y0p -&yin[0]) );
+      za(1) = zin( (x0p -&xin[0]) * nXGrid + (y1p -&yin[0]) );
+      za(2) = zin( (x1p -&xin[0]) * nXGrid + (y0p -&yin[0]) );
+      za(3) = zin( (x1p -&xin[0]) * nXGrid + (y1p -&yin[0]) );
 
       // Column 2  
       A(0,1) = xa(0);   A(1,1) = xa(0);
