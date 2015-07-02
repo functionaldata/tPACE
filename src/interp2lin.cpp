@@ -67,13 +67,33 @@ Eigen::VectorXd interp2lin( const Eigen::Map<Eigen::VectorXd> & xin, const Eigen
 
       xa(1) = *x1;
       ya(1) = *y1;
-      xa(0) = *--x1;
-      ya(0) = *--y1;
 
       const double* x1p = std::find(&xin[0], &xin[nXGrid], xa(1));
       const double* y1p = std::find(&yin[0], &yin[nXGrid], ya(1));
-      const double* x0p = x1p - 1;
-      const double* y0p = y1p - 1;
+      const double* x0p;
+      const double* y0p;
+
+     
+      if( y1 != &yin[0]){
+        ya(0) = *--y1;
+        y0p = y1p - 1;
+      } else {
+        ya(0) = ya(1);
+        y0p = y1p;
+      }
+      if( x1 != &xin[0]){
+        xa(0) = *--x1;
+        x0p = x1p - 1;
+      } else {
+        xa(0) = xa(1);
+        x0p = x1p;
+      }
+     
+
+//      const double* x1p = std::find(&xin[0], &xin[nXGrid], xa(1));
+//      const double* y1p = std::find(&yin[0], &yin[nXGrid], ya(1));
+//      const double* x0p = x1p - 1;
+//      const double* y0p = y1p - 1;
 
       za(0) = zin( (x0p -&xin[0]) * nXGrid + (y0p -&yin[0]) );
       za(1) = zin( (x0p -&xin[0]) * nXGrid + (y1p -&yin[0]) );
@@ -92,7 +112,7 @@ Eigen::VectorXd interp2lin( const Eigen::Map<Eigen::VectorXd> & xin, const Eigen
   
       fq << 1 , xou(u), you(u), xou(u)*you(u);
   
-      // Rcpp::Rcout << "xa: " << xa.transpose() << ", ya: " << ya.transpose()  << ", za: " << za.transpose() << ", fq: " << fq << std::endl;
+      //  Rcpp::Rcout << "xa: " << xa.transpose() << ", ya: " << ya.transpose()  << ", za: " << za.transpose() << ", fq: " << fq << std::endl;
   
       result(u) = fq * A.colPivHouseholderQr().solve(za);
     }
