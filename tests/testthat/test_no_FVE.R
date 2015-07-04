@@ -1,7 +1,7 @@
 devtools::load_all()
 library(testthat)
 
-xcov <- (read.csv('../../data/xcovForGetEigens1.csv', header=FALSE))
+xcov <- (read.csv('data/xcovForGetEigens1.csv', header=FALSE))
 xcov <-  do.call(rbind, xcov)
 regGrid<- seq(0,10,length.out=51)
 

@@ -2,7 +2,7 @@ devtools::load_all()
 library(testthat)
 
 # as in test_Rmullwlsk.R
-load('../../data/InputFormMllwlskInCpp.RData')
+load('data/InputFormMllwlskInCpp.RData')
 IN = InputFormMllwlskInCpp
 
 
