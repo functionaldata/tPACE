@@ -5,11 +5,14 @@ gcvlwls1d1 <- function(yy,tt, kernel, npoly, nder, dataType, verbose=TRUE) {
 # this is compatible with PACE because the GCV is calculated in a same way
   
   t = unlist(tt);
-  y = unlist(yy);
+  y = unlist(yy)[order(t)];
+ 
+  t = sort(t);
   
-  r = diff(range(t))
+  # r = diff(range(t))
   N = length(t);
-  
+  r = t[N] - t[1];  
+
   # Specify the starting bandwidth candidates
   if ( dataType == "Sparse") {
     dstar = minb(t, npoly+2);
@@ -49,7 +52,8 @@ gcvlwls1d1 <- function(yy,tt, kernel, npoly, nder, dataType, verbose=TRUE) {
   gcvScores <- c()
   # Get the corresponding GCV scores 
   for(i in 1:length(bwCandidates)){
-    newmu = lwls1d(bwCandidates[i], kern=kernel, npoly=npoly, nder=nder, xin = t,yin= y,xout= sort(unique(t)))[idx]
+    # newmu = lwls1d(bwCandidates[i], kern=kernel, npoly=npoly, nder=nder, xin = t,yin= y,xout= sort(unique(t)))[idx]
+    newmu = Rlwls1d(bwCandidates[i], kern=kernel, npoly=npoly, nder=nder, xin = t,yin= y, win = rep(1,length(y)),xout= sort(unique(t)))[idx]
     cvsum = sum((newmu -y)^2 )
     gcvScores[i] =cvsum/(1-(r*k0)/(N*bwCandidates[i]))^2
   }
@@ -58,7 +62,8 @@ gcvlwls1d1 <- function(yy,tt, kernel, npoly, nder, dataType, verbose=TRUE) {
   if(all((is.infinite(gcvScores)))){
     bwCandidates = seq( max(bwCandidates), r, length.out = 2*length(bwCandidates))
     for(i in 1:length(bwCandidates)){
-      newmu = lwls1d(bwCandidates[i], kern=kernel, npoly=npoly, nder=nder, xin = t,yin= y,xout= sort(unique(t)))[idx]
+      # newmu = lwls1d(bwCandidates[i], kern=kernel, npoly=npoly, nder=nder, xin = t,yin= y,xout= sort(unique(t)))[idx]
+      newmu = Rlwls1d(bwCandidates[i], kern=kernel, npoly=npoly, nder=nder, xin = t,yin= y, win = rep(1,length(y)), xout= sort(unique(t)))[idx]
       cvsum = sum((newmu -y)^2 )
       gcvScores[i] =cvsum/(1-(r*k0)/(N*bwCandidates[i]))^2
     }

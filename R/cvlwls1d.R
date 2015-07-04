@@ -3,11 +3,12 @@ cvlwls1d <- function(yy, t, kernel, npoly, nder, dataType ){
   ncohort = length(t);
   tt  = unlist(t);
   xx  = unlist(yy);
-  ind = unlist(lapply( 1:length(t), function(j) rep(j, times=length(t[[j]]))));
+  ind = unlist(lapply( 1:ncohort, function(j) rep(j, times=length(t[[j]]))));
 
-  ttn=tt;
-  xxn=xx;
-  a0=min(tt);
+  xxn = xx[order(tt)];
+  ttn = sort(tt);
+  # xxn = xx;
+  a0=tt[1];
   b0=max(tt);
   rang = b0-a0;
   dstar = minb(tt, npoly+2);
@@ -56,10 +57,19 @@ cvlwls1d <- function(yy, t, kernel, npoly, nder, dataType ){
             xxn=(ave*ncohort-t[[i]])/(ncohort-1);
             ttn=t[[1]];
             win=ones(1,length(t[[1]]));
+            
+            xxn = xxn[order(ttn)]
+            ttn = sort(ttn)           
+  
+	}
+ 
+        # yin = xxn[order(ttn)]
+        # xin = sort(ttn)    
+        if (any(win==0)){
+           mu = lwls1d(bw= bw[j], kern=kernel, npoly=npoly, nder= nder, xin = ttn, yin= xxn, xout=out, win = win) 
+        } else {
+          mu = Rlwls1d(bw= bw[j], kern=kernel, npoly=npoly, nder= nder, xin = ttn, yin= xxn, xout=out, win = win)       
         }
-
-        mu= lwls1d(bw= bw[j], kern=kernel, npoly=npoly, nder= nder, xin = ttn, yin= xxn, xout=out)       
-
         # if invalid==0 {
         cv[j]=cv[j]+t(obs-mu)%*%(obs-mu);
         count[j]=count[j]+1;

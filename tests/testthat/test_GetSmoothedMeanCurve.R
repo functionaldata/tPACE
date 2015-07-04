@@ -1,15 +1,35 @@
  cat("\nTests for 'GetSmoothedMeanCurve.R'")
-
+library(testthat)
 load('data/dataGeneratedByExampleSeed123.RData')
 
+p = CreateOptions(kernel='epan')
+optns = SetOptions(y,t,p)
+out1 = sort(unique( c(unlist(t), optns$newdata)));
+out21 = seq(min(out1), max(out1),length.out = optns$ngrid);
+ 
 test_that("basic that the Epan. kernel gives the same results as MATLAB", {
 
-  p = CreateOptions(kernel='epan')
-  optns = SetOptions(y,t,p)
-  out1 = sort(unique( c(unlist(t), optns$newdata)));
-  out21 = seq(min(out1), max(out1),length.out = optns$ngrid);
-  smcObj = GetSmoothedMeanCurve(y, t, out1, out21, p)
+  smcObj = GetSmoothedMeanCurve(y=y, t=t, obsGrid = out1, regGrid = out21, optns = optns)
   expect_equal( sum(smcObj$mu) , 1.176558873333339e+02,tolerance = 1e-13, scale = 1 ) 
 
  } )
+
+test_that("basic that the Rect. kernel gives the same results as MATLAB", {
+
+  optns$kernel = 'rect';
+  smcObj = GetSmoothedMeanCurve(y=y, t=t, obsGrid = out1, regGrid = out21, optns = optns)
+  expect_equal( sum(smcObj$mu) , 1.186398254457767e+02,tolerance = 1e-13, scale = 1 )
+
+ } )
+
+
+
+test_that("basic that the Gaussian kernel gives the same results as MATLAB", {
+
+  optns$kernel = 'gauss';
+  smcObj = GetSmoothedMeanCurve(y=y, t=t, obsGrid = out1, regGrid = out21, optns = optns)
+  expect_equal( sum(smcObj$mu) , 1.206167514696777e+02,tolerance = 1e-13, scale = 1 )
+
+ } )
+
 

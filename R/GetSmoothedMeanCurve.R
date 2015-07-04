@@ -40,8 +40,12 @@ GetSmoothedMeanCurve <- function (y, t, obsGrid, regGrid, optns){
       }
     }
     # Get the mean function using the bandwith estimated above:
-    mu = lwls1d(bw_mu, kern = kernel, npoly = npoly, nder = nder, xin = unlist(t), yin= unlist(y), xout = obsGrid)
-    muDense = lwls1d(bw_mu, kern = kernel, npoly = npoly, nder = nder, xin = unlist(t), yin= unlist(y), xout = regGrid)
+    xin = unlist(t);    
+    yin = unlist(y)[order(xin)];
+    xin = sort(xin);    
+    win = rep(1, length(xin));
+    mu = Rlwls1d(bw_mu, kern = kernel, npoly = npoly, nder = nder, xin = xin, yin= yin, xout = obsGrid, win = win)
+    muDense = Rlwls1d(bw_mu, kern = kernel, npoly = npoly, nder = nder, xin = xin, yin= yin, xout = regGrid, win = win)
   }  
   
   result <- list( 'mu' = mu, 'muDense'= muDense, 'bw_mu' = bw_mu);
