@@ -1,4 +1,4 @@
-cvlwls1d <- function(yy, tt, kernel, npoly, nder, dataType ){
+cvlwls1d <- function(yy, t, kernel, npoly, nder, dataType ){
 
   ncohort = length(t);
   tt  = unlist(t);

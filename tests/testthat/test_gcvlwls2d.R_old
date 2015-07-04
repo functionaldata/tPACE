@@ -2,7 +2,7 @@ devtools::load_all()
 options(error=recover)
 library(testthat)
 
-load('../../data/dataForGetRawCov.RData')
+load('data/dataForGetRawCov.RData')
 rcov <- GetRawCov(y,t, sort(unlist(t)), mu,'Sparse',FALSE) #Matches ML output
 
 # getGCVscores

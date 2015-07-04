@@ -1,6 +1,6 @@
  cat("\nTests for 'gcvlwls1d1.R'")
 
-load('../../data/dataForGcvLwlsTest.RData')
+load('data/dataForGcvLwlsTest.RData')
 
 test_that("basic  optimal bandwidth choice for the mean function use GCV method matches MATLAB for Sparse data", {
 
