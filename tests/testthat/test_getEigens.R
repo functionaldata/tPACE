@@ -3,7 +3,7 @@ cat("\ntests for 'getEigens'")
 myEps = .Machine$double.eps;
 test_that("basic arguments match MATLAB output ", { 
 
- xcov <- (read.csv('../../data/xcovForGetEigens1.csv', header=FALSE))
+ xcov <- (read.csv('data/xcovForGetEigens1.csv', header=FALSE))
  xcov <-  do.call(rbind, xcov)
  obsGrid<- seq(0,10,length.out=21)
  regGrid<- seq(0,10,length.out=51)
