@@ -13,7 +13,7 @@ GetCEScores <- function(y, t, optns, mu, obsGrid, fittedCov, lambda, phi, sigma2
 
   MuPhiSig <- GetMuPhiSig(t, obsGrid, mu, phi, Sigma_Y)
   ret <- mapply(function(yVec, muphisig) 
-         GetIndCEScores(yVec, muphisig$muVec, lambda, muphisig$phiMat, muphisig$Sigma_Yi), 
+         GetIndCEScores(yVec, muphisig$muVec, lambda, muphisig$phiMat, muphisig$Sigma_Yi, verbose=optns$verbose), 
          y, MuPhiSig) 
 
   return(ret)
@@ -40,9 +40,9 @@ GetIndCEScores <- function(yVec, muVec, lamVec, phiMat, Sigma_Yi, newyInd=NULL,
 
   if (length(yVec) == 0) {
     if (verbose)
-      warnings('Empty observation found, possibly due to truncation')
+      warning('Empty observation found, possibly due to truncation')
 
-      return(list(xiEst=NULL, xiVar=NULL, fittedY=NULL))
+    return(list(xiEst=matrix(NA, length(lamVec)), xiVar=matrix(NA, length(lamVec), length(lamVec)), fittedY=matrix(NA, 0, 0)))
   }
 
 # When an individual has only one observation, the leave-one-out predicted Y is NA.

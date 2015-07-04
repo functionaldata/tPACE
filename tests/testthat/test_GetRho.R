@@ -28,6 +28,25 @@ test_that('cvRho matches getScores2',
 test_that('GetRho matches cv_rho.m', 
           expect_equal(GetRho(y, t, list(), mu, obsGrid, fittedCov, lambda, phi, 0.01), 0.510049017252264))
 
+test_that('Truncation works for GetRho', {
+  set.seed(1)
+  n <- 20
+  pts <- seq(0, 1, by=0.05)
+  truncPts <- seq(0.1, 0.9, 0.05)
+  mu <- rep(0, length(pts))
+  samp4 <- wiener(n, pts) + rnorm(n * length(pts), sd=0.1)
+  samp4 <- sparsify(samp4, pts, 10)
+  samp4$yList[[1]] <- samp4$tList[[1]] <- c(0, 1)
+  samp4Trunc <- TruncateObs(samp4$yList, samp4$tList, truncPts)  
+  pTrunc <- SetOptions(samp4$yList, samp4$tList, CreateOptions(dataType='Sparse', error=TRUE, kernel='epan', verbose=TRUE))
+  smc4 <- GetSmoothedCovarSurface(samp4$yList, samp4$tList, mu, pts, pts, pTrunc)
+  eig4 <- GetEigenAnalysisResults(smc4$smoothCov, pts, pTrunc)
+  phiObs <- ConvertSupport(pts, truncPts, phi=eig4$phi)
+  CovObs <- ConvertSupport(pts, truncPts, Cov=eig4$fittedCov)
+  
+  rho4 <- GetRho(samp4Trunc$y, samp4Trunc$t, pTrunc, mu[1:length(truncPts)], truncPts, CovObs, eig4$lambda, phiObs, smc4$sigma2)
+  expect_true(rho4 < 0.2)
+})
 
 # # Matlab code:
 # y = cell(1, 3);

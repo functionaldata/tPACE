@@ -1,7 +1,9 @@
 GetRho <- function(y, t, optns, mu, obsGrid, fittedCov, lambda, phi, sigma2) {
-    
+  
+  optnsTmp <- optns
+  optnsTmp$verbose <- FALSE 
   for (j in 1:2) {
-    yhat <- unlist(GetCEScores(y, t, optns, mu, obsGrid, fittedCov, lambda, phi, sigma2)[3, ]) 
+    yhat <- unlist(GetCEScores(y, t, optnsTmp, mu, obsGrid, fittedCov, lambda, phi, sigma2)[3, ]) 
     sigma2 <- mean((yhat - unlist(y))^2)
   }
     
@@ -35,7 +37,7 @@ cvRho <- function(rho, leaveOutInd, y, t, optns, mu, obsGrid, fittedCov, lambda,
   
   yobs <- mapply(`[`, y, leaveOutInd)
 
-  return(sum((yobs - yhat)^2, na.rm=TRUE))
+  return(sum((unlist(yobs) - unlist(yhat))^2, na.rm=TRUE))
 }
 
 

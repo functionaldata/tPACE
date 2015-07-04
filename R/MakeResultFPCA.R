@@ -17,13 +17,13 @@
 ##########################################################################
 
 MakeResultFPCA <- function(optns, smcObj, mu, scsObj, eigObj,
-	scoresObj, obsGrid, workGrid){
+	scoresObj, obsGrid, workGrid, rho=NULL){
   if(optns$dataType == 'Sparse'){
   	ret <- list(sigma2 = scsObj$sigma2, lambda = eigObj$lambda, phi = eigObj$phi,
   	  xiEst = t(do.call(cbind, scoresObj[1, ])), xiVar = scoresObj[2, ], 
       # fittedY = scoresObj[3, ], 
       obsGrid = obsGrid, mu = mu, workGrid = workGrid, smoothedCov = scsObj$smoothCov, 
-      fittedCov = eigObj$fittedCov, optns = optns, bwMu = smcObj$bw_mu, bwCov = scsObj$bwCov)
+      fittedCov = eigObj$fittedCov, optns = optns, bwMu = smcObj$bw_mu, bwCov = scsObj$bwCov, rho=rho)
   } else if(optns$dataType == 'Dense'){
   	ret <- list(sigma2 = scsObj$sigma2, lambda = eigObj$lambda, phi = eigObj$phi,
   	  xiEst = scoresObj$xiEst, xiVar = scoresObj$xiVar, 
