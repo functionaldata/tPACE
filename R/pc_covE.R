@@ -74,8 +74,8 @@ pc_covE = function(obsGrid, regGrid, bw_userCov, rotationCut=c(0, 1), kernel = '
   sigma2 = trapz(rcutGrid, yvar - xvar) / (lint * rcutprop)
 
   if(sigma2 < 0){
-    warning("Warning: estimated sigma2 is negative, reset to zero now!")
-    sigma2 = 0
+    warning("Warning: estimated sigma2 is negative, reset to 1e-6 now!")
+    sigma2 = 1e-6
   }
 
   return(list('sigma2' = sigma2, 'xvar' = xvar, 'yvar' = yvar))

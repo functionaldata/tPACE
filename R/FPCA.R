@@ -83,36 +83,38 @@ FPCA = function(y, t, optns = CreateOptions()){
   # Get the results for the eigen-analysis
   eigObj = GetEigenAnalysisResults(smoothCov = scsObj$smoothCov, workGrid, optns)
 
-  # truncated obsGrid, and observations. Empty observation due to truncation has length 0.
-  if (!all.equal(optns$outPercent, c(0, 1))) {
-    buff <- .Machine$double.eps * max(abs(obsGrid)) * 3
-    obsGrid <- obsGrid[obsGrid >= min(workGrid) - buff &
-                            obsGrid <= max(workGrid) + buff]
-    tmp <- TruncateObs(y, t, obsGrid)
+  # Truncated obsGrid, and observations. Empty observation due to truncation has length 0.
+  truncObsGrid <- obsGrid
+  if (!all(abs(optns$outPercent - c(0, 1)) < .Machine$double.eps * 2)) {
+    buff <- .Machine$double.eps * max(abs(truncObsGrid)) * 3
+    truncObsGrid <- truncObsGrid[truncObsGrid >= min(workGrid) - buff &
+                            truncObsGrid <= max(workGrid) + buff]
+    tmp <- TruncateObs(y, t, truncObsGrid)
     y <- tmp$y
-    t <- tmp$y
+    t <- tmp$t
   }
 
   # convert phi and fittedCov to obsGrid.
-  phiObs <- ConvertSupport(workGrid, obsGrid, phi=eigObj$phi)
-  CovObs <- ConvertSupport(workGrid, obsGrid, Cov=eigObj$fittedCov)
+  muObs <- ConvertSupport(obsGrid, truncObsGrid, mu=mu)
+  phiObs <- ConvertSupport(workGrid, truncObsGrid, phi=eigObj$phi)
+  CovObs <- ConvertSupport(workGrid, truncObsGrid, Cov=eigObj$fittedCov)
 
   # Get scores  
   if (optns$method == 'CE') {
     if (optns$rho != 'no') {
-      rho <- GetRho(y, t, optns, mu, obsGrid, CovObs, eigObj$lambda, phiObs, sigma2)
+      rho <- GetRho(y, t, optns, muObs, truncObsGrid, CovObs, eigObj$lambda, phiObs, sigma2)
       sigma2 <- rho
     }
 
-    scoresObj <- GetCEScores(y, t, optns, mu, obsGrid, CovObs, eigObj$lambda, phiObs, sigma2)
+    scoresObj <- GetCEScores(y, t, optns, muObs, truncObsGrid, CovObs, eigObj$lambda, phiObs, sigma2)
 
   } else if (optns$method == 'IN') {
-    scoresObj <- GetINScores(ymat, t, optns, mu, eigObj$lambda, phiObs)
+    scoresObj <- GetINScores(ymat, t, optns, muObs, eigObj$lambda, phiObs)
   }
 
   # Make the return object by MakeResultFPCA
-  ret <- MakeResultFPCA(optns, smcObj, mu, scsObj, eigObj,
-  scoresObj, obsGrid, workGrid)
+  ret <- MakeResultFPCA(optns, smcObj, muObs, scsObj, eigObj,
+                        scoresObj, truncObsGrid, workGrid, rho=ifelse(optns$rho =='cv', rho, NA))
 
   return(ret); 
 }

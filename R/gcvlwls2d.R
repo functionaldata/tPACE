@@ -81,7 +81,7 @@ gcvlwls2d <- function(obsGrid, ngrid=NULL, dataType=rcov$dataType, error=rcov$er
       leave <- TRUE            
       else if (is.infinite(optgcv)) {
         if (verbose)
-        warnings('Data is too sparse, retry with larger bandwidths!')
+        warning('Data is too sparse, retry with larger bandwidths!')
         h0 <- bw[10] * 1.01
       } else if (opth == bw[length(bw)]) {
         warning('Optimal bandwidth not found in the candidate bandwidths. Retry with larger bandwidths')
