@@ -63,13 +63,13 @@ cvlwls1d <- function(yy, t, kernel, npoly, nder, dataType ){
   
 	}
  
-        # yin = xxn[order(ttn)]
-        # xin = sort(ttn)    
         if (any(win==0)){
-           mu = lwls1d(bw= bw[j], kern=kernel, npoly=npoly, nder= nder, xin = ttn, yin= xxn, xout=out, win = win) 
+          nz = c(win != 0)
+          mu = Rlwls1d(bw= bw[j], kern=kernel, npoly=npoly, nder= nder, xin = ttn[nz], yin= xxn[nz], xout=out, win = win[nz])       
         } else {
-          mu = Rlwls1d(bw= bw[j], kern=kernel, npoly=npoly, nder= nder, xin = ttn, yin= xxn, xout=out, win = win)       
+          mu = Rlwls1d(bw= bw[j], kern=kernel, npoly=npoly, nder= nder, xin = ttn, yin= xxn, xout=out, win = win)
         }
+
         # if invalid==0 {
         cv[j]=cv[j]+t(obs-mu)%*%(obs-mu);
         count[j]=count[j]+1;

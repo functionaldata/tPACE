@@ -63,8 +63,13 @@ pc_covE = function(obsGrid, regGrid, bw_userCov, rotationCut=c(0, 1), kernel = '
   win2 = rep(1, nrow(rcovdiag))
 
   # yvar is the smoothed variance function along the diagonal line
-  yvar = lwls1d(bw = bw_userCov[1], kern = kernel, xin = rcovdiag[,1],
-    yin = rcovdiag[,2], win = win2, xout = rcutGrid, returnFit = FALSE)
+  # yvar = lwls1d(bw = bw_userCov[1], kern = kernel, xin = rcovdiag[,1],
+  #  yin = rcovdiag[,2], win = win2, xout = rcutGrid, returnFit = FALSE)
+    yvar = Rlwls1d(bw = bw_userCov[1], kern = kernel, xin = rcovdiag[,1],
+                  yin = rcovdiag[,2], win = win2, xout = rcutGrid)
+
+
+
 
   # Estimate variance of measurement error term
   # use quadratic form on diagonal to estimate Var(x(t))
