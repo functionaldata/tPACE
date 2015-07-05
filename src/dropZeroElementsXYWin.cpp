@@ -23,8 +23,6 @@ Eigen::MatrixXd dropZeroElementsXYWin( const Eigen::Map<Eigen::VectorXd> & win, 
 
   unsigned int nZeroElements = std::count(&win[0], &win[nXGrid], 0.);
   
-  Eigen::MatrixXd Q(nZeroElements,3);
-
   // Check that we do not have zero weights // Should do a try-catch here
   if( nZeroElements != 0 ){  //
     Eigen::MatrixXd Q(nXGrid - nZeroElements,3);
