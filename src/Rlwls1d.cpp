@@ -58,7 +58,7 @@ Eigen::VectorXd Rlwls1d( const double & bw, const std::string kernel_type, const
 
   // Check that we do not have zero weights // Should do a try-catch here
   if ( !(win.all()) ){  // 
-    Rcpp::stop("Cases with zero-valued windows are not yet implemented");
+    Rcpp::warning("Cases with zero-valued windows maybe not be too safe.");
   }
 
   // The checks end here.

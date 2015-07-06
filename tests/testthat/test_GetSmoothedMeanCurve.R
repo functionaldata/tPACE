@@ -5,7 +5,7 @@ load('data/dataGeneratedByExampleSeed123.RData')
 p = CreateOptions(kernel='epan')
 optns = SetOptions(y,t,p)
 out1 = sort(unique( c(unlist(t), optns$newdata)));
-out21 = seq(min(out1), max(out1),length.out = optns$ngrid);
+out21 = seq(min(out1), max(out1),length.out = 30);
  
 test_that("basic that the Epan. kernel gives the same results as MATLAB", {
 

@@ -88,7 +88,7 @@ SetOptions = function(y, t, optns){
     shrink = FALSE;
   }
   if(shrink == TRUE && (error != TRUE || method != "IN")){ # Check for valid shrinkage choice
-    cat('shrinkage method only had effects when method = "IN" and error = TRUE! Reset to shrink = FALSE now!\n');
+    cat('shrinkage method only has effects when method = "IN" and error = TRUE! Reset to shrink = FALSE now!\n');
     shrink = FALSE      
   }
   if(is.null(kernel)){ # smoothing kernel choice

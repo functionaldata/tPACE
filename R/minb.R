@@ -7,7 +7,7 @@
 # Output b: the minimum bandwidth choice for vector x
 
 minb <- function(x, numPoints){ 
-  x = sort(x)
+  x = sort(unique(x));     # Unique is added to ensure that we do not have a degenerate design
   n = length(x);
   if( (numPoints<1) || (numPoints > n) ){
    warning("Invalid number of minimum points specified\n")

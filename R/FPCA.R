@@ -1,4 +1,4 @@
-#' Perform FPCA on the functional data 'y' recorderd over 'tt'. Using the options specified in 'p'
+#' Perform FPCA on the functional data 'y' recorderd over 't'. Using the options specified in 'p'
 #' 
 #' @param y is an n-by-1 list of vectors
 #' @param t is an n-by-1 list of vectors
