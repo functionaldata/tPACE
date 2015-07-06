@@ -10,7 +10,7 @@ CheckOptions = function(t,optns,n){
   
   bwmu = optns$bwmu;                bwmuGcv = optns$bwmuGcv; 
   bwuserCov = optns$bwuserCov;            bwuserCovGcv = optns$bwuserCovGcv;
-  ntest1 = optns$ntest1;            ngrid1 = optns$ngrid1; 
+  ntest1 = optns$ntest1;            # ngrid1 = optns$ngrid1; 
   selectionMethod = optns$selectionMethod;  FVEthreshold = optns$FVEthreshold;
   maxK = optns$maxK;                
   dataType = optns$dataType;          error = optns$error; 
@@ -54,11 +54,11 @@ CheckOptions = function(t,optns,n){
     cat("Error: FPCA is aborted because the argument: ntest1 is invalid!\n");  
     return(TRUE);   
   }
-  if( !( (length(optns$ngrid1)==1) &&  is.numeric(optns$ngrid1) && (1<=optns$ngrid1) && (optns$ngrid1<90) ) ){ 
+  # if( !( (length(optns$ngrid1)==1) &&  is.numeric(optns$ngrid1) && (1<=optns$ngrid1) && (optns$ngrid1<90) ) ){ 
     # number of support points for the covariance surface 
-    cat("Error: FPCA is aborted because the argument: ngrid1 is invalid!\n");  
-    return(TRUE);   
-  }
+  #   cat("Error: FPCA is aborted because the argument: ngrid1 is invalid!\n");  
+  #   return(TRUE);   
+  # }
   if( !(any(optns$selectionMethod == c('FVE','AIC','BIC')))){
     if ( !( is.numeric(optns$selectionMethod) &&  (length(optns$selectionMethod)==1) && (1>=optns$selectionMethod) && (optns$selectionMethod<n) )){          
       # the method of choosing the number of principal components K

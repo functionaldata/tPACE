@@ -1,45 +1,12 @@
 #' Set the PCA option list
 #' 
-#' @param bwmu : bandwidth choice for mean function is using CV or GCV
-#' @param bwmuGcv : bandwidth choice method for mean function is GCV if bwmu = 0
-#' @param bwcov : bandwidth choice for covariance function is CV or GCV
-#' @param bwcovGcv : bandwidth choice method for covariance function is GCV if bwuserCov = 0
-#' @param ntest1 : number of curves used for CV when choosing bandwidth 
-#' @param ngrid1 : number of support points for the covariance surface 
-#' @param selectionMethod : the method of choosing the number of principal components K
-#' @param FVEthreshold : Fraction-of-Variance-Explained
-#' @param maxK : maximum number of principal components to consider
-#' @param dataType : do we have dataType or sparse functional data ('Sparse', 'Dense', 'DenseWithMV', 'p>>n')
-#' @param error : having measurement error
-#' @param nRegGrid : number of support points in each direction of covariance surface 
-#' @param method : method to estimate the PC scores. Either 'CE' (default) or 'IN'
-#' @param shrink : apply shrinkage to estimates of random coefficients (dataType data only)
-#' @param newdata : new data points to estimate
-#' @param kernel : smoothing kernel choice
-#' @param numBins : number of bins
-#' @param useBins: testing purpose: whether to bin the same observed time points when 2D smoothing
-#' @param screePlot : make scree plot
-#' @param designPlot : make design plot
-#' @param corrPlotType: which correlation plot ('Fitted', 'Raw', 'Smoothed')
-#' @param corrPlot : make correlation plot
-#' @param rho : truncation threshold for the iterative residual. Either 'cv': choose rho by leave-one-observation out cross-validation; 'no': for not using the iterative sigma2 estimate, or a numerica value.
-#' @param verbose : display diagnostic messages (default = FALSE)
-#' @param userMu : user-defined smoothed mean function 
-#' @param userCov : user-defined smoothed covariance function
-#' @param methodMu :  method to estimate mu ('PACE','RARE','CrossSectional')
-#' @param methodCov :  method to estimate covariance ('PACE','RARE','CrossSectional')
-#' @param outPercent : 2-element vector in [0,1] indicating the outPercent data in the boundary default(0,1)
-#' @param rotationCut : 2-element vector in [0,1] indicating the percent of data truncated during sigma^2 estimation (default c(1/4,3/4))
-#' @param useBinnedData : 'FORCE' (Enforce the # of bins), 'AUTO' (Select the # of  bins automatically), 'OFF' (Do not bin)
-#' @return an option list
-#' @examples 
-#' 1 + 3
+#' See '?CreateOptions for more details
 
 SetOptions = function(y, t, optns){ 
 
   bwmu =optns[['bwmu']];                bwmuGcv =optns[['bwmuGcv']]; 
   bwuserCov =optns[['bwuserCov']];            bwuserCovGcv =optns[['bwuserCovGcv']];
-  ntest1 =optns[['ntest1']];            ngrid1 =optns[['ngrid1']]; 
+  ntest1 =optns[['ntest1']];           # ngrid1 =optns[['ngrid1']]; 
   selectionMethod =optns[['selectionMethod']];  FVEthreshold =optns[['FVEthreshold']];
   maxK =optns[['maxK']];                
   dataType =optns[['dataType']];          error =optns[['error']];
@@ -69,9 +36,9 @@ SetOptions = function(y, t, optns){
   if(is.null(ntest1)){ # number of curves used for CV when choosing bandwidth 
     ntest1 = min(30, length(y)-1);
   }
-  if(is.null(ngrid1)){ # number of support points for the covariance surface 
-    ngrid1 = 30;
-  }
+  #if(is.null(ngrid1)){ # number of support points for the covariance surface 
+  #  ngrid1 = 30;
+  #}
   if(is.null(selectionMethod)){ # the method of choosing the number of principal components K
     #  TODO : Possibly have user-defined selection methods for the # of FPCs and we keep
     # an internal FVE-based method for us
@@ -97,6 +64,11 @@ SetOptions = function(y, t, optns){
       nRegGrid = 51;
     }    
   }
+  methodNames = c("IN", "CE");
+  if(!is.null(method) && !(method %in% methodNames)){ # Check suitability of kernel
+    cat(paste('method', kernel, 'is unrecognizable! Reset to automatic selection now!\n')); 
+    method = NULL; 
+  }   
   if(is.null(method)){ # method to estimate the PC scores
     if(dataType == 'Dense'){
       shrink = FALSE;
@@ -203,7 +175,7 @@ SetOptions = function(y, t, optns){
   }
     
   return( list(bwmu = bwmu, bwmuGcv = bwmuGcv, bwuserCov = bwuserCov, bwuserCovGcv = bwuserCovGcv,
-          ntest1 = ntest1, ngrid1 = ngrid1, selectionMethod = selectionMethod, FVEthreshold = FVEthreshold,
+          ntest1 = ntest1, selectionMethod = selectionMethod, FVEthreshold = FVEthreshold,
           maxK = maxK, dataType = dataType, error = error, nRegGrid = nRegGrid, rotationCut = rotationCut,
           method = method, shrink = shrink, newdata = newdata, kernel = kernel, corrPlot = corrPlot, corrPlotType = corrPlotType,	
           numBins = numBins, useBins = useBins, yname = yname, screePlot = screePlot, designPlot = designPlot, rho = rho, 

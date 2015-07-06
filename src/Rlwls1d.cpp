@@ -7,7 +7,7 @@
 // [[Rcpp::depends(RcppEigen)]]
 // [[Rcpp::export]]
 
-Eigen::VectorXd Rlwls1d( const double & bw, const std::string kernel_type, const Eigen::Map<Eigen::VectorXd> & win, const Eigen::Map<Eigen::VectorXd> & xin, const Eigen::Map<Eigen::VectorXd> & yin, const Eigen::Map<Eigen::VectorXd> & xout, const int & npoly = 1, const int & nder = 0){
+Eigen::VectorXd Rlwls1d( const double & bw, const std::string kernel_type, const Eigen::Map<Eigen::VectorXd> & win, const Eigen::Map<Eigen::VectorXd> & xin, const Eigen::Map<Eigen::VectorXd> & yin, const Eigen::Map<Eigen::VectorXd> & xout, const unsigned int & npoly = 1, const unsigned int & nder = 0){
 
 
   // Convenient constants
