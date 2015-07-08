@@ -54,7 +54,8 @@ gcvlwls2dV2 <- function(obsGrid, regGrid, ngrid=NULL, dataType=rcov$dataType, er
     useKfold <- regexpr('fold', CV)
     if (useKfold != -1) {
       fold <- as.integer(substr(CV, 1, useKfold - 1))
-      partition <- caret::createFolds(rcov$cxxn, k=fold)
+      # We partition the raw covariance rather than partition the individuals.
+      partition <- caret::createFolds(1:nrow(rcov$tPairs), k=fold)
     }
   }
   
@@ -63,31 +64,40 @@ gcvlwls2dV2 <- function(obsGrid, regGrid, ngrid=NULL, dataType=rcov$dataType, er
     if (minBWInvalid)
       minBW <- bw[1]
 
-    if (CV == FALSE) {
-      Scores <- rep(Inf, length(bw))
+    # if (CV == FALSE) {
+    
+    Scores <- rep(Inf, length(bw))
 # try the bandwidths large to small in order to save time due to sparseness in the windows.
-      for (i in rev(seq_along(bw))) {
-        h <- bw[i]
+    for (i in rev(seq_along(bw))) {
+      h <- bw[i]
 
-        if (class(rcov) == 'BinnedRawCov')
+      if (class(rcov) == 'BinnedRawCov') {
+        if (CV == FALSE) # GCV
           Scores[i] <- getGCVscoresV2(h, kern, rcov$tPairs, rcov$meanVals, win=rcov$count, regGrid=regGrid, RSS=rcov$RSS)
-        else
+        else # CV
+          Scores[i] <- getCVscoresV2(partition, h, kern, rcov$tPairs, rcov$meanVals, win=rcov$count, regGrid=regGrid, RSS=rcov$RSS)
+      } else {
+        if (CV == FALSE) # GCV
           Scores[i] <- getGCVscoresV2(h, kern, rcov$tPairs, rcov$cxxn, regGrid=regGrid)
-
-        if (is.infinite(Scores[i])) {
-          minBWInvalid <- TRUE
-          if (i < length(bw)) {
-            if (minBWInvalid) {
-              minBW <- bw[i + 1]
-              minBWInvalid <- FALSE
-            }
-          }
-          break
-        }
+        else # CV
+          Scores[i] <- getCVscoresV2(partition, h, kern, rcov$tPairs, rcov$cxxn, regGrid=regGrid)
       }
-    } else if (CV != FALSE) { 
-      Scores <- sapply(bw, getCVscoresV2, partition=partition, kern=kern, xin=rcov$tPairs, yin=rcov$cxxn) 
+      
+      if (is.infinite(Scores[i])) {
+        minBWInvalid <- TRUE
+        if (i < length(bw)) {
+          if (minBWInvalid) {
+            minBW <- bw[i + 1]
+            minBWInvalid <- FALSE
+          }
+        }
+        break
+      }
     }
+      
+    # } else if (CV != FALSE) { 
+      # Scores <- sapply(bw, getCVscoresV2, partition=partition, kern=kern, xin=rcov$tPairs, yin=rcov$cxxn) 
+    # }
     
     optInd <- which.min(Scores)
     opth <- bw[optInd]
@@ -136,7 +146,7 @@ gcvlwls2dV2 <- function(obsGrid, regGrid, ngrid=NULL, dataType=rcov$dataType, er
 }
 
 
-getGCVscoresV2 <- function(bw, kern, xin, yin, win=NULL, regGrid, RSS=NULL, ...) {
+getGCVscoresV2 <- function(bw, kern, xin, yin, win=NULL, regGrid, RSS=NULL) {
 # ...: passed on to lwls2d
 # RSS: for implementing GCV of binned rcov.
   # browser() 
@@ -148,6 +158,7 @@ getGCVscoresV2 <- function(bw, kern, xin, yin, win=NULL, regGrid, RSS=NULL, ...)
                return(Inf)
   })
 
+  # Catch
   if (is.infinite(fit[1]))
     return(Inf)
     
@@ -176,17 +187,37 @@ getGCVscoresV2 <- function(bw, kern, xin, yin, win=NULL, regGrid, RSS=NULL, ...)
 # k-fold CV
 # partition: a list of testset observation indices, returned by caret::createFolds
 # ...: passed on to lwls2d
-getCVscoresV2 <- function(bw, partition, xin, yin, ...) {
+getCVscoresV2 <- function(partition, bw, kern, xin, yin, win=NULL, regGrid, RSS=NULL) {
 
-  stop('does not work until 2D smoother on a n by 2 matrix gridpoints is implemented')
+  if (is.null(win))
+    win <- rep(1, length(yin))
+    
   n <- length(yin)
   
   # browser()
   cvSubSum <- sapply(partition, function(testSet) {
     # browser()
-    fit <- lwls2dV2(bw, xin=xin, yin=yin, subset=-testSet, ..., returnFit=TRUE)
-    cvSubSum <- (yin[testSet] - predict(fit, newdata=xin[testSet, ]))^2
-    return(sum(cvSubSum))
+    fit <- tryCatch(lwls2dV2(bw, kern, xin=xin, yin=yin, win=win, xout1=regGrid, xout2=regGrid, subset=-testSet), error=function(err) {
+                 warning('Invalid bandwidth. Try enlarging the window size.')
+                 return(Inf)
+    })
+
+    # Catch
+    if (is.infinite(fit[1]))
+      return(Inf)
+      
+    # workaround for degenerate case.
+    if (any(is.nan(fit)))
+      return(Inf)
+
+    obsPred <- interp2lin(regGrid, regGrid, fit, xin[testSet, 1], xin[testSet, 2])
+    tmpSum <- sum((yin[testSet] - obsPred) ^ 2 * win[testSet])
+
+    # residual sum of squares
+    if (!is.null(RSS))
+      tmpSum <- tmpSum + sum(RSS[testSet])
+      
+    return(tmpSum)
   })
   
   return(sum(cvSubSum))
