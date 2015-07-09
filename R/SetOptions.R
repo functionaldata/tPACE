@@ -5,7 +5,7 @@
 SetOptions = function(y, t, optns){ 
 
   bwmu =optns[['bwmu']];                bwmuGcv =optns[['bwmuGcv']]; 
-  bwuserCov =optns[['bwuserCov']];            bwuserCovGcv =optns[['bwuserCovGcv']];
+  bwuserCov =optns[['bwcov']];            bwuserCovGcv =optns[['bwuserCovGcv']];
   ntest1 =optns[['ntest1']];           # ngrid1 =optns[['ngrid1']]; 
   selectionMethod =optns[['selectionMethod']];  FVEthreshold =optns[['FVEthreshold']];
   maxK =optns[['maxK']];                

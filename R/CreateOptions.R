@@ -2,7 +2,7 @@
 #' 
 #' @param bwcov : bandwidth value for covariance function; positive numeric - default: determine automatically based on 'bwcovGcv'
 #' @param bwcovGcv : bandwidth choice method for covariance function; 'GMeanAndGCV','CV','GCV - default: 'GMeanAndGCV'')
-#' @param bwmu : bandwidth choice for mean function is using CV or GCV; positive numeric - default: determine automatically based on 'bwmuGcv'
+#' @param bwmu : bandwidth value for mean function is using CV or GCV; positive numeric - default: determine automatically based on 'bwmuGcv'
 #' @param bwmuGcv : bandwidth choice method for mean function; 'GMeanAndGCV','CV','GCV - default: 'GMeanAndGCV''
 #' @param corrPlot : make correlation plot; logical - default: FALSE
 #' @param corrPlotType: which type of correlation plot to show; 'Fitted', 'Raw', 'Smoothed' - default: 'Fitted'

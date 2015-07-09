@@ -31,7 +31,7 @@ pc_covE = function(obsGrid, regGrid, bw_userCov, rotationCut=c(0, 1), kernel = '
   }
   rcutGrid = regGrid[intersect(which(regGrid > a0 + lint * rotationCut[1]),
     which(regGrid < a0 + lint * rotationCut[2]))]
-  out22 = rcutGrid # Xiongtao: out22 is redundant?
+  #out22 = rcutGrid # Xiongtao: out22 is redundant? Pantelis: Probably yes.
 
   tPairs = rcov$tPairs # time points pairs for raw covariance
   rcovdiag = rcov$diag # get raw covariance along diagonal direction
@@ -65,17 +65,17 @@ pc_covE = function(obsGrid, regGrid, bw_userCov, rotationCut=c(0, 1), kernel = '
   # yvar is the smoothed variance function along the diagonal line
   # yvar = lwls1d(bw = bw_userCov[1], kern = kernel, xin = rcovdiag[,1],
   #  yin = rcovdiag[,2], win = win2, xout = rcutGrid, returnFit = FALSE)
-    yvar = Rlwls1d(bw = bw_userCov[1], kern = kernel, xin = rcovdiag[,1],
-                  yin = rcovdiag[,2], win = win2, xout = rcutGrid)
+  xorder = order(rcovdiag[,1]); 
+    yvar = Rlwls1d(bw = bw_userCov[1], kern = kernel, xin = rcovdiag[xorder,1],
+                  yin = rcovdiag[xorder,2], win = win2, xout = rcutGrid)
 
 
 
 
   # Estimate variance of measurement error term
   # use quadratic form on diagonal to estimate Var(x(t))
-  xvar = rotateLwls2dV2(bw = bw_userCov[1], kern = kernel, 
-    xin = tPairs, yin = cxxn, win = win1, xout = cbind(rcutGrid, out22))
-
+  # xvar = rotateLwls2dV2(bw = bw_userCov[1], kern = kernel, xin = tPairs, yin = cxxn, win = win1, xout = cbind(rcutGrid, out22))
+  xvar = rotateLwls2dV2(bw = bw_userCov[1], kern = kernel, xin = tPairs, yin = cxxn, win = win1, xout =  rcutGrid)
   sigma2 = trapz(rcutGrid, yvar - xvar) / (lint * rcutprop)
 
   if(sigma2 < 0){

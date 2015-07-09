@@ -7,7 +7,7 @@
 // [[Rcpp::depends(RcppEigen)]]
 // [[Rcpp::export]]
 
-Eigen::MatrixXd Rrotatedmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const std::string kernel_type, const Eigen::Map<Eigen::MatrixXd> & tPairs, const Eigen::Map<Eigen::MatrixXd> & cxxn, const Eigen::Map<Eigen::VectorXd> & win,  const Eigen::Map<Eigen::MatrixXd> & xygrid, const unsigned int npoly, const bool & bwCheck){ 
+Eigen::VectorXd Rrotatedmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const std::string kernel_type, const Eigen::Map<Eigen::MatrixXd> & tPairs, const Eigen::Map<Eigen::MatrixXd> & cxxn, const Eigen::Map<Eigen::VectorXd> & win,  const Eigen::Map<Eigen::MatrixXd> & xygrid, const unsigned int npoly, const bool & bwCheck){ 
 
   // tPairs : xin (in MATLAB code)
   // cxxn : yin (in MATLAB code)
@@ -140,8 +140,8 @@ Eigen::MatrixXd Rrotatedmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const 
       mu(i) = ly(0);
     } else if ( ly.size() != 1 && (ly.size() < npoly+1) ) {
       if ( bwCheck ){
-        Eigen::MatrixXd checker(1,1); 
-        checker(0,0) = 0.; 
+        Eigen::VectorXd checker(1); 
+        checker(0) = 0.; 
         return(checker);
       } else {  
         Rcpp::stop("No enough points in local window, please increase bandwidth.");
@@ -150,8 +150,8 @@ Eigen::MatrixXd Rrotatedmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const 
   } 
   
   if (bwCheck){
-     Eigen::MatrixXd checker(1,1); 
-     checker(0,0) = 1.; 
+     Eigen::VectorXd checker(1); 
+     checker(0) = 1.; 
      return(checker);
   }
   

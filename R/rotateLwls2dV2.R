@@ -3,11 +3,17 @@
 
 rotateLwls2dV2 <- function(bw, kern='epan', xin, yin, win=NULL, xout) {
   
-  if (length(bw) == 1)
+  if (length(bw) == 1){
     bw <- c(bw, bw)
-    
-  if (missing(win) || is.null(win))
+  }  
+
+  if (missing(win) || is.null(win)){
     win <- rep(1, nrow(datin))
+  }
+
+  if (  is.vector(xout)){
+   xout =  matrix(c(xout,xout),ncol= 2)
+  }
     
   fit <- Rrotatedmullwlsk(bw, kern, t(xin), yin, win, t(xout), npoly=1, bwCheck=FALSE)
   
