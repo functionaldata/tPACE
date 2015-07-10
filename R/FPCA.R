@@ -54,6 +54,7 @@
 #' \item{bwMu}{The selected (or user specified) bandwidth for smoothing the mean function.}
 #' \item{bwCov}{The selected (or user specified) bandwidth for smoothing the covariance function.}
 #' \item{rho}{A regularizer for the measurement error variance estimate.}
+#' \item{FVE}{A vector with the percentages of the total variance explained by each FPC; at most equal to the 'FVEthreshold' used.}
 #' 
 #' @examples
 #' set.seed(1)
