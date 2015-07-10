@@ -63,6 +63,7 @@
 #' sampWiener <- sparsify(sampWiener, pts, 10)
 #' res <- FPCA(sampWiener$yList, sampWiener$tList, list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
 #' createCorrPlot(res, 'Fitted')
+# TODO: add reference
 
 FPCA = function(y, t, optns = list()){
   
