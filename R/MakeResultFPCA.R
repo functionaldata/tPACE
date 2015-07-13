@@ -33,5 +33,6 @@ MakeResultFPCA <- function(optns, smcObj, mu, scsObj, eigObj,
   } else {
   	stop('Other dataType choices not implemented yet!')
   }
+  class(ret) <- 'FPCA'
   return(ret)
 }

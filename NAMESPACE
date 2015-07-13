@@ -1,3 +1,7 @@
 exportPattern("^[[:alpha:]]+")
 useDynLib(tPACE) 
 importFrom(Rcpp, evalCpp)
+
+export(FPCA)
+S3method(fitted, FPCA)
+
