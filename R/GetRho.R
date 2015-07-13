@@ -37,7 +37,7 @@ cvRho <- function(rho, leaveOutInd, y, t, optns, mu, obsGrid, fittedCov, lambda,
   
   yobs <- mapply(`[`, y, leaveOutInd)
 
-  return(sum((unlist(yobs) - unlist(yhat))^2, na.rm=TRUE))
+  return(sum((na.omit(unlist(yobs)) - unlist(yhat))^2, na.rm=TRUE))
 }
 
 
