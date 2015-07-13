@@ -21,7 +21,7 @@ Err <- GetSmoothedCovarSurface(samp3$yList, samp3$tList, mu3, pts, regGrid, p1, 
 rcov3 <- GetRawCov(samp3$yList, samp3$tList, pts, mu3, p1$dataType, p1$error)
 system.time(tmp <- gcvlwls2dV2(pts, regGrid=regGrid, kern='epan', rcov=rcov3, t=samp3$tList))
 gcvBW3 <- sqrt(tmp$h * tmp$minBW)
-sigma23 <- pc_covE(pts, regGrid, gcvBW3, kernel='epan', rcov=rcov3)$sigma2
+sigma23 <- pc_covE(pts, regGrid, gcvBW3, kernel='epan', rcov=rcov3, rotationCut=c(0.25, 0.75))$sigma2
 test_that('Smooth Cov Surface interface is right', {
   expect_equal(rcov3, Err$rawCov)
   expect_equal(gcvBW3, Err$bwCov)

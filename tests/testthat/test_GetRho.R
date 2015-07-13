@@ -25,8 +25,17 @@ test_that('cvRho matches getScores2',
           expect_equal(cvRho(0.5, leaveOutInd, y, t, list(), mu, obsGrid,
                              fittedCov, lambda, phi), 0.775069444444445))
 
+
 test_that('GetRho matches cv_rho.m', 
-          expect_equal(GetRho(y, t, list(), mu, obsGrid, fittedCov, lambda, phi, 0.01), 0.510049017252264))
+          expect_equal(GetRho(y, t, list(), mu, obsGrid, fittedCov, lambda, phi, 0.01), 0.510049017252264)
+          )
+
+test_that('cvRho for example.m are almost the same', {
+  load('../../data/200curvesByExampleSeed123.RData')
+  load('../../data/exampleResultsFromMatlab.RData')
+  tmpCov <- ConvertSupport(res$out21, res$out1, Cov=res$xcovfit)
+  expect_equal(GetRho(y, t, list(), res$mu, res$out1, tmpCov, as.numeric(res$lambda), res$phi, as.numeric(res$sigma)), 0.939907526613129, tolerance=1e-2)
+})
 
 test_that('Truncation works for GetRho', {
   set.seed(1)
@@ -49,10 +58,9 @@ test_that('Truncation works for GetRho', {
 })
 
 # # Matlab code:
-# y = cell(1, 3);
-# t = y;
-# y{1} = [1, 2]; y{2} = [4]; y{3} = [0, 2, 3];
-# t{1} = [1.5, 2.5]; t{2} = [2]; t{3} = [1, 1.5, 2.5];
+# y{1} = [1, 2]; y{2} = [4]; y{3} = [0, 2, 3]
+# t{1} = [1.5, 2.5]; t{2} = [2]; t{3} = [1, 1.5, 2.5]
+# ni = cellfun(@length, y);
 # mu = linspace(0, 3, 7);
 # out1 = linspace(0, 3, 7);
 # pts = linspace(0, 1, 7);
@@ -70,13 +78,14 @@ test_that('Truncation works for GetRho', {
 # LAMBDA = diag(lambda);
 # rho = 0.5;
 # subID = [1 3];
-# tjID = [2 1 2];
+# tjID = [2 1 2 3];
+# verbose = false;
 
 # getScores2(y, t, mu, phi, lambda, sigma, sig1, noeig, error, method, shrink,     out1, regular, muSub, phiSub, LAMBDA, rho, subID, tjID)
 
 # T = range(out1);
 # gamma = ((trapz(out1, mu.^2)+sum(lambda))/T)^(0.5);
-# alpha = linspace(0.01,1000,50);
+# alpha = linspace(0.01, 0.22,50);
 # rho = gamma*alpha;
 # cv_rho(y, t, mu, phi, lambda, sigma, sig1, noeig, error, method, shrink, out1,   regular, rho, ni, tjID, verbose)
 
