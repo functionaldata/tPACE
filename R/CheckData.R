@@ -6,22 +6,22 @@
 #' @examples 
 #' 1 + 3
 
-CheckData = function(y,tt){
+CheckData = function(y,t){
   
   if(!is.list(y)){
     cat('Error: y should be list \n')
     return(TRUE);
   }
-  if(!is.list(tt)){
-    cat('Error: tt should be list \n')
+  if(!is.list(t)){
+    cat('Error: t should be list \n')
     return(TRUE);
   }
   if(any(is.na(unlist(y)))){
     cat('Error: y cannot contain NA/NaN entries\n')
     return(TRUE);
   }
-  if(any(is.na(unlist(tt)))){
-    cat('Error: tt cannot contain NA/NaN entries\n')
+  if(any(is.na(unlist(t)))){
+    cat('Error: t cannot contain NA/NaN entries\n')
     return(TRUE);
   } 
   ni_y = unlist(lapply(y,function(x) sum(!is.na(x))))
@@ -29,11 +29,18 @@ CheckData = function(y,tt){
     cat("Error:FPCA is aborted because the data do not contain repeated measurements in y!\n"); 
     return(TRUE);    
   }
-  ni_tt = unlist(lapply(tt,function(x) sum(!is.na(x))))
+  ni_tt = unlist(lapply(t,function(x) sum(!is.na(x))))
   if(all(ni_tt == 1)){  
-    cat("Error:FPCA is aborted because the data do not contain repeated measurements in tt!\n"); 
+    cat("Error:FPCA is aborted because the data do not contain repeated measurements in t!\n"); 
     return(TRUE);    
   }   
+  if( any(unlist(lapply(y,function(x) class(x) != 'numeric'))) ){
+        cat("Error:FPCA is aborted because 'y' members are not all of class numeric! Try  \"lapply(y,function(x) class(x))\" to see the current classes. \n");     return(TRUE);
+  }
+ if( any(unlist(lapply(t,function(x) class(x) != 'numeric'))) ){
+        cat("Error:FPCA is aborted because 't' members are not all of class numeric! Try  \"lapply(t,function(x) class(x))\" to see the current classes. \n");     return(TRUE);
+  }
+
   return(FALSE);
 }
 
