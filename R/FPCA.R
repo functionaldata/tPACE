@@ -68,17 +68,20 @@
 
 FPCA = function(y, t, optns = list()){
   
-  # FPCA checks the data validity for the PCA function. 
+  # Check the data validity for further analysis
   if( CheckData(y,t) ){
     cat('FPCA has stopped.')
     return(FALSE);
   }
+  # Force the data to be list of numeric members
+  y <- lapply(y, as.numeric) 
+  t <- lapply(t, as.numeric)
 
-  # FPCA sets the options structure that are still NULL
+  # Set the options structure members that are still NULL
   optns = SetOptions(y, t, optns);
 
   
-  # FPCA checks the options validity for the PCA function. 
+  # Check the options validity for the PCA function. 
   numOfCurves = length(y);
   if( CheckOptions(t, optns,numOfCurves) ){
     cat('FPCA has stopped.')
