@@ -13,6 +13,7 @@ SetOptions = function(y, t, optns){
   nRegGrid =optns[['nRegGrid']];              method =optns[['method']];
   shrink =optns[['shrink']];            newdata =optns[['newdata']] ;
   kernel =optns[['kernel']];            numBins =optns[['numBins']];
+  numComponents =optns[['numComponents']];
   yname =optns[['yname']];              screePlot =optns[['screePlot']];
   designPlot =optns[['designPlot']];    rho =optns[['rho']];
   verbose =optns[['verbose']];          corrPlot =optns[['corrPlot']];
@@ -49,6 +50,9 @@ SetOptions = function(y, t, optns){
   }
   if(is.null(maxK)){ # maximum number of principal components to consider
     maxK = min(20, length(y)-1);   
+  }
+  if(is.null(numComponents)){ # maximum number of principal components to return
+    numComponents = NULL;
   }
   if(is.null(dataType)){ #do we have dataType or sparse functional data
     dataType = IsRegular(t);    
@@ -177,7 +181,7 @@ SetOptions = function(y, t, optns){
   return( list(bwmu = bwmu, bwmuGcv = bwmuGcv, bwuserCov = bwuserCov, bwuserCovGcv = bwuserCovGcv,
           ntest1 = ntest1, selectionMethod = selectionMethod, FVEthreshold = FVEthreshold,
           maxK = maxK, dataType = dataType, error = error, nRegGrid = nRegGrid, rotationCut = rotationCut,
-          method = method, shrink = shrink, newdata = newdata, kernel = kernel, corrPlot = corrPlot, corrPlotType = corrPlotType,	
+          method = method, shrink = shrink, newdata = newdata, kernel = kernel, corrPlot = corrPlot, corrPlotType = corrPlotType,   numComponents = numComponents,
           numBins = numBins, useBins = useBins, yname = yname, screePlot = screePlot, designPlot = designPlot, rho = rho, 
           verbose = verbose, userMu = userMu, userCov = userCov, methodMu= methodMu, outPercent = outPercent, useBinnedData = useBinnedData) )
 }

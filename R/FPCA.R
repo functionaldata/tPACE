@@ -27,6 +27,7 @@
 #' \item{ntest1}{number of curves used for CV when choosing bandwidth; [1,N] - default: min(30, N-1), N: # of curves}
 #' \item{nRegGrid}{number of support points in each direction of covariance surface; numeric - default: 51}
 #' \item{numBins}{number of bins to bin the data into; positive integer > 10, default: NULL}
+#' \item{numComponents}{maximum number of components to return; positive integer, default: NULL}
 #' \item{screePlot}{make scree plot; logical - default: FALSE}
 #' \item{selectionMethod}{the method of choosing the number of principal components K; 'FVE','AIC','BIC': default 'FVE' - only 'FVE' avaiable now/ default 'FVE')}
 #' \item{shrink}{apply shrinkage to estimates of random coefficients (dense data only); logical - default: FALSE}

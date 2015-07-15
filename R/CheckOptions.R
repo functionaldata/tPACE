@@ -78,6 +78,13 @@ CheckOptions = function(t,optns,n){
     cat("Error: FPCA is aborted because the argument: maxK is invalid!\n");   
     return(TRUE);   
   } 
+  if( !is.null(optns$numComponents) ) {
+    if( !( (length(optns$numComponents)==1) &&  is.numeric(optns$numComponents) && (1<=optns$numComponents) && (optns$numComponents<=n) )){  
+      # maximum number of principal components to return
+      cat("Error: FPCA is aborted because the argument: numComponents is invalid!\n");   
+      return(TRUE);   
+    }
+  } 
   if( !( is.null(optns$dataType) || any(optns$dataType==c("Sparse","DenseWithMV","Dense","p>>n")) )){ 
     #do we have regualr or sparse functional data
     cat("Error: FPCA is aborted because the argument: dataType is invalid!\n");     

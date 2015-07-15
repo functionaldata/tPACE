@@ -8,8 +8,8 @@ cvlwls1d <- function(yy, t, kernel, npoly, nder, dataType ){
   xxn = xx[order(tt)];
   ttn = sort(tt);
   # xxn = xx;
-  a0=tt[1];
-  b0=max(tt);
+  a0=ttn[1];
+  b0=ttn[length(ttn)];
   rang = b0-a0;
   dstar = minb(tt, npoly+2);
 

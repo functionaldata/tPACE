@@ -33,6 +33,16 @@ MakeResultFPCA <- function(optns, smcObj, mu, scsObj, eigObj,
   } else {
   	stop('Other dataType choices not implemented yet!')
   }
+  if (!is.null(optns$numComponents)){
+    if( optns$numComponents < length(ret$lambda) ){
+      ret$lambda <- ret$lambda[1:optns$numComponents];
+      ret$phi <-  ret$phi[,1:optns$numComponents];
+      ret$xiEst <-  ret$xiEst[,1:optns$numComponents]; 
+      # ret$xiVar <-  ret$xiVar[,1:optns$numComponents]; # This needs to be fixed.
+    } else {
+      warning("The number of components requested is higher than estimated number of components. Consider increasing the FVE threshold.")
+    }
+  }
   class(ret) <- 'FPCA'
   return(ret)
 }
