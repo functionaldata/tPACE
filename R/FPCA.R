@@ -50,11 +50,11 @@
 #' \item{mu}{A vector of length nObsGrid containing the mean function estimate.}
 #' \item{workGrid}{A vector of length nWorkGrid. The internal regular grid on which the eigen analysis is carried on.}
 #' \item{smoothedCov}{A nWorkGrid by nWorkGrid matrix of the smoothed covariance surface.}
-#' \item{fittedCov}{A nWorkGrid by nWorkGrid matrix of the fitted covariance surface, which is garanteed to be nonnegative definite.}
+#' \item{fittedCov}{A nWorkGrid by nWorkGrid matrix of the fitted covariance surface, which is guaranteed to be non-negative definite.}
 #' \item{optns}{A list of actually used options.}
 #' \item{bwMu}{The selected (or user specified) bandwidth for smoothing the mean function.}
 #' \item{bwCov}{The selected (or user specified) bandwidth for smoothing the covariance function.}
-#' \item{rho}{A regularizer for the measurement error variance estimate.}
+#' \item{rho}{A regularizing scalar for the measurement error variance estimate.}
 #' \item{FVE}{A vector with the percentages of the total variance explained by each FPC; at most equal to the 'FVEthreshold' used.}
 #' 
 #' @examples
@@ -65,7 +65,12 @@
 #' sampWiener <- sparsify(sampWiener, pts, 10)
 #' res <- FPCA(sampWiener$yList, sampWiener$tList, list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
 #' createCorrPlot(res, 'Fitted')
-# TODO: add reference
+#' @references
+#'   @bibliography roxygen.bib
+#'   @cite Yao05
+#'   @cite Liu05
+#'   @cite Castro86
+
 
 FPCA = function(y, t, optns = list()){
   

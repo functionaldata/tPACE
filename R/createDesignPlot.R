@@ -13,7 +13,11 @@
 # function createDesignPlot(datafile, isColorPlot, noDiagonal, yname)
 
 
-createDesignPlot = function(t, obsGrid, isColorPlot, noDiagonal, yname){
+createDesignPlot = function(t, obsGrid = NULL, isColorPlot=FALSE, noDiagonal=TRUE, yname = 'y'){
+  if( is.null(obsGrid)){
+    obsGrid = sort(unique(unlist(t)))
+  }
+
   res = designPlotCount(t, obsGrid, noDiagonal, isColorPlot)
   # binrawcov is the function in place of designPlotCount
   # or getCount
