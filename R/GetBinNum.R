@@ -9,7 +9,7 @@ GetBinNum = function(n, m, dataType, verbose ){
   
   numBin = NULL;
   if (m <= 20){
-    if (dataType ==0){
+    if (dataType =='Sparse'){
       str = 'Median of ni';
     } else {
       str = 'Maximum of ni';
@@ -37,7 +37,7 @@ GetBinNum = function(n, m, dataType, verbose ){
     }
   }
   
-  if( verbose && is.null(numBins) ) {   
+  if( verbose && is.null(numBin) ) {   
     cat('No binning is needed!\n');
   }
 

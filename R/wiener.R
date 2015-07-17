@@ -24,13 +24,13 @@ wiener <- function(n=1, pts=seq(0, 1, length=50), sparsify=NULL, K=50) {
 # sparsify samp
 # samp: a matrix of samples, with rows containing the samples
 # pts: a vector of grid points, should be from 0 to 1
-# sparsify: a vector of integers. The number of observation will be uniform distribution on sparsify.
-sparsify <- function(samp, pts, sparsify) {
-    if (length(sparsify) == 1)
-            sparsify <- c(sparsify, sparsify) # avoid scaler case
+# sparsity: a vector of integers. The number of observation will be uniform distribution on sparsify.
+sparsify <- function(samp, pts, sparsity) {
+    if (length(sparsity) == 1)
+            sparsity <- c(sparsity, sparsity) # avoid scaler case
     
     indEach <- lapply(1:nrow(samp), function(x) 
-        sort(sample(ncol(samp), sample(sparsify, 1))))
+        sort(sample(ncol(samp), sample(sparsity, 1))))
     tList <- lapply(indEach, function(x) pts[x])
     yList <- lapply(1:length(indEach), function(x) {
         ind <- indEach[[x]]
