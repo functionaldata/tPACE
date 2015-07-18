@@ -13,20 +13,25 @@
 # function createDesignPlot(datafile, isColorPlot, noDiagonal, yname)
 
 
-createDesignPlot = function(t, obsGrid = NULL, isColorPlot=FALSE, noDiagonal=TRUE, yname = 'y'){
+createDesignPlot = function(t, obsGrid = NULL, isColorPlot=FALSE, noDiagonal=TRUE, yname = NULL){
   if( is.null(obsGrid)){
     obsGrid = sort(unique(unlist(t)))
+  }
+  if( is.null(yname)){
+    titleString =  paste('Design Plot')
+  } else {
+    titleString =  paste('Design Plot of', yname)
   }
 
   res = designPlotCount(t, obsGrid, noDiagonal, isColorPlot)
   # binrawcov is the function in place of designPlotCount
   # or getCount
-
+  
   # construct plot structure
   plot(obsGrid[1], obsGrid[1], xlim = range(obsGrid) + isColorPlot * 0.25 * c(0,diff(range(obsGrid))),
      ylim = range(obsGrid),
      xlab = 'Observed time grid', ylab = 'Observed time grid',
-     main = paste('Design Plot of', yname), col = 'white')
+     main = titleString, col = 'white')
 
   if(isColorPlot == TRUE){
   	createColorPlot(res, obsGrid)
@@ -37,10 +42,15 @@ createDesignPlot = function(t, obsGrid = NULL, isColorPlot=FALSE, noDiagonal=TRU
 }
 
 createBlackPlot = function(res, obsGrid){
+  qpoints = c();
+  rpoints = c();
+  
   for(i in 1:length(obsGrid)){
     idx = which(res[i,] > 0)
-    points(rep(obsGrid[i], length(idx)), obsGrid[idx], pch = 19)
+    qpoints = c(qpoints,rep(obsGrid[i], length(idx)))
+    rpoints = c(rpoints,obsGrid[idx])
   }
+  points(qpoints, rpoints, pch = '.')
 }
 
 createColorPlot = function(res, obsGrid){
@@ -54,7 +64,7 @@ createColorPlot = function(res, obsGrid){
       }
     }
   }
-  legend('right', c('1', '2', '3~5', '>=6'), pch = 19, 
+  legend('right', c('1', '2', '3~5', '>=6'), pch = 14, 
     col = c('red', 'purple', 'green', 'blue'), title = 'Count')
 }
 

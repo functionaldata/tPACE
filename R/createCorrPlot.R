@@ -30,7 +30,13 @@ createCorrPlot = function(yy, corrPlotType = 'Fitted', isInteractive = FALSE){
     warning("Interactive plot requires package 'rgl', isInteractive set to be FALSE!")
   }
   
-  yname = yy$yname
+  if (is.null(yy$yname)){
+    yname = NULL
+  } else {
+    yname = paste(' for function',  yy$yname)
+  }
+  
+  
   workGrid = yy$workGrid
   if(corrPlotType == 'Smoothed'){
     covSurf = yy$smoothedCov # smoothed covariance matrix
@@ -44,33 +50,33 @@ createCorrPlot = function(yy, corrPlotType = 'Fitted', isInteractive = FALSE){
     if(corrPlotType == 'Fitted'){
       persp3d(workGrid, workGrid, covSurf, col = 'blue',
         xlab = 't', ylab = 't', zlab = 'Fitted Covariance Surface',
-        main = paste('Fitted covariance surface for function', yname))
+        main = paste('Fitted covariance surface', yname))
     } else if(corrPlotType == 'Smoothed'){
       persp3d(workGrid, workGrid, covSurf, col = 'blue',
         xlab = 't', ylab = 't', zlab = 'Smoothed Covariance Surface',
-        main = paste('Smoothed covariance surface for function', yname))
+        main = paste('Smoothed covariance surface', yname))
     } else if(corrPlotType == 'Raw'){
       tPairs = covSurf$tPairs
       cxxn = covSurf$cxxn
       plot3d(tPairs[,1], tPairs[,2], cxxn, pch = 19, col = 'blue',
         xlab = 't', ylab = 't', zlab = 'Raw Covariance Scatter Plot',
-        main = paste('Raw covariance scatter plot for function', yname))
+        main = paste('Raw covariance scatter plot', yname))
     }
   } else { # Static plot
     if(corrPlotType == 'Fitted'){
       persp3D(workGrid, workGrid, covSurf,
         xlab = 't', ylab = 't', zlab = 'Fitted Covariance Surface',
-        main = paste('Fitted covariance surface for function', yname))
+        main = paste('Fitted covariance surface', yname))
     } else if(corrPlotType == 'Smoothed'){
       persp3D(workGrid, workGrid, covSurf,
         xlab = 't', ylab = 't', zlab = 'Smoothed Covariance Surface',
-        main = paste('Smoothed covariance surface for function', yname))      
+        main = paste('Smoothed covariance surface', yname))      
     } else if(corrPlotType == 'Raw'){
       tPairs = covSurf$tPairs
       cxxn = covSurf$cxxn
       points3D(tPairs[,1], tPairs[,2], cxxn, pch = 19,
         xlab = 't', ylab = 't', zlab = 'Raw Covariance Scatter Plot',
-        main = paste('Raw covariance scatter plot for function', yname))
+        main = paste('Raw covariance scatter plot', yname))
     }
   }
 

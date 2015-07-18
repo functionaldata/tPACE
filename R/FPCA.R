@@ -11,11 +11,9 @@
 #' \item{bwcov}{bandwidth value for covariance function; positive numeric - default: determine automatically based on 'bwcovGcv'}
 #' \item{bwcovGcv}{bandwidth choice method for covariance function; 'GMeanAndGCV','CV','GCV - default: 'GMeanAndGCV'')}
 #' \item{bwmu}{bandwidth choice for mean function is using CV or GCV; positive numeric - default: determine automatically based on 'bwmuGcv'}
-#' \item{bwmuGcv}{bandwidth choice method for mean function; 'GMeanAndGCV','CV','GCV - default: 'GMeanAndGCV''}
-#' \item{corrPlot}{make correlation plot; logical - default: FALSE}
-#' \item{corrPlotType}{which type of correlation plot to show; 'Fitted', 'Raw', 'Smoothed' - default: 'Fitted'}
+#' \item{bwmuGcv}{bandwidth choice method for mean function; 'GMeanAndGCV','CV','GCV - default: 'GMeanAndGCV''} 
 #' \item{dataType}{do we have sparse or dense functional data; 'Sparse', 'Dense', 'DenseWithMV', 'p>>n' - default:  determine automatically based on 'IsRegular'}
-#' \item{designPlot}{make design plot; logical - default: FALSE}
+#' \item{diagnosticsPlot}{make diagnostics plot (design plot, mean, scree plot and first k (<=3) eigenfunctions); logical - default: FALSE}
 #' \item{error}{assume measurement error in the dataset; logical - default: TRUE}
 #' \item{FVEthreshold}{Fraction-of-Variance-Explained threshold used during the SVD of the fitted covar. function; numeric (0,1] - default: 0.9999}
 #' \item{kernel}{smoothing kernel choice, common for mu and covariance; "rect", "gauss", "epan", "gausvar", "quar" - default: "epan" for dense data else "gauss"}
@@ -28,7 +26,6 @@
 #' \item{nRegGrid}{number of support points in each direction of covariance surface; numeric - default: 51}
 #' \item{numBins}{number of bins to bin the data into; positive integer > 10, default: NULL}
 #' \item{numComponents}{maximum number of components to return; positive integer, default: NULL}
-#' \item{screePlot}{make scree plot; logical - default: FALSE}
 #' \item{selectionMethod}{the method of choosing the number of principal components K; 'FVE','AIC','BIC': default 'FVE' - only 'FVE' avaiable now/ default 'FVE')}
 #' \item{shrink}{apply shrinkage to estimates of random coefficients (dense data only); logical - default: FALSE}
 #' \item{outPercent}{2-element vector in [0,1] indicating the outPercent data in the boundary - default (0,1)}
@@ -183,6 +180,11 @@ FPCA = function(y, t, optns = list()){
   # Make the return object by MakeResultFPCA
   ret <- MakeResultFPCA(optns, smcObj, muObs, scsObj, eigObj,
                         scoresObj, truncObsGrid, workGrid, rho=ifelse(optns$rho =='cv', rho, NA))
+    
+  # Make a quick diagnostics plot     
+  if(optns$diagnosticsPlot){
+    createDiagnosticsPlot(t,ret);
+  }
 
   return(ret); 
 }

@@ -14,13 +14,15 @@ SetOptions = function(y, t, optns){
   shrink =optns[['shrink']];            newdata =optns[['newdata']] ;
   kernel =optns[['kernel']];            numBins =optns[['numBins']];
   numComponents =optns[['numComponents']];
-  yname =optns[['yname']];              screePlot =optns[['screePlot']];
-  designPlot =optns[['designPlot']];    rho =optns[['rho']];
-  verbose =optns[['verbose']];          corrPlot =optns[['corrPlot']];
+  yname =optns[['yname']];             # screePlot =optns[['screePlot']];
+  #designPlot =optns[['designPlot']];    
+  rho =optns[['rho']];                diagnosticsPlot =optns[['diagnosticsPlot']];
+  verbose =optns[['verbose']];          #corrPlot =optns[['corrPlot']];
   userMu =optns[['userMu']];                  methodMu =optns[['methodMu']];
   outPercent =optns[['outPercent']];  userCov =optns[['userCov']];
   rotationCut =optns[['rotationCut']];    useBinnedData =optns[['useBinnedData']];
-  corrPlotType =optns[['corrPlotType']]; useBins = optns[['useBins']]
+  #corrPlotType =optns[['corrPlotType']]; 
+  useBins = optns[['useBins']]
 
   if(is.null(bwmu)){ # bandwidth choice for mean function is using CV or GCV
     bwmu = 0;   
@@ -119,14 +121,17 @@ SetOptions = function(y, t, optns){
       FVEthreshold = 0.95;
     }
   }
-  if(is.null(screePlot)){ # make screeplot
-    screePlot = FALSE;
-  }
-  if(is.null(designPlot)){ # make designplot
-    designPlot = FALSE;
-  }
-  if(is.null(corrPlot)){ # make corrplot
-    corrPlot = FALSE;
+  #if(is.null(screePlot)){ # make screeplot
+  #  screePlot = FALSE;
+  #}
+  #if(is.null(designPlot)){ # make designplot
+  #  designPlot = FALSE;
+  #}
+  #if(is.null(corrPlot)){ # make corrplot
+  #  corrPlot = FALSE;
+  #}
+  if(is.null(diagnosticsPlot)){ # make corrplot
+    diagnosticsPlot = FALSE;
   }
   if(is.null(rho)){ # truncation threshold for the iterative residual that is used
     rho = "cv";
@@ -174,14 +179,16 @@ SetOptions = function(y, t, optns){
     useBins <- FALSE
   }
  
-  if(is.null(corrPlotType)){ 
-    corrPlotType = 'Fitted';
-  }
+  #if(is.null(corrPlotType)){ 
+  #  corrPlotType = 'Fitted';
+  #}
     
   return( list(bwmu = bwmu, bwmuGcv = bwmuGcv, bwuserCov = bwuserCov, bwuserCovGcv = bwuserCovGcv,
           ntest1 = ntest1, selectionMethod = selectionMethod, FVEthreshold = FVEthreshold,
           maxK = maxK, dataType = dataType, error = error, nRegGrid = nRegGrid, rotationCut = rotationCut,
-          method = method, shrink = shrink, newdata = newdata, kernel = kernel, corrPlot = corrPlot, corrPlotType = corrPlotType,   numComponents = numComponents,
-          numBins = numBins, useBins = useBins, yname = yname, screePlot = screePlot, designPlot = designPlot, rho = rho, 
+          method = method, shrink = shrink, newdata = newdata, kernel = kernel, 
+          # corrPlot = corrPlot, corrPlotType = corrPlotType,  screePlot = screePlot, designPlot = designPlot,
+          numComponents = numComponents, diagnosticsPlot = diagnosticsPlot,
+          numBins = numBins, useBins = useBins, yname = yname,  rho = rho, 
           verbose = verbose, userMu = userMu, userCov = userCov, methodMu= methodMu, outPercent = outPercent, useBinnedData = useBinnedData) )
 }
