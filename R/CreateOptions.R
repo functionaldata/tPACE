@@ -4,10 +4,8 @@
 #' @param bwcovGcv : bandwidth choice method for covariance function; 'GMeanAndGCV','CV','GCV - default: 'GMeanAndGCV'')
 #' @param bwmu : bandwidth value for mean function is using CV or GCV; positive numeric - default: determine automatically based on 'bwmuGcv'
 #' @param bwmuGcv : bandwidth choice method for mean function; 'GMeanAndGCV','CV','GCV - default: 'GMeanAndGCV''
-#' @param corrPlot : make correlation plot; logical - default: FALSE
-#' @param corrPlotType: which type of correlation plot to show; 'Fitted', 'Raw', 'Smoothed' - default: 'Fitted'
-#' @param dataType : do we have sparse or dense functional data; 'Sparse', 'Dense', 'DenseWithMV', 'p>>n' - default:  determine automatically based on 'IsRegular'
-#' @param designPlot : make design plot; logical - default: FALSE
+#' @param dataType : do we have sparse or dense functional data; 'Sparse', 'Dense', 'DenseWithMV', 'p>>n' - default:  determine automatically based on 'IsRegular' 
+# '@param diagnosticsPlot : make diagnostics plot (design plot, mean, scree plot and first k (<=3) eigenfunctions); logical - default: FALSE}
 #' @param error : assume measurement error in the dataset; logical - default: TRUE
 #' @param FVEthreshold : Fraction-of-Variance-Explained threshold used during the SVD of the fitted covar. function; numeric (0,1] - default: 0.9999
 #' @param kernel : smoothing kernel choice, common for mu and covariance; "rect", "gauss", "epan", "gausvar", "quar" - default: "epan" for dense data else "gauss"
@@ -18,8 +16,7 @@
 #' @param newdata : new data points to estimate; numeric - default: NULL 
 #' @param ntest1 : number of curves used for CV when choosing bandwidth; [1,N] - default: min(30, N-1), N : # of curves
 #' @param nRegGrid : number of support points in each direction of covariance surface; numeric - default: 51
-#' @param numBins : number of bins to bin the data into; positive integer > 10, default: NULL
-#' @param screePlot : make scree plot; logical - default: FALSE
+#' @param numBins : number of bins to bin the data into; positive integer > 10, default: NULL 
 #' @param selectionMethod : the method of choosing the number of principal components K; 'FVE','AIC','BIC' : default 'FVE' - only 'FVE' avaiable now/ default 'FVE')
 #' @param shrink : apply shrinkage to estimates of random coefficients (dense data only); logical - default: FALSE
 #' @param outPercent : 2-element vector in [0,1] indicating the outPercent data in the boundary - default (0,1)
@@ -40,15 +37,18 @@ CreateOptions = function(bwmu = NULL, bwmuGcv = NULL, bwuserCov = NULL, bwuserCo
     ntest1 = NULL,  selectionMethod = NULL, FVEthreshold = NULL, numComponents = NULL,
     maxK = NULL, dataType = NULL, error = NULL, nRegGrid = NULL,
     method = NULL, shrink = NULL, newdata = NULL, kernel = NULL, 
-    numBins = NULL, yname = NULL, screePlot = NULL, designPlot = NULL, 
-    corrPlot = NULL, corrPlotType =NULL,  rho = NULL, verbose = NULL, userMu = NULL, userCov = NULL, methodCov = NULL,
+    numBins = NULL, yname = NULL, # screePlot = NULL, designPlot = NULL, corrPlot = NULL, corrPlotType =NULL,
+    diagnosticsPlot = NULL,
+      rho = NULL, verbose = NULL, userMu = NULL, userCov = NULL, methodCov = NULL,
     methodMu = NULL, outPercent = NULL, useBinnedData = NULL, rotationCut = NULL){ 
 
  return( list(bwmu = bwmu, bwmuGcv = bwmuGcv, bwuserCov = bwuserCov, bwuserCovGcv = bwuserCovGcv,
           ntest1 = ntest1,  selectionMethod = selectionMethod, FVEthreshold = FVEthreshold,
           maxK = maxK, dataType = dataType, error = error, nRegGrid = nRegGrid, 
-          method = method, shrink = shrink, newdata = newdata, kernel = kernel, corrPlot = corrPlot, corrPlotType = corrPlotType, 
-numComponents = numComponents,
-          numBins = numBins, yname = yname, screePlot = screePlot, designPlot = designPlot, rho = rho, rotationCut = rotationCut,
-          verbose = verbose, userMu = userMu, userCov = userCov, methodMu= methodMu,  methodCov= methodCov, outPercent = outPercent, useBinnedData = useBinnedData, rotationCut = rotationCut) )
+          method = method, shrink = shrink, newdata = newdata, kernel = kernel, 
+          # corrPlot = corrPlot, corrPlotType = corrPlotType, screePlot = screePlot, designPlot = designPlot, 
+          numComponents = numComponents, diagnosticsPlot = diagnosticsPlot,
+          numBins = numBins, yname = yname, rho = rho, rotationCut = rotationCut,
+          verbose = verbose, userMu = userMu, userCov = userCov, methodMu= methodMu,  methodCov= methodCov, 
+          outPercent = outPercent, useBinnedData = useBinnedData, rotationCut = rotationCut) )
 }

@@ -14,12 +14,13 @@ CheckOptions = function(t,optns,n){
   selectionMethod = optns$selectionMethod;  FVEthreshold = optns$FVEthreshold;
   maxK = optns$maxK;                
   dataType = optns$dataType;          error = optns$error; 
-  nRegGrid = optns$nRegGrid;              method = optns$method; 
+  nRegGrid = optns$nRegGrid;        method = optns$method; 
   shrink = optns$shrink;            newdata = optns$newdata; 
   kernel = optns$kernel;            numBins = optns$numBins; 
-  yname = optns$yname;              screePlot = optns$screePlot; 
-  designPlot = optns$designPlot;    rho = optns$rho;
-  verbose = optns$verbose;          corrPlot = optns$corrPlot;
+  yname = optns$yname;           #   screePlot = optns$screePlot; 
+#  designPlot = optns$designPlot; 
+  rho = optns$rho;                  diagnosticsPlot=  optns$diagnosticsPlot;
+  verbose = optns$verbose;        #  corrPlot = optns$corrPlot;
   userMu = optns$userMu;                  methodMu = optns$methodMu;
   outPercent = optns$outPercent;  userCov = optns$userCov
                                 useBinnedData = optns$useBinnedData;
@@ -139,21 +140,26 @@ CheckOptions = function(t,optns,n){
     cat("Error: FPCA is aborted because the argument: yname is invalid!\n");  
     return(TRUE);        
   }
-  if(!is.logical(optns$screePlot)){ 
-    # make screeplot 
-    cat("Error: FPCA is aborted because the argument: screePlot is invalid!\n");  
-    return(TRUE);      
-  }
-  if(!is.logical(optns$designPlot)){ 
-    # make designplot 
-    cat("Error: FPCA is aborted because the argument: designPlot is invalid!\n");    
+  # if(!is.logical(optns$screePlot)){ 
+  #   # make screeplot 
+  #   cat("Error: FPCA is aborted because the argument: screePlot is invalid!\n");  
+  #   return(TRUE);      
+  # }
+  # if(!is.logical(optns$designPlot)){ 
+  #   # make designplot 
+  #   cat("Error: FPCA is aborted because the argument: designPlot is invalid!\n");    
+  #   return(TRUE);   
+  # }
+  # if(!is.logical(optns$corrPlot)){ 
+  #   cat(optns$corrPlot)
+  #   # make correlation plot 
+  #   cat("Error: FPCA is aborted because the argument: corrPlot is invalid!\n");   
+  #   return(TRUE);    
+  # }
+  if(!is.logical(optns$diagnosticsPlot)){ 
+    # make diagnosticsPlot 
+    cat("Error: FPCA is aborted because the argument: diagnosticsPlot is invalid!\n");    
     return(TRUE);   
-  }
-  if(!is.logical(optns$corrPlot)){ 
-    cat(optns$corrPlot)
-    # make correlation plot 
-    cat("Error: FPCA is aborted because the argument: corrPlot is invalid!\n");   
-    return(TRUE);    
   }
   if(!(any(optns$rho == c('cv-random', 'cv', 'none', 'no')))){ 
     # truncation threshold for the iterative residual that is used 
