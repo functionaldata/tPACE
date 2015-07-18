@@ -17,6 +17,7 @@
 #' \item{dataType}{do we have sparse or dense functional data; 'Sparse', 'Dense', 'DenseWithMV', 'p>>n' - default:  determine automatically based on 'IsRegular'}
 #' \item{designPlot}{make design plot; logical - default: FALSE}
 #' \item{error}{assume measurement error in the dataset; logical - default: TRUE}
+#' \item{fitEigenValues}{Whether also to obtain a regression fit of the eigenvalues - default: FALSE}
 #' \item{FVEthreshold}{Fraction-of-Variance-Explained threshold used during the SVD of the fitted covar. function; numeric (0,1] - default: 0.9999}
 #' \item{kernel}{smoothing kernel choice, common for mu and covariance; "rect", "gauss", "epan", "gausvar", "quar" - default: "epan" for dense data else "gauss"}
 #' \item{methodCov}{ method to estimate covariance; 'PACE','RARE','CrossSectional' - automatically determined, user input ignored}
@@ -180,9 +181,14 @@ FPCA = function(y, t, optns = list()){
     scoresObj <- GetINScores(ymat, t, optns, muObs, eigObj$lambda, phiObs)
   }
 
+  if (optns$fitEigenValues) {
+    fitLambda <- FitEigenValues(scsObj$rcov, workGrid, eigObj$phi, optns$numComponents)
+  } else 
+    fitLambda <- NULL
+  
   # Make the return object by MakeResultFPCA
   ret <- MakeResultFPCA(optns, smcObj, muObs, scsObj, eigObj,
-                        scoresObj, truncObsGrid, workGrid, rho=ifelse(optns$rho =='cv', rho, NA))
+                        scoresObj, truncObsGrid, workGrid, rho=ifelse(optns$rho =='cv', rho, NA), fitLambda=fitLambda)
 
   return(ret); 
 }

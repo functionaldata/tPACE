@@ -8,6 +8,7 @@ SetOptions = function(y, t, optns){
   bwuserCov =optns[['bwcov']];            bwuserCovGcv =optns[['bwuserCovGcv']];
   ntest1 =optns[['ntest1']];           # ngrid1 =optns[['ngrid1']]; 
   selectionMethod =optns[['selectionMethod']];  FVEthreshold =optns[['FVEthreshold']];
+  fitEigenValues <- optns[['fitEigenValues']]
   maxK =optns[['maxK']];                
   dataType =optns[['dataType']];          error =optns[['error']];
   nRegGrid =optns[['nRegGrid']];              method =optns[['method']];
@@ -56,6 +57,12 @@ SetOptions = function(y, t, optns){
   }
   if(is.null(dataType)){ #do we have dataType or sparse functional data
     dataType = IsRegular(t);    
+  }
+  if (is.null(fitEigenValues)) {
+    fitEigenValues <- FALSE
+  }
+  if (fitEigenValues && dataType == 'Dense') {
+    stop('Fit method only apply to sparse data')
   }
   if(is.null(error)){ # error assumption with measurement error
     error = TRUE;    
@@ -180,6 +187,7 @@ SetOptions = function(y, t, optns){
     
   return( list(bwmu = bwmu, bwmuGcv = bwmuGcv, bwuserCov = bwuserCov, bwuserCovGcv = bwuserCovGcv,
           ntest1 = ntest1, selectionMethod = selectionMethod, FVEthreshold = FVEthreshold,
+          fitEigenValues = fitEigenValues,
           maxK = maxK, dataType = dataType, error = error, nRegGrid = nRegGrid, rotationCut = rotationCut,
           method = method, shrink = shrink, newdata = newdata, kernel = kernel, corrPlot = corrPlot, corrPlotType = corrPlotType,   numComponents = numComponents,
           numBins = numBins, useBins = useBins, yname = yname, screePlot = screePlot, designPlot = designPlot, rho = rho, 

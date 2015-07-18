@@ -11,5 +11,17 @@ p0 <- SetOptions(samp3$yList, samp3$tList, optns=list(dataType='Sparse', error=T
 mu3 <- rep(0, length(pts))
 rcov3 <- GetRawCov(samp3$yList, samp3$tList, pts, mu3, p0$dataType, error=p0$error)
 
-
 brcov3 <- BinRawCov(rcov3)
+
+test_that('BinRawCov works', {
+  tPairs <- matrix(c(1, 1, 2, 1, 2, 1, 2, 2, 1, 2, 1, 2, 1, 2), ncol=2, byrow=TRUE)
+  rcov <- list(tPairs=tPairs, cxxn=1:nrow(tPairs), error=FALSE)
+  brcov <- BinRawCov(rcov)
+  expect_equal(brcov$tPairs, matrix(c(1, 1, 2, 1, 1, 2, 2, 2), ncol=2, byrow=TRUE))
+  expect_equal(brcov$meanVals, c(1, 2.5, 6, 4))
+  
+  rcov <- list(tPairs=tPairs, cxxn=1:nrow(tPairs), error=TRUE)
+  brcov <- BinRawCov(rcov)
+  expect_equal(brcov$tPairs, matrix(c(1, 1, 2, 1, 1, 2, 2, 2), ncol=2, byrow=TRUE))
+  expect_equal(brcov$meanVals, c(1, 2.5, 6, 4))  
+})
