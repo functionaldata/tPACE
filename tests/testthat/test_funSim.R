@@ -8,8 +8,8 @@
  
   # Define mean and 2 eigencomponents
   meanFunct <- function(s) s  + 10*exp(-(s-5)^2)
-  eigFunct1 <- function(s) +cos(2*s*pi/10)
-  eigFunct2 <- function(s) -sin(2*s*pi/10)
+  eigFunct1 <- function(s) +cos(2*s*pi/10) / sqrt(5)
+  eigFunct2 <- function(s) -sin(2*s*pi/10) / sqrt(5)
   
   # Create FPC scores
   Ksi = matrix(rnorm(N*2), ncol=2);
