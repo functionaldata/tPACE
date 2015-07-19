@@ -31,8 +31,8 @@ GetRawCov <- function(y,t,obsGridnew, mu, dataType, error){
 
   if(dataType == 'Sparse'){
   
-    Ys = lapply(X = y, FUN=meshgrid)
-    Xs = lapply(X = t, FUN=meshgrid)
+    Ys = lapply(X = y, FUN=meshgrid) #pracma
+    Xs = lapply(X = t, FUN=meshgrid) #pracma
 
     # vectorise the grids for y & t
     xx1 = unlist(do.call(rbind, lapply(Xs, '[', 'X')) )
@@ -73,7 +73,7 @@ GetRawCov <- function(y,t,obsGridnew, mu, dataType, error){
     cyy = t(yy) %*% yy / ncohort
     cyy = as.vector(t(cyy))
     cxxn = cyy;
-    xxyy = meshgrid(t1);
+    xxyy = meshgrid(t1); # pracma
 
     tPairs =  (matrix( c(c(xxyy$X), c(xxyy$Y)), ncol = 2))
 

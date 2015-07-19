@@ -46,5 +46,5 @@ Thumbs.db
 *.bak
 *.o
 *.so
-RcppExports.R 
-RcppExports.cpp
+#RcppExports.R 
+#RcppExports.cpp

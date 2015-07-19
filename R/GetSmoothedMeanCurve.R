@@ -11,8 +11,9 @@ GetSmoothedMeanCurve <- function (y, t, obsGrid, regGrid, optns){
   bwmu = optns$bwmu; 
   kernel = optns$kernel
  
+
   # If the user provided a mean function use it
-  if (!(isempty(userMu)) && (length(userMu) == length(obsGrid))){
+  if ( !(0 == length(userMu)) && (length(userMu) == length(obsGrid))){
     mu = userMu;
     muDense = spline(obsGrid,mu, xout=regGrid)$y;
     bw_mu = NULL;
@@ -25,7 +26,7 @@ GetSmoothedMeanCurve <- function (y, t, obsGrid, regGrid, optns){
       if( any(bwmuGcv == c('GCV','GMeanAndGCV') )){
         # get the bandwidth using GCV
         bw_mu =  unlist(gcvlwls1d1(yy = y, tt = t, kernel = kernel, npoly = npoly, nder = nder, dataType = optns$dataType) )[1]    
-        if ( isempty(bw_mu)){ 
+        if ( 0 == length(bw_mu)){ 
           stop('The data is too sparse to estimate a mean function. Get more data!\n')
          }
          bw_mu = adjustBW1(kernel=kernel,bopt=bw_mu,npoly=npoly,dataType=optns$dataType,nder=nder)

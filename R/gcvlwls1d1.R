@@ -38,7 +38,7 @@ gcvlwls1d1 <- function(yy,tt, kernel, npoly, nder, dataType, verbose=TRUE) {
   bwCandidates = sort(q^(0:9)*h0) ;
   
   # idx = apply(X= sapply(X=t, FUN='==',  ...=sort(unique(t)) ),MARGIN=2, FUN=which)  
-    idx =  uniq(t)$n
+    idx =  uniq(t)$n; # pracma
   # This is to make sure we get the same as MATLAB PACE 
   # I would write them in a function (equivalent of mykernel.m) if it is worth it 
   # Similarly there is no reason to repeat the FOR-loop twice; this too can go into a seperate function
