@@ -6,7 +6,7 @@ FitEigenValues <- function(rcov, phiGrid, phi, noEig) {
     
   # Get design matrix X:
   X <- apply(phi[, 1:noEig], 2, function(y) 
-    interp1(phiGrid, y, rcov$tPairs[, 1], method='linear') * interp1(phiGrid, y, rcov$tPairs[, 2], method='linear')
+    approx(phiGrid, y, rcov$tPairs[, 1])$y * approx(phiGrid, y, rcov$tPairs[, 2])$y
   )
   
   if (class(rcov) == 'RawCov') {

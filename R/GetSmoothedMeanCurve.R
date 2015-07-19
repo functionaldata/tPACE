@@ -14,7 +14,7 @@ GetSmoothedMeanCurve <- function (y, t, obsGrid, regGrid, optns){
   # If the user provided a mean function use it
   if (!(isempty(userMu)) && (length(userMu) == length(obsGrid))){
     mu = userMu;
-    muDense = interp1(obsGrid,mu, regGrid, 'spline');
+    muDense = spline(obsGrid,mu, xout=regGrid)$y;
     bw_mu = NULL;
   # otherwise if the user provided a mean bandwidth use it to estimate the mean function (below)
   } else {
