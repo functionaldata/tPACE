@@ -49,7 +49,7 @@ H = test_that("basic gaussian kernel inputs match MATLAB output for different ba
 })
 
 # These check out OK.
-F = test_that("basic quartic kernel inputs match MATLAB output for different bandwidths", {
+Ft = test_that("basic quartic kernel inputs match MATLAB output for different bandwidths", {
 
   AA = Rmullwlsk(2* IN$bw,t(IN$tPairs),cxxn=IN$cxxn, xgrid=IN$regGrid, ygrid=IN$regGrid, kernel_type='quar',win=rep(1,38), bwCheck = FALSE)
   BB = Rmullwlsk( c(5,3),t(IN$tPairs),cxxn=IN$cxxn, xgrid=IN$regGrid, ygrid=IN$regGrid, kernel_type='quar',win=rep(1,38), bwCheck = FALSE)
@@ -90,7 +90,7 @@ S = test_that("strictly positive window weights inputs match MATLAB output for d
 
 
 # These check out OK.
-T = test_that("incoherent kernel_types fall back to Epanechnikov kernels and give correct warnings", {
+Tt = test_that("incoherent kernel_types fall back to Epanechnikov kernels and give correct warnings", {
 
   AA = Rmullwlsk( c(3,4), t(IN$tPairs),cxxn=IN$cxxn, xgrid=IN$regGrid, ygrid=IN$regGrid, kernel_type='epan', win=sin(seq(1,38))+3, bwCheck = FALSE)
   aa = Rmullwlsk( c(3,4), t(IN$tPairs),cxxn=IN$cxxn, xgrid=IN$regGrid, ygrid=IN$regGrid, kernel_type='boom3', win=sin(seq(1,38))+3, bwCheck = FALSE)
