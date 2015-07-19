@@ -40,7 +40,7 @@ getEigens <- function(userCov,obsGrid,regGrid,noeig, varargin){
   eigenV = apply(eigenV,2, function(x) if (x[1] <= x[2]){ x }else{ -x} )
   
   # interpolate from the normalized eigenfunctions
-  phi = apply(eigenV,2, function(x) spline(x= regGrid, y= x, xout=obsGrid))
+  phi = apply(eigenV,2, function(x) spline(x= regGrid, y= x, xout=obsGrid)$y)
   if (noeig ==1){
     phi = t(phi)
   }
