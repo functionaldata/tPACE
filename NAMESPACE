@@ -4,4 +4,4 @@ importFrom(Rcpp, evalCpp)
 
 export(FPCA)
 S3method(fitted, FPCA)
-
+S3method(print,FPCA)

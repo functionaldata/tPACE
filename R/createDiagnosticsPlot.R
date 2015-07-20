@@ -1,3 +1,18 @@
+#' Functional Principal Component Analysis Diagnostics plot
+#' 
+#' FPCA for dense or sparse functional data. 
+#' 
+#' @param t A list of \emph{n} vectors containing the observation time points for each individual corresponding to y.
+#' @param ret An FPCA class object returned by FPCA().
+#'
+#' @examples
+#' set.seed(1)
+#' n <- 20
+#' pts <- seq(0, 1, by=0.05)
+#' sampWiener <- wiener(n, pts)
+#' sampWiener <- sparsify(sampWiener, pts, 10)
+#' res <- FPCA(sampWiener$yList, sampWiener$tList, list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
+#' createDiagnosticsPlot(sampWiener$tList, res)
 
 createDiagnosticsPlot <-function(t,ret){ 
  dev.new(width=6.2, height=6.2, noRStudioGD=TRUE) ; 
