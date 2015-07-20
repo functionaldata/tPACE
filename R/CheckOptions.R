@@ -14,8 +14,8 @@ CheckOptions = function(t,optns,n){
   selectionMethod = optns$selectionMethod;  FVEthreshold = optns$FVEthreshold;
   maxK = optns$maxK;                
   dataType = optns$dataType;          error = optns$error; 
-  nRegGrid = optns$nRegGrid;        method = optns$method; 
-  shrink = optns$shrink;            newdata = optns$newdata; 
+  nRegGrid = optns$nRegGrid;        methodXi = optns$methodXi; 
+  shrink = optns$shrink;         #   newdata = optns$newdata; 
   kernel = optns$kernel;            numBins = optns$numBins; 
   yname = optns$yname;           #   screePlot = optns$screePlot; 
 #  designPlot = optns$designPlot; 
@@ -105,9 +105,9 @@ CheckOptions = function(t,optns,n){
     cat("Error: FPCA is aborted because the argument: nRegGrid is invalid!\n");    
     return(TRUE);     
   }
-  if( !(any(optns$method == c('CE','IN')))){ 
+  if( !(any(optns$methodXi == c('CE','IN')))){ 
     #method to estimate the PC scores
-    cat("Error: FPCA is aborted because the argument: method is invalid!\n");   
+    cat("Error: FPCA is aborted because the argument: methodXi is invalid!\n");   
     return(TRUE);   
   }
   if(!is.logical(optns$shrink)){ 
@@ -115,11 +115,11 @@ CheckOptions = function(t,optns,n){
     cat("Error: FPCA is aborted because the argument: shrink is invalid!\n");   
     return(TRUE);   
   }
-  if (! (  is.null(optns$newdata) || (is.numeric(optns$newdata) && is.vector(optns$newdata)))){
-    # new time vector to evaluate the final estimates
-    cat("Error: FPCA is aborted because the argument: newdata is invalid!\n");       
-    return(TRUE);     
-  }
+  #if (! (  is.null(optns$newdata) || (is.numeric(optns$newdata) && is.vector(optns$newdata)))){
+  #  # new time vector to evaluate the final estimates
+  #  cat("Error: FPCA is aborted because the argument: newdata is invalid!\n");       
+  #  return(TRUE);     
+  #}
   if(!(any(optns$kernel == c('epan','gauss','rect','quar','gausvar')))){ 
     #method to estimate the PC scores
     cat("Error: FPCA is aborted because the argument: kernel is invalid!\n");   

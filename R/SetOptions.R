@@ -11,8 +11,8 @@ SetOptions = function(y, t, optns){
   fitEigenValues <- optns[['fitEigenValues']]
   maxK =optns[['maxK']];                
   dataType =optns[['dataType']];          error =optns[['error']];
-  nRegGrid =optns[['nRegGrid']];              method =optns[['method']];
-  shrink =optns[['shrink']];            newdata =optns[['newdata']] ;
+  nRegGrid =optns[['nRegGrid']];              methodXi =optns[['methodXi']];
+  shrink =optns[['shrink']];           # newdata =optns[['newdata']] ;
   kernel =optns[['kernel']];            numBins =optns[['numBins']];
   numComponents =optns[['numComponents']];
   yname =optns[['yname']];             # screePlot =optns[['screePlot']];
@@ -78,30 +78,30 @@ SetOptions = function(y, t, optns){
     }    
   }
   methodNames = c("IN", "CE");
-  if(!is.null(method) && !(method %in% methodNames)){ # Check suitability of kernel
-    cat(paste('method', kernel, 'is unrecognizable! Reset to automatic selection now!\n')); 
-    method = NULL; 
+  if(!is.null(methodXi) && !(methodXi %in% methodNames)){ # Check suitability of kernel
+    cat(paste('methodXi', methodXi, 'is unrecognizable! Reset to automatic selection now!\n')); 
+    methodXi = NULL; 
   }   
-  if(is.null(method)){ # method to estimate the PC scores
+  if(is.null(methodXi)){ # method to estimate the PC scores
     if(dataType == 'Dense'){
       shrink = FALSE;
-      method = "IN";
+      methodXi = "IN";
     } else if(dataType == 'Sparse'){
       shrink = FALSE;
-      method = "CE";
+      methodXi = "CE";
     } else if(dataType == 'DenseWithMV'){
       shrink = FALSE;
-      method = "IN";
+      methodXi = "IN";
     } else { # for dataType = p>>n
       shrink = FALSE;
-      method = "IN";
+      methodXi = "IN";
     }
   }
   if(is.null(shrink)){ # apply shrinkage to estimates of random coefficients (dataType data only)
     shrink = FALSE;
   }
-  if(shrink == TRUE && (error != TRUE || method != "IN")){ # Check for valid shrinkage choice
-    cat('shrinkage method only has effects when method = "IN" and error = TRUE! Reset to shrink = FALSE now!\n');
+  if(shrink == TRUE && (error != TRUE || methodXi != "IN")){ # Check for valid shrinkage choice
+    cat('shrinkage method only has effects when methodXi = "IN" and error = TRUE! Reset to shrink = FALSE now!\n');
     shrink = FALSE      
   }
   if(is.null(kernel)){ # smoothing kernel choice
@@ -146,9 +146,9 @@ SetOptions = function(y, t, optns){
   if(is.null(verbose)){ # display diagnostic messages
     verbose = TRUE;
   }  
-  if(is.null(newdata)){ # new data points to estimate
-    newdata <- NULL
-  }
+  #if(is.null(newdata)){ # new data points to estimate
+  #  newdata <- NULL
+  #}
   if(is.null(userMu)){ # user-defined mean functions valued at distinct input time points
     userMu <- NULL
   }
@@ -194,7 +194,8 @@ SetOptions = function(y, t, optns){
           ntest1 = ntest1, selectionMethod = selectionMethod, FVEthreshold = FVEthreshold,
           fitEigenValues = fitEigenValues,
           maxK = maxK, dataType = dataType, error = error, nRegGrid = nRegGrid, rotationCut = rotationCut,
-          method = method, shrink = shrink, newdata = newdata, kernel = kernel, 
+          methodXi = methodXi, shrink = shrink, # newdata = newdata, 
+          kernel = kernel, 
           # corrPlot = corrPlot, corrPlotType = corrPlotType,  screePlot = screePlot, designPlot = designPlot,
           numComponents = numComponents, diagnosticsPlot = diagnosticsPlot,
           numBins = numBins, useBins = useBins, yname = yname,  rho = rho, 

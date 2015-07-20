@@ -8,35 +8,34 @@
 #'
 #' @details Available control options are 
 #' \describe{
-#' \item{bwcov}{bandwidth value for covariance function; positive numeric - default: determine automatically based on 'bwcovGcv'}
-#' \item{bwcovGcv}{bandwidth choice method for covariance function; 'GMeanAndGCV','CV','GCV - default: 'GMeanAndGCV'')}
-#' \item{bwmu}{bandwidth choice for mean function is using CV or GCV; positive numeric - default: determine automatically based on 'bwmuGcv'}
-#' \item{bwmuGcv}{bandwidth choice method for mean function; 'GMeanAndGCV','CV','GCV - default: 'GMeanAndGCV''} 
-#' \item{dataType}{do we have sparse or dense functional data; 'Sparse', 'Dense', 'DenseWithMV', 'p>>n' - default:  determine automatically based on 'IsRegular'}
-#' \item{diagnosticsPlot}{make diagnostics plot (design plot, mean, scree plot and first k (<=3) eigenfunctions); logical - default: FALSE}
-#' \item{error}{assume measurement error in the dataset; logical - default: TRUE}
+#' \item{bwcov}{The bandwidth value for the smoothed covariance function; positive numeric - default: determine automatically based on 'bwcovGcv'}
+#' \item{bwcovGcv}{The bandwidth choice method for the smoothed covariance function; 'GMeanAndGCV','CV','GCV' - default: 'GMeanAndGCV'')}
+#' \item{bwmu}{The bandwidth choice for the smoothed mean function (using 'CV' or 'GCV'); positive numeric - default: determine automatically based on 'bwmuGcv'}
+#' \item{bwmuGcv}{The bandwidth choice method for the mean function; 'GMeanAndGCV','CV','GCV' - default: 'GMeanAndGCV''} 
+#' \item{dataType}{The type of design we have (usually distinguishing between sparse or dense functional data); 'Sparse', 'Dense', 'DenseWithMV', 'p>>n' - default:  determine automatically based on 'IsRegular'}
+#' \item{diagnosticsPlot}{Make diagnostics plot (design plot, mean, scree plot and first k (<=3) eigenfunctions); logical - default: FALSE}
+#' \item{error}{Assume measurement error in the dataset; logical - default: TRUE}
 #' \item{fitEigenValues}{Whether also to obtain a regression fit of the eigenvalues - default: FALSE}
 #' \item{FVEthreshold}{Fraction-of-Variance-Explained threshold used during the SVD of the fitted covar. function; numeric (0,1] - default: 0.9999}
-#' \item{kernel}{smoothing kernel choice, common for mu and covariance; "rect", "gauss", "epan", "gausvar", "quar" - default: "epan" for dense data else "gauss"}
-#' \item{methodCov}{ method to estimate covariance; 'PACE','RARE','CrossSectional' - automatically determined, user input ignored}
-#' \item{methodMu}{ method to estimate mu; 'PACE','RARE','CrossSectional' - automatically determined, user input ignored }
-#' \item{maxK}{maximum number of principal components to consider; positive integer - default: min(20, N-1), N:# of curves}
-#' \item{method}{method to estimate the PC scores; 'CE', 'IN' - default: 'CE'}
-#' \item{newdata}{new data points to estimate; numeric - default: NULL }
-#' \item{ntest1}{number of curves used for CV when choosing bandwidth; [1,N] - default: min(30, N-1), N: # of curves}
-#' \item{nRegGrid}{number of support points in each direction of covariance surface; numeric - default: 51}
-#' \item{numBins}{number of bins to bin the data into; positive integer > 10, default: NULL}
-#' \item{numComponents}{maximum number of components to return; positive integer, default: NULL}
-#' \item{selectionMethod}{the method of choosing the number of principal components K; 'FVE','AIC','BIC': default 'FVE' - only 'FVE' avaiable now/ default 'FVE')}
-#' \item{shrink}{apply shrinkage to estimates of random coefficients (dense data only); logical - default: FALSE}
-#' \item{outPercent}{2-element vector in [0,1] indicating the outPercent data in the boundary - default (0,1)}
-#' \item{rho}{truncation threshold for the iterative residual. 'cv': choose rho by leave-one-observation out cross-validation; 'no': use the iterative sigma2 estimate - default "cv".}
-#' \item{rotationCut}{2-element vector in [0,1] indicating the percent of data truncated during sigma^2 estimation; default  (0.25, 0.75))}
-#' \item{useBinnedData}{'FORCE' (Enforce the # of bins), 'AUTO' (Select the # of  bins automatically), 'OFF' (Do not bin) - default: 'AUTO'}
+#' \item{kernel}{Smoothing kernel choice, common for mu and covariance; "rect", "gauss", "epan", "gausvar", "quar" - default: "epan" for dense data else "gauss"}
+#' \item{methodCov}{The method to estimate the covariance; 'PACE','RARE','CrossSectional' - automatically determined, user input ignored}
+#' \item{methodMu}{The method to estimate mu; 'PACE','RARE','CrossSectional' - automatically determined, user input ignored }
+#' \item{maxK}{The maximum number of principal components to consider; positive integer - default: min(20, N-1), N:# of curves}
+#' \item{methodXi}{The method to estimate the PC scores; 'CE', 'IN' - default: 'CE'}
+#' \item{ntest1}{The number of curves used for CV when choosing bandwidth; [1,N] - default: min(30, N-1), N: # of curves}
+#' \item{nRegGrid}{The number of support points in each direction of covariance surface; numeric - default: 51}
+#' \item{numBins}{The number of bins to bin the data into; positive integer > 10, default: NULL}
+#' \item{numComponents}{The maximum number of components to return; positive integer, default: NULL}
+#' \item{selectionMethod}{The method of choosing the number of principal components K; 'FVE','AIC','BIC': default 'FVE' - only 'FVE' avaiable now/ default 'FVE')}
+#' \item{shrink}{Apply shrinkage to estimates of random coefficients (dense data only); logical - default: FALSE}
+#' \item{outPercent}{A 2-element vector in [0,1] indicating the outPercent data in the boundary - default (0,1)}
+#' \item{rho}{The truncation threshold for the iterative residual. 'cv': choose rho by leave-one-observation out cross-validation; 'no': use the iterative sigma2 estimate - default "cv".}
+#' \item{rotationCut}{The 2-element vector in [0,1] indicating the percent of data truncated during sigma^2 estimation; default  (0.25, 0.75))}
+#' \item{useBinnedData}{Should the data be binned? 'FORCE' (Enforce the # of bins), 'AUTO' (Select the # of  bins automatically), 'OFF' (Do not bin) - default: 'AUTO'}
 #' \item{useBins}{Not integrated yet: whether to bin the same observed time points when 2D smoothing; logical - default: FALSE}
-#' \item{userCov}{user-defined smoothed covariance function; numerical matrix - default: NULL}
-#' \item{userMu}{user-defined smoothed mean function; numerical vector - default: NULL}
-#' \item{verbose}{display diagnostic messages; logical - default: FALSE}
+#' \item{userCov}{The user-defined smoothed covariance function; numerical matrix - default: NULL}
+#' \item{userMu}{The user-defined smoothed mean function; numerical vector - default: NULL}
+#' \item{verbose}{Display diagnostic messages; logical - default: FALSE}
 #' }
 #' @return A list containing the following fields:
 #' \item{sigma2}{Variance for measure error.}
@@ -64,11 +63,11 @@
 #' res <- FPCA(sampWiener$yList, sampWiener$tList, list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
 #' createCorrPlot(res, 'Fitted')
 #' @references
-#'   @bibliography roxygen.bib
-#'   @cite Yao05
-#'   @cite Liu05
-#'   @cite Castro86
-
+#' \cite{Yao, Fang, Hans-Georg Müller, and Jane-Ling Wang. "Functional data analysis for sparse longitudinal data." Journal of the American Statistical Association 100, no. 470 (2005): 577-590. (Sparse data FPCA)}
+#'
+#' \cite{Liu, Bitao, and Hans-Georg Müller. "Estimating derivatives for samples of sparsely observed functions, with application to online auction dynamics." Journal of the American Statistical Association 104, no. 486 (2009): 704-717. (Sparse data FPCA)}
+#'
+#' \cite{Castro, P. E., W. H. Lawton, and E. A. Sylvestre. "Principal modes of variation for processes with continuous sample curves." Technometrics 28, no. 4 (1986): 329-337. (Dense data FPCA)}
 
 FPCA = function(y, t, optns = list()){
   
@@ -126,7 +125,7 @@ FPCA = function(y, t, optns = list()){
     # Generate basic grids:
     # obsGrid:  the unique sorted pooled time points of the sample and the new data
     # regGrid: the grid of time points for which the smoothed covariance surface assumes values
-    obsGrid = sort(unique( c(unlist(t), optns$newdata)));
+    obsGrid = sort(unique( c(unlist(t))));
     regGrid = seq(min(obsGrid), max(obsGrid),length.out = optns$nRegGrid);
 
 
@@ -166,7 +165,7 @@ FPCA = function(y, t, optns = list()){
   CovObs <- ConvertSupport(workGrid, truncObsGrid, Cov=eigObj$fittedCov)
 
   # Get scores  
-  if (optns$method == 'CE') {
+  if (optns$methodXi == 'CE') {
     if (optns$rho != 'no') {
       rho <- GetRho(y, t, optns, muObs, truncObsGrid, CovObs, eigObj$lambda, phiObs, sigma2)
       sigma2 <- rho
@@ -174,7 +173,7 @@ FPCA = function(y, t, optns = list()){
 
     scoresObj <- GetCEScores(y, t, optns, muObs, truncObsGrid, CovObs, eigObj$lambda, phiObs, sigma2)
 
-  } else if (optns$method == 'IN') {
+  } else if (optns$methodXi == 'IN') {
     scoresObj <- GetINScores(ymat, t, optns, muObs, eigObj$lambda, phiObs)
   }
 

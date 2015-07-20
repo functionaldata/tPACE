@@ -12,8 +12,7 @@
 #' @param methodCov :  method to estimate covariance; 'PACE','RARE','CrossSectional' - automatically determined, user input ignored
 #' @param methodMu :  method to estimate mu; 'PACE','RARE','CrossSectional' - automatically determined, user input ignored 
 #' @param maxK : maximum number of principal components to consider; positive integer - default: min(20, N-1), N : # of curves
-#' @param method : method to estimate the PC scores; 'CE', 'IN' - default: 'CE'
-#' @param newdata : new data points to estimate; numeric - default: NULL 
+#' @param methodXi : method to estimate the PC scores; 'CE', 'IN' - default: 'CE'
 #' @param ntest1 : number of curves used for CV when choosing bandwidth; [1,N] - default: min(30, N-1), N : # of curves
 #' @param nRegGrid : number of support points in each direction of covariance surface; numeric - default: 51
 #' @param numBins : number of bins to bin the data into; positive integer > 10, default: NULL 
@@ -36,7 +35,8 @@
 CreateOptions = function(bwmu = NULL, bwmuGcv = NULL, bwuserCov = NULL, bwuserCovGcv = NULL, 
     ntest1 = NULL,  selectionMethod = NULL, FVEthreshold = NULL, numComponents = NULL,
     maxK = NULL, dataType = NULL, error = NULL, nRegGrid = NULL,
-    method = NULL, shrink = NULL, newdata = NULL, kernel = NULL, 
+    methodXi = NULL, shrink = NULL,# newdata = NULL,
+    kernel = NULL, 
     numBins = NULL, yname = NULL, # screePlot = NULL, designPlot = NULL, corrPlot = NULL, corrPlotType =NULL,
     diagnosticsPlot = NULL,
       rho = NULL, verbose = NULL, userMu = NULL, userCov = NULL, methodCov = NULL,
@@ -45,7 +45,8 @@ CreateOptions = function(bwmu = NULL, bwmuGcv = NULL, bwuserCov = NULL, bwuserCo
  return( list(bwmu = bwmu, bwmuGcv = bwmuGcv, bwuserCov = bwuserCov, bwuserCovGcv = bwuserCovGcv,
           ntest1 = ntest1,  selectionMethod = selectionMethod, FVEthreshold = FVEthreshold,
           maxK = maxK, dataType = dataType, error = error, nRegGrid = nRegGrid, 
-          method = method, shrink = shrink, newdata = newdata, kernel = kernel, 
+          methodXi = methodXi, shrink = shrink,# newdata = newdata,
+          kernel = kernel, 
           # corrPlot = corrPlot, corrPlotType = corrPlotType, screePlot = screePlot, designPlot = designPlot, 
           numComponents = numComponents, diagnosticsPlot = diagnosticsPlot,
           numBins = numBins, yname = yname, rho = rho, rotationCut = rotationCut,
