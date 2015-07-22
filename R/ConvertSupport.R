@@ -19,6 +19,7 @@ ConvertSupport <- function(fromGrid, toGrid, mu=NULL, Cov=NULL, phi=NULL) {
   } else if (!is.null(Cov)) {
     gd <- meshgrid(toGrid) #pracma
     ret <- matrix(interp2lin(fromGrid, fromGrid, Cov, gd$X, gd$Y), nrow=length(toGrid))
+    ret <- 0.5 * (ret + t(ret))                         # ensure that ret is symmetric
     return(ret)
   } else if (!is.null(phi)) {
     return(mapX1d(fromGrid, phi, toGrid))

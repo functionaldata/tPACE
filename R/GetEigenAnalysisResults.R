@@ -4,8 +4,7 @@
 # The input smoothCov is possibly truncated.
 
 GetEigenAnalysisResults <- function(smoothCov, regGrid, optns) {
-#   noeig \approx  maxK
-
+#   noeig \approx  maxK 
   noeig <- optns$maxK
   FVEthreshold <- optns$FVEthreshold
   verbose <- optns$verbose

@@ -27,7 +27,7 @@
 no_FVE <- function(userCov, FVEthreshold=0.85, returnEVec=FALSE, verbose=FALSE){
   numGrids = nrow(userCov)
   #optns.v0 = t(seq(0.1,0.9,length.out = numGrids))
-  eigObj <- eigs(userCov, k = numGrids-2, which = "LR")
+  eigObj <- eigs(userCov, k = min(c(128,numGrids-2)), which = "LR")
   # at most ngrid-2 eigenvalues can be obtained for nonsymmetric or complex problems
   # "LM" corresponds to Largest Magnitude, another option may be "LR": Largest Real part
   d <- eigObj$values
