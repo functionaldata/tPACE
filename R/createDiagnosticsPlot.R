@@ -1,9 +1,10 @@
 #' Functional Principal Component Analysis Diagnostics plot
 #' 
-#' FPCA for dense or sparse functional data. 
-#' 
+#' This function will open a new device if not instructed otherwise.
+#'
 #' @param t A list of \emph{n} vectors containing the observation time points for each individual corresponding to y.
 #' @param ret An FPCA class object returned by FPCA().
+#' @param openNewDev A logical specifying if a new device should be opened - default: TRUE
 #'
 #' @examples
 #' set.seed(1)
@@ -14,14 +15,16 @@
 #' res <- FPCA(sampWiener$yList, sampWiener$tList, list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
 #' createDiagnosticsPlot(sampWiener$tList, res)
 
-createDiagnosticsPlot <-function(t,ret){ 
- dev.new(width=6.2, height=6.2, noRStudioGD=TRUE) ; 
- fves = ret$FVE
- mu = ret$mu
- obsGrid = ret$obsGrid      
- workGrid = ret$workGrid
+createDiagnosticsPlot <-function(t, ret, openNewDev = TRUE){ 
+  if(openNewDev){ 
+    dev.new(width=6.2, height=6.2, noRStudioGD=TRUE) ; 
+  }
+  fves = ret$FVE
+  mu = ret$mu
+  obsGrid = ret$obsGrid      
+  workGrid = ret$workGrid
  
- par(mfrow=c(2,2))
+  par(mfrow=c(2,2))
   createDesignPlot(t)
   plot( obsGrid, mu, type='l', xlab='s',ylab='', main='Mean')  
   grid()
