@@ -16,8 +16,8 @@
 
 GetMeanDense <- function(ymat, optns){
   # Check optns
-  if(optns$dataType != 'Dense'){
-    stop('Cross sectional mean is only applicable for option: dataType = "Dense"!')
+  if(!(optns$dataType %in% c('Dense', 'DenseWithMV'))){
+    stop('Cross sectional mean is only applicable for option: dataType = "Dense" or "DenseWithMV"!')
   }
   mu = colMeans(ymat, na.rm = TRUE) # use non-missing data only
   ret = list('mu' = mu, 'muDense' = NULL, 'mu_bw' = NULL)

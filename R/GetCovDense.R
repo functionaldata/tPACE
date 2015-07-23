@@ -16,8 +16,8 @@
 ##########################################################################
 
 GetCovDense <- function(ymat, mu, optns){
-  if(optns$dataType != 'Dense'){
-    stop('Sample Covariance is only applicable for option: dataType = "Dense"!')
+  if(!(optns$dataType %in% c('Dense', 'DenseWithMV'))){
+    stop('Sample Covariance is only applicable for option: dataType = "Dense" or "DenseWithMV"!')
   }
   n = nrow(ymat)
   K = cov(ymat, use = 'pairwise.complete.obs') # sample variance using non-missing data
