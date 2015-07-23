@@ -20,16 +20,15 @@ GetINScores <- function(ymat, t, optns, mu, lambda, phi){
   }
 
   n = nrow(ymat)
-  t = sort(unique(unlist(t))) # get observed time grid
+  tau = sort(unique(signif( unlist(t),14 ))) # get observed time grid
   mumat = matrix(rep(mu, n), nrow = n, byrow = TRUE)
   cymat = ymat - mumat
 
-  xiEst = matrix(0, nrow = n, ncol = length(lambda))
-
+  xiEst = matrix(0, nrow = n, ncol = length(lambda)) 
   # Get Scores xiEst
   for(i in 1:length(lambda)){
     tempmat = cymat * matrix(rep(phi[,i],n), nrow = n, byrow = TRUE)
-    xiEst[,i] = sapply(1:n, function(j) trapzRcpp(X = t[!is.na(tempmat[j,])], Y = tempmat[j, !is.na(tempmat[j,])]))
+    xiEst[,i] = sapply(1:n, function(j) trapzRcpp(X = tau[!is.na(tempmat[j,])], Y = tempmat[j, !is.na(tempmat[j,])]))
   }
 
   # Get Fitted Y: n by p matrix on observed time grid

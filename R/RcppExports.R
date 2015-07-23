@@ -21,3 +21,7 @@ Rrotatedmullwlsk <- function(bw, kernel_type, tPairs, cxxn, win, xygrid, npoly, 
     .Call('tPACE_Rrotatedmullwlsk', PACKAGE = 'tPACE', bw, kernel_type, tPairs, cxxn, win, xygrid, npoly, bwCheck)
 }
 
+trapzRcpp <- function(X, Y) {
+    .Call('tPACE_trapzRcpp', PACKAGE = 'tPACE', X, Y)
+}
+

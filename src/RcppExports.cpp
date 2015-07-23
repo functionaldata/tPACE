@@ -88,3 +88,15 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// trapzRcpp
+double trapzRcpp(const Rcpp::NumericVector X, const Rcpp::NumericVector Y);
+RcppExport SEXP tPACE_trapzRcpp(SEXP XSEXP, SEXP YSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector >::type X(XSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector >::type Y(YSEXP);
+    __result = Rcpp::wrap(trapzRcpp(X, Y));
+    return __result;
+END_RCPP
+}
