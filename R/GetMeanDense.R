@@ -22,7 +22,9 @@ GetMeanDense <- function(ymat, optns){
   mu = colMeans(ymat, na.rm = TRUE) # use non-missing data only
   ret = list('mu' = mu, 'muDense' = NULL, 'mu_bw' = NULL)
   class(ret) = "SMC"
-
+  if(any(is.na(mu))){
+      stop('The cross sectional mean is appears to have NaN! Consider setting your dataType to \'Sparse\' manually')
+  }
   # Garbage Collection
   gc()
   return(ret)

@@ -18,12 +18,14 @@ mapX1d <- function(x, y, newx) {
     # if (!all(newx %in% x)) 
         # warning('Interpolation occured: you might want to increase the obsGrid coverage')
         
-    if (min(newx) + 100 * .Machine$double.eps < min(x) || max(newx) > max(x) + 100 * .Machine$double.eps)
-        warning('Extrapolation occured')
-    if (is.vector(y))
-        newy <- approxExtrap(x, y, newx, method='linear')$y
-    else {
-        newy <- apply(y, 2, function(yy) approxExtrap(x, yy, newx, method='linear')$y)
+    # if (min(newx) + 100 * .Machine$double.eps < min(x) || max(newx) > max(x) + 100 * .Machine$double.eps)
+       # warning('Extrapolation occured')
+    if (is.vector(y)){
+        # newy <- approxExtrap(x, y, newx, method='linear')$y
+      newy <- approx(x, y, newx, method='linear')$y
+    } else {
+        # newy <- apply(y, 2, function(yy) approxExtrap(x, yy, newx, method='linear')$y)
+      newy <- apply(y, 2, function(yy) approx(x, yy, newx, method='linear')$y) 
     }
     
     return(newy)

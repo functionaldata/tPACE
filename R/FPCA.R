@@ -98,7 +98,7 @@ FPCA = function(y, t, optns = list()){
     
     # cross sectional mean and sample covariance for dense case
     # assume no measurement error.
-    ymat = List2Mat(y)
+    ymat = List2Mat(y,t)
 
     # Define time grids
     obsGrid = sort(unique(unlist(t)))
@@ -177,18 +177,19 @@ FPCA = function(y, t, optns = list()){
       rho <- GetRho(y, t, optns, muObs, truncObsGrid, CovObs, eigObj$lambda, phiObs, sigma2)
       sigma2 <- rho
     }
-
     scoresObj <- GetCEScores(y, t, optns, muObs, truncObsGrid, CovObs, eigObj$lambda, phiObs, sigma2)
-
   } else if (optns$methodXi == 'IN') {
+    ymat = List2Mat(y,t)
     scoresObj <- GetINScores(ymat, t, optns, muObs, eigObj$lambda, phiObs)
   }
 
   if (optns$fitEigenValues) {
     fitLambda <- FitEigenValues(scsObj$rcov, workGrid, eigObj$phi, optns$numComponents)
-  } else 
+
+  } else {
     fitLambda <- NULL
-  
+  }
+
   # Make the return object by MakeResultFPCA
   ret <- MakeResultFPCA(optns, smcObj, muObs, scsObj, eigObj,
                         scoresObj, truncObsGrid, workGrid, rho=ifelse(optns$rho =='cv', rho, NA), fitLambda=fitLambda)

@@ -6,9 +6,13 @@
 # Output: - ymat: n by p matrix containing all functional data
 ##########################################################################
 
-List2Mat <- function(y){
+List2Mat <- function(y,t){
   n = length(y)
-  ymat = matrix(unlist(y), nrow = n, byrow = TRUE)
+  obsGrid = sort(unique(unlist(t)))
+  ymat = matrix( rep(NA, n * length(obsGrid)), nrow = n, byrow = TRUE)
   
+  for (i in 1:n){
+    ymat[i, is.element(obsGrid, t[[i]])] = y[[i]]   
+  }
   return(ymat)
 }

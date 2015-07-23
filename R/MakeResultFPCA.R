@@ -27,7 +27,7 @@ MakeResultFPCA <- function(optns, smcObj, mu, scsObj, eigObj,
       # fittedY = scoresObj[3, ], 
       obsGrid = obsGrid, mu = mu, workGrid = workGrid, smoothedCov = scsObj$smoothCov, FVE=  100*cumsum(eigObj$lambda)/sum(eigObj$lambda) -0.01,
       fittedCov = eigObj$fittedCov, optns = optns, bwMu = smcObj$bw_mu, bwCov = scsObj$bwCov, rho=rho, fitLambda=fitLambda)
-  } else if(optns$dataType == 'Dense'){
+  } else if(optns$dataType %in% c('Dense','DenseWithMV')){
   	ret <- list(sigma2 = scsObj$sigma2, lambda = eigObj$lambda, phi = eigObj$phi,
   	  xiEst = scoresObj$xiEst, xiVar = scoresObj$xiVar, 
       # fittedY = scoresObj$fittedY, 
