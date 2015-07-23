@@ -103,8 +103,15 @@ FPCA = function(y, t, optns = list()){
     # Define time grids
     obsGrid = sort(unique(unlist(t)))
     regGrid = obsGrid
-    workGrid = seq(min(obsGrid), max(obsGrid), length.out = optns$nRegGrid)
-
+    workGrid = seq(min(obsGrid), max(obsGrid), length.out = optns$nRegGrid) 
+    
+    buff <- .Machine$double.eps * max(abs(obsGrid)) * 3 
+    minGrid <- min(workGrid)
+    maxGrid <- max(workGrid)
+    difGrid <- maxGrid - minGrid
+    workGrid <- workGrid[workGrid > minGrid + difGrid * optns$outPercent[1] - buff & 
+                         workGrid < minGrid + difGrid * optns$outPercent[2] + buff]
+                         
     # get cross sectional mean and sample cov
     smcObj = GetMeanDense(ymat, optns)
     mu = smcObj$mu
