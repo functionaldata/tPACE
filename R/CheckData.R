@@ -41,6 +41,10 @@ CheckData = function(y,t){
         cat("Error:FPCA is aborted because 't' members are not all of class numeric! Try  \"lapply(t,function(x) class(x))\" to see the current classes. \n");     return(TRUE);
   }
 
+ if(any( unlist( lapply(t, function(x) length(x) != length(unique(x))))) ){
+        cat("Error:FPCA is aborted because within-subject 't' members have duplicated values.  Try  \"which( unlist( lapply(t, function(x) length(x) != length(unique(x)))))\" to see potentially problematic entries. \n");     return(TRUE);
+  }
+
   return(FALSE);
 }
 
