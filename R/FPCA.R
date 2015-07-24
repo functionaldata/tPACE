@@ -173,7 +173,7 @@ FPCA = function(y, t, optns = list()){
 
   # Get scores  
   if (optns$methodXi == 'CE') {
-    if (optns$rho != 'no') {
+    if (optns$rho != 'no') { 
       rho <- GetRho(y, t, optns, muObs, truncObsGrid, CovObs, eigObj$lambda, phiObs, sigma2)
       sigma2 <- rho
     }
