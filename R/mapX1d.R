@@ -27,6 +27,9 @@ mapX1d <- function(x, y, newx) {
         # newy <- apply(y, 2, function(yy) approxExtrap(x, yy, newx, method='linear')$y)
       newy <- apply(y, 2, function(yy) approx(x, yy, newx, method='linear')$y) 
     }
+    if (any(is.nan(newy))){
+      stop('NA \'s during the mapping from(x,y) to (newx,newy)')
+    }
     
     return(newy)
 }
