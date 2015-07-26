@@ -53,7 +53,7 @@ gcvlwls1d1 <- function(yy,tt, kernel, npoly, nder, dataType, verbose=TRUE) {
   # Get the corresponding GCV scores 
   for(i in 1:length(bwCandidates)){
     # newmu = lwls1d(bwCandidates[i], kern=kernel, npoly=npoly, nder=nder, xin = t,yin= y,xout= sort(unique(t)))[idx]
-    newmu = Rlwls1d(bwCandidates[i], kern=kernel, npoly=npoly, nder=nder, xin = t,yin= y, win = rep(1,length(y)),xout= sort(unique(t)))[idx]
+    newmu = Rlwls1d(bwCandidates[i], kernel_type=kernel, npoly=npoly, nder=nder, xin = t,yin= y, win = rep(1,length(y)),xout= sort(unique(t)))[idx]
     cvsum = sum((newmu -y)^2 )
     gcvScores[i] =cvsum/(1-(r*k0)/(N*bwCandidates[i]))^2
   }
@@ -63,7 +63,7 @@ gcvlwls1d1 <- function(yy,tt, kernel, npoly, nder, dataType, verbose=TRUE) {
     bwCandidates = seq( max(bwCandidates), r, length.out = 2*length(bwCandidates))
     for(i in 1:length(bwCandidates)){
       # newmu = lwls1d(bwCandidates[i], kern=kernel, npoly=npoly, nder=nder, xin = t,yin= y,xout= sort(unique(t)))[idx]
-      newmu = Rlwls1d(bwCandidates[i], kern=kernel, npoly=npoly, nder=nder, xin = t,yin= y, win = rep(1,length(y)), xout= sort(unique(t)))[idx]
+      newmu = Rlwls1d(bwCandidates[i], kernel_type =kernel, npoly=npoly, nder=nder, xin = t,yin= y, win = rep(1,length(y)), xout= sort(unique(t)))[idx]
       cvsum = sum((newmu -y)^2 )
       gcvScores[i] =cvsum/(1-(r*k0)/(N*bwCandidates[i]))^2
     }

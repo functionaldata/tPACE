@@ -7,7 +7,7 @@ GetRho <- function(y, t, optns, mu, obsGrid, fittedCov, lambda, phi, sigma2) {
     sigma2 <- mean(mapply(function(a, b) mean((a - b)^2, na.rm=TRUE), yhat, y), na.rm=TRUE)
   }
     
-  R <- sqrt((trapz(obsGrid, mu ^ 2) + sum(lambda)) / diff(range(obsGrid)))
+  R <- sqrt((trapzRcpp(obsGrid, mu ^ 2) + sum(lambda)) / diff(range(obsGrid)))
   a1 <- 0.01; a2 <- 0.22
   etaCand <- seq(a1, a2, length.out=50)
   rhoCand <- etaCand * R

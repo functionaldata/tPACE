@@ -27,7 +27,7 @@ GetEigenAnalysisResults <- function(smoothCov, regGrid, optns) {
 
 # normalization
   phi <- apply(eigenV, 2, function(x) {
-                    x <- x / sqrt(trapz(regGrid, x^2)) 
+                    x <- x / sqrt(trapzRcpp(regGrid, x^2)) 
                     if (x[1] <= x[2])
                       return(x)
                     else

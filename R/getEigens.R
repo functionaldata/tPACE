@@ -36,7 +36,7 @@ getEigens <- function(userCov,obsGrid,regGrid,noeig, varargin){
   lambda = h * d;
 
   # normalized eigen functions
-  eigenV = apply(eigenV,2, function(x) x / sqrt(trapz(regGrid,(x)^2)) )
+  eigenV = apply(eigenV,2, function(x) x / sqrt(trapzRcpp(regGrid,(x)^2)) )
   eigenV = apply(eigenV,2, function(x) if (x[1] <= x[2]){ x }else{ -x} )
   
   # interpolate from the normalized eigenfunctions
@@ -46,7 +46,7 @@ getEigens <- function(userCov,obsGrid,regGrid,noeig, varargin){
   }
   
   # normalized smoothed eigenfunctions
-  phi  = apply(phi,2, function(x) x / sqrt(trapz(obsGrid,(x)^2)) )
+  phi  = apply(phi,2, function(x) x / sqrt(trapzRcpp(obsGrid,(x)^2)) )
 
   return( list(lambda = lambda, phi = phi, eigen = eigenV, noeig = noeig) )
 }

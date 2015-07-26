@@ -66,7 +66,7 @@ pc_covE = function(obsGrid, regGrid, bw_userCov, rotationCut=c(0, 1), kernel = '
   # yvar = lwls1d(bw = bw_userCov[1], kern = kernel, xin = rcovdiag[,1],
   #  yin = rcovdiag[,2], win = win2, xout = rcutGrid, returnFit = FALSE)
   xorder = order(rcovdiag[,1]); 
-    yvar = Rlwls1d(bw = bw_userCov[1], kern = kernel, xin = rcovdiag[xorder,1],
+    yvar = Rlwls1d(bw = bw_userCov[1], kernel_type = kernel, xin = rcovdiag[xorder,1],
                   yin = rcovdiag[xorder,2], win = win2, xout = rcutGrid)
 
 
@@ -76,7 +76,7 @@ pc_covE = function(obsGrid, regGrid, bw_userCov, rotationCut=c(0, 1), kernel = '
   # use quadratic form on diagonal to estimate Var(x(t))
   # xvar = rotateLwls2dV2(bw = bw_userCov[1], kern = kernel, xin = tPairs, yin = cxxn, win = win1, xout = cbind(rcutGrid, out22))
   xvar = rotateLwls2dV2(bw = bw_userCov[1], kern = kernel, xin = tPairs, yin = cxxn, win = win1, xout =  rcutGrid)
-  sigma2 = trapz(rcutGrid, yvar - xvar) / (lint * rcutprop)
+  sigma2 = trapzRcpp(rcutGrid, (yvar - xvar)) / (lint * rcutprop)
 
   if(sigma2 < 0){
     warning("Warning: estimated sigma2 is negative, reset to 1e-6 now!")
