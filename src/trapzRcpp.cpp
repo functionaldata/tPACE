@@ -1,4 +1,5 @@
 #include <Rcpp.h> 
+#include <limits>       // to get NaN
 using namespace Rcpp;
 
 template <class iter> bool is_sorted (iter begin, iter end)
@@ -27,5 +28,7 @@ double trapzRcpp(const Rcpp::NumericVector X, const Rcpp::NumericVector Y){
     return trapzsum;
   } else {
     Rcpp::stop("The input X-grid is not sorted.");
+    return  std::numeric_limits<double>::quiet_NaN();
   }
+  return  std::numeric_limits<double>::quiet_NaN();
 };
