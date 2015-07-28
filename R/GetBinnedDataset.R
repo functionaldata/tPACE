@@ -36,7 +36,7 @@ GetBinnedDataset <- function (y, t, optns){
   numBins = ceiling(numBins);
 
   for (i in 1:n){
-    res = GetBinnedCurve(t[[i]], y[[i]], numBins, TRUE, TRUE, a0, b0);
+    res = GetBinnedCurve(t[[i]], y[[i]], numBins, TRUE, TRUE, c(a0, b0));
     BinDataOutput$newt[i] = res$midpoint;   
     BinDataOutput$newy[i] = res$newy;      
   }

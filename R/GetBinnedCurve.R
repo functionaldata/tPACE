@@ -26,7 +26,7 @@ GetBinnedCurve <- function(x, y, M = 10, isMnumBin = TRUE,
       }
     }
     
-    print('GetBins used')
+    # print('GetBins used')
     # for the last bin, include the left and right end point
     ids =  ((x >= xx[i]) &(x <= xx[i+1]));
     if (all(ids == 0)){
