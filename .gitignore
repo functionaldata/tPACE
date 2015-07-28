@@ -25,6 +25,7 @@
 *.log
 *.sql
 *.sqlite
+..Rcheck
  
 # OS generated files #
 ######################
@@ -40,7 +41,7 @@ Thumbs.db
 # .RData 
 *.swp
 *.swo
-#*.mat
+*.mat
 .Rhistory
 *~
 *.bak

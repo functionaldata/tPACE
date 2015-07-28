@@ -1,6 +1,14 @@
 exportPattern("^[[:alpha:]]+")
 useDynLib(tPACE) 
 importFrom(Rcpp, evalCpp)
+importFrom("grDevices", "dev.new")
+importFrom("graphics", "abline", "barplot", "grid", "legend", "lines",
+           "matplot", "par", "plot", "points")
+importFrom("stats", "approx", "cov", "dist", "lm", "median", "na.omit",
+           "predict", "rnorm", "spline", "var")
+importFrom("utils", "installed.packages")
+
+
 
 export(FPCA)
 S3method(fitted, FPCA)
