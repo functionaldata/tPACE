@@ -21,30 +21,23 @@ wiener <- function(n=1, pts=seq(0, 1, length=50), sparsify=NULL, K=50) {
 
 }
 
-# sparsify samp
-# samp: a matrix of samples, with rows containing the samples
-# pts: a vector of grid points, should be from 0 to 1
-# sparsity: a vector of integers. The number of observation will be uniform distribution on sparsify.
-sparsify <- function(samp, pts, sparsity) {
-    if (length(sparsity) == 1)
-            sparsity <- c(sparsity, sparsity) # avoid scaler case
-    
-    indEach <- lapply(1:nrow(samp), function(x) 
-        sort(sample(ncol(samp), sample(sparsity, 1))))
-    tList <- lapply(indEach, function(x) pts[x])
-    yList <- lapply(1:length(indEach), function(x) {
-        ind <- indEach[[x]]
-        y <- samp[x, ind]
-        return(y)
-    })
-    # ret <- apply(samp, 1, function(x) {
-        # nObs <- sample(sparsify, 1)
-        # ind <- sort(sample(length(pts), nObs))
-        # return(c(t=pts[ind], y=x[ind]))
-    # })
-    
-    # ret <- 
-    
-    return(list(tList=tList, yList=yList))
-}
+## sparsify samp
+## samp: a matrix of samples, with rows containing the samples
+## pts: a vector of grid points, should be from 0 to 1
+## sparsity: a vector of integers. The number of observation will be uniform distribution on sparsify.
+#sparsify <- function(samp, pts, sparsity) {
+#    if (length(sparsity) == 1)
+#            sparsity <- c(sparsity, sparsity) # avoid scaler case
+#    
+#    indEach <- lapply(1:nrow(samp), function(x) 
+#        sort(sample(ncol(samp), sample(sparsity, 1))))
+#    tList <- lapply(indEach, function(x) pts[x])
+#    yList <- lapply(1:length(indEach), function(x) {
+#        ind <- indEach[[x]]
+#        y <- samp[x, ind]
+#        return(y)
+#    })
+#   
+#    return(list(tList=tList, yList=yList))
+#}
 
