@@ -62,7 +62,7 @@ GetIndCEScores <- function(yVec, muVec, lamVec, phiMat, Sigma_Yi, newyInd=NULL,
     Sigma_Yi <- Sigma_Yi[-newyInd, -newyInd, drop=FALSE]
   }
 
-  Lam <- diag(lamVec)
+  Lam <- diag(x=lamVec, nrow = length(lamVec))
   LamPhi <- Lam %*% t(phiMat)
   LamPhiSig <- LamPhi %*% solve(Sigma_Yi)
   xiEst <- LamPhiSig %*% matrix(yVec - muVec, ncol=1)

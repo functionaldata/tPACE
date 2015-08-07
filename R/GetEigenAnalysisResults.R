@@ -16,7 +16,11 @@ GetEigenAnalysisResults <- function(smoothCov, regGrid, optns) {
   #optns.v0 <- t(seq(0.1,0.9,length.out = numGrids))
   d <- FVEObj$lambda
   eigenV <- FVEObj$eVec
-    
+  
+  if(!is.matrix(eigenV)){
+    eigenV <- matrix(eigenV); # In case it is a vector
+  }
+
   if (noeig > length(d)) {
     noeig <- length(d);
     warning(sprintf("At most %d number of PC can be selected!", noeig))
@@ -24,6 +28,10 @@ GetEigenAnalysisResults <- function(smoothCov, regGrid, optns) {
 
   eigenV <- eigenV[, 1:noeig];
   d <- d[1:noeig];
+  
+  if(!is.matrix(eigenV)){
+    eigenV <- matrix(eigenV); # In case it is a vector
+  }
 
 # normalization
   phi <- apply(eigenV, 2, function(x) {
@@ -35,7 +43,7 @@ GetEigenAnalysisResults <- function(smoothCov, regGrid, optns) {
   })
   lambda <- gridSize * d;
 
-  fittedCov <- phi %*% diag(lambda) %*% t(phi)
+  fittedCov <- phi %*% diag(x=lambda, nrow = length(lambda)) %*% t(phi)
   # Garbage Collection
   gc()
   return(list(lambda = lambda, phi = phi, FVE=FVEObj$FVE[length(FVEObj$FVE)],
