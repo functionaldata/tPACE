@@ -4,7 +4,7 @@
 
 SetOptions = function(y, t, optns){ 
 
-  bwmu =optns[['bwmu']];                bwmuGcv =optns[['bwmuGcv']]; 
+  bwmu =optns[['bwmu']];                bwmuMethod =optns[['bwmuMethod']]; 
   bwuserCov =optns[['bwcov']];            bwuserCovGcv =optns[['bwuserCovGcv']];
   ntest1 =optns[['ntest1']];           # ngrid1 =optns[['ngrid1']]; 
   selectionMethod =optns[['selectionMethod']];  FVEthreshold =optns[['FVEthreshold']];
@@ -28,8 +28,8 @@ SetOptions = function(y, t, optns){
   if(is.null(bwmu)){ # bandwidth choice for mean function is using CV or GCV
     bwmu = 0;   
   }
-  if(is.null(bwmuGcv)){ # bandwidth choice for mean function is GCV if bwmu = 0
-    bwmuGcv = 'GMeanAndGCV';  
+  if(is.null(bwmuMethod)){ # bandwidth choice for mean function is GCV if bwmu = 0
+    bwmuMethod = 'GMeanAndGCV';  
   }
   if(is.null(bwuserCov)){ # bandwidth choice for covariance function is CV or GCV
     bwuserCov = 0; 
@@ -190,7 +190,7 @@ SetOptions = function(y, t, optns){
   #  corrPlotType = 'Fitted';
   #}
     
-  return( list(bwmu = bwmu, bwmuGcv = bwmuGcv, bwuserCov = bwuserCov, bwuserCovGcv = bwuserCovGcv,
+  return( list(bwmu = bwmu, bwmuMethod = bwmuMethod, bwuserCov = bwuserCov, bwuserCovGcv = bwuserCovGcv,
           ntest1 = ntest1, selectionMethod = selectionMethod, FVEthreshold = FVEthreshold,
           fitEigenValues = fitEigenValues,
           maxK = maxK, dataType = dataType, error = error, nRegGrid = nRegGrid, rotationCut = rotationCut,

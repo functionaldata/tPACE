@@ -1,9 +1,9 @@
 #' Create the options list used by FPCA
 #' 
-#' @param bwcov : bandwidth value for covariance function; positive numeric - default: determine automatically based on 'bwcovGcv'
-#' @param bwcovGcv : bandwidth choice method for covariance function; 'GMeanAndGCV','CV','GCV - default: 'GMeanAndGCV'')
-#' @param bwmu : bandwidth value for mean function is using CV or GCV; positive numeric - default: determine automatically based on 'bwmuGcv'
-#' @param bwmuGcv : bandwidth choice method for mean function; 'GMeanAndGCV','CV','GCV - default: 'GMeanAndGCV''
+#' @param bwcov : bandwidth value for covariance function; positive numeric - default: determine automatically based on 'bwcovMethod'
+#' @param bwcovMethod : bandwidth choice method for covariance function; 'GMeanAndGCV','CV','GCV - default: 'GMeanAndGCV'')
+#' @param bwmu : bandwidth value for mean function is using CV or GCV; positive numeric - default: determine automatically based on 'bwmuMethod'
+#' @param bwmuMethod : bandwidth choice method for mean function; 'GMeanAndGCV','CV','GCV - default: 'GMeanAndGCV''
 #' @param dataType : do we have sparse or dense functional data; 'Sparse', 'Dense', 'DenseWithMV', 'p>>n' - default:  determine automatically based on 'IsRegular' 
 # '@param diagnosticsPlot : make diagnostics plot (design plot, mean, scree plot and first k (<=3) eigenfunctions); logical - default: FALSE}
 #' @param error : assume measurement error in the dataset; logical - default: TRUE
@@ -32,7 +32,7 @@
 
 
 
-CreateOptions = function(bwmu = NULL, bwmuGcv = NULL, bwuserCov = NULL, bwuserCovGcv = NULL, 
+CreateOptions = function(bwmu = NULL, bwmuMethod = NULL, bwuserCov = NULL, bwuserCovGcv = NULL, 
     ntest1 = NULL,  selectionMethod = NULL, FVEthreshold = NULL, numComponents = NULL,
     maxK = NULL, dataType = NULL, error = NULL, nRegGrid = NULL,
     methodXi = NULL, shrink = NULL,# newdata = NULL,
@@ -42,7 +42,7 @@ CreateOptions = function(bwmu = NULL, bwmuGcv = NULL, bwuserCov = NULL, bwuserCo
       rho = NULL, verbose = NULL, userMu = NULL, userCov = NULL, methodCov = NULL,
     methodMu = NULL, outPercent = NULL, useBinnedData = NULL, rotationCut = NULL){ 
 
- return( list(bwmu = bwmu, bwmuGcv = bwmuGcv, bwuserCov = bwuserCov, bwuserCovGcv = bwuserCovGcv,
+ return( list(bwmu = bwmu, bwmuMethod = bwmuMethod, bwuserCov = bwuserCov, bwuserCovGcv = bwuserCovGcv,
           ntest1 = ntest1,  selectionMethod = selectionMethod, FVEthreshold = FVEthreshold,
           maxK = maxK, dataType = dataType, error = error, nRegGrid = nRegGrid, 
           methodXi = methodXi, shrink = shrink,# newdata = newdata,

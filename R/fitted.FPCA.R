@@ -4,7 +4,11 @@ fitted.FPCA <-  function (object, objectDer = NULL, ...) {
   
   fpcaObj <- object;
   fpcaObjDer <- objectDer;
- 
+
+  if (class(fpcaObj) != 'FPCA'){
+    stop("fitted.FPCA() requires an FPCA class object as basic input")
+  }
+
   if ( is.null(objectDer) ){ 
     objToUse <-fpcaObj 
   }  else {

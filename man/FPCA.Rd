@@ -37,10 +37,10 @@ FPCA for dense or sparse functional data.
 \details{
 Available control options are
 \describe{
-\item{bwcov}{The bandwidth value for the smoothed covariance function; positive numeric - default: determine automatically based on 'bwcovGcv'}
-\item{bwcovGcv}{The bandwidth choice method for the smoothed covariance function; 'GMeanAndGCV','CV','GCV' - default: 'GMeanAndGCV'')}
-\item{bwmu}{The bandwidth choice for the smoothed mean function (using 'CV' or 'GCV'); positive numeric - default: determine automatically based on 'bwmuGcv'}
-\item{bwmuGcv}{The bandwidth choice method for the mean function; 'GMeanAndGCV','CV','GCV' - default: 'GMeanAndGCV''}
+\item{bwcov}{The bandwidth value for the smoothed covariance function; positive numeric - default: determine automatically based on 'bwcovMethod'}
+\item{bwcovMethod}{The bandwidth choice method for the smoothed covariance function; 'GMeanAndGCV','CV','GCV' - default: 'GMeanAndGCV'')}
+\item{bwmu}{The bandwidth value for the smoothed mean function (using 'CV' or 'GCV'); positive numeric - default: determine automatically based on 'bwmuMethod'}
+\item{bwmuMethod}{The bandwidth choice method for the mean function; 'GMeanAndGCV','CV','GCV' - default: 'GMeanAndGCV''}
 \item{dataType}{The type of design we have (usually distinguishing between sparse or dense functional data); 'Sparse', 'Dense', 'DenseWithMV', 'p>>n' - default:  determine automatically based on 'IsRegular'}
 \item{diagnosticsPlot}{Make diagnostics plot (design plot, mean, scree plot and first k (<=3) eigenfunctions); logical - default: FALSE}
 \item{error}{Assume measurement error in the dataset; logical - default: TRUE}

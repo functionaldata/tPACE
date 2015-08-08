@@ -4,7 +4,7 @@
 \alias{CreateOptions}
 \title{Create the options list used by FPCA}
 \usage{
-CreateOptions(bwmu = NULL, bwmuGcv = NULL, bwuserCov = NULL,
+CreateOptions(bwmu = NULL, bwmuMethod = NULL, bwuserCov = NULL,
   bwuserCovGcv = NULL, ntest1 = NULL, selectionMethod = NULL,
   FVEthreshold = NULL, numComponents = NULL, maxK = NULL,
   dataType = NULL, error = NULL, nRegGrid = NULL, methodXi = NULL,
@@ -14,9 +14,9 @@ CreateOptions(bwmu = NULL, bwmuGcv = NULL, bwuserCov = NULL,
   useBinnedData = NULL, rotationCut = NULL)
 }
 \arguments{
-\item{bwmu}{: bandwidth value for mean function is using CV or GCV; positive numeric - default: determine automatically based on 'bwmuGcv'}
+\item{bwmu}{: bandwidth value for mean function is using CV or GCV; positive numeric - default: determine automatically based on 'bwmuMethod'}
 
-\item{bwmuGcv}{: bandwidth choice method for mean function; 'GMeanAndGCV','CV','GCV - default: 'GMeanAndGCV''}
+\item{bwmuMethod}{: bandwidth choice method for mean function; 'GMeanAndGCV','CV','GCV - default: 'GMeanAndGCV''}
 
 \item{ntest1}{: number of curves used for CV when choosing bandwidth; [1,N] - default: min(30, N-1), N : # of curves}
 
@@ -58,9 +58,9 @@ CreateOptions(bwmu = NULL, bwmuGcv = NULL, bwuserCov = NULL,
 
 \item{rotationCut}{: 2-element vector in [0,1] indicating the percent of data truncated during sigma^2 estimation; default  (0.25, 0.75))}
 
-\item{bwcov}{: bandwidth value for covariance function; positive numeric - default: determine automatically based on 'bwcovGcv'}
+\item{bwcov}{: bandwidth value for covariance function; positive numeric - default: determine automatically based on 'bwcovMethod'}
 
-\item{bwcovGcv}{: bandwidth choice method for covariance function; 'GMeanAndGCV','CV','GCV - default: 'GMeanAndGCV'')}
+\item{bwcovMethod}{: bandwidth choice method for covariance function; 'GMeanAndGCV','CV','GCV - default: 'GMeanAndGCV'')}
 
 \item{useBins:}{testing purpose: whether to bin the same observed time points when 2D smoothing; logical - default: FALSE}
 }

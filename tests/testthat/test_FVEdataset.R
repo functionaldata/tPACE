@@ -17,5 +17,5 @@ t= mySample$Lt
 
 optns1 <- CreateOptions(kernel='rect')
 system.time(tmp1 <- FPCA(y, t, optns1))
-plot(tmp1$phi[, 1]) # off
-createCorrPlot(tmp1, 'Smoothed', TRUE)
+# plot(tmp1$phi[, 1]) # off
+# createCorrPlot(tmp1, 'Smoothed', TRUE)

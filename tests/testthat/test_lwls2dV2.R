@@ -2,10 +2,10 @@ devtools::load_all()
 library(testthat)
 
 # as in test_Rmullwlsk.R
-load('../../data/InputFormMllwlskInCpp.RData')
+try(silent=TRUE, load('data/InputFormMllwlskInCpp.RData'))
+try(silent=TRUE, load('tPACE/data/InputFormMllwlskInCpp.RData'))
+
 IN = InputFormMllwlskInCpp
-
-
 
 test_that('lwls2dV2 interface is correct using xout1 and xout2', {
   AA = Rmullwlsk(2* IN$bw,t(IN$tPairs),cxxn=IN$cxxn, xgrid=IN$regGrid, ygrid=IN$regGrid, kernel_type='gauss',win=rep(1,38), FALSE)

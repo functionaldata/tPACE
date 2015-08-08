@@ -2,7 +2,8 @@ devtools::load_all()
 options(error=recover)
 library(testthat)
 
-load('../../data/dataForGetRawCov.RData')
+try(silent = TRUE, load('data/dataForGetRawCov.RData'))
+try(silent = TRUE, load('tPACE/data/dataForGetRawCov.RData'))
 rcov <- GetRawCov(y,t, sort(unlist(t)), mu,'Sparse',FALSE) 
 r <- range(sort(unlist(t)))
 regGrid <- seq(r[1], r[2], length.out=101)
@@ -73,7 +74,8 @@ test_that('GCV will avoid spitting out bandwidth that results in degenerate wind
     samp4$yList[[i]] <- samp4$yList[[i]][retain]
     samp4$tList[[i]] <- samp4$tList[[i]][retain]
   }
-  createDesignPlot(samp4$tList, pts, TRUE, FALSE, 'samp3')
+  
+  # createDesignPlot(samp4$tList, pts, TRUE, FALSE, 'samp3')
 
   rcov4 <- GetRawCov(samp4$yList, samp4$tList, pts, rep(0, length(pts)), 'Sparse', error=FALSE)
   g4 <- gcvlwls2dV2(pts, pts, kern='epan', rcov=rcov4, t=samp4$tList)
@@ -87,3 +89,4 @@ test_that('GCV will avoid spitting out bandwidth that results in degenerate wind
 # samp3$yList <- lapply(samp3$yList, matrix, nrow=1)
 # R.matlab::writeMat('samp3.mat', y=samp3$yList, t=samp3$tList)
 # GCV values matches matlab, but procedures for optimal GCV BW choice are different.
+

@@ -4,6 +4,9 @@ library(Rcpp)
 
 library(testthat)
 
+try( silent=TRUE, load('data/InputForRotatedMllwlskInCpp.RData'))
+try( silent=TRUE, load('tPACE/data/InputForRotatedMllwlskInCpp.RData'))
+
 # tolerance is relatively large because we cannot control of 2500 * 1e-16 anyway 
 # I have already tried using .inverse instead of LLT for the solution and that
 # did not make a difference numericallly (small systems anyway)

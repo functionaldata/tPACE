@@ -5,7 +5,7 @@ GetSmoothedMeanCurve <- function (y, t, obsGrid, regGrid, optns){
   # same points for common t_is. so we have: \hat{y}_i = n_t w_i \bar{y}
 
   userMu = optns$userMu;
-  bwmuGcv = optns$bwmuGcv;
+  bwmuMethod = optns$bwmuMethod;
   npoly = 1
   nder = 0 
   bwmu = optns$bwmu; 
@@ -23,7 +23,7 @@ GetSmoothedMeanCurve <- function (y, t, obsGrid, regGrid, optns){
       bw_mu = bwmu;
     #otherwise estimate the mean bandwith via the method selected to estimnate the mean function (below)
     } else {
-      if( any(bwmuGcv == c('GCV','GMeanAndGCV') )){
+      if( any(bwmuMethod == c('GCV','GMeanAndGCV') )){
         # get the bandwidth using GCV
         bw_mu =  unlist(gcvlwls1d1(yy = y, tt = t, kernel = kernel, npoly = npoly, nder = nder, dataType = optns$dataType) )[1]    
         if ( 0 == length(bw_mu)){ 
@@ -31,7 +31,7 @@ GetSmoothedMeanCurve <- function (y, t, obsGrid, regGrid, optns){
          }
          bw_mu = adjustBW1(kernel=kernel,bopt=bw_mu,npoly=npoly,dataType=optns$dataType,nder=nder)
          # get the geometric mean between the minimum bandwidth and GCV bandwidth to estimnate the mean function (below)         
-         if ( bwmuGcv == 'GMeanAndGCV') {
+         if ( bwmuMethod == 'GMeanAndGCV') {
            minbw = minb( unlist(t),2)
            bw_mu = sqrt(minbw*bw_mu);
         } 

@@ -8,7 +8,7 @@
 
 CheckOptions = function(t,optns,n){
   
-  bwmu = optns$bwmu;                bwmuGcv = optns$bwmuGcv; 
+  bwmu = optns$bwmu;                bwmuMethod = optns$bwmuMethod; 
   bwuserCov = optns$bwuserCov;            bwuserCovGcv = optns$bwuserCovGcv;
   ntest1 = optns$ntest1;            # ngrid1 = optns$ngrid1; 
   selectionMethod = optns$selectionMethod;  FVEthreshold = optns$FVEthreshold;
@@ -35,9 +35,9 @@ CheckOptions = function(t,optns,n){
     cat("Error: FPCA is aborted because the argument: bwmu  is invalid!\n"); 
     return(TRUE);   
   }
-  if( !(  any(optns$bwmuGcv == c('CV','GCV','GMeanAndGCV')) )){ 
+  if( !(  any(optns$bwmuMethod == c('CV','GCV','GMeanAndGCV')) )){ 
     # bandwidth choice for mean function is GCV if bwmu = 0
-    cat("Error: FPCA is aborted because the argument: bwmuGcv is invalid!\n"); 
+    cat("Error: FPCA is aborted because the argument: bwmuMethod is invalid!\n"); 
     return(TRUE);   
   }
   if(!(length(optns$bwuserCov)==1) &&  is.numeric(optns$bwuserCov) && (all(optns$bwuserCov>=0))){ 
