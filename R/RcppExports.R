@@ -25,3 +25,7 @@ trapzRcpp <- function(X, Y) {
     .Call('tPACE_trapzRcpp', PACKAGE = 'tPACE', X, Y)
 }
 
+trapzRcppP <- function(X, Y) {
+    .Call('tPACE_trapzRcppP', PACKAGE = 'tPACE', X, Y)
+}
+
