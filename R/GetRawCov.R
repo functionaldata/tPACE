@@ -31,8 +31,8 @@ GetRawCov <- function(y,t,obsGridnew, mu, dataType, error){
 
   if(dataType == 'Sparse'){
   
-    Ys = lapply(X = y, FUN=meshgrid) #pracma
-    Xs = lapply(X = t, FUN=meshgrid) #pracma
+    Ys = lapply(X = y, FUN=pracma::meshgrid) #pracma
+    Xs = lapply(X = t, FUN=pracma::meshgrid) #pracma
 
     # vectorise the grids for y & t
     xx1 = unlist(do.call(rbind, lapply(Xs, '[', 'X')) )
@@ -66,7 +66,7 @@ GetRawCov <- function(y,t,obsGridnew, mu, dataType, error){
       cxxn = cyy;     
     }
 
-    # win = ones(1, length(cxxn));
+    # win = pracma::ones(1, length(cxxn));
     # count = getCount(tPairs)...
 
   }else if(dataType == 'Dense'){
@@ -78,7 +78,7 @@ GetRawCov <- function(y,t,obsGridnew, mu, dataType, error){
     cyy = t(yy) %*% yy / ncohort
     cyy = as.vector(t(cyy))
     cxxn = cyy;
-    xxyy = meshgrid(t1); # pracma
+    xxyy = pracma::meshgrid(t1); # pracma
 
     tPairs =  (matrix( c(c(xxyy$X), c(xxyy$Y)), ncol = 2))
 
@@ -92,7 +92,7 @@ GetRawCov <- function(y,t,obsGridnew, mu, dataType, error){
       cxxn = cyy;     
     }
 
-   # win = ones(1, length(cxxn));
+   # win = pracma::ones(1, length(cxxn));
   }else if(dataType == 'RegularWithMV'){
     stop("This is not implemented yet. Contact Pantelis!")
   }else {

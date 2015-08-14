@@ -56,7 +56,7 @@ cvlwls1d <- function(yy, t, kernel, npoly, nder, dataType ){
         if (dataType=='Dense') {
             xxn=(ave*ncohort-t[[i]])/(ncohort-1);
             ttn=t[[1]];
-            win=ones(1,length(t[[1]]));
+            win=pracma::ones(1,length(t[[1]]));
             
             xxn = xxn[order(ttn)]
             ttn = sort(ttn)           

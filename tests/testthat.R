@@ -1,6 +1,6 @@
-# Based on https://github.com/hadley/testthat#integration-with-r-cmd-check
+# # Based on https://github.com/hadley/testthat#integration-with-r-cmd-check
 
-library(testthat)
-library(tPACE)
+# library(testthat)
+# library(tPACE)
 
-test_check("tPACE")
+# test_check("tPACE")
