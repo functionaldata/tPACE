@@ -52,7 +52,7 @@ GetIndCEScores <- function(yVec, muVec, lamVec, phiMat, Sigma_Yi, newyInd=NULL,
   }
 
   if (!is.null(newyInd) && length(yVec) != 1) {
-    newy <- yVec[newyInd]
+    # newy <- yVec[newyInd]
     newPhi <- phiMat[newyInd, , drop=FALSE]
     newMu <- muVec[newyInd]
 
