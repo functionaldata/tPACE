@@ -14,6 +14,7 @@
 #' sampWiener <- sparsify(sampWiener, pts, 10)
 #' res <- FPCA(sampWiener$yList, sampWiener$tList, list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
 #' createDiagnosticsPlot(sampWiener$tList, res)
+#' @export
 
 createDiagnosticsPlot <-function(t, ret, openNewDev = TRUE){ 
   if(openNewDev){ 

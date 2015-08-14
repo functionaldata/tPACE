@@ -1,9 +1,12 @@
+#' Format FPCA input
+#'
 #' Turn vector inputs to the list so they can be used in FPCA 
 #' 
 #' @param IDs  : n-by-1 vector of subject IDs
 #' @param tVec : n-by-1 vector of measurement times
 #' @param yVec : n-by-1 vector of measurements from the variable of interest
 #' @return L   : list containing 3 lists each of length 'm', 'm' being the number of unique subject IDs
+#' @export
 
 makePACEinputs <- function(IDs, tVec, yVec){
 

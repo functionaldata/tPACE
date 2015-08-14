@@ -1,3 +1,5 @@
+# TODO: Roxygen documentation
+
 fitted.FPCA <-  function (object, objectDer = NULL, ...) {
   # Combine the zero-meaned fitted values (ZMFV) and the interpolated mean (IM)
   # to get the final estimates

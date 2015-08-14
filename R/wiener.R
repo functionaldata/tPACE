@@ -1,3 +1,6 @@
+# TODO: Roxygen documentation
+#' @export
+
 # A test on standard Wiener process (brownian motion)
 # n: sample sizeDiss
 # pts: a vector of grid points, should be from 0 to 1

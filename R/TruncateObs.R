@@ -1,3 +1,5 @@
+# TODO: Roxygen documentation
+
 TruncateObs <- function(y, t, obsGrid, buff=.Machine$double.eps * max(abs(obsGrid)) * 3) {
 
   tmpInd <- mapply(function(yVec, tVec) {

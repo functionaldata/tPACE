@@ -1,3 +1,5 @@
+# TODO: roxygen comments
+#' @export
 # sparsify samp
 # samp: a matrix of samples, with rows containing the samples
 # pts: a vector of grid points, should be from 0 to 1

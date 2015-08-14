@@ -1,3 +1,7 @@
+# TODO: Roxygen documentation
+#' @export
+
+
 # This function creates the design plot of the data
 ######
 # Input:

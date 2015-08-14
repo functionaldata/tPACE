@@ -1,3 +1,7 @@
+# TODO: Roxygen documentation
+#' @export
+
+
 
 createScreePlot <-function(ys){ 
  

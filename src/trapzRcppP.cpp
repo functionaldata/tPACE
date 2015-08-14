@@ -1,4 +1,4 @@
-#include <omp.h>
+// #include <omp.h> // OSX Mavericks doesn't have omp.h with Xcode
 #include <Rcpp.h> 
 
 // [[Rcpp::depends(Rcpp)]]
@@ -26,7 +26,7 @@ double trapzRcppP(const Rcpp::NumericVector X, const Rcpp::NumericVector Y){
   }
   if(is_sorted(X.begin(),X.end())){
     double trapzsum = 0;      
-    #pragma omp for
+    // #pragma omp for
     for (unsigned int ind = 0; ind < X.size()-1; ++ind){
       trapzsum += 0.5 * (X[ind + 1] - X[ind]) *(Y[ind] + Y[ind + 1]); 
     }

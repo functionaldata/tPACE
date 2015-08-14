@@ -1,3 +1,5 @@
+#' Check option format
+#'
 #' Check if the options structure is valid and set the ones that are NULL
 #' 
 #' @param n is a total number of sample curves
@@ -5,6 +7,7 @@
 #' @return logical
 #' @examples 
 #' 1 + 3
+#' @export
 
 CheckOptions = function(t,optns,n){
   

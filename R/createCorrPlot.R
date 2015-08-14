@@ -1,3 +1,5 @@
+# TODO: Roxygen documentation
+#' @export
 # This function creates the covariance surface plot based on the
 # results from FPCA() or FPCder()
 ######
