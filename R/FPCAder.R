@@ -17,7 +17,7 @@
 #' @export
 
 
-FPCAder <-  function (fpcaObj, ...) {
+FPCAder <-  function (fpcaObj) {
   # Use FPCA object to get derivative information object 
    
   if (class(fpcaObj) != 'FPCA'){
