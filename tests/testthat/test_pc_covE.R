@@ -1,7 +1,7 @@
 devtools::load_all()
 
-p0 <- CreateOptions(dataType='Sparse', error=TRUE, kernel='epan')
-p1 <- CreateOptions(dataType='Dense', error=TRUE, kernel='epan')
+p0 <- list(dataType='Sparse', error=TRUE, kernel='epan')
+p1 <- list(dataType='Dense', error=TRUE, kernel='epan')
 
 set.seed(1)
 pts <- seq(0, 1, by=0.05)

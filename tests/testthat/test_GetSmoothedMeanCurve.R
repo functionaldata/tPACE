@@ -2,7 +2,7 @@
 library(testthat)
 load('data/dataGeneratedByExampleSeed123.RData')
 
-p = CreateOptions(kernel='epan')
+p = list(kernel='epan')
 optns = SetOptions(y,t,p)
 out1 = sort(unique( c(unlist(t), optns$newdata)));
 out21 = seq(min(out1), max(out1),length.out = 30);

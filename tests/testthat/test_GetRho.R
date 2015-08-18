@@ -47,7 +47,7 @@ test_that('Truncation works for GetRho', {
   samp4 <- sparsify(samp4, pts, 10)
   samp4$yList[[1]] <- samp4$tList[[1]] <- c(0, 1)
   samp4Trunc <- TruncateObs(samp4$yList, samp4$tList, truncPts)  
-  pTrunc <- SetOptions(samp4$yList, samp4$tList, CreateOptions(dataType='Sparse', error=TRUE, kernel='epan', verbose=TRUE))
+  pTrunc <- SetOptions(samp4$yList, samp4$tList, list(dataType='Sparse', error=TRUE, kernel='epan', verbose=TRUE))
   smc4 <- GetSmoothedCovarSurface(samp4$yList, samp4$tList, mu, pts, pts, pTrunc)
   eig4 <- GetEigenAnalysisResults(smc4$smoothCov, pts, pTrunc)
   phiObs <- ConvertSupport(pts, truncPts, phi=eig4$phi)
