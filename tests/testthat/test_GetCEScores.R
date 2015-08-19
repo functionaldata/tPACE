@@ -12,7 +12,8 @@ Sigma_Yi <- diag(10, 2)
 test_that('GetIndCEScores works', {
   expect_equal(GetIndCEScores(yVec, muVec, lamVec, phiMat, Sigma_Yi)[1:2], 
                list(xiEst=matrix(c(0.6, -0.1)), xiVar=diag(c(2.4, 0.9))))
-  expect_equal(GetIndCEScores(integer(0), muVec, lamVec, phiMat, Sigma_Yi)[1:2], list(xiEst=matrix(NA, length(lamVec)), xiVar=matrix(NA, length(lamVec), length(lamVec))))
+  expect_equal(GetIndCEScores(c(), muVec, lamVec, phiMat, Sigma_Yi)[1:2], # integer(0) is not really an empty vector, 'c()' is more obvious
+               list(xiEst=matrix(NA, length(lamVec)), xiVar=matrix(NA, length(lamVec), length(lamVec))))
   expect_equal(GetIndCEScores(yVec, muVec, lamVec, phiMat, Sigma_Yi, newyInd=1)$fittedY, matrix(0))
 })
 

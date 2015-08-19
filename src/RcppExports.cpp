@@ -19,6 +19,38 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// GetIndCEScoresCPP
+Rcpp::List GetIndCEScoresCPP(const Eigen::Map<Eigen::VectorXd>& yVec, const Eigen::Map<Eigen::VectorXd>& muVec, const Eigen::Map<Eigen::VectorXd>& lamVec, const Eigen::Map<Eigen::MatrixXd>& phiMat, const Eigen::Map<Eigen::MatrixXd>& SigmaYi);
+RcppExport SEXP tPACE_GetIndCEScoresCPP(SEXP yVecSEXP, SEXP muVecSEXP, SEXP lamVecSEXP, SEXP phiMatSEXP, SEXP SigmaYiSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type yVec(yVecSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type muVec(muVecSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type lamVec(lamVecSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd>& >::type phiMat(phiMatSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd>& >::type SigmaYi(SigmaYiSEXP);
+    __result = Rcpp::wrap(GetIndCEScoresCPP(yVec, muVec, lamVec, phiMat, SigmaYi));
+    return __result;
+END_RCPP
+}
+// GetIndCEScoresCPPnewInd
+Rcpp::List GetIndCEScoresCPPnewInd(const Eigen::Map<Eigen::VectorXd>& yVec, const Eigen::Map<Eigen::VectorXd>& muVec, const Eigen::Map<Eigen::VectorXd>& lamVec, const Eigen::Map<Eigen::MatrixXd>& phiMat, const Eigen::Map<Eigen::MatrixXd>& SigmaYi, const Eigen::Map<Eigen::MatrixXd>& newPhi, const Eigen::Map<Eigen::VectorXd>& newMu);
+RcppExport SEXP tPACE_GetIndCEScoresCPPnewInd(SEXP yVecSEXP, SEXP muVecSEXP, SEXP lamVecSEXP, SEXP phiMatSEXP, SEXP SigmaYiSEXP, SEXP newPhiSEXP, SEXP newMuSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type yVec(yVecSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type muVec(muVecSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type lamVec(lamVecSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd>& >::type phiMat(phiMatSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd>& >::type SigmaYi(SigmaYiSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd>& >::type newPhi(newPhiSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type newMu(newMuSEXP);
+    __result = Rcpp::wrap(GetIndCEScoresCPPnewInd(yVec, muVec, lamVec, phiMat, SigmaYi, newPhi, newMu));
+    return __result;
+END_RCPP
+}
 // interp2lin
 Eigen::VectorXd interp2lin(const Eigen::Map<Eigen::VectorXd>& xin, const Eigen::Map<Eigen::VectorXd>& yin, const Eigen::Map<Eigen::VectorXd>& zin, const Eigen::Map<Eigen::VectorXd>& xou, const Eigen::Map<Eigen::VectorXd>& you);
 RcppExport SEXP tPACE_interp2lin(SEXP xinSEXP, SEXP yinSEXP, SEXP zinSEXP, SEXP xouSEXP, SEXP youSEXP) {
@@ -97,18 +129,6 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const Rcpp::NumericVector >::type X(XSEXP);
     Rcpp::traits::input_parameter< const Rcpp::NumericVector >::type Y(YSEXP);
     __result = Rcpp::wrap(trapzRcpp(X, Y));
-    return __result;
-END_RCPP
-}
-// trapzRcppP
-double trapzRcppP(const Rcpp::NumericVector X, const Rcpp::NumericVector Y);
-RcppExport SEXP tPACE_trapzRcppP(SEXP XSEXP, SEXP YSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< const Rcpp::NumericVector >::type X(XSEXP);
-    Rcpp::traits::input_parameter< const Rcpp::NumericVector >::type Y(YSEXP);
-    __result = Rcpp::wrap(trapzRcppP(X, Y));
     return __result;
 END_RCPP
 }

@@ -175,7 +175,12 @@ FPCA = function(y, t, optns = list()){
   # Get scores  
   if (optns$methodXi == 'CE') {
     if (optns$rho != 'no') { 
-      rho <- GetRho(y, t, optns, muObs, truncObsGrid, CovObs, eigObj$lambda, phiObs, sigma2)
+      if( length(y) > 2048 ){
+        randIndx <- sample( length(y), 2048)
+        rho <- GetRho(y[randIndx], t[randIndx], optns, muObs, truncObsGrid, CovObs, eigObj$lambda, phiObs, sigma2)
+      } else {
+        rho <- GetRho(y, t, optns, muObs, truncObsGrid, CovObs, eigObj$lambda, phiObs, sigma2)
+      }
       sigma2 <- rho
     }
     scoresObj <- GetCEScores(y, t, optns, muObs, truncObsGrid, CovObs, eigObj$lambda, phiObs, sigma2)

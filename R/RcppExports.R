@@ -5,6 +5,14 @@ dropZeroElementsXYWin <- function(win, xin, yin) {
     .Call('tPACE_dropZeroElementsXYWin', PACKAGE = 'tPACE', win, xin, yin)
 }
 
+GetIndCEScoresCPP <- function(yVec, muVec, lamVec, phiMat, SigmaYi) {
+    .Call('tPACE_GetIndCEScoresCPP', PACKAGE = 'tPACE', yVec, muVec, lamVec, phiMat, SigmaYi)
+}
+
+GetIndCEScoresCPPnewInd <- function(yVec, muVec, lamVec, phiMat, SigmaYi, newPhi, newMu) {
+    .Call('tPACE_GetIndCEScoresCPPnewInd', PACKAGE = 'tPACE', yVec, muVec, lamVec, phiMat, SigmaYi, newPhi, newMu)
+}
+
 interp2lin <- function(xin, yin, zin, xou, you) {
     .Call('tPACE_interp2lin', PACKAGE = 'tPACE', xin, yin, zin, xou, you)
 }
@@ -23,9 +31,5 @@ Rrotatedmullwlsk <- function(bw, kernel_type, tPairs, cxxn, win, xygrid, npoly, 
 
 trapzRcpp <- function(X, Y) {
     .Call('tPACE_trapzRcpp', PACKAGE = 'tPACE', X, Y)
-}
-
-trapzRcppP <- function(X, Y) {
-    .Call('tPACE_trapzRcppP', PACKAGE = 'tPACE', X, Y)
 }
 
