@@ -40,9 +40,9 @@ FPCAregScalar <-  function (fpcaObj, extVar = NULL, depVar, varSelect = NULL, cr
     # apply variable selection and/or cross-validation diagnostics if requested
     if ( !is.null(varSelect)){
       if (varSelect == 'AIC') { 
-        lmObject <- MASS::stepAIC(lmObject)     
+        lmObject <- MASS::stepAIC(lmObject, trace = FALSE)     
       } else if ( varSelect == 'BIC') {
-        lmObject <- MASS::stepAIC( lmObject, k = log(length(depVar)) )
+        lmObject <- MASS::stepAIC( lmObject, trace = FALSE, k = log(length(depVar)) )
       } else {  
         print("Invalid variable selection argument used; it must be 'AIC' or 'BIC'.")
        return(NULL)  
