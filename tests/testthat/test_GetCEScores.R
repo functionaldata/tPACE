@@ -12,7 +12,8 @@ Sigma_Yi <- diag(10, 2)
 test_that('GetIndCEScores works', {
   expect_equal(GetIndCEScores(yVec, muVec, lamVec, phiMat, Sigma_Yi)[1:2], 
                list(xiEst=matrix(c(0.6, -0.1)), xiVar=diag(c(2.4, 0.9))))
-  expect_equal(GetIndCEScores(integer(0), muVec, lamVec, phiMat, Sigma_Yi)[1:2], list(xiEst=matrix(NA, length(lamVec)), xiVar=matrix(NA, length(lamVec), length(lamVec))))
+  expect_equal(GetIndCEScores(c(), muVec, lamVec, phiMat, Sigma_Yi)[1:2], # integer(0) is not really an empty vector, 'c()' is more obvious
+               list(xiEst=matrix(NA, length(lamVec)), xiVar=matrix(NA, length(lamVec), length(lamVec))))
   expect_equal(GetIndCEScores(yVec, muVec, lamVec, phiMat, Sigma_Yi, newyInd=1)$fittedY, matrix(0))
 })
 
@@ -28,7 +29,7 @@ sigma2 <- 0.4
 samp1 <- wiener(n, pts) + rnorm(length(pts) * n, sd=sigma2)
 samp1 <- sparsify(samp1, pts, 2:7)
 mu1 <- rep(0, length(pts))
-pNoTrunc <- SetOptions(samp1$yList, samp1$tList, CreateOptions(dataType='Sparse', error=TRUE, kernel='epan'))
+pNoTrunc <- SetOptions(samp1$yList, samp1$tList, list(dataType='Sparse', error=TRUE, kernel='epan'))
 smc1 <- GetSmoothedCovarSurface(samp1$yList, samp1$tList, mu1, pts, regGrid, pNoTrunc)
 eig1 <- GetEigenAnalysisResults(smc1$smoothCov, regGrid, pNoTrunc)
 
@@ -53,7 +54,7 @@ test_that('Observations with length 0 produces NA in the xiEst, xiVar, and fitte
   samp1 <- wiener(n, pts) + rnorm(length(pts) * n, sd=sigma2)
   samp1 <- sparsify(samp1, pts, 2:7)
   mu1 <- rep(0, length(pts))
-  pNoTrunc <- SetOptions(samp1$yList, samp1$tList, CreateOptions(dataType='Sparse', error=TRUE, kernel='epan'))
+  pNoTrunc <- SetOptions(samp1$yList, samp1$tList, list(dataType='Sparse', error=TRUE, kernel='epan'))
   smc1 <- GetSmoothedCovarSurface(samp1$yList, samp1$tList, mu1, pts, regGrid, pNoTrunc)
   eig1 <- GetEigenAnalysisResults(smc1$smoothCov, regGrid, pNoTrunc)
   phiObs <- ConvertSupport(regGrid, truncPts, phi=eig1$phi)
@@ -124,4 +125,4 @@ test_that('GetCEScores for sparse case matches Matlab', {
 
 
 # no error case. This observation has a singular Sigma_Yi, which should not work in theory.
-# tmp1 <- GetCEScores(y[3], t[3], list(), mu, obsGrid, fittedCov, lambda, phi, 0)
+

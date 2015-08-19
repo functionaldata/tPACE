@@ -35,45 +35,70 @@ GetMuPhiSig <- function(t, obsGrid, mu, phi, Sigma_Y) {
 }
 
 
-GetIndCEScores <- function(yVec, muVec, lamVec, phiMat, Sigma_Yi, newyInd=NULL,
-                            verbose=FALSE) {
+GetIndCEScores <- function(yVec, muVec, lamVec, phiMat, Sigma_Yi, newyInd=NULL, verbose=FALSE) {
 
   if (length(yVec) == 0) {
-    if (verbose)
+    if (verbose) {
       warning('Empty observation found, possibly due to truncation')
-
+    }
     return(list(xiEst=matrix(NA, length(lamVec)), xiVar=matrix(NA, length(lamVec), length(lamVec)), fittedY=matrix(NA, 0, 0)))
   }
 
-# When an individual has only one observation, the leave-one-out predicted Y is NA.
-  if (length(yVec) == 1 && !is.null(newyInd)) {
-    newPhi <- matrix(NA, ncol=length(lamVec))
-    newMu <- NA
+#
+## When an individual has only one observation, the leave-one-out predicted Y is NA.
+#  if (length(yVec) == 1 && !is.null(newyInd)) {
+#    newPhi <- matrix(NA, ncol=length(lamVec))
+#    newMu <- NA
+#  }
+#
+#  if (!is.null(newyInd) && length(yVec) != 1) {
+#    # newy <- yVec[newyInd]
+#    newPhi <- phiMat[newyInd, , drop=FALSE]
+#    newMu <- muVec[newyInd]
+#
+#    yVec <- yVec[-newyInd]
+#    muVec <- muVec[-newyInd]
+#    phiMat <- phiMat[-newyInd, , drop=FALSE]
+#    Sigma_Yi <- Sigma_Yi[-newyInd, -newyInd, drop=FALSE]
+#  }
+#
+#  Lam <- diag(x=lamVec, nrow = length(lamVec))
+#  LamPhi <- Lam %*% t(phiMat)
+#  LamPhiSig <- LamPhi %*% solve(Sigma_Yi)
+#  xiEst <- LamPhiSig %*% matrix(yVec - muVec, ncol=1)
+#  xiVar <- Lam - LamPhi %*% t(LamPhiSig)
+#
+#
+#  fittedY <- if(is.null(newyInd)) 
+#    muVec + phiMat %*% xiEst else 
+#      newMu + newPhi %*% xiEst
+#
+#  ret <- list(xiEst=xiEst, xiVar=xiVar, fittedY=fittedY)
+#
+#  return(ret)
+
+  # Do all subscripting stuff in R
+  if (!is.null(newyInd)) {    
+    if (length(yVec) != 1){ 
+      newPhi <- phiMat[newyInd, , drop=FALSE]
+      newMu <- muVec[newyInd]
+      yVec <- yVec[-newyInd]
+      muVec <- muVec[-newyInd]
+      phiMat <- phiMat[-newyInd, , drop=FALSE]
+      Sigma_Yi <- Sigma_Yi[-newyInd, -newyInd, drop=FALSE] 
+      return ( GetIndCEScoresCPPnewInd( yVec, muVec, lamVec, phiMat, Sigma_Yi, newPhi, newMu) )
+    } else {   
+      # This should be an uncommon scenario
+      Lam <- diag(x=lamVec, nrow = length(lamVec))
+      LamPhi <- Lam %*% t(phiMat)
+      LamPhiSig <- LamPhi %*% solve(Sigma_Yi)
+      xiEst <- LamPhiSig %*% matrix(yVec - muVec, ncol=1)
+      xiVar <- Lam - LamPhi %*% t(LamPhiSig)
+      return( list(xiEst=xiEst, xiVar = xiVar, fittedY=NA) )
+    }
   }
+  return( GetIndCEScoresCPP( yVec, muVec, lamVec, phiMat, Sigma_Yi) )
+  # Unfortunately function overloading is not yet available in Rcpp
+  # GetIndCEScoresCPPnewInd and GetIndCEScoresCPP are nearly identical.
 
-  if (!is.null(newyInd) && length(yVec) != 1) {
-    # newy <- yVec[newyInd]
-    newPhi <- phiMat[newyInd, , drop=FALSE]
-    newMu <- muVec[newyInd]
-
-    yVec <- yVec[-newyInd]
-    muVec <- muVec[-newyInd]
-    phiMat <- phiMat[-newyInd, , drop=FALSE]
-    Sigma_Yi <- Sigma_Yi[-newyInd, -newyInd, drop=FALSE]
-  }
-
-  Lam <- diag(x=lamVec, nrow = length(lamVec))
-  LamPhi <- Lam %*% t(phiMat)
-  LamPhiSig <- LamPhi %*% solve(Sigma_Yi)
-  xiEst <- LamPhiSig %*% matrix(yVec - muVec, ncol=1)
-  xiVar <- Lam - LamPhi %*% t(LamPhiSig)
-
-
-  fittedY <- if(is.null(newyInd)) 
-    muVec + phiMat %*% xiEst else 
-      newMu + newPhi %*% xiEst
-
-  ret <- list(xiEst=xiEst, xiVar=xiVar, fittedY=fittedY)
-
-  return(ret)
 }

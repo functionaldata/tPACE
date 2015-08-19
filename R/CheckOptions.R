@@ -2,12 +2,10 @@
 #'
 #' Check if the options structure is valid and set the ones that are NULL
 #' 
+#' @param t is a n-by-1 list of vectors 
+#' @param optns is an initialized option list
 #' @param n is a total number of sample curves
-#' @param p is an initialized option list
 #' @return logical
-#' @examples 
-#' 1 + 3
-#' @export
 
 CheckOptions = function(t,optns,n){
   
@@ -35,7 +33,7 @@ CheckOptions = function(t,optns,n){
   }
   if(  !( (length(optns$bwmu)==1) &&  is.numeric(optns$bwmu) && (0<=optns$bwmu) ) ){ 
     # bandwidth Bhoice for mean function is using CV or GCV
-    cat("Error: FPCA is aborted because the argument: bwmu  is invalid!\n"); 
+    cat("Error: FPCA is aborted because the argument: bwmu is invalid!\n"); 
     return(TRUE);   
   }
   if( !(  any(optns$bwmuMethod == c('CV','GCV','GMeanAndGCV')) )){ 

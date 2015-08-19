@@ -24,8 +24,8 @@ test_that('Truncation works for FPCA Wiener process', {
   samp4 <- sparsify(samp4, pts, 10)
   samp5 <- samp4
   samp4$yList[[1]] <- samp4$tList[[1]] <- c(0, 1)
-  pTrunc <- SetOptions(samp4$yList, samp4$tList, CreateOptions(dataType='Sparse', error=TRUE, kernel='epan', outPercent=c(0.03, 0.97), verbose=TRUE))
-  pNoTrunc <- SetOptions(samp4$yList, samp4$tList, CreateOptions(dataType='Sparse', error=TRUE, kernel='epan', outPercent=c(0, 1), verbose=TRUE))
+  pTrunc <- SetOptions(samp4$yList, samp4$tList, list(dataType='Sparse', error=TRUE, kernel='epan', outPercent=c(0.03, 0.97), verbose=TRUE))
+  pNoTrunc <- SetOptions(samp4$yList, samp4$tList, list(dataType='Sparse', error=TRUE, kernel='epan', outPercent=c(0, 1), verbose=TRUE))
   set.seed(1); res4 <- FPCA(samp4$yList, samp4$tList, pTrunc)
   set.seed(1); res5NoTrunc <- FPCA(samp5$yList, samp5$tList, pNoTrunc)
   set.seed(1); res4NoTrunc <- FPCA(samp4$yList, samp4$tList, pNoTrunc)

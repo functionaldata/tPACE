@@ -1,13 +1,11 @@
 #' Check data format
 #' 
-#' Check the form and basic structure of the functional data 'y' and the recorded times 'tt'.
+#' Check if there are problems with the form and basic structure of the functional data 'y' and the recorded times 't'.
 #' 
 #' @param y is a n-by-1 list of vectors
-#' @param tt is a n-by-1 list of vectors
+#' @param t is a n-by-1 list of vectors
 #' @return logical
-#' @examples 
-#' 1 + 3
-#' @export
+
 
 CheckData = function(y,t){
   
