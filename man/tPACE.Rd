@@ -22,15 +22,13 @@ PACE provides options for functional regression and correlation, for
 Longitudinal Data Analysis, the analysis of stochastic processes from
 samples of realized trajectories, and for the analysis of underlying
 dynamics.
-
-Functions on creating, moving, plotting and summarizing BML models are
-provided in this package. For a list of functions provided in this package
-see \code{help(package='A4')}.
 }
 \author{
 Xiongtao Dai \email{dai@ucdavis.edu},
 Pantelis Z. Hadjipantelis \email{pantelis@ucdavis.edu},
 Hao Ji \email{haoji@ucdavis.edu}
+Hans-Georg Mueller \email{hgmueller@ucdavis.edu}
+Jane-Ling Wang \email{janelwang@ucdavis.edu}
 
 Maintainer: Pantelis Z. Hadjipantelis \email{pantelis@ucdavis.edu}
 }
