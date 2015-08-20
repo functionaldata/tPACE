@@ -2,7 +2,7 @@
 #'
 #' This function will open a new device if not instructed otherwise.
 #'
-#' @param ys a vector of eigenvalues from FPCA object
+#' @param ys a vector of FVE (functional variation explained) from FPCA object
 #'
 #' @examples
 #' set.seed(1)
@@ -11,7 +11,7 @@
 #' sampWiener <- wiener(n, pts)
 #' sampWiener <- sparsify(sampWiener, pts, 10)
 #' res <- FPCA(sampWiener$yList, sampWiener$tList, list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
-#' createScreePlot(res$lambda)
+#' createScreePlot(res$FVE)
 #' @export
 
 createScreePlot <-function(ys){ 
