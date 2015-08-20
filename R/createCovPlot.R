@@ -1,19 +1,27 @@
-# TODO: Roxygen documentation
+#' Create the covariance surface plot based on the results from FPCA() or FPCder().
+#'
+#' This function will open a new device if not instructed otherwise.
+#'
+#' @param yy returned object from FPCA().
+#' @param corrPlotType a string specifying the type of covariance surface to be plotted:
+#'                     'Smoothed': plot the smoothed cov surface 
+#'                     'Fitted': plot the fitted cov surface
+#'                     'Raw': plot the raw covariance scatter plot
+#' @param isInteractive an option for interactive plot:
+#'                      TRUE: interactive plot; FALSE: printable plot
+#' @param ... other arguments passed into persp3d, persp3D, plot3d or points3D for plotting options
+#'
+#' @examples
+#' set.seed(1)
+#' n <- 20
+#' pts <- seq(0, 1, by=0.05)
+#' sampWiener <- wiener(n, pts)
+#' sampWiener <- sparsify(sampWiener, pts, 10)
+#' res <- FPCA(sampWiener$yList, sampWiener$tList, list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
+#' createCovPlot(res)
 #' @export
-# This function creates the covariance surface plot based on the
-# results from FPCA() or FPCder()
-######
-# Input
-######
-#  yy : returned object from FPCA().
-#  corrPlotType: 'Smoothed': plot the smoothed cov surface 
-#                'Fitted': plot the fitted cov surface
-#                'Raw': plot the raw covariance scatter plot
-#  isInteractive: TRUE: interactive plot
-#                 FALSE: printable plot
-#  ...: passed into persp3d, persp3D, plot3d or points3D for plotting options
 
-createCorrPlot = function(yy, corrPlotType = 'Fitted', isInteractive = FALSE){
+createCovPlot = function(yy, corrPlotType = 'Fitted', isInteractive = FALSE){
   # Check if plotting covariance surface for fitted covariance surface is proper
   if(corrPlotType == 'Fitted'){
     no_opt = length(yy$lambda)
