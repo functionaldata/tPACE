@@ -7,7 +7,7 @@
 #}
 \usage{
 CreateOptions(bwmu = NULL, bwmuMethod = NULL, bwuserCov = NULL,
-  bwuserCovGcv = NULL, ntest1 = NULL, selectionMethod = NULL,
+  bwuserCovGcv = NULL, numCVcurves = NULL, selectionMethod = NULL,
   FVEthreshold = NULL, numComponents = NULL, maxK = NULL,
   dataType = NULL, error = NULL, nRegGrid = NULL, methodXi = NULL,
   shrink = NULL, kernel = NULL, numBins = NULL, yname = NULL,
@@ -22,7 +22,7 @@ CreateOptions(bwmu = NULL, bwmuMethod = NULL, bwuserCov = NULL,
 \item{bwmuMethod}{: bandwidth choice method for mean function; 'GMeanAndGCV','CV','GCV - default: 'GMeanAndGCV''
 #}
 
-\item{ntest1}{: number of curves used for CV when choosing bandwidth; [1,N] - default: min(30, N-1), N : # of curves
+\item{numCVcurves}{: number of curves used for CV when choosing bandwidth; [1,N] - default: min(30, N-1), N : # of curves
 #}
 
 \item{selectionMethod}{: the method of choosing the number of principal components K; 'FVE','AIC','BIC' : default 'FVE' - only 'FVE' avaiable now/ default 'FVE')

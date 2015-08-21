@@ -4,7 +4,7 @@ library(testthat)
 
 
  optns = list(bwmu = NULL, bwmuMethod = NULL, bwuserCov = NULL, bwuserCovGcv = NULL,
-          ntest1 = NULL,  selectionMethod = NULL, FVEthreshold = NULL,
+          numCVcurves = NULL,  selectionMethod = NULL, FVEthreshold = NULL,
           maxK = NULL, dataType = NULL, error = NULL, nRegGrid = NULL, 
           methodXi = NULL, shrink = NULL, kernel = NULL, 
           numComponents = NULL, diagnosticsPlot = NULL,
