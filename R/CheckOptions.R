@@ -11,7 +11,7 @@ CheckOptions = function(t,optns,n){
   
   bwmu = optns$bwmu;                bwmuMethod = optns$bwmuMethod; 
   bwuserCov = optns$bwuserCov;            bwuserCovGcv = optns$bwuserCovGcv;
-  ntest1 = optns$ntest1;            # ngrid1 = optns$ngrid1; 
+  numCVcurves = optns$numCVcurves;            # ngrid1 = optns$ngrid1; 
   selectionMethod = optns$selectionMethod;  FVEthreshold = optns$FVEthreshold;
   maxK = optns$maxK;                
   dataType = optns$dataType;          error = optns$error; 
@@ -51,9 +51,9 @@ CheckOptions = function(t,optns,n){
     cat("Error: FPCA is aborted because the argument: bwuserCovGcv is invalid!\n");  
     return(TRUE);   
   }
-  if( !( (length(optns$ntest1)==1) &&  is.numeric(optns$ntest1) && (1<=optns$ntest1) && (optns$ntest1<n) )){ 
+  if( !( (length(optns$numCVcurves)==1) &&  is.numeric(optns$numCVcurves) && (1<=optns$numCVcurves) && (optns$numCVcurves<n) )){ 
     # number of curves used for CV when choosing bandwidth  
-    cat("Error: FPCA is aborted because the argument: ntest1 is invalid!\n");  
+    cat("Error: FPCA is aborted because the argument: numCVcurves is invalid!\n");  
     return(TRUE);   
   }
   # if( !( (length(optns$ngrid1)==1) &&  is.numeric(optns$ngrid1) && (1<=optns$ngrid1) && (optns$ngrid1<90) ) ){ 

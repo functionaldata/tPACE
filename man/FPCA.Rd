@@ -51,7 +51,7 @@ Available control options are
 \item{methodMu}{The method to estimate mu; 'PACE','RARE','CrossSectional' - automatically determined, user input ignored }
 \item{maxK}{The maximum number of principal components to consider; positive integer - default: min(20, N-1), N:# of curves}
 \item{methodXi}{The method to estimate the PC scores; 'CE', 'IN' - default: 'CE'}
-\item{ntest1}{The number of curves used for CV when choosing bandwidth; [1,N] - default: min(30, N-1), N: # of curves}
+\item{numCVcurves}{The number of curves used for CV when choosing bandwidth; [1,N] - default: min(30, N-1), N: # of curves}
 \item{nRegGrid}{The number of support points in each direction of covariance surface; numeric - default: 51}
 \item{numBins}{The number of bins to bin the data into; positive integer > 10, default: NULL}
 \item{numComponents}{The maximum number of components to return; positive integer, default: NULL}
@@ -74,7 +74,7 @@ pts <- seq(0, 1, by=0.05)
 sampWiener <- wiener(n, pts)
 sampWiener <- sparsify(sampWiener, pts, 10)
 res <- FPCA(sampWiener$yList, sampWiener$tList, list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
-createCorrPlot(res, 'Fitted')
+createCovPlot(res, 'Fitted')
 }
 \references{
 \cite{Yao, Fang, Hans-Georg Mueller, and Jane-Ling Wang. "Functional data analysis for sparse longitudinal data." Journal of the American Statistical Association 100, no. 470 (2005): 577-590. (Sparse data FPCA)}

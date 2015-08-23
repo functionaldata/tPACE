@@ -1,21 +1,25 @@
-# TODO: Roxygen documentation
+#' Create the design plot of the functional data.
+#'
+#' This function will open a new device if not instructed otherwise.
+#'
+#' @param t a list of observed time points for functional data
+#' @param obsGrid a vector of sorted observed time points
+#' @param isColorPlot an option for colorful plot: 
+#'                    TRUE: create color plot with color indicating counts
+#'                    FALSE: create black and white plot with dots indicating observed time pairs
+#' @param noDiagonal an option specifying plotting the diagonal design points:
+#'                   TRUE:  remove diagonal time pairs
+#'                   FALSE:  do not remove diagonal time pairs
+#' @param yname the name of the variable containing functional observations
+#'
+#' @examples
+#' set.seed(1)
+#' n <- 20
+#' pts <- seq(0, 1, by=0.05)
+#' sampWiener <- wiener(n, pts)
+#' sampWiener <- sparsify(sampWiener, pts, 10)
+#' createDesignPlot(sampWiener$tList, sort(unique(unlist(sampWiener$tList))))
 #' @export
-
-
-# This function creates the design plot of the data
-######
-# Input:
-###### 
-# t:  input time cell array
-# obsGrid:  vector of sorted observed time points
-# isColorPlot: TRUE: create color plot with color indicating counts
-#             FALSE: create black and white plot with dots indicating observed time pairs
-# noDiagonal:  TRUE:  remove diagonal time pairs 
-#             FALSE:  do not remove diagonal time pairs
-# yname:  the name of the variable containing functional observations
-
-# function createDesignPlot(datafile, isColorPlot, noDiagonal, yname)
-
 
 createDesignPlot = function(t, obsGrid = NULL, isColorPlot=FALSE, noDiagonal=TRUE, yname = NULL){
   if( is.null(obsGrid)){

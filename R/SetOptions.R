@@ -6,7 +6,7 @@ SetOptions = function(y, t, optns){
 
   bwmu =optns[['bwmu']];                bwmuMethod =optns[['bwmuMethod']]; 
   bwuserCov =optns[['bwcov']];            bwuserCovGcv =optns[['bwuserCovGcv']];
-  ntest1 =optns[['ntest1']];           # ngrid1 =optns[['ngrid1']]; 
+  numCVcurves =optns[['numCVcurves']];           # ngrid1 =optns[['ngrid1']]; 
   selectionMethod =optns[['selectionMethod']];  FVEthreshold =optns[['FVEthreshold']];
   fitEigenValues <- optns[['fitEigenValues']]
   maxK =optns[['maxK']];                
@@ -37,8 +37,8 @@ SetOptions = function(y, t, optns){
   if(is.null(bwuserCovGcv)){  # bandwidth choice for covariance function is GCV if bwuserCov = c(0,0)
     bwuserCovGcv = 'GMeanAndGCV';
   }
-  if(is.null(ntest1)){ # number of curves used for CV when choosing bandwidth 
-    ntest1 = min(30, length(y)-1);
+  if(is.null(numCVcurves)){ # number of curves used for CV when choosing bandwidth 
+    numCVcurves = min(30, length(y)-1);
   }
   #if(is.null(ngrid1)){ # number of support points for the covariance surface 
   #  ngrid1 = 30;
@@ -191,7 +191,7 @@ SetOptions = function(y, t, optns){
   #}
     
   return( list(bwmu = bwmu, bwmuMethod = bwmuMethod, bwuserCov = bwuserCov, bwuserCovGcv = bwuserCovGcv,
-          ntest1 = ntest1, selectionMethod = selectionMethod, FVEthreshold = FVEthreshold,
+          numCVcurves = numCVcurves, selectionMethod = selectionMethod, FVEthreshold = FVEthreshold,
           fitEigenValues = fitEigenValues,
           maxK = maxK, dataType = dataType, error = error, nRegGrid = nRegGrid, rotationCut = rotationCut,
           methodXi = methodXi, shrink = shrink, # newdata = newdata, 

@@ -13,7 +13,7 @@ trueLam <- 4 / ((2 * (1:50) - 1 ) * pi) ^ 2
 # res$lambda / trueLam[1:length(res$lambda)]
 # res$sigma2
 
-# createCorrPlot(res, 'Smoothed', FALSE)
+# createCovPlot(res, 'Smoothed', FALSE)
 
 test_that('Truncation works for FPCA Wiener process', {
   set.seed(1)
