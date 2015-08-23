@@ -30,7 +30,6 @@ gcvlwls2dV2 <- function(obsGrid, regGrid, ngrid=NULL, dataType=rcov$dataType, er
   if (is.null(h0))
     stop('the data is too sparse, no suitable bandwidth can be found! Try Gaussian Kernel instead!\n')
 
-  # TODO: improve this initial choice. The initial h0 may not be that good. The search scheme may be too rough if there are a lot number of observations.
   h0 <- min(h0, r/4)
   if (h0 < r/4) {    
     q <- (r / (4 * h0)) ^ (1/9)
@@ -48,7 +47,7 @@ gcvlwls2dV2 <- function(obsGrid, regGrid, ngrid=NULL, dataType=rcov$dataType, er
 
   leave <- FALSE
   iter <- 0
-  maxIter <- 1 # ??
+  maxIter <- 1
   
   if (CV != FALSE) {
     useKfold <- regexpr('fold', CV)
