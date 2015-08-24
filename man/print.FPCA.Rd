@@ -12,6 +12,6 @@
 \item{...}{Not used.}
 }
 \description{
-Print an FPCA object
+Print a simple description of an FPCA object
 }
 

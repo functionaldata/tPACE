@@ -1,14 +1,21 @@
-# TODO: Roxygen documentation
+#' Simulate standard Wiener processes (Brownian motions)
+#' 
+#' Simulate \code{n} standard Wiener processes on [0, 1], possibly
+#' sparsifying the results.
+#'
+#' The algorithm is based on Karhunen–Loeve expansion.
+#' 
+#' @param n Sample size.
+#' @param pts A vector of points in [0, 1] specifying the support of the processes.
+#' @param sparsify A vector of integers. The number of observations per curve will be uniform distribution on sparsify.
+#' @param K The number of components.
+#'
+#' @return If \code{sparsify} is not specified, a matrix with \code{n} rows corresponding to the samples are returned. Otherwise the sparsified sample is returned. 
+#'
+#' @seealso sparsify
 #' @export
 
-# A test on standard Wiener process (brownian motion)
-# n: sample sizeDiss
-# pts: a vector of grid points, should be from 0 to 1
-# K: number of components
-# sparsify: a vector of integers. The number of observation will be uniform distribution on sparsify.
 wiener <- function(n=1, pts=seq(0, 1, length=50), sparsify=NULL, K=50) {
-    # Simulate n standard Wiener process on [0, 1] observed at pts. K is the number of components used in the simulation.
-    # Each row is a sample.
     pts <- as.matrix(pts)
     if (dim(pts)[1] < dim(pts)[2])
         pts <- t(pts)

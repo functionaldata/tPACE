@@ -7,17 +7,16 @@
 CheckOptions(t, optns, n)
 }
 \arguments{
-\item{n}{is a total number of sample curves}
+\item{t}{is a n-by-1 list of vectors}
 
-\item{p}{is an initialized option list}
+\item{optns}{is an initialized option list}
+
+\item{n}{is a total number of sample curves}
 }
 \value{
 logical
 }
 \description{
 Check if the options structure is valid and set the ones that are NULL
-}
-\examples{
-1 + 3
 }
 

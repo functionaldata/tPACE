@@ -1,10 +1,16 @@
-# TODO: roxygen comments
+#' Sparsify densely observed functional data
+#'
+#' Given a matrix of densely observed functional data, make a sparsified sample.
+#' 
+#' @param samp A matrix of densely observed functional data, with each row containing one sample.
+#' @param pts A vector of grid points corresponding to the columns of \code{samp}.
+#' @param sparsity A vector of integers. The number of observation per sample is chosen to be one of the elements in sparsity with equal chance.
+#' @param aggressive Sparsify in an "aggressive" manner making sure that near-by readings are excluded.
+#'
+#' @return A list of length 2, containing the following fields:
+#' \item{tList}{A list of observation time points for each sample.}
+#' \item{yList}{A list of values for each sample, corresponding to the time points.}
 #' @export
-# sparsify samp
-# samp: a matrix of samples, with rows containing the samples
-# pts: a vector of grid points, should be from 0 to 1
-# sparsity: a vector of integers. The number of observation will be uniform distribution on sparsify.
-# aggressive: sparsify in "aggressive" manner making sure that near-by readings are excluded
 sparsify <- function(samp, pts, sparsity, aggressive = FALSE) {
     if (length(sparsity) == 1)
             sparsity <- c(sparsity, sparsity) # avoid scaler case

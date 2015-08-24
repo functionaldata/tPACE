@@ -9,15 +9,12 @@ CheckData(y, t)
 \arguments{
 \item{y}{is a n-by-1 list of vectors}
 
-\item{tt}{is a n-by-1 list of vectors}
+\item{t}{is a n-by-1 list of vectors}
 }
 \value{
 logical
 }
 \description{
-Check the form and basic structure of the functional data 'y' and the recorded times 'tt'.
-}
-\examples{
-1 + 3
+Check if there are problems with the form and basic structure of the functional data 'y' and the recorded times 't'.
 }
 
