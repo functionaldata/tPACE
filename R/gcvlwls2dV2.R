@@ -54,7 +54,7 @@ gcvlwls2dV2 <- function(obsGrid, regGrid, ngrid=NULL, dataType=rcov$dataType, er
     if (useKfold != -1) {
       fold <- as.integer(substr(CV, 1, useKfold - 1))
       # We partition the raw covariance rather than partition the individuals.
-      partition <- caret::createFolds(1:nrow(rcov$tPairs), k=fold)
+      partition <- CreateFolds(1:nrow(rcov$tPairs), k=fold)
     }
   }
   

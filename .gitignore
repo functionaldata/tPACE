@@ -42,6 +42,7 @@ Thumbs.db
 *.swp
 *.swo
 *.mat
+.Rapp.history
 .Rhistory
 *~
 *.bak
