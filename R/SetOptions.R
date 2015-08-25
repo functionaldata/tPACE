@@ -183,7 +183,7 @@ SetOptions = function(y, t, optns){
     useBinnedData = 'AUTO';
   }
   if (is.null(useBins)) {
-    useBins <- FALSE
+    useBins <- TRUE
   }
  
   #if(is.null(corrPlotType)){ 
