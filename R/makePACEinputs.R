@@ -8,14 +8,20 @@
 #' @return L   : list containing 3 lists each of length 'm', 'm' being the number of unique subject IDs
 #' @export
 
-makePACEinputs <- function(IDs, tVec, yVec){
+makePACEinputs <- function(IDs = NULL, tVec, yVec){
 
- uniqueIDs <- unique(IDs) 
- Lt <- lapply( uniqueIDs, function(x) tVec[ which(IDs == x)])
- Ly <- lapply( uniqueIDs, function(x) yVec[ which(IDs == x)])
- Lid <- as.list(uniqueIDs)
- L <- list( Lid = Lid, Ly = Ly, Lt = Lt)
+  if( !is.null(IDs) ){ 
+    uniqueIDs <- unique(IDs) 
+    Lt <- lapply( uniqueIDs, function(x) tVec[ which(IDs == x)])
+    Ly <- lapply( uniqueIDs, function(x) yVec[ which(IDs == x)])
+    Lid <- as.list(uniqueIDs)
+  } else if ( is.matrix(yVec) && is.null(IDs) && is.vector(tVec) ){
+    Ly <- lapply( seq_len(nrow(yVec)), function(i) yVec[i,])
+    Lt <- rep( list(tVec), dim(yVec)[1] )
+    Lid <- as.list( 1:dim(yVec)[1])
+  }
+  L <- list( Lid = Lid, Ly = Ly, Lt = Lt)
+  return(L)
 
- return(L)
- }
+}
 

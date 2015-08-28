@@ -18,11 +18,26 @@
 #' @export
 
 
-FPCAregScalar <-  function (fpcaObj, extVar = NULL, depVar, varSelect = NULL, bootStrap = FALSE, 
+FPCAregScalar <-  function (fpcaObjList, extVar = NULL, depVar, varSelect = NULL, bootStrap = FALSE, 
                             regressionType = NULL, y = NULL, t = NULL, lambda = 1e-9, ...) {
+
+  #If it is a single element automatically coerce it to be a single element list
+  if (class(fpcaObjList) == "FPCA"){
+    fpcaObjList = list(fpcaObjList)
+  }
+  # Check that the list has only FPCA-class elements
+  if( !all(sapply( fpcaObjList, class) == "FPCA") ){
+    stop("Invalid fpcaObjList; all elements of it must be of class FPCA.")
+    return(NULL)
+  }
+  # Check that the samples are comparable
+  if( (length(fpcaObjList)  > 1) && ( diff(range(sapply( fpcaObjList, function(x) nrow(x[['xiEst']]))) ) != 0) ){
+    stop("Invalid fpcaObjList; the xiEst have different length.")
+    return(NULL)
+  }
  
   if ( is.null(regressionType)){
-    regressionType = fpcaObj$optns$dataType
+    regressionType = fpcaObjList[[1]]$optns$dataType
   }
   
   if ( regressionType == 'Dense' ){ 
@@ -30,31 +45,39 @@ FPCAregScalar <-  function (fpcaObj, extVar = NULL, depVar, varSelect = NULL, bo
     # Use the FPCs to fit a functional linear regression using the 
     # decomposition of the functional regression into simple linear 
     # regressions between the FPC scores of the scalar response and
-    # the predictors 
+    # the functional predictors 
     
     # Impute the data in the case of sparse object and turn on varSelection
-    if ( 'Sparse' == fpcaObj$optns$dataType ){ 
-       imputedSample = fitted(fpcaObj);  
-       s = fpcaObj$workGrid
-       N = dim(fpcaObj$xiEst)[1];
-       M = length(s);
-       L3 = makePACEinputs(IDs = rep(1:N, each=M),tVec=rep(s,N), t(imputedSample) )
-       fpcaObj = FPCA(y = L3$Ly, t = L3$Lt)
-       if ( is.null(varSelect)){
-         varSelect = 'AIC'
-       }
+    for (j in 1:length(fpcaObjList) ){
+      if ( 'Sparse' == fpcaObjList[[j]]$optns$dataType ){
+        fpcaObjList[[j]] = makeDenseObj( fpcaObjList[[j]] );
+        if ( is.null(varSelect)){
+          varSelect = 'AIC'
+        }
+      }
     }
 
     # Make dataset to regress on
-    n = length(fpcaObj$lambda)
-    Xi = data.frame(fpcaObj$xiEst)
-    names(Xi) =  as.vector(mapply( paste ,  rep('xiEstm',n), 1:n, sep=''))
+    plengths = sapply( fpcaObjList, function(x) ncol(x[['xiEst']]))
+    p = sum( plengths );
+    q = nrow( fpcaObjList[[1]][['xiEst']] )
+    Xi =  data.frame(matrix( rep(0,q*p), ncol = p))
+    # We set names equal to xiEst1A, xiEst2A,.. xiEstnA, xiEst1B, xiEst2B,....
+    names(Xi) = unlist(mapply( function(ll,i) as.vector( mapply( paste,  
+                     rep('xiEstm',ll), LETTERS[i] ,1:ll, sep='')), plengths, seq_along(plengths) ))
+    
+    smallpEnd = cumsum(sapply( fpcaObjList, function(x) length(x[['lambda']])))   
+    smallpBeg = c(1, smallpEnd + 1); smallpBeg = smallpBeg[-length(smallpBeg)] 
+    for ( j in 1:length(fpcaObjList) ){
+      Xi[ ,c(smallpBeg[j]:smallpEnd[j])] = fpcaObjList[[j]][['xiEst']]
+    }
     if ( is.null(extVar) ){ 
       theData = Xi
     } else {
       theData = data.frame( Xi, extVar);
     }
-    
+
+  
     # perform multiple linear regression
     lmObject <- lm( depVar ~ . , data = theData)
  
@@ -72,8 +95,13 @@ FPCAregScalar <-  function (fpcaObj, extVar = NULL, depVar, varSelect = NULL, bo
     
     # Get the Xi used
     coefNames <- names(coef(lmObject))
-    xiEstIndcs = as.numeric(gsub("xiEstm", "",  coefNames[grep( "xiEstm",coefNames )]))      
-    betaFunc = t(coef(lmObject)[grep( "xiEstm",coefNames )]) %*% t(fpcaObj$phi[ ,xiEstIndcs])
+    betaFunc = list();
+    
+    for(j in 1:length(fpcaObjList)){
+      xiNames <- paste("xiEstm",LETTERS[j],sep='')
+      xiEstIndcs = as.numeric(gsub(xiNames, "",  coefNames[grep( xiNames,coefNames )]))  
+      betaFunc[[j]] = as.vector( t(coef(lmObject)[grep( xiNames,coefNames )]) %*% t(fpcaObjList[[j]]$phi[ ,xiEstIndcs]) )
+    } 
     
     bootBeta = NULL
     if (bootStrap){
@@ -81,7 +109,7 @@ FPCAregScalar <-  function (fpcaObj, extVar = NULL, depVar, varSelect = NULL, bo
       bootBeta = boot::boot( data = B , statistic= getBetas, R = 1000 )      
     }
   
-    return( list(lmObject = lmObject, betaFunc = as.vector(betaFunc), bootBeta =  bootBeta) )
+    return( list(lmObject = lmObject, betaFunc = betaFunc, bootBeta =  bootBeta) )
 
   } else if ( regressionType == 'Sparse'){
 
@@ -155,4 +183,17 @@ getBetas = function(data,indx ){
   nsmall = dim(data)[2]; 
   return( as.numeric( qr.solve( a = data[indx,c(2:nsmall)], b = data[indx,1])) )  
 }
+
+
+makeDenseObj = function( fo1 ){
+ # Impute the data in the case of sparse object and turn on varSelection
+  imputedSample = fitted(fo1);
+  s = fo1$workGrid
+  N = dim(fo1$xiEst)[1];
+  M = length(s);
+  L3 = makePACEinputs(tVec= s, yVec = imputedSample )
+  fo2 = FPCA(y = L3$Ly, t = L3$Lt)
+  return( fo2 )
+}
+
 
