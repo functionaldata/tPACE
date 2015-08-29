@@ -3,7 +3,7 @@
 #' Functional regression for dense or sparse functional data. 
 #' 
 #' @param fpcaObj A object of class FPCA returned by the function FPCA(). 
-#' @param extVar  A data.frame holding external explanatory variables.
+#' @param extVar  A data.frame holding external explanatory variables; NAs will be omitted internally.
 #' @param depVar  A vector with the dependant variable.
 #' @param varSelect  A string defining the type of step-wise variable selection applied ('AIC' or 'BIC'); this calls 'MASS::stepAIC()'. (default: NULL)
 #' @param regressionType A string defining the type of regression to perform ('dense' or 'sparse'); (default : automatically determined based on 'fpcaObj'
@@ -72,14 +72,14 @@ FPCAregScalar <-  function (fpcaObjList, extVar = NULL, depVar, varSelect = NULL
       Xi[ ,c(smallpBeg[j]:smallpEnd[j])] = fpcaObjList[[j]][['xiEst']]
     }
     if ( is.null(extVar) ){ 
-      theData = Xi
+      theData = data.frame( Xi, depVar);
     } else {
-      theData = data.frame( Xi, extVar);
+      theData = data.frame( Xi, extVar,depVar);
     }
 
   
     # perform multiple linear regression
-    lmObject <- lm( depVar ~ . , data = theData)
+    lmObject <- lm( depVar ~ . , data = na.omit(theData))
  
     # apply variable selection if requested
     if ( !is.null(varSelect)){
