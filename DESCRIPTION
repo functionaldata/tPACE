@@ -16,5 +16,5 @@ License: BSD_3_clause
 LazyData: false
 Imports: Rcpp (>= 0.11.5), RcppEigen, rARPACK, gtools, Hmisc, plot3D, MASS, pracma, numDeriv
 LinkingTo: Rcpp, RcppEigen
-Suggests: testthat, rgl
+Suggests: testthat, rgl, aplpack
 NeedsCompilation: yes
