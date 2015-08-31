@@ -8,7 +8,7 @@
 // [[Rcpp::export]]
 
 
-Eigen::MatrixXd Rmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const std::string kernel_type, const Eigen::Map<Eigen::MatrixXd> & tPairs, const Eigen::Map<Eigen::MatrixXd> & cxxn, const Eigen::Map<Eigen::VectorXd> & win,  const Eigen::Map<Eigen::VectorXd> & xgrid, const Eigen::Map<Eigen::VectorXd> & ygrid, const bool & bwCheck){ 
+Eigen::MatrixXd RmullwlskCC( const Eigen::Map<Eigen::VectorXd> & bw, const std::string kernel_type, const Eigen::Map<Eigen::MatrixXd> & tPairs, const Eigen::Map<Eigen::MatrixXd> & cxxn, const Eigen::Map<Eigen::VectorXd> & win,  const Eigen::Map<Eigen::VectorXd> & xgrid, const Eigen::Map<Eigen::VectorXd> & ygrid, const bool & bwCheck){ 
 
   // tPairs : xin (in MATLAB code)
   // cxxn : yin (in MATLAB code)
@@ -53,7 +53,7 @@ Eigen::MatrixXd Rmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const std::st
   mu.setZero();    
 
   for (unsigned int i = 0; i != ygridN; ++i){  
-    for (unsigned int j = i; j != xgridN ; ++j){ 
+    for (unsigned int j = 0; j != xgridN ; ++j){ 
 
       //locating local window (LOL) (bad joke)
       std::vector <unsigned int> indx; 
@@ -146,10 +146,9 @@ Eigen::MatrixXd Rmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const std::st
         X.setOnes();    
         X.col(1) = lx.row(0).array() - xgrid(j);
         X.col(2) = lx.row(1).array() - ygrid(i); 
-        Eigen::LLT<Eigen::MatrixXd> llt_XTWX(X.transpose() * temp.asDiagonal() *X);
-        // Probably change LLT to LDLT for increased numerical stability.
+        Eigen::LDLT<Eigen::MatrixXd> ldlt_XTWX(X.transpose() * temp.asDiagonal() *X);
         // The solver should stop if the value is NaN. See the HOLE example in gcvlwls2dV2.
-        Eigen::VectorXd beta = llt_XTWX.solve(X.transpose() * temp.asDiagonal() * ly);
+        Eigen::VectorXd beta = ldlt_XTWX.solve(X.transpose() * temp.asDiagonal() * ly);  
         mu(i,j)=beta(0); 
       } else if(meter < 3){
         // Rcpp::Rcout <<"The meter value is:" << meter << std::endl;  
@@ -168,18 +167,9 @@ Eigen::MatrixXd Rmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const std::st
      Eigen::MatrixXd checker(1,1); 
      checker(0,0) = 1.; 
      return(checker);
-  }
-    
-  // Something like the following should be faster I will look up this in the future.
-  // m1=  mu.triangularView<StrictlyUpper>().transpose();
-  // m2=  mu.triangularView<Upper>()  ; 
-  // m1 = m1+m2;
-
-  Eigen::MatrixXd result(ygrid.size(),xgrid.size());
-  result = mu + mu.transpose();
-  result.diagonal() = 0.5 * result.diagonal();
+  } 
       
-  return ( result ); 
+  return ( mu ); 
 }
 
  

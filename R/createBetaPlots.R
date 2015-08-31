@@ -13,7 +13,7 @@ createBetaPlots <- function(fpcaRegObj,sList, openNewDev = TRUE){
     ylabelString = paste('beta function ',  i ,   sep=''   )
     plot(sList[[i]], fpcaRegObj$betaFunc[[i]], type= 'l', 
       xlab= xlabelString, ylab=ylabelString    )
-    abline(v=(seq(min(sList[[i]]), max(sList[[i]]), length.out=  diff( range(sList[[i]])) +1 )), 
+    abline(v=(seq(min(sList[[i]]), max(sList[[i]]), length.out=  min(30, diff( range(sList[[i]])) +1 ))), 
       col="lightgray", lty="dotted")
   }
 }
