@@ -8,7 +8,7 @@
 # Zmu     : scalar
 # returns : list with: 1. smoothed cross-covariance (vector M-1), 2. raw
 # cross-covariance (vector N-1) and the bandwidth used for smoothing (scalar)
-CrCovYZ <- function(bw = NULL, Z, Zmu = NULL, Ly, Lt = NULL, Ymu = NULL){
+CrCovYZ <- function(bw = NULL, Z, Zmu = NULL, Ly, Lt = NULL, Ymu = NULL, support = NULL){
   
   # If only Ly and Z are available assume DENSE data
   if( is.matrix(Ly) && is.null(Lt) && is.null(Ymu) ){
@@ -21,7 +21,11 @@ CrCovYZ <- function(bw = NULL, Z, Zmu = NULL, Ly, Lt = NULL, Ymu = NULL){
   }  
   # Get the Raw Cross-covariance 
   ulLt = unlist(Lt)
-  obsGrid = sort(unique(ulLt))
+  if (is.null(support) ){
+    obsGrid = sort(unique(ulLt))
+  } else {
+    obsGrid = support
+  }
   rawCC = GetRawCrCovFuncScal(Ly = Ly, Lt = Lt, Ymu = Ymu, Z = Z, Zmu = Zmu )
 
   # If the bandwidth is known already smooth the raw CrCov
@@ -36,7 +40,7 @@ CrCovYZ <- function(bw = NULL, Z, Zmu = NULL, Ly, Lt = NULL, Ymu = NULL){
     h0 = 2.0 * minb( sort(ulLt), 2+1); # 2x the bandwidth needed for at least 3 points in a window
     r = diff(range(ulLt))    
     q = (r/(4*h0))^(1/9);   
-    bwCandidates = sort(q^(0:9)*h0);
+    bwCandidates = sort(q^(0:19)*h0);
     # Find their associated GCV scores
     gcvScores = rep(Inf, length(bwCandidates))
     for (i in 1:length(bwCandidates)){
@@ -46,6 +50,7 @@ CrCovYZ <- function(bw = NULL, Z, Zmu = NULL, Ly, Lt = NULL, Ymu = NULL){
                                    rawX = rawCC$tpairn, rawY = rawCC$rawCCov, bw = bwCandidates[i])
       }
     }
+#browser()
     # Pick the one with the smallest score
     bInd = which(gcvScores == min(gcvScores, na.rm=TRUE));
     bOpt = max(bwCandidates[bInd]);
