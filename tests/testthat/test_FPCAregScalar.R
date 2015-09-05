@@ -185,7 +185,7 @@ test_that('FPCAreg for scalar case returns correct results for two functional pr
   x2 <- rt(N,2) 
 
   # Create scalar dep. variable a
-  a = c(); for (i in 1:N) { a[i] = rnorm(sd=0.1,1) + trapzRcpp(s, yTrueA[i,] * betaFuncA) + trapzRcpp(s, yTrueB[i,] * betaFuncB) + x1 * 2 +  x2 * 3 ; }
+  a = c(); for (i in 1:N) { a[i] = rnorm(sd=0.1,1) + trapzRcpp(s, yTrueA[i,] * betaFuncA) + trapzRcpp(s, yTrueB[i,] * betaFuncB) + x1[i] * 2 +  x2[i] * 3 ; }
 
   L3 = makePACEinputs(IDs = rep(1:N, each=M),tVec=rep(s,N), t(yTrueA) )
   FPCAdenseA = FPCA(y = L3$Ly, t = L3$Lt)
