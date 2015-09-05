@@ -1,4 +1,4 @@
-createFuncBoxPlot <- function(fpcaObj, addIndx =NULL, openNewDev = TRUE, yList = NULL, tList= NULL, variant= 'bagplot'){
+createFuncBoxPlot <- function(fpcaObj, addIndx =NULL, openNewDev = TRUE, variant= 'bagplot'){
  
   if(openNewDev){ 
     dev.new(width=6.95, height=5.0, noRStudioGD=TRUE) ; 
@@ -38,7 +38,10 @@ createFuncBoxPlot <- function(fpcaObj, addIndx =NULL, openNewDev = TRUE, yList =
   } else  {
     stop('Additional variances are not yet implemented')
   }
-  
+ 
+  yList = fpcaObj$inputData$y
+  tList = fpcaObj$inputData$t 
+ 
   #add sample lines
   if (!is.null(addIndx) && !is.null(yList) && !is.null(tList)  ){
     for (i in 1:length(addIndx) ) {

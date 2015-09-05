@@ -16,7 +16,8 @@
 #' createDiagnosticsPlot(sampWiener$tList, res)
 #' @export
 
-createDiagnosticsPlot <-function(t, ret, openNewDev = TRUE){ 
+createDiagnosticsPlot <-function(ret, openNewDev = TRUE){ 
+  t = ret$inputData$t
   if(openNewDev){ 
     dev.new(width=6.2, height=6.2, noRStudioGD=TRUE) ; 
   }
