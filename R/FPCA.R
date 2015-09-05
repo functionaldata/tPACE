@@ -203,7 +203,7 @@ FPCA = function(y, t, optns = list()){
     
   # Make a quick diagnostics plot     
   if(optns$diagnosticsPlot){
-    createDiagnosticsPlot(t,ret);
+    createDiagnosticsPlot(ret);
   }
 
   return(ret); 

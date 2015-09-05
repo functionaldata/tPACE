@@ -30,8 +30,8 @@ CrCovYX <- function(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL, Ly2, L
   ulLt1 = unlist(Lt1);             ulLt2 = unlist(Lt2)
   obsGrid1 = sort(unique(ulLt1));  obsGrid2 = sort(unique(ulLt2))
   
-  workGrid1 = seq(obsGrid1[1], max(obsGrid1), length.out = 50)
-  workGrid2 = seq(obsGrid2[1], max(obsGrid2), length.out = 50)
+  workGrid1 = seq(obsGrid1[1], max(obsGrid1), length.out = 51)
+  workGrid2 = seq(obsGrid2[1], max(obsGrid2), length.out = 51)
   workGrid12 = matrix(c(workGrid1, workGrid2),ncol= 2)
   # If the bandwidth is known already smooth the raw CrCov
   if( is.numeric(bw1) &&  is.numeric(bw2)){

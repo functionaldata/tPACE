@@ -120,19 +120,8 @@ FPCAregScalar <-  function (fpcaObjList, extVar = NULL, depVar, varSelect = NULL
     print('Sparse regression is not yet implemented, contact Pantelis!')
     return(NULL)
 
-    # Check the data availability for further analysis
-    if( is.null(y) || is.null(y) ){
-      stop('Both y and t list have to be provided.')
-      return(NULL)
-    }    
-    # Check the data validity for further analysis
-    if( CheckData(y,t) ){
-      cat('FPCA has stopped.')
-      return(FALSE);
-    }
-    # Force the data to be list of numeric members
-    y <- lapply(y, as.numeric)
-    t <- lapply(t, as.numeric)
+    y <- fpcaObjList[[1]]$inputData$y 
+    t <- fpcaObjList[[1]]$inputData$t
 
     # Convenient reminder: 
     #     Y: scal. response, Z: scal. predictor, X: funct. predictor
