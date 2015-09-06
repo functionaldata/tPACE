@@ -109,8 +109,8 @@ FPCAregFunc <- function(depVar,  expVarScal = NULL, expVarFunc = NULL, regressio
         covYZX[(P-Q+1):P] =CCYX[ i+ (0:(Q-1))*L, i] ; 
        
         covZX[1:(P-Q),  1:(P-Q)] = cov(Zvariables);
-        covZX[1:(P-Q),  (P-Q+1):P] = t( matrix( CCXZ[, i], 2, byrow=TRUE))
-        covZX[(P-Q+1):P,  1:(P-Q)] =    matrix( CCXZ[, i], 2, byrow=TRUE)
+        covZX[1:(P-Q),  (P-Q+1):P] = t( matrix( CCXZ[, i], Q, byrow=TRUE))
+        covZX[(P-Q+1):P,  1:(P-Q)] =    matrix( CCXZ[, i], Q, byrow=TRUE)
         for( j0 in 1:Q){
           for( j1 in 1:Q){
             covZX[ P-Q+j0, P-Q+j1] = CCXX[i + (j0-1)*L , i + (j1-1)*L]
