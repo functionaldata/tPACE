@@ -27,7 +27,7 @@ FPCAregFunc <- function(depVar,  expVarScal = NULL, expVarFunc = NULL, regressio
 
   # Centred and scale and numerical values / If it is a 2-D factor make it 0/1 
   Zvariables <- as.data.frame(sapply( expVarScal, function(x) 
-                     if(is.numeric(x)){scale(x)}else if(is.factor(x)){ as.numeric(x)-1 } ))
+                     if(is.numeric(x)){(x)}else if(is.factor(x)){ as.numeric(x)-1 } ))
   
   if( regressionType == 'Dense' ){
     fittedCurves = fitted(depVar)
