@@ -101,10 +101,10 @@ FPCAregFunc <- function(depVar,  expVarScal = NULL, expVarFunc = NULL, regressio
         }
       }
 
+
       for( i in 1:length(depVar$workGrid)) {
         covYZX = matrix(rep(0,P),1)
         covZX = matrix(rep(0,P^2),P)
-# browser()
         covYZX[1:(P-Q)] = CCYZ[i,];
         covYZX[(P-Q+1):P] =CCYX[ i+ (0:(Q-1))*L, i] ; 
        
