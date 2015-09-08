@@ -8,6 +8,8 @@
 #' @param regressionType A string defining the type of regression to perform ('dense' or 'sparse'); (default : automatically determined based on 'depVar')
 #' @param bwScalar The value of bandwidth to be used for all scalar/functional cross-covariances (default: automatically determined using GCV)
 #' @param bwFunct The values of bandwiths to be used for all function/function cross-covariances (default: automatically determined using GCV)
+#' @param scaleZ  Scale the scalar explanatory variables (default: FALSE)
+#' @param smoothBetas Use 1-D smoother on the returned beta trajectories (default: FALSE)
 #' @param ...  Additional arguments 
 #' 
 #' @references
@@ -15,7 +17,7 @@
 #' \cite{Senturk, D., Nguyen, D.V. "Varying Coefficient Models for Sparse Noise-contaminated Longitudinal Data", Statistica Sinica 21(4), (2011): 1831-1856. (Sparse data)}
 #' @export
 
-FPCAregFunc <- function(depVar,  expVarScal = NULL, expVarFunc = NULL, regressionType = NULL, bwScalar = NULL, bwFunct = NULL){
+FPCAregFunc <- function(depVar,  expVarScal = NULL, expVarFunc = NULL, regressionType = NULL, bwScalar = NULL, bwFunct = NULL, scaleZ = FALSE, smoothBetas = FALSE){
   
   if ( is.null(regressionType)){
     regressionType = depVar$optns$dataType
@@ -26,9 +28,13 @@ FPCAregFunc <- function(depVar,  expVarScal = NULL, expVarFunc = NULL, regressio
   BetaFunctions = matrix( rep(0, length(depVar$workGrid) * P), nrow = P)
 
   # Centred and scale and numerical values / If it is a 2-D factor make it 0/1 
-  Zvariables <- as.data.frame(sapply( expVarScal, function(x) 
-                     if(is.numeric(x)){(x)}else if(is.factor(x)){ as.numeric(x)-1 } ))
-  
+  if( scaleZ == FALSE) {
+    Zvariables <- as.data.frame(sapply( expVarScal, function(x) 
+                    if(is.numeric(x)){(x)}else if(is.factor(x)){ as.numeric(x)-1 } ))
+  } else {
+    Zvariables <- as.data.frame(sapply( expVarScal, function(x)  
+                    if(is.numeric(x)){scale(x)}else if(is.factor(x)){ as.numeric(x)-1 } ))
+  }
   if( regressionType == 'Dense' ){
     fittedCurves = fitted(depVar)
     if (!is.null(expVarFunc)){
@@ -120,6 +126,16 @@ FPCAregFunc <- function(depVar,  expVarScal = NULL, expVarFunc = NULL, regressio
       }
     }
   }
+  if (smoothBetas == TRUE){
+    xin = depVar$workGrid;
+    npoly = 1
+    nder = 0
+    win = rep(1, length(xin));
+    for (i in 1:nrow(BetaFunctions)){
+      BetaFunctions[i,]= Rlwls1d( 1 * depVar$bwCov, kernel_type = 'gauss', npoly = npoly, nder = nder, xin = xin, yin= BetaFunctions[i,], xout = xin, win = win)
+    }   
+  }
   FRegObj <- list(betaFunctions = BetaFunctions)
   return(FRegObj)
 }
+
