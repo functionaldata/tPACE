@@ -9,7 +9,9 @@
 #' @param bwScalar The value of bandwidth to be used for all scalar/functional cross-covariances (default: automatically determined using GCV)
 #' @param bwFunct The values of bandwiths to be used for all function/function cross-covariances (default: automatically determined using GCV)
 #' @param scaleZ  Scale the scalar explanatory variables (default: FALSE)
-#' @param smoothBetas Use 1-D smoother on the returned beta trajectories (default: FALSE)
+#' @param smoothBetas Use 1-D smoother on the returned beta trajectories (default: FALSE)i
+#' @param fitCubic Fit a cubic 
+#' @param useMPinv Use Moore-Penrose pseudo-inverse for the estimation of beta
 #' @param ...  Additional arguments 
 #' 
 #' @references
@@ -17,7 +19,7 @@
 #' \cite{Senturk, D., Nguyen, D.V. "Varying Coefficient Models for Sparse Noise-contaminated Longitudinal Data", Statistica Sinica 21(4), (2011): 1831-1856. (Sparse data)}
 #' @export
 
-FPCAregFunc <- function(depVar,  expVarScal = NULL, expVarFunc = NULL, regressionType = NULL, bwScalar = NULL, bwFunct = NULL, scaleZ = FALSE, smoothBetas = FALSE){
+FPCAregFunc <- function(depVar,  expVarScal = NULL, expVarFunc = NULL, regressionType = NULL, bwScalar = NULL, bwFunct = NULL, scaleZ = FALSE, smoothBetas = FALSE, fitCubic=FALSE, useMPinv = FALSE){
   
   if ( is.null(regressionType)){
     regressionType = depVar$optns$dataType
@@ -122,7 +124,16 @@ FPCAregFunc <- function(depVar,  expVarScal = NULL, expVarFunc = NULL, regressio
             covZX[ P-Q+j0, P-Q+j1] = CCXX[i + (j0-1)*L , i + (j1-1)*L]
           }
         }     
-        BetaFunctions[,i] = solve( covZX, t(covYZX))
+        #BetaFunctions[,i] = solve( covZX, t(covYZX))
+        if( useMPinv == FALSE){
+          aSolution =  try(  solve( covZX +  diag(x= 1e-16, P), t(covYZX)), silent= TRUE)
+          if ( is.numeric(aSolution)){
+	    BetaFunctions[,i]     = aSolution
+          } else {
+            print( covZX) 
+            stop('The defined system is degenerate.')
+          }
+        }
       }
     }
   }
@@ -135,6 +146,34 @@ FPCAregFunc <- function(depVar,  expVarScal = NULL, expVarFunc = NULL, regressio
       BetaFunctions[i,]= Rlwls1d( 1 * depVar$bwCov, kernel_type = 'gauss', npoly = npoly, nder = nder, xin = xin, yin= BetaFunctions[i,], xout = xin, win = win)
     }   
   }
+  
+  if( fitCubic ==TRUE){
+   BetaFunctions = t( apply( BetaFunctions, 1, function(i) fitted(lm( i ~  poly(depVar$workGrid, 3, raw=TRUE)))) )
+  }
+  
+  if( useMPinv == TRUE){
+    fullSize =  ncol(expVarScal) + length(expVarFunc) * length(depVar$workGrid)
+    covZX = matrix( rep(0, fullSize^2), fullSize  );
+    covYZX = matrix( rep(0, fullSize *  length(depVar$workGrid)), ncol=  length(depVar$workGrid))
+    
+#    browser()
+    covYZX[1:(P-Q),] = CCYZ;
+    covYZX[(P-Q+1):nrow(covYZX),] = CCYX;
+    
+    covZX[1:(P-Q),  1:(P-Q)] = cov(Zvariables);
+    covZX[1:(P-Q),  (P-Q+1):ncol(covZX)] = t( matrix( CCXZ, Q, byrow=TRUE))
+    covZX[(P-Q+1):ncol(covZX),  1:(P-Q)] =    matrix( CCXZ, Q, byrow=TRUE)
+   
+    for( j0 in 1:Q){
+      for( j1 in 1:Q){
+        covZX[ (1+j0): ( length(depVar$workGrid) +j0)  ,(j1+1): (length(depVar$workGrid) + j1)] = CCXX
+      }
+    }
+
+   BetaFunctions = MASS::ginv(covZX) %*% (covYZX)
+  }
+  
+ 
   FRegObj <- list(betaFunctions = BetaFunctions)
   return(FRegObj)
 }
