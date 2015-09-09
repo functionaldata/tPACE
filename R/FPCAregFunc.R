@@ -11,7 +11,8 @@
 #' @param scaleZ  Scale the scalar explanatory variables (default: FALSE)
 #' @param smoothBetas Use 1-D smoother on the returned beta trajectories (default: FALSE)i
 #' @param fitCubic Fit a cubic 
-#' @param useMPinv Use Moore-Penrose pseudo-inverse for the estimation of beta
+#' @param useMPinv Use Moore-Penrose pseudo-inverse for the estimation of betai
+#' @param verbose If TRUE print out the bandwidth used during the GCV procedures of selecting them
 #' @param ...  Additional arguments 
 #' 
 #' @references
@@ -19,7 +20,7 @@
 #' \cite{Senturk, D., Nguyen, D.V. "Varying Coefficient Models for Sparse Noise-contaminated Longitudinal Data", Statistica Sinica 21(4), (2011): 1831-1856. (Sparse data)}
 #' @export
 
-FPCAregFunc <- function(depVar,  expVarScal = NULL, expVarFunc = NULL, regressionType = NULL, bwScalar = NULL, bwFunct = NULL, scaleZ = FALSE, smoothBetas = FALSE, fitCubic=FALSE, useMPinv = FALSE){
+FPCAregFunc <- function(depVar,  expVarScal = NULL, expVarFunc = NULL, regressionType = NULL, bwScalar = NULL, bwFunct = NULL, scaleZ = FALSE, smoothBetas = FALSE, fitCubic=FALSE, useMPinv = FALSE, verbose = FALSE){
   
   if ( is.null(regressionType)){
     regressionType = depVar$optns$dataType
@@ -55,8 +56,12 @@ FPCAregFunc <- function(depVar,  expVarScal = NULL, expVarFunc = NULL, regressio
     # Get the Crosscovariance YZ
     CCYZ = matrix( rep(0, length(depVar$workGrid) *  ncol(expVarScal)), ncol =  ncol(expVarScal))
     for (i in 1:ncol(Zvariables)){
-      CCYZ[,i] = CrCovYZ (Ymu=depVar$mu, Lt = depVar$inputData$t, Ly = depVar$inputData$y, Z= Zvariables[,i], 
-                                    support= depVar$workGrid, bw = bwScalar)$smoothedCC
+       tempCCYZ = CrCovYZ (Ymu=depVar$mu, Lt = depVar$inputData$t, Ly = depVar$inputData$y, Z= Zvariables[,i], 
+                                    support= depVar$workGrid, bw = bwScalar)
+       CCYZ[,i] = tempCCYZ$smoothedCC
+       if(verbose==TRUE){
+         print(paste("The bandwidth by CCYZ used is ", tempCCYZ$bw,sep=''))
+       }
     }
     # If you have not functional predictors you are done!
     if (is.null(expVarFunc)){
