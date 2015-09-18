@@ -83,7 +83,7 @@ FPCAregFunc <- function(depVar,  expVarScal = NULL, expVarFunc = NULL, regressio
       for( i in 1:Q){
         for( j in i:Q){
           if(i == j){
-            CCXX[ ((i-1)*L) + (1:L), ((j-1)*L) + (1:L) ] = expVarFunc[[j]]$fittedCov
+            CCXX[ ((i-1)*L) + (1:L), ((j-1)*L) + (1:L) ] = expVarFunc[[j]]$smoothedCov
           } else {
             tempCCXX =  CrCovYX(Ly1 = expVarFunc[[i]]$inputData$y, Ly2 = expVarFunc[[j]]$inputData$y,
                                Lt1 = expVarFunc[[i]]$inputData$t, Lt2 = expVarFunc[[j]]$inputData$t,
@@ -114,7 +114,6 @@ FPCAregFunc <- function(depVar,  expVarScal = NULL, expVarFunc = NULL, regressio
         }
       }
 
-
       for( i in 1:length(depVar$workGrid)) {
         covYZX = matrix(rep(0,P),1)
         covZX = matrix(rep(0,P^2),P)
@@ -142,41 +141,41 @@ FPCAregFunc <- function(depVar,  expVarScal = NULL, expVarFunc = NULL, regressio
       }
     }
   }
-  if (smoothBetas == TRUE){
-    xin = depVar$workGrid;
-    npoly = 1
-    nder = 0
-    win = rep(1, length(xin));
-    for (i in 1:nrow(BetaFunctions)){
-      BetaFunctions[i,]= Rlwls1d( 1 * depVar$bwCov, kernel_type = 'gauss', npoly = npoly, nder = nder, xin = xin, yin= BetaFunctions[i,], xout = xin, win = win)
-    }   
-  }
-  
-  if( fitCubic ==TRUE){
-   BetaFunctions = t( apply( BetaFunctions, 1, function(i) fitted(lm( i ~  poly(depVar$workGrid, 3, raw=TRUE)))) )
-  }
-  
-  if( useMPinv == TRUE){
-    fullSize =  ncol(expVarScal) + length(expVarFunc) * length(depVar$workGrid)
-    covZX = matrix( rep(0, fullSize^2), fullSize  );
-    covYZX = matrix( rep(0, fullSize *  length(depVar$workGrid)), ncol=  length(depVar$workGrid))
-    
-#    browser()
-    covYZX[1:(P-Q),] = CCYZ;
-    covYZX[(P-Q+1):nrow(covYZX),] = CCYX;
-    
-    covZX[1:(P-Q),  1:(P-Q)] = cov(Zvariables);
-    covZX[1:(P-Q),  (P-Q+1):ncol(covZX)] = t( matrix( CCXZ, Q, byrow=TRUE))
-    covZX[(P-Q+1):ncol(covZX),  1:(P-Q)] =    matrix( CCXZ, Q, byrow=TRUE)
-   
-    for( j0 in 1:Q){
-      for( j1 in 1:Q){
-        covZX[ (1+j0): ( length(depVar$workGrid) +j0)  ,(j1+1): (length(depVar$workGrid) + j1)] = CCXX
-      }
-    }
-
-   BetaFunctions = MASS::ginv(covZX) %*% (covYZX)
-  }
+#  if (smoothBetas == TRUE){
+#    xin = depVar$workGrid;
+#    npoly = 1
+#    nder = 0
+#    win = rep(1, length(xin));
+#    for (i in 1:nrow(BetaFunctions)){
+#      BetaFunctions[i,]= Rlwls1d( 1 * depVar$bwCov, kernel_type = 'gauss', npoly = npoly, nder = nder, xin = xin, yin= BetaFunctions[i,], xout = xin, win = win)
+#    }   
+#  }
+#  
+#  if( fitCubic ==TRUE){
+#   BetaFunctions = t( apply( BetaFunctions, 1, function(i) fitted(lm( i ~  poly(depVar$workGrid, 3, raw=TRUE)))) )
+#  }
+#  
+#  if( useMPinv == TRUE){
+#    fullSize =  ncol(expVarScal) + length(expVarFunc) * length(depVar$workGrid)
+#    covZX = matrix( rep(0, fullSize^2), fullSize  );
+#    covYZX = matrix( rep(0, fullSize *  length(depVar$workGrid)), ncol=  length(depVar$workGrid))
+#    
+##    browser()
+#    covYZX[1:(P-Q),] = CCYZ;
+#    covYZX[(P-Q+1):nrow(covYZX),] = CCYX;
+#    
+#    covZX[1:(P-Q),  1:(P-Q)] = cov(Zvariables);
+#    covZX[1:(P-Q),  (P-Q+1):ncol(covZX)] = t( matrix( CCXZ, Q, byrow=TRUE))
+#    covZX[(P-Q+1):ncol(covZX),  1:(P-Q)] =    matrix( CCXZ, Q, byrow=TRUE)
+#   
+#    for( j0 in 1:Q){
+#      for( j1 in 1:Q){
+#        covZX[ (1+j0): ( length(depVar$workGrid) +j0)  ,(j1+1): (length(depVar$workGrid) + j1)] = CCXX
+#      }
+#    }
+#
+#   BetaFunctions = MASS::ginv(covZX) %*% (covYZX)
+#  }
   
  
   FRegObj <- list(betaFunctions = BetaFunctions)
