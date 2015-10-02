@@ -53,6 +53,7 @@
 #' \item{bwCov}{The selected (or user specified) bandwidth for smoothing the covariance function.}
 #' \item{rho}{A regularizing scalar for the measurement error variance estimate.}
 #' \item{FVE}{A vector with the percentages of the total variance explained by each FPC; at most equal to the 'FVEthreshold' used.}
+#  \item{inputData}{A list containting the original 'y' and 't' lists used as inputs to FPCA.}
 #' 
 #' @examples
 #' set.seed(1)
@@ -80,10 +81,10 @@ FPCA = function(y, t, optns = list()){
   # Force the data to be list of numeric members
   y <- lapply(y, as.numeric) 
   t <- lapply(t, as.numeric)
+  inputData <- list(y=y, t=t);
 
   # Set the options structure members that are still NULL
   optns = SetOptions(y, t, optns);
-
   
   # Check the options validity for the PCA function. 
   numOfCurves = length(y);
@@ -197,12 +198,12 @@ FPCA = function(y, t, optns = list()){
   }
 
   # Make the return object by MakeResultFPCA
-  ret <- MakeResultFPCA(optns, smcObj, muObs, scsObj, eigObj,
+  ret <- MakeResultFPCA(optns, smcObj, muObs, scsObj, eigObj, inputData = inputData,
                         scoresObj, truncObsGrid, workGrid, rho=ifelse(optns$rho =='cv', rho, NA), fitLambda=fitLambda)
     
   # Make a quick diagnostics plot     
   if(optns$diagnosticsPlot){
-    createDiagnosticsPlot(t,ret);
+    createDiagnosticsPlot(ret);
   }
 
   return(ret); 

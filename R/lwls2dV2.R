@@ -11,7 +11,7 @@
 
 # Returns a p1 by p2 matrix of fitted values if xout is not specified. Otherwise a vector of length p. 
 
-lwls2dV2 <- function(bw, kern='epan', xin, yin, win=NULL, xout1=NULL, xout2=NULL, xout=NULL, subset=NULL) {
+lwls2dV2 <- function(bw, kern='epan', xin, yin, win=NULL, xout1=NULL, xout2=NULL, xout=NULL, subset=NULL, crosscov = FALSE) {
   if (length(bw) == 1)
     bw <- c(bw, bw)
     
@@ -35,8 +35,11 @@ lwls2dV2 <- function(bw, kern='epan', xin, yin, win=NULL, xout1=NULL, xout2=NULL
     
   if (is.null(xout2)) 
     xout2 <- sort(unique(xin[, 2]))
-
-  ret <- Rmullwlsk(bw, kern, t(xin), yin, win, xout1, xout2, FALSE)
+  if (!crosscov){
+    ret <- Rmullwlsk(bw, kern, t(xin), yin, win, xout1, xout2, FALSE)
+  } else {
+    ret <- RmullwlskCC(bw, kern, t(xin), yin, win, xout1, xout2, FALSE)
+  }
   
   if (!is.null(xout)) {
     ret <- interp2lin(xout1, xout2, ret, xout[, 1], xout[, 2])

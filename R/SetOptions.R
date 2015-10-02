@@ -184,6 +184,9 @@ SetOptions = function(y, t, optns){
   }
   if (is.null(useBins)) {
     useBins <- TRUE
+    if (  ( 128 > length(y) ) && ( 3 > mean ( unlist( lapply( y, length) ) ) )){
+      useBins <- FALSE
+    } 
   }
  
   #if(is.null(corrPlotType)){ 
