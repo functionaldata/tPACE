@@ -62,7 +62,7 @@ Eigen::VectorXd Rlwls1d( const double & bw, const std::string kernel_type, const
   }
   // Check if the first 5 elements are sorted // Very rough check // Will use issorted in the future
   if ( (xin[0]> xin[1]) ||  (xin[1]> xin[2]) ||  (xin[2]> xin[3]) ||  (xin[3]> xin[4]) ||  (xin[4]> xin[5]) ){
-    Rcpp::stop("The X-grid used is not sorted.");
+    Rcpp::stop("The X-grid used is not sorted. (or you have less than 6 points)");
   }
 
   // The checks end here.

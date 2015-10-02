@@ -52,7 +52,7 @@ FPCAregScalar <-  function (fpcaObjList, extVar = NULL, depVar, varSelect = NULL
       if ( 'Sparse' == fpcaObjList[[j]]$optns$dataType ){
         fpcaObjList[[j]] = makeDenseObj( fpcaObjList[[j]] );
         if ( is.null(varSelect)){
-          varSelect = 'AIC'
+       #   varSelect = 'AIC'
         }
       }
     }
