@@ -25,7 +25,7 @@ lwls2dV2 <- function(bw, kern='epan', xin, yin, win=NULL, xout1=NULL, xout2=NULL
     yin <- yin[subset]
     win <- win[subset]
   }
-    
+
   if (!is.null(xout1) && !is.null(xout2) && !is.null(xout)) {
     stop('Either xout1/xout2 or xout should be specified.')
   }
@@ -35,6 +35,15 @@ lwls2dV2 <- function(bw, kern='epan', xin, yin, win=NULL, xout1=NULL, xout2=NULL
     
   if (is.null(xout2)) 
     xout2 <- sort(unique(xin[, 2]))
+
+# For passing numerics into the cpp smoother.
+  storage.mode(bw) <- 'numeric'
+  storage.mode(xin) <- 'numeric'
+  storage.mode(yin) <- 'numeric'
+  storage.mode(win) <- 'numeric'
+  storage.mode(xout1) <- 'numeric'
+  storage.mode(xout2) <- 'numeric'
+
   if (!crosscov){
     ret <- Rmullwlsk(bw, kern, t(xin), yin, win, xout1, xout2, FALSE)
   } else {
