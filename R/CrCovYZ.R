@@ -1,13 +1,30 @@
-# Calculate the raw and the smoothed cross-covariance between functional
-# and scalar predictors using bandwidth bw or estimate that bw using GCV
-# Ly      : List of N vectors with amplitude information
-# Lt      : List of N vectors with timing information
-# Ymu     : vector Q-1 
-# bw      : scalar
-# Z       : vector N-1
-# Zmu     : scalar
-# returns : list with: 1. smoothed cross-covariance (vector M-1), 2. raw
-# cross-covariance (vector N-1) and the bandwidth used for smoothing (scalar)
+#' Functional Cross Covariance between longitudinal variable Y and scalar variable Z
+#' 
+#' Calculate the raw and the smoothed cross-covariance between functional
+#' and scalar predictors using bandwidth bw or estimate that bw using GCV
+#' 
+#' @param Ly List of N vectors with amplitude information
+#' @param Lt List of N vectors with timing information
+#' @param Ymu Vector Q-1 Vector of length nObsGrid containing the mean function estimate (You can get that from FPCA)
+#' @param bw Scalar bandwidth for smoothing the cross-covariance function (if NULL it will be automatically estimated)
+#' @param Z Vector N-1 Vector of length N with the scalar function values
+#' @param Zmu Scalar with the mean of Z (if NULL it will be automaticall estimated)
+#' @param support Vector of unique and sorted values for the support of the smoothed cross-covariance function (if NULL it will be automatically estimated)
+#' If the variables Ly1 is in matrix form the data are assumed dense and only the raw cross-covariance is returned.
+#' @return A list containing:
+#' \item{smoothedCC}{The smoothed cross-covariance as a vector}
+#' \item{rawCC}{The raw cross-covariance as a vector }
+#' \item{bw}{The bandwidth used for smoohting as a scaler}
+#' \item{score}{The GCV score associated with the scalar used}
+#' @examples
+#' yList <- list( runif(5),  c(1:3), c(2:4), c(4))
+#' tList <- list( c(1:5), c(1:3), c(1:3), 4)
+#' Z = rep(4,4) # Constant vector so the covariance has to be zero.
+#' sccObj = CrCovYZ(bw=1, Z= Z, Ly=yList, Lt=tList, Ymu=rep(4,5))
+#' @references
+#' \cite{Yang, Wenjing, Hans‐Georg Müller, and Ulrich Stadtmüller. "Functional singular component analysis." Journal of the Royal Statistical Society: Series B (Statistical Methodology) 73.3 (2011): 303-324}
+#' @export
+
 CrCovYZ <- function(bw = NULL, Z, Zmu = NULL, Ly, Lt = NULL, Ymu = NULL, support = NULL){
   
   # If only Ly and Z are available assume DENSE data

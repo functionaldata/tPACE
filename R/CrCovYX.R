@@ -1,15 +1,35 @@
-# Calculate the raw and the smoothed cross-covariance between functional
-# predictors using bandwidths bw's or estimate these bw's using GCV
-# Ly1      : List of N vectors with amplitude information
-# Lt1      : List of N vectors with timing information
-# Ymu1     : vector Q-1 
-# bw1      : scalar
-# Ly2      : List of N vectors with amplitude information
-# Lt2      : List of N vectors with timing information
-# Ymu2     : vector Q-1 
-# bw2      : scalar
-# returns : list with: 1. smoothed cross-covariance (Matrix M-M), 2. raw
-# cross-covariance (vector N-1) and 3. the bandwidths used for smoothing (vectors 2-1)
+#' Functional Cross Covariance between longitudinal variable Y and longitudinal variable X
+#' 
+#' Calculate the raw and the smoothed cross-covariance between functional predictors using bandwidth bw or estimate that bw using GCV. 
+#' 
+#' @param Ly1 List of N vectors with amplitude information (Y)
+#' @param Lt1 List of N vectors with timing information (Y)
+#' @param Ymu1 Vector Q-1 Vector of length nObsGrid containing the mean function estimate (You can get that from FPCA) (Y)
+#' @param bw1 Scalar bandwidth for smoothing the cross-covariance function (if NULL it will be automatically estimated) (Y)
+#' @param Ly2 List of N vectors with amplitude information (X)
+#' @param Lt2 List of N vectors with timing information (X)
+#' @param Ymu2 Vector Q-1 Vector of length nObsGrid containing the mean function estimate (You can get that from FPCA) (X)
+#' @param bw2 Scalar bandwidth for smoothing the cross-covariance function (if NULL it will be automatically estimated) (X)
+#' If the variables Ly1 and Ly2 are in matrix form the data are assumed dense and only the raw cross-covariance is returned.
+#' @return A list containing:
+#' \item{smoothedCC}{The smoothed cross-covariance as a matrix}
+#' \item{rawCC}{The raw cross-covariance as a list}
+#' \item{bw}{The bandwidth used for smoohting as a vector of lengh 2}
+#' \item{score}{The GCV score associated with the scalar used}
+#' \item{smoothGrid}{The grid over which the smoothed cross-covariance is evaluated}
+#' @examples
+#' Ly1= list( rep(2.1,7), rep(2.1,3),2.1 );
+#' Lt1 = list(1:7,1:3, 1);
+#' Ly2 = list( rep(1.1,7), rep(1.1,3),1.1); 
+#' Lt2 = list(1:7,1:3, 1);
+#' Ymu1 = rep(55,7);
+#' Ymu2 = rep(1.1,7);
+#' AA<-CrCovYX(Ly1 = Ly1, Ly2= Ly2, Lt1=Lt1, Lt2=Lt2, Ymu1=Ymu1, Ymu2=Ymu2)
+#'   
+#' @references
+#' \cite{Yang, Wenjing, Hans‐Georg Müller, and Ulrich Stadtmüller. "Functional singular component analysis." Journal of the Royal Statistical Society: Series B (Statistical Methodology) 73.3 (2011): 303-324}
+#' @export
+
 CrCovYX <- function(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL, Ly2, Lt2 = NULL, Ymu2 = NULL){
   
   # If only Ly1 and Ly2 are available assume DENSE data
