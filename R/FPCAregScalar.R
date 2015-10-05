@@ -50,9 +50,9 @@ FPCAregScalar <-  function (fpcaObjList, extVar = NULL, depVar, varSelect = NULL
     # Impute the data in the case of sparse object and turn on varSelection
     for (j in 1:length(fpcaObjList) ){
       if ( 'Sparse' == fpcaObjList[[j]]$optns$dataType ){
-        fpcaObjList[[j]] = makeDenseObj( fpcaObjList[[j]] );
+       # fpcaObjList[[j]] = makeDenseObj( fpcaObjList[[j]] );
         if ( is.null(varSelect)){
-       #   varSelect = 'AIC'
+        #   varSelect = 'AIC'
         }
       }
     }
