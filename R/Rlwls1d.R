@@ -16,8 +16,8 @@
 #' @export
 
 
-Rlwls1d <- function( bw, kernel_type, win, xin, yin, xout, npoly = 1, nder = 0){
-  return( CPPlwls1d(bw= as.numeric(bw), kernel_type = kernel_type, npoly= npoly, nder= nder, 
+Rlwls1d <- function( bw, kernel_type, win, xin, yin, xout, npoly = 1L, nder = 0L){
+  return( CPPlwls1d(bw= as.numeric(bw), kernel_type = kernel_type, npoly= as.integer(npoly), nder= as.integer(nder), 
                   xin = as.numeric(xin), yin= as.numeric(yin), xout= as.numeric(xout), win = as.numeric(win)))
 }
 
