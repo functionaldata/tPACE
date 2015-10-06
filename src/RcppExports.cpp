@@ -6,6 +6,24 @@
 
 using namespace Rcpp;
 
+// CPPlwls1d
+Eigen::VectorXd CPPlwls1d(const double& bw, const std::string kernel_type, const Eigen::Map<Eigen::VectorXd>& win, const Eigen::Map<Eigen::VectorXd>& xin, const Eigen::Map<Eigen::VectorXd>& yin, const Eigen::Map<Eigen::VectorXd>& xout, const unsigned int& npoly, const unsigned int& nder);
+RcppExport SEXP tPACE_CPPlwls1d(SEXP bwSEXP, SEXP kernel_typeSEXP, SEXP winSEXP, SEXP xinSEXP, SEXP yinSEXP, SEXP xoutSEXP, SEXP npolySEXP, SEXP nderSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< const double& >::type bw(bwSEXP);
+    Rcpp::traits::input_parameter< const std::string >::type kernel_type(kernel_typeSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type win(winSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type xin(xinSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type yin(yinSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type xout(xoutSEXP);
+    Rcpp::traits::input_parameter< const unsigned int& >::type npoly(npolySEXP);
+    Rcpp::traits::input_parameter< const unsigned int& >::type nder(nderSEXP);
+    __result = Rcpp::wrap(CPPlwls1d(bw, kernel_type, win, xin, yin, xout, npoly, nder));
+    return __result;
+END_RCPP
+}
 // dropZeroElementsXYWin
 Eigen::MatrixXd dropZeroElementsXYWin(const Eigen::Map<Eigen::VectorXd>& win, const Eigen::Map<Eigen::VectorXd>& xin, const Eigen::Map<Eigen::VectorXd>& yin);
 RcppExport SEXP tPACE_dropZeroElementsXYWin(SEXP winSEXP, SEXP xinSEXP, SEXP yinSEXP) {
@@ -63,24 +81,6 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type xou(xouSEXP);
     Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type you(youSEXP);
     __result = Rcpp::wrap(interp2lin(xin, yin, zin, xou, you));
-    return __result;
-END_RCPP
-}
-// Rlwls1d
-Eigen::VectorXd Rlwls1d(const double& bw, const std::string kernel_type, const Eigen::Map<Eigen::VectorXd>& win, const Eigen::Map<Eigen::VectorXd>& xin, const Eigen::Map<Eigen::VectorXd>& yin, const Eigen::Map<Eigen::VectorXd>& xout, const unsigned int& npoly, const unsigned int& nder);
-RcppExport SEXP tPACE_Rlwls1d(SEXP bwSEXP, SEXP kernel_typeSEXP, SEXP winSEXP, SEXP xinSEXP, SEXP yinSEXP, SEXP xoutSEXP, SEXP npolySEXP, SEXP nderSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< const double& >::type bw(bwSEXP);
-    Rcpp::traits::input_parameter< const std::string >::type kernel_type(kernel_typeSEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type win(winSEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type xin(xinSEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type yin(yinSEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type xout(xoutSEXP);
-    Rcpp::traits::input_parameter< const unsigned int& >::type npoly(npolySEXP);
-    Rcpp::traits::input_parameter< const unsigned int& >::type nder(nderSEXP);
-    __result = Rcpp::wrap(Rlwls1d(bw, kernel_type, win, xin, yin, xout, npoly, nder));
     return __result;
 END_RCPP
 }
