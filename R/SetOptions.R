@@ -144,7 +144,7 @@ SetOptions = function(y, t, optns){
     rho = "cv";
   }
   if(is.null(verbose)){ # display diagnostic messages
-    verbose = TRUE;
+    verbose = FALSE;
   }  
   #if(is.null(newdata)){ # new data points to estimate
   #  newdata <- NULL
