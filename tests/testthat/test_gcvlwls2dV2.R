@@ -1,5 +1,5 @@
 devtools::load_all()
-options(error=recover)
+#options(error=recover)
 library(testthat)
 
 try(silent = TRUE, load('data/dataForGetRawCov.RData'))
