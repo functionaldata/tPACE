@@ -81,6 +81,7 @@ FPCA = function(y, t, optns = list()){
   # Force the data to be list of numeric members
   y <- lapply(y, as.numeric) 
   t <- lapply(t, as.numeric)
+  t <- lapply(t, signif, 14)
   inputData <- list(y=y, t=t);
 
   # Set the options structure members that are still NULL

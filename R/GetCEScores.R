@@ -22,9 +22,10 @@ GetCEScores <- function(y, t, optns, mu, obsGrid, fittedCov, lambda, phi, sigma2
 
 GetMuPhiSig <- function(t, obsGrid, mu, phi, Sigma_Y) {
 
-  obsGrid <- signif(obsGrid, 14)
+  #obsGrid <- signif(obsGrid, 14)
   ret <- lapply(t, function(tvec) {
-    ind <- match(signif(tvec, 14), obsGrid)
+    #ind <- match(signif(tvec, 14), obsGrid)
+    ind <- match(tvec, obsGrid)
     if (sum(is.na(ind)) != 0)
       stop('Time point not found in obsGrid.')
     
