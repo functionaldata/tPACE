@@ -22,7 +22,15 @@ HandleNumericsAndNAN <- function(y,t){
        cat('Error: Subjects with only NA values are not allowed.\n')
        return( inputData <- NULL );
     }
+    
+    ni_y = unlist(lapply(y,function(x) sum(!is.na(x))))
+    if(all(ni_y == 1)){  
+      cat("Error:FPCA is aborted because the data do not contain repeated measurements after removing NA values.\n"); 
+      return( inputData <- NULL );    
+    }
   }
+  
+
   
   # Force the data to be list of numeric members
   y <- lapply(y, as.numeric) 
