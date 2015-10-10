@@ -17,14 +17,21 @@ CheckData = function(y,t){
     cat('Error: t should be list \n')
     return(TRUE);
   }
-  if(any(is.na(unlist(y)))){
-    cat('Error: y cannot contain NA/NaN entries\n')
+ 
+ if( length(t) != length(y)){
+    cat('Error: t and y should have the same length \n')
     return(TRUE);
   }
-  if(any(is.na(unlist(t)))){
-    cat('Error: t cannot contain NA/NaN entries\n')
-    return(TRUE);
-  } 
+ 
+  #if(any(is.na(unlist(y)))){
+  #  cat('Error: y cannot contain NA/NaN entries\n')
+  #  return(TRUE);
+  #}
+  #if(any(is.na(unlist(t)))){   
+  #  cat('Error: t cannot contain NA/NaN entries\n')
+  #  return(TRUE);
+  #} 
+
   ni_y = unlist(lapply(y,function(x) sum(!is.na(x))))
   if(all(ni_y == 1)){  
     cat("Error:FPCA is aborted because the data do not contain repeated measurements in y!\n"); 

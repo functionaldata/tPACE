@@ -78,11 +78,20 @@ FPCA = function(y, t, optns = list()){
     cat('FPCA has stopped.')
     return(FALSE);
   }
-  # Force the data to be list of numeric members
-  y <- lapply(y, as.numeric) 
-  t <- lapply(t, as.numeric)
-  t <- lapply(t, signif, 14)
-  inputData <- list(y=y, t=t);
+  
+  # Force the data to be list of numeric members and handle NA's
+  #y <- lapply(y, as.numeric) 
+  #t <- lapply(t, as.numeric)
+  #t <- lapply(t, signif, 14)
+  #inputData <- list(y=y, t=t);
+
+  inputData <- HandleNumericsAndNAN(y,t);
+  if (is.logical(inputData)){
+     cat('FPCA has stopped.')
+     return(FALSE);
+  }
+  y <- inputData$y;
+  t <- inputData$t;
 
   # Set the options structure members that are still NULL
   optns = SetOptions(y, t, optns);
