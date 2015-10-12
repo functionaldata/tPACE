@@ -172,7 +172,9 @@ CheckOptions = function(t,optns,n){
     cat("Error: FPCA is aborted because the argument: verbose is invalid!\n");    
     return(TRUE);    
   }
-  if (! (  is.null(optns$userMu) || (is.numeric(optns$userMu) && is.vector(optns$userMu)))){      
+  if (! (  is.null(optns$userMu) || 
+        (is.list(optns$userMu) && is.vector(optns$userMu$t) &&  is.vector(optns$userMu$mu) &&
+         ( length(optns$userMu$t) ==  length(optns$userMu$mu) ) ))){      
     # display diagnostic messages
     cat("Error: FPCA is aborted because the argument: userMu is invalid!\n");     
     return(TRUE);   

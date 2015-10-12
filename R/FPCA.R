@@ -34,7 +34,7 @@
 #' \item{useBinnedData}{Should the data be binned? 'FORCE' (Enforce the # of bins), 'AUTO' (Select the # of  bins automatically), 'OFF' (Do not bin) - default: 'AUTO'}
 #' \item{useBins}{Not integrated yet: whether to bin the same observed time points when 2D smoothing; logical - default: FALSE}
 #' \item{userCov}{The user-defined smoothed covariance function; numerical matrix - default: NULL}
-#' \item{userMu}{The user-defined smoothed mean function; numerical vector - default: NULL}
+#' \item{userMu}{The user-defined smoothed mean function; list of two numerical vector 't' and 'mu' of equal size, 't' must cover the support defined 'y' - default: NULL}
 #' \item{verbose}{Display diagnostic messages; logical - default: FALSE}
 #' }
 #' @return A list containing the following fields:
