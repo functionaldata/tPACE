@@ -125,7 +125,7 @@ FPCA = function(y, t, optns = list()){
                          workGrid < minGrid + difGrid * optns$outPercent[2] + buff]
                          
     # get cross sectional mean and sample cov
-    smcObj = GetMeanDense(ymat, optns)
+    smcObj = GetMeanDense(ymat, obsGrid, optns)
     mu = smcObj$mu
     smcObj$muDense = ConvertSupport(obsGrid, workGrid, mu = mu)
     scsObj = GetCovDense(ymat, mu, optns)

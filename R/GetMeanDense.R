@@ -14,12 +14,16 @@
 #    - NULL for other entries
 ##########################################################################
 
-GetMeanDense <- function(ymat, optns){
+GetMeanDense <- function(ymat, obsGrid, optns){
   # Check optns
   if(!(optns$dataType %in% c('Dense', 'DenseWithMV'))){
     stop('Cross sectional mean is only applicable for option: dataType = "Dense" or "DenseWithMV"!')
   }
-  mu = colMeans(ymat, na.rm = TRUE) # use non-missing data only
+  if ( is.null(optns$userMu) ){
+    mu = colMeans(ymat, na.rm = TRUE) # use non-missing data only
+  } else {
+    mu = spline(optns$userMu$t, optns$userMu$mu, xout= obsGrid)$y;  
+  }
   ret = list('mu' = mu, 'muDense' = NULL, 'mu_bw' = NULL)
   class(ret) = "SMC"
   if(any(is.na(mu))){

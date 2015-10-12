@@ -20,9 +20,24 @@ GetCovDense <- function(ymat, mu, optns){
     stop('Sample Covariance is only applicable for option: dataType = "Dense" or "DenseWithMV"!')
   }
   n = nrow(ymat)
-  K = cov(ymat, use = 'pairwise.complete.obs') # sample variance using non-missing data
+  m = ncol(ymat)
+  if( !is.null(optns$userMu) ){
+    ymat = ymat - matrix(rep(times= nrow(ymat), mu), ncol= ncol(ymat), byrow=TRUE)
+    K = matrix( rep(0,m^2), m)
+    for( i in (1:m)){
+      for( j in (1:m)){
+        XcNaNindx = which(is.na(ymat[,i]));
+        YcNaNindx = which(is.na(ymat[,j]));
+        NaNrows = union(XcNaNindx, YcNaNindx);
+        # Find inner product of the columns with no NaN values
+        indx = setdiff( 1:n, NaNrows)
+        K[i,j] =  sum(ymat[indx,i] * ymat[indx,j]) * (1/(n-1-length(NaNrows)));  
+      }
+    }    
+  } else {
+    K = cov(ymat, use = 'pairwise.complete.obs') # sample variance using non-missing data
+  }
   K = 0.5 * (K + t(K))                         # ensure that K is symmetric
-
   ret = list('rawCov' = NULL, 'smoothCov' = K, 'bwCov' = NULL,
    'sigma2' = NULL, outGrid = NULL)
   class(ret) = "SmoothCov"
