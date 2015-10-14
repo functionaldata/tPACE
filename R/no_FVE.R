@@ -48,8 +48,8 @@ no_FVE <- function(userCov, FVEthreshold=0.9999, returnEVec=FALSE, verbose=FALSE
   FVE <- cumsum(d) / sum(d) # cumulative FVE to output
   no_opt <- min(which(FVE >= FVEthreshold))
 
-  lambda <- d[1:no_opt]
-  eVec <- eVec[, 1:no_opt]
+  lambda <- d
+  #eVec <- eVec[, 1:no_opt]
   
   if (!returnEVec)
     eVec <- NULL
