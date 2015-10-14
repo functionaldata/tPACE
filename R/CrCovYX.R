@@ -119,7 +119,8 @@ smoothRCC2D <- function(rcov,bw1, bw2, xout1, xout2){
 # returns   : scalar
 GCVgauss2D <- function( smoothedCC, smoothGrid, rawCC, rawGrid, bw1, bw2){ 
 
-  obsFit <- tPACE::interp2lin(smoothGrid[,1], smoothGrid[,2], smoothedCC, rawGrid[, 1], rawGrid[, 2])    
+  obsFit <- tPACE::interp2lin(smoothGrid[,1], smoothGrid[,2], smoothedCC, as.numeric(rawGrid[, 1]), 
+                              as.numeric(rawGrid[, 2]))    
   # workaround for degenerate case.
   if (any(is.nan(obsFit))  || any(is.infinite(obsFit))  ){
     return(Inf)

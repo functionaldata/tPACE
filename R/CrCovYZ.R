@@ -34,7 +34,7 @@ CrCovYZ <- function(bw = NULL, Z, Zmu = NULL, Ly, Lt = NULL, Ymu = NULL, support
   }
   # Otherwise assume you have SPARSE data
   if( is.null(Zmu) ){
-    Zmu = mean(Z);
+    Zmu = mean(Z,na.rm = TRUE);
   }  
   # Get the Raw Cross-covariance 
   ulLt = unlist(Lt)
@@ -43,6 +43,12 @@ CrCovYZ <- function(bw = NULL, Z, Zmu = NULL, Ly, Lt = NULL, Ymu = NULL, support
   } else {
     obsGrid = support
   }
+  # Check that the length of Z and the length of Ly are compatible
+  if (length(Z) != length(Ly)){
+    stop("Ly and Z are not compatible (possibly different number of subjects).")
+  }
+  
+  
   rawCC = GetRawCrCovFuncScal(Ly = Ly, Lt = Lt, Ymu = Ymu, Z = Z, Zmu = Zmu )
 
   # If the bandwidth is known already smooth the raw CrCov

@@ -24,6 +24,23 @@ GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, optns, useBins=F
   # Get raw covariance   
   rcov <- GetRawCov(y, t, obsGrid, mu, dataType, error)
 
+  # If covariance function is provided
+  if( !is.null(optns$userCov) && is.list( optns$userCov)){
+    
+    if( !all( range(optns$userCov$t) >= range(cutRegGrid)) ){
+      stop('The range defined by the user provided covariance does not cover the support of the data.')
+    }
+    
+    sigma2 = NULL
+    bwCov  = NULL
+    smoothCov = ConvertSupport(fromGrid = optns$userCov$t, cutRegGrid, Cov =  optns$userCov$cov)
+    res <- list( rawCov= rcov, smoothCov = (smoothCov + t(smoothCov)) * 0.5, bwCov = bwCov, sigma2 = sigma2, outGrid = cutRegGrid);
+    class(res) <- "SmoothCov"  
+    # Garbage Collection
+    gc()
+    return(res)
+  }
+
   if (useBins && bwuserCovGcv == 'CV'){
     stop('If bwuserCovGcv == \'CV\' then we must use the unbinned rcov.')
   }

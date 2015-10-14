@@ -179,6 +179,14 @@ CheckOptions = function(t,optns,n){
     cat("Error: FPCA is aborted because the argument: userMu is invalid!\n");     
     return(TRUE);   
   }
+
+  if (! ( is.null(optns$userCov) ||
+        ( is.list(optns$userCov) && is.vector(optns$userCov$t) &&  is.matrix(optns$userCov$cov) &&
+          (length(optns$userCov$t) ==  ncol(optns$userCov$cov) ) && ( isSymmetric(optns$userCov$cov) ) ) ) ){
+    # display diagnostic messages
+    cat("Error: FPCA is aborted because the argument: userCov is invalid! (eg. Check if 'cov' is symmetric and 't' is of appropriate size.)\n");
+    return(TRUE);
+  }
   if(!(any(optns$methodMu == c('PACE','RARE','CrossSectional')))){ 
     # user-defined mean functions
     cat("Error: FPCA is aborted because the argument: methodMu is invalid!\n");     
