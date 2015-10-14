@@ -46,6 +46,6 @@ GetEigenAnalysisResults <- function(smoothCov, regGrid, optns) {
   fittedCov <- phi %*% diag(x=lambda, nrow = length(lambda)) %*% t(phi)
   # Garbage Collection
   gc()
-  return(list(lambda = lambda, phi = phi, FVE=FVEObj$FVE[length(FVEObj$FVE)],
+  return(list(lambda = lambda, phi = phi, FVE=FVEObj$FVE[FVEObj$no_opt],
               kChoosen=FVEObj$no_opt, fittedCov=fittedCov))
 }
