@@ -2,7 +2,13 @@ BinRawCov <- function(rcov) {
   # rcov: Assumes rcov has entries on a dataType grid.
   # Returns: 
   
-  rcov$tPairs <- signif(rcov$tPairs, 14)
+  #originalRange <- range(rcov$tPairs);
+  #rcov$tPairs <- signif(rcov$tPairs, 14)
+  #if (min(rcov$tPairs) < originalRange[1]){
+  #  stop("Binning truncation caused lower boundary issues.")
+  #} else if ((max(rcov$tPairs) > originalRange[2])){
+  #  stop("Binning truncation caused upper boundary issues.")
+  #}
   
   # Get the count, mean raw cov, and residual sum of squares at each pair of observed time points.
   tmp <- tapply(rcov$cxxn, list(rcov$tPairs[, 1], rcov$tPairs[, 2]), function(yy) c(mean(yy), length(yy), var(yy) * (length(yy) - 1)), simplify=FALSE)

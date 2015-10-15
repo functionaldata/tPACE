@@ -1,6 +1,12 @@
 #' Set the PCA option list
-#' 
-#' See '?CreateOptions for more details
+#'
+#' @param y A list of \emph{n} vectors containing the observed values for each individual.
+#' @param t A list of \emph{n} vectors containing the observation time points for each individual corresponding to y.
+#' @param optns A list of options control parameters specified by \code{list(name=value)}. See `Details'.
+#'
+#' See '?FPCAfor more details. Usually users are not supposed to use this function directly.
+#'
+
 
 SetOptions = function(y, t, optns){ 
 
@@ -144,7 +150,7 @@ SetOptions = function(y, t, optns){
     rho = "cv";
   }
   if(is.null(verbose)){ # display diagnostic messages
-    verbose = TRUE;
+    verbose = FALSE;
   }  
   #if(is.null(newdata)){ # new data points to estimate
   #  newdata <- NULL

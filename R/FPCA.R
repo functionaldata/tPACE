@@ -33,8 +33,8 @@
 #' \item{rotationCut}{The 2-element vector in [0,1] indicating the percent of data truncated during sigma^2 estimation; default  (0.25, 0.75))}
 #' \item{useBinnedData}{Should the data be binned? 'FORCE' (Enforce the # of bins), 'AUTO' (Select the # of  bins automatically), 'OFF' (Do not bin) - default: 'AUTO'}
 #' \item{useBins}{Not integrated yet: whether to bin the same observed time points when 2D smoothing; logical - default: FALSE}
-#' \item{userCov}{The user-defined smoothed covariance function; numerical matrix - default: NULL}
-#' \item{userMu}{The user-defined smoothed mean function; numerical vector - default: NULL}
+#' \item{userCov}{The user-defined smoothed covariance function; list of two elements: numerical vector 't' and matrix 'cov', 't' must cover the support defined by 'y' - default: NULL}
+#' \item{userMu}{The user-defined smoothed mean function; list of two numerical vector 't' and 'mu' of equal size, 't' must cover the support defined 'y' - default: NULL}
 #' \item{verbose}{Display diagnostic messages; logical - default: FALSE}
 #' }
 #' @return A list containing the following fields:
@@ -52,7 +52,8 @@
 #' \item{bwMu}{The selected (or user specified) bandwidth for smoothing the mean function.}
 #' \item{bwCov}{The selected (or user specified) bandwidth for smoothing the covariance function.}
 #' \item{rho}{A regularizing scalar for the measurement error variance estimate.}
-#' \item{FVE}{A vector with the percentages of the total variance explained by each FPC; at most equal to the 'FVEthreshold' used.}
+#' \item{cumFVE}{A vector with the percentages of the total variance explained by each FPC. Increase to almost 1.}
+#' \item{FVE}{A percentage indicating the total variance explained by chosen FPCs with corresponding 'FVEthreshold'.}
 #  \item{inputData}{A list containting the original 'y' and 't' lists used as inputs to FPCA.}
 #' 
 #' @examples
@@ -78,10 +79,20 @@ FPCA = function(y, t, optns = list()){
     cat('FPCA has stopped.')
     return(FALSE);
   }
-  # Force the data to be list of numeric members
-  y <- lapply(y, as.numeric) 
-  t <- lapply(t, as.numeric)
-  inputData <- list(y=y, t=t);
+  
+  # Force the data to be list of numeric members and handle NA's
+  #y <- lapply(y, as.numeric) 
+  #t <- lapply(t, as.numeric)
+  #t <- lapply(t, signif, 14)
+  #inputData <- list(y=y, t=t);
+
+  inputData <- HandleNumericsAndNAN(y,t);
+  if (is.logical(inputData)){
+     cat('FPCA has stopped.')
+     return(FALSE);
+  }
+  y <- inputData$y;
+  t <- inputData$t;
 
   # Set the options structure members that are still NULL
   optns = SetOptions(y, t, optns);
@@ -115,7 +126,7 @@ FPCA = function(y, t, optns = list()){
                          workGrid < minGrid + difGrid * optns$outPercent[2] + buff]
                          
     # get cross sectional mean and sample cov
-    smcObj = GetMeanDense(ymat, optns)
+    smcObj = GetMeanDense(ymat, obsGrid, optns)
     mu = smcObj$mu
     smcObj$muDense = ConvertSupport(obsGrid, workGrid, mu = mu)
     scsObj = GetCovDense(ymat, mu, optns)

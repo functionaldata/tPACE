@@ -24,7 +24,7 @@
 # or complex numbers.
 # This function uses rARPACK library for eigen-decomposition
 
-no_FVE <- function(userCov, FVEthreshold=0.85, returnEVec=FALSE, verbose=FALSE){
+no_FVE <- function(userCov, FVEthreshold=0.9999, returnEVec=FALSE, verbose=FALSE){
   numGrids = nrow(userCov)
   #optns.v0 = t(seq(0.1,0.9,length.out = numGrids))
   eigObj <- eigs(userCov, k = min(c(128,numGrids-2)), which = "LR")
@@ -45,15 +45,14 @@ no_FVE <- function(userCov, FVEthreshold=0.85, returnEVec=FALSE, verbose=FALSE){
   
   d <- d[!idx] 
   eVec <- eVec[, !idx]
-  FVE <- cumsum(d) / sum(d) # cumulative FVE to output
-  no_opt <- min(which(FVE >= FVEthreshold))
+  #FVE <- cumsum(d) / sum(d) # cumulative FVE for all available eigenvalues from fitted cov
+  #no_opt <- min(which(FVE >= FVEthreshold))
 
-  lambda <- d[1:no_opt]
-  eVec <- eVec[, 1:no_opt]
+  lambda <- d
   
   if (!returnEVec)
     eVec <- NULL
     
-  return(list(no_opt=no_opt, FVE=FVE[1:no_opt], lambda=lambda, eVec=eVec))
+  return(list(lambda=lambda, eVec=eVec))
 }
 

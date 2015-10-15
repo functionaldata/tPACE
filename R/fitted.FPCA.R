@@ -2,8 +2,9 @@
 #' 
 #' Combine the zero-meaned fitted values and the interpolated mean to get the final values.
 #' 
-#' @param fpcaObj A object of class FPCA returned by the function FPCA().   
-#' @param fpcaObjder A object of class FPCAder returned by the function FPCAder(. 
+#' @param object A object of class FPCA returned by the function FPCA().   
+#' @param objectDer A object of class FPCAder returned by the function FPCAder(. 
+#' @param ... Additional arguments
 #'
 #' @examples
 #' set.seed(1)

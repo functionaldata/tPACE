@@ -3,7 +3,7 @@ GetRawCrCovFuncScal <- function(Ly, Lt = NULL, Ymu, Z,  Zmu ){
   if( is.list(Ly) && is.list(Lt) ){
     ulLt = unlist(Lt)
     if (length(Ymu) != length(unique(ulLt))){
-      stop("Ymu and Lt are not compatible.")
+      stop("Ymu and Lt are of the same size.")
     } else { 
       zstar = Z - Zmu;
       RCC <- list(tpairn = ulLt, 

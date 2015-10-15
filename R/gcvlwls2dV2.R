@@ -1,4 +1,4 @@
-gcvlwls2dV2 <- function(obsGrid, regGrid, ngrid=NULL, dataType=rcov$dataType, error=rcov$error, kern, rcov, h0=NULL, verbose=TRUE, CV=FALSE, t) {
+gcvlwls2dV2 <- function(obsGrid, regGrid, ngrid=NULL, dataType=rcov$dataType, error=rcov$error, kern, rcov, h0=NULL, verbose=FALSE, CV=FALSE, t) {
 
 # TODO:? get the residual values only within truncated regGrid
 

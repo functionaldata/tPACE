@@ -6,7 +6,16 @@
 \usage{
 SetOptions(y, t, optns)
 }
+\arguments{
+\item{y}{A list of \emph{n} vectors containing the observed values for each individual.}
+
+\item{t}{A list of \emph{n} vectors containing the observation time points for each individual corresponding to y.}
+
+\item{optns}{A list of options control parameters specified by \code{list(name=value)}. See `Details'.
+
+See '?FPCAfor more details. Usually users are not supposed to use this function directly.}
+}
 \description{
-See '?CreateOptions for more details
+Set the PCA option list
 }
 

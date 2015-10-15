@@ -28,11 +28,11 @@ Eigen::VectorXd interp2lin( const Eigen::Map<Eigen::VectorXd> & xin, const Eigen
   } else if ( xin.minCoeff() >  xou.minCoeff() ){
     Rcpp::warning("Output X-grid  is outside the lower range of the input X-grid.");
   } else if ( yin.minCoeff() >  you.minCoeff() ){
-    Rcpp::warning("Output X-grid  is outside the lower range of the input X-grid.");
+    Rcpp::warning("Output Y-grid  is outside the lower range of the input Y-grid.");
   } else if ( xin.maxCoeff() <  xou.maxCoeff() ){
-    Rcpp::warning("Output X-grid  is outside the upper ragne of the input X-grid.");
-  } else if ( yin.maxCoeff() <  you.maxCoeff() ){
     Rcpp::warning("Output X-grid  is outside the upper range of the input X-grid.");
+  } else if ( yin.maxCoeff() <  you.maxCoeff() ){
+    Rcpp::warning("Output Y-grid  is outside the upper range of the input Y-grid.");
   } 
   
  
