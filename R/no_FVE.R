@@ -45,15 +45,14 @@ no_FVE <- function(userCov, FVEthreshold=0.9999, returnEVec=FALSE, verbose=FALSE
   
   d <- d[!idx] 
   eVec <- eVec[, !idx]
-  FVE <- cumsum(d) / sum(d) # cumulative FVE to output
-  no_opt <- min(which(FVE >= FVEthreshold))
+  #FVE <- cumsum(d) / sum(d) # cumulative FVE for all available eigenvalues from fitted cov
+  #no_opt <- min(which(FVE >= FVEthreshold))
 
   lambda <- d
-  #eVec <- eVec[, 1:no_opt]
   
   if (!returnEVec)
     eVec <- NULL
     
-  return(list(no_opt=no_opt, FVE=FVE[1:no_opt], lambda=lambda, eVec=eVec))
+  return(list(lambda=lambda, eVec=eVec))
 }
 

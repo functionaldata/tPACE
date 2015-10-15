@@ -20,19 +20,18 @@
 
 MakeResultFPCA <- function(optns, smcObj, mu, scsObj, eigObj, 
 	scoresObj, obsGrid, workGrid, rho=NULL, fitLambda=NULL, inputData){
-  
   if(optns$dataType == 'Sparse'){
   	ret <- list(sigma2 = scsObj$sigma2, lambda = eigObj$lambda, phi = eigObj$phi,
   	  xiEst = t(do.call(cbind, scoresObj[1, ])), xiVar = scoresObj[2, ], 
       # fittedY = scoresObj[3, ], 
-      obsGrid = obsGrid, mu = mu, workGrid = workGrid, smoothedCov = scsObj$smoothCov, FVE=  100*cumsum(eigObj$lambda)/sum(eigObj$lambda) -0.01, #TODO if the user changes the threshold this should change accordingly.
-      fittedCov = eigObj$fittedCov, optns = optns, bwMu = smcObj$bw_mu, bwCov = scsObj$bwCov, rho=rho, fitLambda=fitLambda)
+      obsGrid = obsGrid, mu = mu, workGrid = workGrid, smoothedCov = scsObj$smoothCov, FVE = eigObj$cumFVE[eigObj$kChoosen], 
+  	  cumFVE =  eigObj$cumFVE, fittedCov = eigObj$fittedCov, optns = optns, bwMu = smcObj$bw_mu, bwCov = scsObj$bwCov, rho=rho, fitLambda=fitLambda)
   } else if(optns$dataType %in% c('Dense','DenseWithMV')){
   	ret <- list(sigma2 = scsObj$sigma2, lambda = eigObj$lambda, phi = eigObj$phi,
   	  xiEst = scoresObj$xiEst, xiVar = scoresObj$xiVar, 
       # fittedY = scoresObj$fittedY, 
-      obsGrid = obsGrid, mu = mu, workGrid = workGrid, smoothedCov = scsObj$smoothCov, FVE=  100*cumsum(eigObj$lambda)/sum(eigObj$lambda) -0.01,
-      fittedCov = eigObj$fittedCov, optns = optns, bwMu = smcObj$bw_mu, bwCov = scsObj$bwCov)
+      obsGrid = obsGrid, mu = mu, workGrid = workGrid, smoothedCov = scsObj$smoothCov, FVE = eigObj$cumFVE[eigObj$kChoosen], 
+  	  cumFVE = eigObj$cumFVE, fittedCov = eigObj$fittedCov, optns = optns, bwMu = smcObj$bw_mu, bwCov = scsObj$bwCov)
   } else {
   	stop('Other dataType choices not implemented yet!')
   }

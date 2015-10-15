@@ -23,12 +23,19 @@ GetEigenAnalysisResults <- function(smoothCov, regGrid, optns) {
 
   if (noeig > length(d)) {
     noeig <- length(d);
-    warning(sprintf("At most %d number of PC can be selected!", noeig))
+    warning(sprintf("At most %d number of PC can be selected!", noeig)) 
+    # the warning shows total number of pos eigenvalues from fitted cov, 
+    # not getting this means we only take first maxk components
   }
-
+  # after checking for maxk, get updated eigenvalues and eigenfns
   eigenV <- eigenV[, 1:noeig];
   d <- d[1:noeig];
-  
+  # thresholding for corresponding FVE option 
+  #(not before to avoid not being able to reach the FVEthreshold when pos eigenvalues > maxk)
+  # i.e. default FVE 0.9999 outputs all components remained here.
+  FVE <- cumsum(d) / sum(d) * 100 - 0.001 # cumulative FVE for all available eigenvalues from fitted cov
+  no_opt <- min(which(FVE >= FVEthreshold*100)) # final number of component chosen based on FVE
+
   if(!is.matrix(eigenV)){
     eigenV <- matrix(eigenV); # In case it is a vector
   }
@@ -46,6 +53,6 @@ GetEigenAnalysisResults <- function(smoothCov, regGrid, optns) {
   fittedCov <- phi %*% diag(x=lambda, nrow = length(lambda)) %*% t(phi)
   # Garbage Collection
   gc()
-  return(list(lambda = lambda, phi = phi, FVE=FVEObj$FVE[FVEObj$no_opt],
-              kChoosen=FVEObj$no_opt, fittedCov=fittedCov))
+  return(list(lambda = lambda[1:no_opt], phi = phi[,1:no_opt], cumFVE = FVE,
+              kChoosen=no_opt, fittedCov=fittedCov))
 }
