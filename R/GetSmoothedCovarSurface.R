@@ -57,7 +57,6 @@ GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, optns, useBins=F
   }
 
   if (error){
-  # TODO: add a rotatecut or somehow set it for pc_covE
     sigma2 <- pc_covE(obsGrid, regGrid, bwCov, rotationCut=rotationCut, kernel=kern, rcov=rcov)$sigma2
   } else { 
     sigma2 <- NULL
