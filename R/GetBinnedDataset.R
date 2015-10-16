@@ -37,11 +37,11 @@ GetBinnedDataset <- function (y, t, optns){
 
   for (i in 1:n){
     res = GetBinnedCurve(t[[i]], y[[i]], numBins, TRUE, TRUE, c(a0, b0));
-    BinDataOutput$newt[i] = res$midpoint;   
-    BinDataOutput$newy[i] = res$newy;      
+    BinDataOutput$newt[[i]] = res$midpoint;   
+    BinDataOutput$newy[[i]] = res$newy;      
   }
      
-  result <- list( 't' = BinDataOutput$newt, 'y' = BinDataOutput$newy);
+  result <- list( 'newt' = BinDataOutput$newt, 'newy' = BinDataOutput$newy);
   # Garbage Collection
   gc()
   return(result)
