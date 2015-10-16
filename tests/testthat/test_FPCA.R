@@ -103,3 +103,37 @@ test_that('User provided mu and cov for simple example',{
   expect_equal( abs(cor( FPCAsparseA$xiEst[,1], Ksi[,1])) > 0.95, TRUE)
   expect_equal( abs(cor( FPCAsparseA$xiEst[,2], Ksi[,2])) > 0.90, TRUE)
 })
+
+test_that('Case where one component should be returned',{
+
+  set.seed(123)
+  N = 111;   
+  M = 81;
+  
+  # Define the continuum
+  s = seq(0,10,length.out = M)
+ 
+  # Define the mean and 2 eigencomponents
+  meanFunct <- function(s) s  + 1 
+  eigFunct1 <- function(s) +cos(2*s*pi/10) / sqrt(5)
+  eigFunct2 <- function(s) -sin(2*s*pi/10) / sqrt(5)
+  
+  # Create FPC scores
+  Ksi = matrix(rnorm(N*2), ncol=2);
+  Ksi = apply(Ksi, 2, scale)
+  Ksi = Ksi %*% diag(c(5,2))
+ 
+  # Create Y_true
+  yTrue = Ksi %*% t(matrix(c(eigFunct1(s),eigFunct2(s)), ncol=2)) + t(matrix(rep(meanFunct(s),N), nrow=M))
+ 
+  # Create sparse sample  
+  # Each subject has one to five readings (median: 3);
+  ySparse = sparsify(yTrue, s, c(1:5))    
+  FPCAsparseA = FPCA(ySparse$yList,t=ySparse$tList, optns = 
+    list( FVEthreshold = 0.4, userMu = list(t=s,mu= meanFunct(s)) ) )
+
+  expect_equal( FPCAsparseA$mu,  expected = meanFunct(s), tolerance = 1e-9)
+  expect_equal( length(FPCAsparseA$lambda), 1)
+
+})
+
