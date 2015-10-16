@@ -36,9 +36,9 @@ MakeResultFPCA <- function(optns, smcObj, mu, scsObj, eigObj,
   	stop('Other dataType choices not implemented yet!')
   }
   
-  if (!is.null(optns$numComponents)){
-    if( optns$numComponents < length(ret$lambda) ){
-      Knew = optns$numComponents;
+  if (!is.null(optns$maxK)){
+    if( optns$maxK < length(ret$lambda) ){
+      Knew = optns$maxK;
       ret$lambda <- ret$lambda[1:Knew];
       ret$phi <-  ret$phi[,1:Knew];
       ret$xiEst <-  ret$xiEst[,1:Knew]; 

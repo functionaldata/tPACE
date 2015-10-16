@@ -16,7 +16,7 @@ CheckOptions = function(t,optns,n){
   maxK = optns$maxK;                
   dataType = optns$dataType;          error = optns$error; 
   nRegGrid = optns$nRegGrid;        methodXi = optns$methodXi; 
-  shrink = optns$shrink;         #   newdata = optns$newdata; 
+#  shrink = optns$shrink;         #   newdata = optns$newdata; 
   kernel = optns$kernel;            numBins = optns$numBins; 
   yname = optns$yname;           #   screePlot = optns$screePlot; 
 #  designPlot = optns$designPlot; 
@@ -80,13 +80,13 @@ CheckOptions = function(t,optns,n){
     cat("Error: FPCA is aborted because the argument: maxK is invalid!\n");   
     return(TRUE);   
   } 
-  if( !is.null(optns$numComponents) ) {
-    if( !( (length(optns$numComponents)==1) &&  is.numeric(optns$numComponents) && (1<=optns$numComponents) && (optns$numComponents<=n) )){  
-      # maximum number of principal components to return
-      cat("Error: FPCA is aborted because the argument: numComponents is invalid!\n");   
-      return(TRUE);   
-    }
-  } 
+  #if( !is.null(optns$numComponents) ) {
+  #  if( !( (length(optns$numComponents)==1) &&  is.numeric(optns$numComponents) && (1<=optns$numComponents) && (optns$numComponents<=n) )){  
+  #    # maximum number of principal components to return
+  #    cat("Error: FPCA is aborted because the argument: numComponents is invalid!\n");   
+  #    return(TRUE);   
+  #  }
+  #} 
   if( !( is.null(optns$dataType) || any(optns$dataType==c("Sparse","DenseWithMV","Dense","p>>n")) )){ 
     #do we have regualr or sparse functional data
     cat("Error: FPCA is aborted because the argument: dataType is invalid!\n");     
@@ -111,11 +111,11 @@ CheckOptions = function(t,optns,n){
     cat("Error: FPCA is aborted because the argument: methodXi is invalid!\n");   
     return(TRUE);   
   }
-  if(!is.logical(optns$shrink)){ 
-    # apply shrinkage to estimates of random coefficients (dataType data only)
-    cat("Error: FPCA is aborted because the argument: shrink is invalid!\n");   
-    return(TRUE);   
-  }
+  #if(!is.logical(optns$shrink)){ 
+  #  # apply shrinkage to estimates of random coefficients (dataType data only)
+  #  cat("Error: FPCA is aborted because the argument: shrink is invalid!\n");   
+  #  return(TRUE);   
+  #}
   #if (! (  is.null(optns$newdata) || (is.numeric(optns$newdata) && is.vector(optns$newdata)))){
   #  # new time vector to evaluate the final estimates
   #  cat("Error: FPCA is aborted because the argument: newdata is invalid!\n");       
