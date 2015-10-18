@@ -48,11 +48,11 @@ Available control options are
 \item{fitEigenValues}{Whether also to obtain a regression fit of the eigenvalues - default: FALSE}
 \item{FVEthreshold}{Fraction-of-Variance-Explained threshold used during the SVD of the fitted covar. function; numeric (0,1] - default: 0.9999}
 \item{kernel}{Smoothing kernel choice, common for mu and covariance; "rect", "gauss", "epan", "gausvar", "quar" - default: "epan" for dense data else "gauss"}
+\item{kFoldCov}{The number of folds to be used for covariance smoothing. Default: 10}
 \item{methodCov}{The method to estimate the covariance; 'PACE','RARE','CrossSectional' - automatically determined, user input ignored}
 \item{methodMu}{The method to estimate mu; 'PACE','RARE','CrossSectional' - automatically determined, user input ignored }
 \item{maxK}{The maximum number of principal components to consider; positive integer smaller than 128 - default: min(20, N-1), N:# of curves}
 \item{methodXi}{The method to estimate the PC scores; 'CE', 'IN' - default: 'CE'}
-\item{numCVcurves}{The number of curves used for CV when choosing bandwidth; [1,N] - default: min(30, N-1), N: # of curves}
 \item{nRegGrid}{The number of support points in each direction of covariance surface; numeric - default: 51}
 \item{numBins}{The number of bins to bin the data into; positive integer > 10, default: NULL}
 \item{selectionMethod}{The method of choosing the number of principal components K; 'FVE','AIC','BIC': default 'FVE' - only 'FVE' avaiable now/ default 'FVE')}
@@ -60,7 +60,7 @@ Available control options are
 \item{rho}{The truncation threshold for the iterative residual. 'cv': choose rho by leave-one-observation out cross-validation; 'no': no regularization - default "cv".}
 \item{rotationCut}{The 2-element vector in [0,1] indicating the percent of data truncated during sigma^2 estimation; default  (0.25, 0.75))}
 \item{useBinnedData}{Should the data be binned? 'FORCE' (Enforce the # of bins), 'AUTO' (Select the # of  bins automatically), 'OFF' (Do not bin) - default: 'AUTO'}
-\item{useBins}{Not integrated yet: whether to bin the same observed time points when 2D smoothing; logical - default:TRUE}
+\item{useBinnedCov}{Whether to use the binned raw covariance for smoothing; logical - default:TRUE}
 \item{userCov}{The user-defined smoothed covariance function; list of two elements: numerical vector 't' and matrix 'cov', 't' must cover the support defined by 'y' - default: NULL}
 \item{userMu}{The user-defined smoothed mean function; list of two numerical vector 't' and 'mu' of equal size, 't' must cover the support defined 'y' - default: NULL}
 \item{verbose}{Display diagnostic messages; logical - default: FALSE}
