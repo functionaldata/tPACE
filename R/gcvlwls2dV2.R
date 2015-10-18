@@ -5,7 +5,7 @@ gcvlwls2dV2 <- function(obsGrid, regGrid, ngrid=NULL, dataType=rcov$dataType, er
 # Returns: a list of length 2, containing the optimal bandwidth and the gcv score.
 # obsGrid: observation points. 
 # ngrid: I think this should not be used in the gcv function.
-# CV: whether to use CV rather than GCV. Supported values are '[k]fold', where '[k]' is a integer.
+# CV: whether to use CV rather than GCV. Default to FALSE as not using CV. If CV is used use an integer value to specify the number of cross-validation folds. 
 
 # This function computes the optimal bandwidth choice for the covariance surface. 
 # function use GCV method by pooling the longitudinal data together. 
@@ -50,12 +50,9 @@ gcvlwls2dV2 <- function(obsGrid, regGrid, ngrid=NULL, dataType=rcov$dataType, er
   maxIter <- 1
   
   if (CV != FALSE) {
-    useKfold <- regexpr('fold', CV)
-    if (useKfold != -1) {
-      fold <- as.integer(substr(CV, 1, useKfold - 1))
-      # We partition the raw covariance rather than partition the individuals.
-      partition <- CreateFolds(1:nrow(rcov$tPairs), k=fold)
-    }
+# We partition the raw covariance rather than partition the individuals.
+    fold <- CV
+    partition <- CreateFolds(1:nrow(rcov$tPairs), k=fold)
   }
   
   minBWInvalid <- FALSE

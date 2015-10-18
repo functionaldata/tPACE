@@ -43,7 +43,8 @@ lwls2dV2 <- function(bw, kern='epan', xin, yin, win=NULL, xout1=NULL, xout2=NULL
   storage.mode(win) <- 'numeric'
   storage.mode(xout1) <- 'numeric'
   storage.mode(xout2) <- 'numeric'
-  storage.mode(xout) <- 'numeric'
+  if (!is.null(xout))
+    storage.mode(xout) <- 'numeric'
 
   if (!crosscov){
     ret <- Rmullwlsk(bw, kern, t(xin), yin, win, xout1, xout2, FALSE)

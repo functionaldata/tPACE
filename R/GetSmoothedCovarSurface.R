@@ -1,7 +1,6 @@
 # The output outGrid of this function is the (potentially) truncated greid.
 GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, optns, useBinnedCov=FALSE) {
 
-  # TODO: pass in only the options needed, rather than p itself.
   dataType <- optns$dataType
   error <- optns$error
   kern <- optns$kernel
@@ -58,7 +57,8 @@ GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, optns, useBinned
       }  
     } else if (bwuserCovGcv == 'CV') { # CV 10 fold
       gcvObj <- gcvlwls2dV2(obsGrid, regGrid, kern=kern, rcov=rcov, t=t,
-                          verbose=optns$verbose, CV='10fold')
+                          verbose=optns$verbose, 
+                          CV=sprintf('%dfold', optns[['kFoldCov']]))
       bwCov <- gcvObj$h
     }
   } else if (bwuserCov != 0) {

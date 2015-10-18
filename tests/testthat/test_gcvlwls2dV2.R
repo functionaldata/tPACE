@@ -55,7 +55,7 @@ test_that('GCV is closed to CV', {
   obsGrid <- sort(unique(unlist(samp3$tList)))
   regGrid <- seq(min(obsGrid), max(obsGrid), length.out=101)
   gcvRes <- gcvlwls2dV2(obsGrid, regGrid, kern='epan', rcov=rcov3, t=samp3$tList)
-  cvRes <- gcvlwls2dV2(obsGrid, regGrid, kern='epan', rcov=rcov3, CV='10fold', t=samp3$tList)
+  cvRes <- gcvlwls2dV2(obsGrid, regGrid, kern='epan', rcov=rcov3, CV=10, t=samp3$tList)
   expect_equal(gcvRes$h, cvRes$h, 0.1)
 })
 

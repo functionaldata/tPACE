@@ -49,6 +49,8 @@ SetOptions = function(y, t, optns){
   #}
   if (is.null(kFoldCov)) { # CV fold for covariance smoothing
     kFoldCov <- 10L
+  } else {
+    kFoldCov <- as.integer(kFoldCov)
   }
   if(is.null(selectionMethod)){ # the method of choosing the number of principal components K
     #  TODO : Possibly have user-defined selection methods for the # of FPCs and we keep
