@@ -12,7 +12,8 @@ SetOptions = function(y, t, optns){
 
   bwmu =optns[['bwmu']];                bwmuMethod =optns[['bwmuMethod']]; 
   bwuserCov =optns[['bwcov']];            bwuserCovGcv =optns[['bwuserCovGcv']];
-  numCVcurves =optns[['numCVcurves']];           # ngrid1 =optns[['ngrid1']]; 
+  kFoldCov = optns[['kFoldCov']]
+  # ngrid1 =optns[['ngrid1']]; 
   selectionMethod =optns[['selectionMethod']];  FVEthreshold =optns[['FVEthreshold']];
   fitEigenValues <- optns[['fitEigenValues']]
   maxK =optns[['maxK']];                
@@ -29,7 +30,7 @@ SetOptions = function(y, t, optns){
   outPercent =optns[['outPercent']];  userCov =optns[['userCov']];
   rotationCut =optns[['rotationCut']];    useBinnedData =optns[['useBinnedData']];
   #corrPlotType =optns[['corrPlotType']]; 
-  useBins = optns[['useBins']]
+  useBinnedCov = optns[['useBinnedCov']]
 
   if(is.null(bwmu)){ # bandwidth choice for mean function is using CV or GCV
     bwmu = 0;   
@@ -43,12 +44,12 @@ SetOptions = function(y, t, optns){
   if(is.null(bwuserCovGcv)){  # bandwidth choice for covariance function is GCV if bwuserCov = c(0,0)
     bwuserCovGcv = 'GMeanAndGCV';
   }
-  if(is.null(numCVcurves)){ # number of curves used for CV when choosing bandwidth 
-    numCVcurves = min(30, length(y)-1);
-  }
   #if(is.null(ngrid1)){ # number of support points for the covariance surface 
   #  ngrid1 = 30;
   #}
+  if (is.null(kFoldCov)) { # CV fold for covariance smoothing
+    kFoldCov <- 10L
+  }
   if(is.null(selectionMethod)){ # the method of choosing the number of principal components K
     #  TODO : Possibly have user-defined selection methods for the # of FPCs and we keep
     # an internal FVE-based method for us
@@ -188,10 +189,10 @@ SetOptions = function(y, t, optns){
   if(is.null(useBinnedData)){ 
     useBinnedData = 'AUTO';
   }
-  if (is.null(useBins)) {
-    useBins <- TRUE
+  if (is.null(useBinnedCov)) {
+    useBinnedCov <- TRUE
     if (  ( 128 > length(y) ) && ( 3 > mean ( unlist( lapply( y, length) ) ) )){
-      useBins <- FALSE
+      useBinnedCov <- FALSE
     } 
   }
  
@@ -200,7 +201,8 @@ SetOptions = function(y, t, optns){
   #}
     
   return( list(bwmu = bwmu, bwmuMethod = bwmuMethod, bwuserCov = bwuserCov, bwuserCovGcv = bwuserCovGcv,
-          numCVcurves = numCVcurves, selectionMethod = selectionMethod, FVEthreshold = FVEthreshold,
+          kFoldCov = kFoldCov, 
+          selectionMethod = selectionMethod, FVEthreshold = FVEthreshold,
           fitEigenValues = fitEigenValues,
           maxK = maxK, dataType = dataType, error = error, nRegGrid = nRegGrid, rotationCut = rotationCut,
           methodXi = methodXi, # shrink = shrink, # newdata = newdata, 
@@ -208,6 +210,6 @@ SetOptions = function(y, t, optns){
           # corrPlot = corrPlot, corrPlotType = corrPlotType,  screePlot = screePlot, designPlot = designPlot,
           # numComponents = numComponents,
           diagnosticsPlot = diagnosticsPlot,
-          numBins = numBins, useBins = useBins, yname = yname,  rho = rho, 
+          numBins = numBins, useBinnedCov = useBinnedCov, yname = yname,  rho = rho, 
           verbose = verbose, userMu = userMu, userCov = userCov, methodMu= methodMu, outPercent = outPercent, useBinnedData = useBinnedData) )
 }

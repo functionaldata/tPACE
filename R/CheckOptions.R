@@ -9,22 +9,6 @@
 
 CheckOptions = function(t,optns,n){
   
-  bwmu = optns$bwmu;                bwmuMethod = optns$bwmuMethod; 
-  bwuserCov = optns$bwuserCov;            bwuserCovGcv = optns$bwuserCovGcv;
-  numCVcurves = optns$numCVcurves;            # ngrid1 = optns$ngrid1; 
-  selectionMethod = optns$selectionMethod;  FVEthreshold = optns$FVEthreshold;
-  maxK = optns$maxK;                
-  dataType = optns$dataType;          error = optns$error; 
-  nRegGrid = optns$nRegGrid;        methodXi = optns$methodXi; 
-#  shrink = optns$shrink;         #   newdata = optns$newdata; 
-  kernel = optns$kernel;            numBins = optns$numBins; 
-  yname = optns$yname;           #   screePlot = optns$screePlot; 
-#  designPlot = optns$designPlot; 
-  rho = optns$rho;                  diagnosticsPlot=  optns$diagnosticsPlot;
-  verbose = optns$verbose;        #  corrPlot = optns$corrPlot;
-  userMu = optns$userMu;                  methodMu = optns$methodMu;
-  outPercent = optns$outPercent;  userCov = optns$userCov
-                                useBinnedData = optns$useBinnedData;
     
   if( !(  any(optns$useBinnedData == c('FORCE','AUTO','OFF')) )){ 
     # Force, turn off or automatically decide about the use of bin data
@@ -49,11 +33,6 @@ CheckOptions = function(t,optns,n){
   if( !(  any(optns$bwuserCovGcv == c('CV','GCV','GMeanAndGCV') ) )){ 
     # bandwidth choice for covariance function is GCV if bwuserCov = c(0,0)
     cat("Error: FPCA is aborted because the argument: bwuserCovGcv is invalid!\n");  
-    return(TRUE);   
-  }
-  if( !( (length(optns$numCVcurves)==1) &&  is.numeric(optns$numCVcurves) && (1<=optns$numCVcurves) && (optns$numCVcurves<n) )){ 
-    # number of curves used for CV when choosing bandwidth  
-    cat("Error: FPCA is aborted because the argument: numCVcurves is invalid!\n");  
     return(TRUE);   
   }
   # if( !( (length(optns$ngrid1)==1) &&  is.numeric(optns$ngrid1) && (1<=optns$ngrid1) && (optns$ngrid1<90) ) ){ 

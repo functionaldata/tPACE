@@ -1,5 +1,5 @@
 # The output outGrid of this function is the (potentially) truncated greid.
-GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, optns, useBins=FALSE) {
+GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, optns, useBinnedCov=FALSE) {
 
   # TODO: pass in only the options needed, rather than p itself.
   dataType <- optns$dataType
@@ -41,11 +41,11 @@ GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, optns, useBins=F
     return(res)
   }
 
-  if (useBins && bwuserCovGcv == 'CV'){
+  if (useBinnedCov && bwuserCovGcv == 'CV'){
     stop('If bwuserCovGcv == \'CV\' then we must use the unbinned rcov.')
   }
   
-  if (useBins){
+  if (useBinnedCov){
     rcov <- BinRawCov(rcov)
   }
 
@@ -65,7 +65,7 @@ GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, optns, useBins=F
     bwCov <- bwuserCov
   }
 
-  if (!useBins){
+  if (!useBinnedCov){
     smoothCov <- lwls2dV2(bwCov, kern, xin=rcov$tPairs, yin=rcov$cxxn,
                         xout1=cutRegGrid, xout2=cutRegGrid)
   } else { 
