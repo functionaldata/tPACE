@@ -18,11 +18,11 @@ SetOptions = function(y, t, optns){
   maxK =optns[['maxK']];                
   dataType =optns[['dataType']];          error =optns[['error']];
   nRegGrid =optns[['nRegGrid']];              methodXi =optns[['methodXi']];
-  shrink =optns[['shrink']];           # newdata =optns[['newdata']] ;
+#  shrink =optns[['shrink']];           # newdata =optns[['newdata']] ;
   kernel =optns[['kernel']];            numBins =optns[['numBins']];
-  numComponents =optns[['numComponents']];
+#  numComponents =optns[['numComponents']];
   yname =optns[['yname']];             # screePlot =optns[['screePlot']];
-  #designPlot =optns[['designPlot']];    
+#  designPlot =optns[['designPlot']];    
   rho =optns[['rho']];                diagnosticsPlot =optns[['diagnosticsPlot']];
   verbose =optns[['verbose']];          #corrPlot =optns[['corrPlot']];
   userMu =optns[['userMu']];                  methodMu =optns[['methodMu']];
@@ -60,9 +60,9 @@ SetOptions = function(y, t, optns){
   if(is.null(maxK)){ # maximum number of principal components to consider
     maxK = min(20, length(y)-1);   
   }
-  if(is.null(numComponents)){ # maximum number of principal components to return
-    numComponents = NULL;
-  }
+#  if(is.null(numComponents)){ # maximum number of principal components to return
+#    numComponents = NULL;
+#  }
   if(is.null(dataType)){ #do we have dataType or sparse functional data
     dataType = IsRegular(t);    
   }
@@ -103,13 +103,13 @@ SetOptions = function(y, t, optns){
       methodXi = "IN";
     }
   }
-  if(is.null(shrink)){ # apply shrinkage to estimates of random coefficients (dataType data only)
-    shrink = FALSE;
-  }
-  if(shrink == TRUE && (error != TRUE || methodXi != "IN")){ # Check for valid shrinkage choice
-    cat('shrinkage method only has effects when methodXi = "IN" and error = TRUE! Reset to shrink = FALSE now!\n');
-    shrink = FALSE      
-  }
+#  if(is.null(shrink)){ # apply shrinkage to estimates of random coefficients (dataType data only)
+#    shrink = FALSE;
+#  }
+#  if(shrink == TRUE && (error != TRUE || methodXi != "IN")){ # Check for valid shrinkage choice
+#    cat('shrinkage method only has effects when methodXi = "IN" and error = TRUE! Reset to shrink = FALSE now!\n');
+#    shrink = FALSE      
+#  }
   if(is.null(kernel)){ # smoothing kernel choice
     if(dataType == "Dense"){
       kernel = "epan";   # kernel: Epanechnikov
@@ -203,10 +203,11 @@ SetOptions = function(y, t, optns){
           numCVcurves = numCVcurves, selectionMethod = selectionMethod, FVEthreshold = FVEthreshold,
           fitEigenValues = fitEigenValues,
           maxK = maxK, dataType = dataType, error = error, nRegGrid = nRegGrid, rotationCut = rotationCut,
-          methodXi = methodXi, shrink = shrink, # newdata = newdata, 
+          methodXi = methodXi, # shrink = shrink, # newdata = newdata, 
           kernel = kernel, 
           # corrPlot = corrPlot, corrPlotType = corrPlotType,  screePlot = screePlot, designPlot = designPlot,
-          numComponents = numComponents, diagnosticsPlot = diagnosticsPlot,
+          # numComponents = numComponents,
+          diagnosticsPlot = diagnosticsPlot,
           numBins = numBins, useBins = useBins, yname = yname,  rho = rho, 
           verbose = verbose, userMu = userMu, userCov = userCov, methodMu= methodMu, outPercent = outPercent, useBinnedData = useBinnedData) )
 }

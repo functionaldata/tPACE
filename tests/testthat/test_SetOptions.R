@@ -6,8 +6,8 @@ library(testthat)
  optns = list(bwmu = NULL, bwmuMethod = NULL, bwuserCov = NULL, bwuserCovGcv = NULL,
           numCVcurves = NULL,  selectionMethod = NULL, FVEthreshold = NULL,
           maxK = NULL, dataType = NULL, error = NULL, nRegGrid = NULL, 
-          methodXi = NULL, shrink = NULL, kernel = NULL, 
-          numComponents = NULL, diagnosticsPlot = NULL,
+          methodXi = NULL, kernel = NULL, 
+          diagnosticsPlot = NULL,
           numBins = NULL, yname = NULL, rho = NULL, rotationCut = NULL,
           verbose = NULL, userMu = NULL, userCov = NULL, methodMu = NULL, methodCov = NULL, 
           outPercent = NULL, useBinnedData = NULL, rotationCut = NULL)
