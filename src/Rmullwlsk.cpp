@@ -8,7 +8,7 @@
 // [[Rcpp::export]]
 
 
-Eigen::MatrixXd Rmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const std::string kernel_type, const Eigen::Map<Eigen::MatrixXd> & tPairs, const Eigen::Map<Eigen::MatrixXd> & cxxn, const Eigen::Map<Eigen::VectorXd> & win,  const Eigen::Map<Eigen::VectorXd> & xgrid, const Eigen::Map<Eigen::VectorXd> & ygrid, const bool & bwCheck){ 
+Eigen::MatrixXd Rmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const std::string kernel_type, const Eigen::Map<Eigen::MatrixXd> & tPairs, const Eigen::Map<Eigen::MatrixXd> & cxxn, const Eigen::Map<Eigen::VectorXd> & win,  const Eigen::Map<Eigen::VectorXd> & xgrid, const Eigen::Map<Eigen::VectorXd> & ygrid, const bool & bwCheck, const bool & transp = true){ 
 
   // tPairs : xin (in MATLAB code)
   // cxxn : yin (in MATLAB code)
@@ -53,7 +53,7 @@ Eigen::MatrixXd Rmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const std::st
   mu.setZero();    
 
   for (unsigned int i = 0; i != ygridN; ++i){  
-    for (unsigned int j = i; j != xgridN ; ++j){ 
+    for (unsigned int j = i; j < xgridN ; ++j){ 
 
       //locating local window (LOL) (bad joke)
       std::vector <unsigned int> indx; 
@@ -174,12 +174,14 @@ Eigen::MatrixXd Rmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const std::st
   // m1=  mu.triangularView<StrictlyUpper>().transpose();
   // m2=  mu.triangularView<Upper>()  ; 
   // m1 = m1+m2;
-
-  Eigen::MatrixXd result(ygrid.size(),xgrid.size());
-  result = mu + mu.transpose();
-  result.diagonal() = 0.5 * result.diagonal();
-      
-  return ( result ); 
+  if (transp) {
+    Eigen::MatrixXd result(ygrid.size(),xgrid.size());
+    result = mu + mu.transpose();
+    result.diagonal() = 0.5 * result.diagonal();
+    return ( result ); 
+  } else {
+    return( mu );
+  }
 }
 
  

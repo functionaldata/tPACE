@@ -1,5 +1,5 @@
 library(testthat)
-source('GetRawCrCovFuncScal.R')
+#source('GetRawCrCovFuncScal.R')
 
 # These check out OK.
 test_that("basic R output matche MATLAB output for different means", {
@@ -30,10 +30,10 @@ test_that("basic R output matche MATLAB output for different means", {
   expect_equal( DD$tpairn, c(1,2,3,8,1,3,5,8,1,2,5)) 
   expect_equal( EE$tpairn, c(1,2,3,8,5))
 
-  expect_equal( AA$raw_ccov, c(0, 0, 0, 1,-1,-2))
-  expect_equal( BB$raw_ccov, c(-8,-6,-4,-1,1,2))
-  expect_equal( CC$raw_ccov, c(-8,-6,-4,2,-1,1,2,1))
-  expect_equal( DD$raw_ccov, c(16,12,8,-4, 5,-5,-10,-5,0,0,0))
-  expect_equal( EE$raw_ccov, c(-8,-6,-4,2,2))
+  expect_equal( AA$rawCCov, c(0, 0, 0, 1,-1,-2))
+  expect_equal( BB$rawCCov, c(-8,-6,-4,-1,1,2))
+  expect_equal( CC$rawCCov, c(-8,-6,-4,2,-1,1,2,1))
+  expect_equal( DD$rawCCov, c(16,12,8,-4, 5,-5,-10,-5,0,0,0))
+  expect_equal( EE$rawCCov, c(-8,-6,-4,2,2))
 
 })

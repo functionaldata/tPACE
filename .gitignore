@@ -38,7 +38,8 @@ ehthumbs.db
 Thumbs.db
 
 # Specific to this repo
-# .RData 
+ .RData 
+ .RDataTmp
 *.swp
 *.swo
 *.mat
