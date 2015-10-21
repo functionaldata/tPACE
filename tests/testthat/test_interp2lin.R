@@ -2,7 +2,7 @@
 # devtools::load_all()
 
 library(testthat)
-
+library(pracma)
 # These check out OK.
 U1 = test_that("basic pracma::interp2 example gives same output ", { 
 
