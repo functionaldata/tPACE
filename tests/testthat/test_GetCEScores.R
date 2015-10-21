@@ -47,8 +47,8 @@ expect_equal(sapply(tmp, function(x) length(x$muVec)), sapply(samp1$yList, lengt
 test_that('Observations with length 0 produces NA in the xiEst, xiVar, and fittedY', {
   set.seed(1)
   n <- 20
-  pts <- seq(0, 1, by=0.05)
-  truncPts <- seq(0.2, 0.8, 0.05)
+  pts <- signif(seq(0, 1, by=0.05), 4)
+  truncPts <- signif(seq(0.2, 0.8, 0.05), 4)
   regGrid <- seq(0, 1, by=0.01)
   sigma2 <- 0.4
   samp1 <- wiener(n, pts) + rnorm(length(pts) * n, sd=sigma2)

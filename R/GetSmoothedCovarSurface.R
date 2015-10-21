@@ -58,7 +58,7 @@ GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, optns, useBinned
     } else if (bwuserCovGcv == 'CV') { # CV 10 fold
       gcvObj <- gcvlwls2dV2(obsGrid, regGrid, kern=kern, rcov=rcov, t=t,
                           verbose=optns$verbose, 
-                          CV=sprintf('%dfold', optns[['kFoldCov']]))
+                          CV=optns[['kFoldCov']])
       bwCov <- gcvObj$h
     }
   } else if (bwuserCov != 0) {
