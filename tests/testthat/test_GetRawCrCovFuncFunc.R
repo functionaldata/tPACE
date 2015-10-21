@@ -1,5 +1,5 @@
 library(testthat)
-source('GetRawCrCovFuncFunc.R')
+#source('GetRawCrCovFuncFunc.R')
 
 # These check out OK.
 test_that("basic R output matche MATLAB output for different means", {
@@ -35,21 +35,21 @@ test_that("basic R output matche MATLAB output for different means", {
   # t_x = {[1 2 3],[1 3 8],[1 2]}; x= {[5 0 3],[1 4 8], [1 2]}; mu_x = [1,4, 15, 16]; t_y = {[1 2],  [16:20] [1 2]}; y ={[1 5],  [1:5], [11 31]}; mu_y = [6 15 15 0 0 0 0 ]; isYFun=1; regular=0;
 
   expect_equal( as.vector(AA$tpairn), c(1, 1, 2, 2, 3, 3, 1, 2, 1, 2, 1, 2) )
-  expect_equal( AA$raw_ccov, c(-20, 0, 20, 0, 10, 0))
+  expect_equal( AA$rawCCov, c(-20, 0, 20, 0, 10, 0))
 
   expect_equal( as.vector(BB$tpairn), c(1, 1, 2, 2, 3, 3, 1, 2, 1, 2, 1, 2) )
-  expect_equal( BB$raw_ccov, c(-20, -40, 20, 40, 60, 120))
+  expect_equal( BB$rawCCov, c(-20, -40, 20, 40, 60, 120))
 
   expect_equal( as.vector(CC$tpairn), c(1, 1, 2, 2, 3, 3, 3, 1, 2, 1, 2, 1, 2, 1) )
-  expect_equal( CC$raw_ccov, c(-20, -40, 20, 40, 60, 120, 11))
+  expect_equal( CC$rawCCov, c(-20, -40, 20, 40, 60, 120, 11))
 
   expect_equal( as.vector(DD$tpairn), c(1, 1, 2, 2, 3, 3, 1, 3, 8, 1, 2, 1, 2, 1, 2, 1, 1, 1) )
-  expect_equal( DD$raw_ccov, c(-20, -40, 20, 40, 60, 120, 0, 11, 8))
+  expect_equal( DD$rawCCov, c(-20, -40, 20, 40, 60, 120, 0, 11, 8))
 
   expect_equal( as.vector(EE$tpairn), c( 1, 1, 2, 2, 3, 3, 1, 3, 8, 1, 2, 1, 2, 1, 2, 16, 16, 16 ) )
-  expect_equal( EE$raw_ccov, c(-20, -40, 20, 40, 60, 120, 0, 110, 80))
+  expect_equal( EE$rawCCov, c(-20, -40, 20, 40, 60, 120, 0, 110, 80))
 
   expect_equal( as.vector(FF$tpairn), c(1, 1, 2, 2, 3, 3, 1, 1, 1, 1, 1, 3, 3, 3, 3, 3, 8, 8, 8, 8, 8, 1, 1, 2, 2, 1, 2, 1, 2, 1, 2, 16, 17, 18, 19, 20, 16, 17, 18, 19, 20, 16, 17, 18, 19, 20, 1, 2, 1, 2 ) )
-  expect_equal( FF$raw_ccov, c( -20, -40, 20, 40, 60, 120, 0, 0, 0, 0, 0, 154, -22, -33, -44, -55, 112, -16, -24, -32, -40, 0, 0, -10, -32))
+  expect_equal( FF$rawCCov, c( -20, -40, 20, 40, 60, 120, 0, 0, 0, 0, 0, 154, -22, -33, -44, -55, 112, -16, -24, -32, -40, 0, 0, -10, -32))
 })
 

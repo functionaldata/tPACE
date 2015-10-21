@@ -3,11 +3,11 @@ devtools::load_all()
 library(testthat)
 
 try(silent = TRUE, load('data/dataForGetRawCov.RData'))
-try(silent = TRUE, load('tPACE/data/dataForGetRawCov.RData'))
+# try(silent = TRUE, load('tPACE/data/dataForGetRawCov.RData'))
 rcov <- GetRawCov(y,t, sort(unlist(t)), mu,'Sparse',FALSE) 
 r <- range(sort(unlist(t)))
 regGrid <- seq(r[1], r[2], length.out=101)
-tmp <- gcvlwls2dV2(sort(unlist(t)), regGrid, kern='epan', rcov=rcov, t=t)
+tmp <- gcvlwls2dV2(sort(unlist(t)), regGrid, kern='epan', rcov=rcov, t=t)   ## Why is this guy outside a test?
 getGCVscoresV2(tmp$minBW, 'epan', rcov$tPairs, rcov$cxxn, regGrid=regGrid)
 
 test_that('getGCVscoresV2 spits out Inf if bandwidth is too small', {

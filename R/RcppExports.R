@@ -21,12 +21,12 @@ interp2lin <- function(xin, yin, zin, xou, you) {
     .Call('tPACE_interp2lin', PACKAGE = 'tPACE', xin, yin, zin, xou, you)
 }
 
-Rmullwlsk <- function(bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck) {
-    .Call('tPACE_Rmullwlsk', PACKAGE = 'tPACE', bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck)
-}
-
 RmullwlskCC <- function(bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck) {
     .Call('tPACE_RmullwlskCC', PACKAGE = 'tPACE', bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck)
+}
+
+Rmullwlsk <- function(bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck, transp = TRUE) {
+    .Call('tPACE_Rmullwlsk', PACKAGE = 'tPACE', bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck, transp)
 }
 
 Rrotatedmullwlsk <- function(bw, kernel_type, tPairs, cxxn, win, xygrid, npoly, bwCheck) {
