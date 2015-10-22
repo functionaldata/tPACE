@@ -40,8 +40,8 @@ test_that('GetRho matches cv_rho.m',
 test_that('Truncation works for GetRho', {
   set.seed(1)
   n <- 20
-  pts <- seq(0, 1, by=0.05)
-  truncPts <- seq(0.1, 0.9, 0.05)
+  pts <- signif(seq(0, 1, by=0.05), 14)
+  truncPts <- signif(seq(0.1, 0.9, 0.05), 14)
   mu <- rep(0, length(pts))
   samp4 <- wiener(n, pts) + rnorm(n * length(pts), sd=0.1)
   samp4 <- sparsify(samp4, pts, 10)
