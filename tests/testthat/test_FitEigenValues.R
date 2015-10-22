@@ -1,5 +1,5 @@
 devtools::load_all()
-options(error=recover)
+#options(error=recover)
 library(testthat)
 
 test_that('FitEigenValues works for binned rcov, error=TRUE', {
@@ -30,7 +30,7 @@ test_that('FitEigenValues is consistent', {
   rcov3 <- GetRawCov(samp3$yList, samp3$tList, pts, rep(0, length(pts)), 'Sparse', error=TRUE)
   phi <- cbind(sin((2 * 1 - 1) * pi * pts / 2), sin((2 * 2 - 1) * pi * pts / 2)) * sqrt(2)
   estLam <- FitEigenValues(rcov3, pts, phi, 2)
-  expect_equal(estLam, trueLambda[1:length(estLam)], 0.15)
+  expect_equal(estLam, trueLambda[1:length(estLam)], tolerance = 0.15)
 })
 
 # Test truncation

@@ -22,7 +22,7 @@ test_that('Eigenvalues are close', {
 # TEst integrate to one.
 innerProd <- apply(tmp$phi, 2, function(lam1) 
                    apply(tmp$phi, 2, function(lam2) 
-                         trapz(noErrBin$outGrid, lam1 * lam2)))
+                         pracma::trapz(noErrBin$outGrid, lam1 * lam2)))
 test_that('Eigenfunctions are orthonormal', {
   expect_equal(diag(innerProd), rep(1, tmp$kChoosen))
   expect_equal(innerProd[row(innerProd) != col(innerProd)], rep(0, length(innerProd) - nrow(innerProd)), tolerance=0.010)
