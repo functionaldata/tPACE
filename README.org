@@ -3,7 +3,7 @@
 ** Installation
 You can install the package in R using:
 #+BEGIN_SRC R
-devtools::install_github("hadjipantelis/tPACE")
+devtools::install_github("hadjipantelis/tPACE", ref='demo')
 #+END_SRC
 
 ** Load Package and Data
