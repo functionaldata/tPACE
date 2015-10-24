@@ -90,7 +90,7 @@ CrCovYZ <- function(bw = NULL, Z, Zmu = NULL, Ly, Lt = NULL, Ymu = NULL, support
 smoothRCC <- function(rCC,bw,xout){
   x = matrix( unlist(rCC),  ncol=2)
   x= x[order(x[,1]),]
-  return( tPACE::Rlwls1d(bw=bw, win=rep(1,nrow(x)), yin=x[,2], xin=x[,1], 'gauss', xout=xout) ) 
+  return( Rlwls1d(bw=bw, win=rep(1,nrow(x)), yin=x[,2], xin=x[,1], 'gauss', xout=xout) ) 
 }
 
 # Calculate GCV cost off smoothed sample assuming a Gaussian kernel

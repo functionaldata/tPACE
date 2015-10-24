@@ -106,7 +106,7 @@ getBWidths <- function(ulLt1, ulLt2){
 # xout2   : vector L-1
 # returns : matrix M-L
 smoothRCC2D <- function(rcov,bw1, bw2, xout1, xout2){
-  return( tPACE::lwls2dV2( bw = c(bw1, bw2), kern = 'gauss', xin=rcov$tpairn, 
+  return( lwls2dV2( bw = c(bw1, bw2), kern = 'gauss', xin=rcov$tpairn, 
                            yin=rcov$rawCC, xout1=xout1, xout2=xout2, crosscov=TRUE) )  
 }
 
@@ -119,7 +119,7 @@ smoothRCC2D <- function(rcov,bw1, bw2, xout1, xout2){
 # returns   : scalar
 GCVgauss2D <- function( smoothedCC, smoothGrid, rawCC, rawGrid, bw1, bw2){ 
 
-  obsFit <- tPACE::interp2lin(smoothGrid[,1], smoothGrid[,2], smoothedCC, as.numeric(rawGrid[, 1]), 
+  obsFit <- interp2lin(smoothGrid[,1], smoothGrid[,2], smoothedCC, as.numeric(rawGrid[, 1]), 
                               as.numeric(rawGrid[, 2]))    
   # workaround for degenerate case.
   if (any(is.nan(obsFit))  || any(is.infinite(obsFit))  ){
