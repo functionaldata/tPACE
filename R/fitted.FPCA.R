@@ -3,7 +3,8 @@
 #' Combine the zero-meaned fitted values and the interpolated mean to get the final values.
 #' 
 #' @param object A object of class FPCA returned by the function FPCA().   
-#' @param objectDer A object of class FPCAder returned by the function FPCAder(. 
+#' @param objectDer A object of class FPCAder returned by the function FPCAder(). 
+#' @param k The integer number of the first k components used for the representation.
 #' @param ... Additional arguments
 #'
 #' @examples
@@ -19,7 +20,7 @@
 #' @export
 
 
-fitted.FPCA <-  function (object, objectDer = NULL, ...) {
+fitted.FPCA <-  function (object, objectDer = NULL, k = NULL, ...) {
   
   fpcaObj <- object;
   fpcaObjDer <- objectDer;
@@ -37,7 +38,17 @@ fitted.FPCA <-  function (object, objectDer = NULL, ...) {
     objToUse <- fpcaObjDer
   }
 
-  ZMFV = fpcaObj$xiEst %*% t(objToUse$phi);   
+  if( is.null(k) ){
+    k = length( fpcaObj$lambda )
+  } else {
+    if( ( round(k)>=1) && ( round(k) <= length( fpcaObj$lambda ) ) ){
+      k = round(k);
+    } else {
+      stop("'fitted.FPCA()' is requested to use more components than it currently has available. (or 'k' is smaller than 1)")
+    }
+  }
+
+  ZMFV = fpcaObj$xiEst[,1:k, drop = FALSE] %*% t(objToUse$phi[,1:k, drop = FALSE]);   
   IM = approx(x= objToUse$obsGrid, y=objToUse$mu, fpcaObj$workGrid)$y 
   return( t(apply( ZMFV, 1, function(x) x + IM))) 
 }

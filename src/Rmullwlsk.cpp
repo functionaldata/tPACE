@@ -170,15 +170,12 @@ Eigen::MatrixXd Rmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const std::st
      return(checker);
   }
     
-  // Something like the following should be faster I will look up this in the future.
-  // m1=  mu.triangularView<StrictlyUpper>().transpose();
-  // m2=  mu.triangularView<Upper>()  ; 
-  // m1 = m1+m2;
   if (transp) {
-    Eigen::MatrixXd result(ygrid.size(),xgrid.size());
-    result = mu + mu.transpose();
-    result.diagonal() = 0.5 * result.diagonal();
-    return ( result ); 
+  //  Eigen::MatrixXd result(ygrid.size(),xgrid.size());
+  //  result = mu + mu.transpose();
+  //  result.diagonal() = 0.5 * result.diagonal();
+  //  return ( result ); 
+    return ( Eigen::MatrixXd(mu.triangularView<Eigen::StrictlyUpper>().transpose()) + Eigen::MatrixXd(mu.triangularView<Eigen::Upper>()));
   } else {
     return( mu );
   }
