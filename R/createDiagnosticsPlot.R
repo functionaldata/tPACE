@@ -2,7 +2,6 @@
 #' 
 #' This function will open a new device if not instructed otherwise.
 #'
-#' @param t A list of \emph{n} vectors containing the observation time points for each individual corresponding to y.
 #' @param ret An FPCA class object returned by FPCA().
 #' @param openNewDev A logical specifying if a new device should be opened - default: TRUE
 #'
@@ -13,7 +12,7 @@
 #' sampWiener <- wiener(n, pts)
 #' sampWiener <- sparsify(sampWiener, pts, 10)
 #' res <- FPCA(sampWiener$yList, sampWiener$tList, list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
-#' createDiagnosticsPlot(sampWiener$tList, res)
+#' createDiagnosticsPlot(res)
 #' @export
 
 createDiagnosticsPlot <-function(ret, openNewDev = TRUE){ 
