@@ -3,7 +3,7 @@
 #' This function will open a new device if not instructed otherwise.
 #'
 #' @param yy returned object from FPCA().
-#' @param corrPlotType a string specifying the type of covariance surface to be plotted:
+#' @param covPlotType a string specifying the type of covariance surface to be plotted:
 #'                     'Smoothed': plot the smoothed cov surface 
 #'                     'Fitted': plot the fitted cov surface
 #'                     'Raw': plot the raw covariance scatter plot
@@ -21,9 +21,9 @@
 #' createCovPlot(res)
 #' @export
 
-createCovPlot = function(yy, corrPlotType = 'Fitted', isInteractive = FALSE){
+createCovPlot = function(yy, covPlotType = 'Fitted', isInteractive = FALSE){
   # Check if plotting covariance surface for fitted covariance surface is proper
-  if(corrPlotType == 'Fitted'){
+  if(covPlotType == 'Fitted'){
     no_opt = length(yy$lambda)
     if(length(no_opt) == 0){
       warning('Warning: Input is not a valid FPCA or FPCder output.')
@@ -48,46 +48,54 @@ createCovPlot = function(yy, corrPlotType = 'Fitted', isInteractive = FALSE){
   
   
   workGrid = yy$workGrid
-  if(corrPlotType == 'Smoothed'){
+  if(covPlotType == 'Smoothed'){
     covSurf = yy$smoothedCov # smoothed covariance matrix
-  } else if(corrPlotType == 'Fitted'){
+  } else if(covPlotType == 'Fitted'){
     covSurf = yy$fittedCov # fitted covariance matrix
-  } else if(corrPlotType == 'Raw'){
-    covSurf = yy$rawCov # raw covariance object
+  } else {
+    warning("Covariance plot type no recognised; using default ('Fitted').")
+    covSurf = yy$fittedCov 
+    covPlotType = 'Fitted'
   }
+
+ # if(covPlotType == 'Raw'){
+ #   covSurf = yy$rawCov # raw covariance object
+ # }
   
   if(isInteractive){ # Interactive Plot
-    if(corrPlotType == 'Fitted'){
-      persp3d(workGrid, workGrid, covSurf, col = 'blue',
+    if(covPlotType == 'Fitted'){
+      rgl::persp3d(workGrid, workGrid, covSurf, col = 'blue',
         xlab = 't', ylab = 't', zlab = 'Fitted Covariance Surface',
         main = paste('Fitted covariance surface', yname))
-    } else if(corrPlotType == 'Smoothed'){
-      persp3d(workGrid, workGrid, covSurf, col = 'blue',
+    } else if(covPlotType == 'Smoothed'){
+      rgl::persp3d(workGrid, workGrid, covSurf, col = 'blue',
         xlab = 't', ylab = 't', zlab = 'Smoothed Covariance Surface',
         main = paste('Smoothed covariance surface', yname))
-    } else if(corrPlotType == 'Raw'){
-      tPairs = covSurf$tPairs
-      cxxn = covSurf$cxxn
-      plot3d(tPairs[,1], tPairs[,2], cxxn, pch = 19, col = 'blue',
-        xlab = 't', ylab = 't', zlab = 'Raw Covariance Scatter Plot',
-        main = paste('Raw covariance scatter plot', yname))
     }
+#  else if(covPlotType == 'Raw'){
+#      tPairs = covSurf$tPairs
+#      cxxn = covSurf$cxxn
+#      rgl::plot3d(tPairs[,1], tPairs[,2], cxxn, pch = 19, col = 'blue',
+#        xlab = 't', ylab = 't', zlab = 'Raw Covariance Scatter Plot',
+#        main = paste('Raw covariance scatter plot', yname))
+#    }
   } else { # Static plot
-    if(corrPlotType == 'Fitted'){
+    if(covPlotType == 'Fitted'){
       persp3D(workGrid, workGrid, covSurf,
         xlab = 't', ylab = 't', zlab = 'Fitted Covariance Surface',
         main = paste('Fitted covariance surface', yname))
-    } else if(corrPlotType == 'Smoothed'){
+    } else if(covPlotType == 'Smoothed'){
       persp3D(workGrid, workGrid, covSurf,
         xlab = 't', ylab = 't', zlab = 'Smoothed Covariance Surface',
         main = paste('Smoothed covariance surface', yname))      
-    } else if(corrPlotType == 'Raw'){
-      tPairs = covSurf$tPairs
-      cxxn = covSurf$cxxn
-      points3D(tPairs[,1], tPairs[,2], cxxn, pch = 19,
-        xlab = 't', ylab = 't', zlab = 'Raw Covariance Scatter Plot',
-        main = paste('Raw covariance scatter plot', yname))
-    }
+    } 
+#  else if(covPlotType == 'Raw'){
+#      tPairs = covSurf$tPairs
+#      cxxn = covSurf$cxxn
+#      points3D(tPairs[,1], tPairs[,2], cxxn, pch = 19,
+#        xlab = 't', ylab = 't', zlab = 'Raw Covariance Scatter Plot',
+#        main = paste('Raw covariance scatter plot', yname))
+#    }
   }
 
 }
