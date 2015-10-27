@@ -42,14 +42,14 @@ createDesignPlot = function(t, obsGrid = NULL, isColorPlot=FALSE, noDiagonal=TRU
   #   main = titleString, col = 'white')
 
   if(isColorPlot == TRUE){
-  	createColorPlot(res, obsGrid)
+  	createColorPlot(res, obsGrid,titleString)
   } else {
-  	createBlackPlot(res, obsGrid)
+  	createBlackPlot(res, obsGrid,titleString)
   }
 
 }
 
-createBlackPlot = function(res, obsGrid){
+createBlackPlot = function(res, obsGrid,titleString ){
 #  qpoints = c();
 #  rpoints = c();  
 #  for(i in 1:length(obsGrid)){
@@ -58,12 +58,19 @@ createBlackPlot = function(res, obsGrid){
 #    rpoints = c(rpoints,obsGrid[idx])
 #  }
 #  points(qpoints, rpoints, pch = '.')
-  image(res, col=c('white','black'), axes=FALSE, xlab = 'Observed time grid', ylab = 'Observed time grid', main = titleString)
-  axis(1, seq(0,1,length.out=11), obsGrid[round(seq(1,length(obsGrid), length.out=11))],col.axis="black")
-  axis(2, seq(0,1,length.out=11), obsGrid[round(seq(1,length(obsGrid), length.out=11))],col.axis="black")
+  # image(res, col=c('white','black'), axes=FALSE, xlab = 'Observed time grid', ylab = 'Observed time grid', main = titleString)
+  
+  u1 = as.vector(res)
+  u2 = as.vector(t(res))
+  t1 = rep(obsGrid, times = length(obsGrid) )
+  t2 = rep(obsGrid, each = length(obsGrid)) 
+  plot(t1[u1 != 0], t2[u2 !=0] , axes=FALSE, xlab = 'Observed time grid', ylab = 'Observed time grid', main = titleString, pch = 19 )
+  axis(1, obsGrid[round(seq(1,length(obsGrid), length.out=11))], obsGrid[round(seq(1,length(obsGrid), length.out=11))],col.axis="black")
+  axis(2, obsGrid[round(seq(1,length(obsGrid), length.out=11))], obsGrid[round(seq(1,length(obsGrid), length.out=11))],col.axis="black")
+  
 }
 
-createColorPlot = function(res, obsGrid){
+createColorPlot = function(res, obsGrid,titleString ){
 #  for(i in 1:length(obsGrid)){
 #    tmp = res[i,]
 #    idx = which(tmp > 0)
@@ -81,8 +88,22 @@ createColorPlot = function(res, obsGrid){
   colPalette = c('white', 'black', 'blue', 'green', 'red')
   resColPalt = colPalette[resVals+1]
 
-  image(res, col= resColPalt, axes=FALSE, xlab = 'Observed time grid', ylab = 'Observed time grid', main = titleString)
-  axis(1, seq(0,1,length.out=11), obsGrid[round(seq(1,length(obsGrid), length.out=11))],col.axis="black")
-  axis(2, seq(0,1,length.out=11), obsGrid[round(seq(1,length(obsGrid), length.out=11))],col.axis="black")
+  # image(res, col= resColPalt, axes=FALSE, xlab = 'Observed time grid', ylab = 'Observed time grid', main = titleString)
+  
+  u1 = as.vector(res)
+  u2 = as.vector(t(res))
+  t1 = rep(obsGrid, times = length(obsGrid) )
+  t2 = rep(obsGrid, each = length(obsGrid)) 
+  plot(t1[u1 == 1], t2[u2 ==1], col= 'black' , axes=FALSE, xlab = 'Observed time grid', ylab = 'Observed time grid', main = titleString, pch = 19 )
+  points(t1[u1 == 2], t2[u2 ==2], col= 'blue' , pch = 19 )
+  points(t1[u1 == 3], t2[u2 ==3], col= 'green' , pch = 19)
+  points(t1[u1 == 4], t2[u2 ==4], col= 'red', pch = 19 )
+  axis(1, obsGrid[round(seq(1,length(obsGrid), length.out=11))], obsGrid[round(seq(1,length(obsGrid), length.out=11))],col.axis="black")
+  axis(2, obsGrid[round(seq(1,length(obsGrid), length.out=11))], obsGrid[round(seq(1,length(obsGrid), length.out=11))],col.axis="black")
   legend('right', c('1', '2', '3', '4+'), pch = 19,  col = c('black','blue','green','red'), title = 'Count',bg='white' )
 }
+
+
+
+
+
