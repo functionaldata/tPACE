@@ -20,7 +20,7 @@ createDiagnosticsPlot <-function(ret, openNewDev = TRUE){
   if(openNewDev){ 
     dev.new(width=6.2, height=6.2, noRStudioGD=TRUE) ; 
   }
-  fves = ret$FVE
+  fves = ret$cumFVE
   mu = ret$mu
   obsGrid = ret$obsGrid      
   workGrid = ret$workGrid
