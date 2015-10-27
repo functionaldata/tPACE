@@ -36,10 +36,10 @@ createDesignPlot = function(t, obsGrid = NULL, isColorPlot=FALSE, noDiagonal=TRU
   # or getCount
   
   # construct plot structure
-  plot(obsGrid[1], obsGrid[1], xlim = range(obsGrid) + isColorPlot * 0.25 * c(0,diff(range(obsGrid))),
-     ylim = range(obsGrid),
-     xlab = 'Observed time grid', ylab = 'Observed time grid',
-     main = titleString, col = 'white')
+  #  plot(obsGrid[1], obsGrid[1], xlim = range(obsGrid) + isColorPlot * 0.25 * c(0,diff(range(obsGrid))),
+  #   ylim = range(obsGrid),
+  #   xlab = 'Observed time grid', ylab = 'Observed time grid',
+  #   main = titleString, col = 'white')
 
   if(isColorPlot == TRUE){
   	createColorPlot(res, obsGrid)
@@ -50,43 +50,39 @@ createDesignPlot = function(t, obsGrid = NULL, isColorPlot=FALSE, noDiagonal=TRU
 }
 
 createBlackPlot = function(res, obsGrid){
-  qpoints = c();
-  rpoints = c();
-  
-  for(i in 1:length(obsGrid)){
-    idx = which(res[i,] > 0)
-    qpoints = c(qpoints,rep(obsGrid[i], length(idx)))
-    rpoints = c(rpoints,obsGrid[idx])
-  }
-  points(qpoints, rpoints, pch = '.')
+#  qpoints = c();
+#  rpoints = c();  
+#  for(i in 1:length(obsGrid)){
+#    idx = which(res[i,] > 0)
+#    qpoints = c(qpoints,rep(obsGrid[i], length(idx)))
+#    rpoints = c(rpoints,obsGrid[idx])
+#  }
+#  points(qpoints, rpoints, pch = '.')
+  image(res, col=c('white','black'), axes=FALSE, xlab = 'Observed time grid', ylab = 'Observed time grid', main = titleString)
+  axis(1, seq(0,1,length.out=11), obsGrid[round(seq(1,length(obsGrid), length.out=11))],col.axis="black")
+  axis(2, seq(0,1,length.out=11), obsGrid[round(seq(1,length(obsGrid), length.out=11))],col.axis="black")
 }
 
 createColorPlot = function(res, obsGrid){
-  for(i in 1:length(obsGrid)){
-    tmp = res[i,]
-    idx = which(tmp > 0)
-    if(length(idx) > 0){
-      for(j in 1:length(idx)){
-        points(obsGrid[i], obsGrid[idx[j]], col = searchCol(tmp[idx[j]]),
-          pch = 19)
-      }
-    }
-  }
-  legend('right', c('1', '2', '3~5', '>=6'), pch = 14, 
-    col = c('red', 'purple', 'green', 'blue'), title = 'Count')
-}
+#  for(i in 1:length(obsGrid)){
+#    tmp = res[i,]
+#    idx = which(tmp > 0)
+#    if(length(idx) > 0){
+#      for(j in 1:length(idx)){
+#        points(obsGrid[i], obsGrid[idx[j]], col = searchCol(tmp[idx[j]]),
+#          pch = 19)
+#      }
+#    }
+#  }
+#  legend('right', c('1', '2', '3~5', '>=6'), pch = 14, 
+#    col = c('red', 'purple', 'green', 'blue'), title = 'Count')
+  res[res >4 ] = 4;
+  resVals = sort(unique(as.vector(res)));
+  colPalette = c('white', 'black', 'blue', 'green', 'red')
+  resColPalt = colPalette[resVals+1]
 
-searchCol = function(val){
-  if(val == 1){
-	  col = 'red'
-	} else if(val == 2){
-	  col = 'purple'
-	} else if(val >= 3 && val <= 5){
-    col = 'green'
-  } else if(val >= 6){
-    col = 'blue'
-  } else {
-    col = 'white'
-  }
-  return(col)
+  image(res, col= resColPalt, axes=FALSE, xlab = 'Observed time grid', ylab = 'Observed time grid', main = titleString)
+  axis(1, seq(0,1,length.out=11), obsGrid[round(seq(1,length(obsGrid), length.out=11))],col.axis="black")
+  axis(2, seq(0,1,length.out=11), obsGrid[round(seq(1,length(obsGrid), length.out=11))],col.axis="black")
+  legend('right', c('1', '2', '3', '4+'), pch = 19,  col = c('black','blue','green','red'), title = 'Count',bg='white' )
 }
