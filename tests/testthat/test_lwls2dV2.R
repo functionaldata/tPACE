@@ -33,7 +33,7 @@ if(1==1){
   
 }
 
-if(1==1){
+if(1==2){
   
   test_that('lwls2dV2 parallel works alright with a larger raw covariance',{
     
