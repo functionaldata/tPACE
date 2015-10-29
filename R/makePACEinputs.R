@@ -8,9 +8,15 @@
 #' @return L   : list containing 3 lists each of length 'm', 'm' being the number of unique subject IDs
 #' @export
 
-makePACEinputs <- function(IDs = NULL, tVec, yVec){
+makePACEinputs <- function(IDs = NULL, tVec, yVec, na.rm=FALSE){
 
   if( !is.null(IDs) ){ 
+    if (na.rm) {
+      dat <- na.omit(data.frame(IDs, tVec, yVec))
+      IDs <- dat[, 'IDs']
+      tVec <- dat[, 'tVec']
+      yVec <- dat[, 'yVec']
+    }
     uniqueIDs <- unique(IDs) 
     Lt <- lapply( uniqueIDs, function(x) tVec[ which(IDs == x)])
     Ly <- lapply( uniqueIDs, function(x) yVec[ which(IDs == x)])
