@@ -11,22 +11,26 @@ BinRawCov <- function(rcov) {
   #}
   
   # Get the count, mean raw cov, and residual sum of squares at each pair of observed time points.
-  tmp <- tapply(rcov$cxxn, list(rcov$tPairs[, 1], rcov$tPairs[, 2]), function(yy) c(mean(yy), length(yy), var(yy) * (length(yy) - 1)), simplify=FALSE)
-  # Corresponding time pairs to the non null values
-  tPairs <- unname(as.matrix(expand.grid(as.numeric(dimnames(tmp)[[1]]), as.numeric(dimnames(tmp)[[2]]))[!sapply(tmp, is.null), ]))
-  tmp <- do.call(rbind, tmp)
-  meanVals <- tmp[, 1]
-  count <- tmp[, 2]
-  RSS <- tmp[, 3] # Residual sum of squares. For implementing GCV.
+  tmp <- aggregate(rcov$cxxn, list(rcov$tPairs[, 1], rcov$tPairs[, 2]), 
+    function(yy) c(mean(yy), length(yy), var(yy) * (length(yy) - 1)))
+  
+  tPairs <- unname(as.matrix(tmp[, 1:2]))
+  summaryDat <- tmp[, 3]
+  meanVals <- summaryDat[, 1]
+  count <- summaryDat[, 2]
+  RSS <- summaryDat[, 3] # Residual sum of squares. For implementing GCV.
   RSS[is.na(RSS)] <- 0
   
   diagRSS <- diagCount <- diagMeans <- tDiag <- NULL
   if (!is.null(rcov$diag)) {
-    tmp <- do.call(rbind, tapply(rcov$diag[, 2], rcov$diag[, 1], function(yy) c(mean(yy), length(yy), var(yy) * (length(yy) - 1))))
-    tDiag <- as.numeric(rownames(tmp))
-    diagMeans <- unname(tmp[, 1])
-    diagCount <- unname(tmp[, 2])
-    diagRSS <- unname(tmp[, 3])
+    tmp <- aggregate(rcov$diag[, 2], list(rcov$diag[, 1]), 
+      function(yy) c(mean(yy), length(yy), var(yy) * (length(yy) - 1)))
+      
+    tDiag <- tmp[, 1]
+    diagSummary <- tmp[, 2]
+    diagMeans <- diagSummary[, 1]
+    diagCount <- diagSummary[, 2]
+    diagRSS <- diagSummary[, 3]
     diagRSS[is.na(diagRSS)] <- 0
   }
   
