@@ -64,9 +64,9 @@ createBlackPlot = function(res, obsGrid,titleString ){
   u2 = as.vector(t(res))
   t1 = rep(obsGrid, times = length(obsGrid) )
   t2 = rep(obsGrid, each = length(obsGrid)) 
-  plot(t1[u1 != 0], t2[u2 !=0] , axes=FALSE, xlab = 'Observed time grid', ylab = 'Observed time grid', main = titleString, pch = 19 )
-  axis(1, obsGrid[round(seq(1,length(obsGrid), length.out=11))], obsGrid[round(seq(1,length(obsGrid), length.out=11))],col.axis="black")
-  axis(2, obsGrid[round(seq(1,length(obsGrid), length.out=11))], obsGrid[round(seq(1,length(obsGrid), length.out=11))],col.axis="black")
+  plot(t1[u1 != 0], t2[u2 !=0] , xlab = 'Observed time grid', ylab = 'Observed time grid', main = titleString, pch = 19, cex =0.33 )
+ # axis(1, obsGrid[round(seq(1,length(obsGrid), length.out=11))], obsGrid[round(seq(1,length(obsGrid), length.out=11))],col.axis="black")
+ # axis(2, obsGrid[round(seq(1,length(obsGrid), length.out=11))], obsGrid[round(seq(1,length(obsGrid), length.out=11))],col.axis="black")
   
 }
 
@@ -94,12 +94,14 @@ createColorPlot = function(res, obsGrid,titleString ){
   u2 = as.vector(t(res))
   t1 = rep(obsGrid, times = length(obsGrid) )
   t2 = rep(obsGrid, each = length(obsGrid)) 
-  plot(t1[u1 == 1], t2[u2 ==1], col= 'black' , axes=FALSE, xlab = 'Observed time grid', ylab = 'Observed time grid', main = titleString, pch = 19 )
-  points(t1[u1 == 2], t2[u2 ==2], col= 'blue' , pch = 19 )
-  points(t1[u1 == 3], t2[u2 ==3], col= 'green' , pch = 19)
-  points(t1[u1 == 4], t2[u2 ==4], col= 'red', pch = 19 )
-  axis(1, obsGrid[round(seq(1,length(obsGrid), length.out=11))], obsGrid[round(seq(1,length(obsGrid), length.out=11))],col.axis="black")
-  axis(2, obsGrid[round(seq(1,length(obsGrid), length.out=11))], obsGrid[round(seq(1,length(obsGrid), length.out=11))],col.axis="black")
+  plot(t1, t2, col= 'black' , t= 'n', xlab = 'Observed time grid', ylab = 'Observed time grid', main = titleString, pch = 19 )
+  
+  points(t1[u1 == 1], t2[u2 ==1], col= 'black', pch = 19, cex =0.3)
+  points(t1[u1 == 2], t2[u2 ==2], col= 'blue',  pch = 19, cex =0.6)
+  points(t1[u1 == 3], t2[u2 ==3], col= 'green', pch = 19, cex =0.9)
+  points(t1[u1 == 4], t2[u2 ==4], col= 'red',   pch = 19, cex =0.999)
+#  axis(1, obsGrid[round(seq(1,length(obsGrid), length.out=11))], obsGrid[round(seq(1,length(obsGrid), length.out=11))],col.axis="black")
+#  axis(2, obsGrid[round(seq(1,length(obsGrid), length.out=11))], obsGrid[round(seq(1,length(obsGrid), length.out=11))],col.axis="black")
   legend('right', c('1', '2', '3', '4+'), pch = 19,  col = c('black','blue','green','red'), title = 'Count',bg='white' )
 }
 
