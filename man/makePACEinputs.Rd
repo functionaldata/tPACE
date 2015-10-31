@@ -4,7 +4,7 @@
 \alias{makePACEinputs}
 \title{Format FPCA input}
 \usage{
-makePACEinputs(IDs = NULL, tVec, yVec)
+makePACEinputs(IDs = NULL, tVec, yVec, na.rm = FALSE)
 }
 \arguments{
 \item{IDs}{: n-by-1 vector of subject IDs}

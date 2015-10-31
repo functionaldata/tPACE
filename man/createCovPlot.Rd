@@ -4,12 +4,12 @@
 \alias{createCovPlot}
 \title{Create the covariance surface plot based on the results from FPCA() or FPCder().}
 \usage{
-createCovPlot(yy, corrPlotType = "Fitted", isInteractive = FALSE)
+createCovPlot(yy, covPlotType = "Fitted", isInteractive = FALSE)
 }
 \arguments{
 \item{yy}{returned object from FPCA().}
 
-\item{corrPlotType}{a string specifying the type of covariance surface to be plotted:
+\item{covPlotType}{a string specifying the type of covariance surface to be plotted:
 'Smoothed': plot the smoothed cov surface
 'Fitted': plot the fitted cov surface
 'Raw': plot the raw covariance scatter plot}
