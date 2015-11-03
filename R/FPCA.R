@@ -52,7 +52,7 @@
 #' \item{rho}{A regularizing scalar for the measurement error variance estimate.}
 #' \item{cumFVE}{A vector with the percentages of the total variance explained by each FPC. Increase to almost 1.}
 #' \item{FVE}{A percentage indicating the total variance explained by chosen FPCs with corresponding 'FVEthreshold'.}
-#  \item{inputData}{A list containting the original 'y' and 't' lists used as inputs to FPCA.}
+#' \item{inputData}{A list containting the original 'y' and 't' lists used as inputs to FPCA.}
 #' 
 #' @examples
 #' set.seed(1)
