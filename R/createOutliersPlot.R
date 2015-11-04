@@ -3,6 +3,7 @@
 #' This function will create using the first two FPC scores a set of convex hulls of the scores as these hulls are defined by the references.
 #'
 #' @param ret An FPCA class object returned by FPCA().
+#' @param titleString String for plot title
 #'
 #' @examples
 #' set.seed(1)
@@ -17,7 +18,7 @@
 #'
 #' @export
 
-createOutliersPlot <- function(fpcaObj){
+createOutliersPlot <- function(fpcaObj, titleString =NULL){
  
  # if( is.na( any(match( variant, c('pointwise', 'bagplot') )) ) ){
  #  stop("This plotting utility function can only implement a 'bagplot' or 'pointwise' mapping.")
@@ -33,14 +34,14 @@ createOutliersPlot <- function(fpcaObj){
   
    xedge = 1.1 * max( abs(fpcaObj$xiEst[,1]))
    yedge = 1.1 * max( abs(fpcaObj$xiEst[,2]))  
-   xlabelString = paste('FPC1 scores ', round(fpcaObj$FVE[1]), '%', sep=''   )
-   ylabelString = paste('FPC2 scores ', round( diff( fpcaObj$FVE[1:2])), '%', sep=''   )
+   xlabelString = paste('FPC1 scores ', round(fpcaObj$cumFVE[1]), '%', sep=''   )
+   ylabelString = paste('FPC2 scores ', round( diff( fpcaObj$cumFVE[1:2])), '%', sep=''   )
 
 
   if ( 'obsolete' == 'pointwise'){
    
     plot(fpcaObj$xiEst[,1], fpcaObj$xiEst[,2], cex= .33, xlim = c(-xedge, xedge), ylim =c(-yedge, yedge), 
-       pch=10, xlab= xlabelString, ylab=ylabelString )
+       pch=10, xlab= xlabelString, ylab=ylabelString, main = titleString )
     abline(v=(seq(-xedge, xedge, length.out=  21)), col="lightgray", lty="dotted")
     abline(h=(seq(-yedge, yedge, length.out=  21)), col="lightgray", lty="dotted")
     
@@ -57,7 +58,7 @@ createOutliersPlot <- function(fpcaObj){
     bgObj = aplpack::compute.bagplot(x= fpcaObj$xiEst[,1], y= fpcaObj$xiEst[,2], approx.limit=3333)     
   
     plot(fpcaObj$xiEst[,1], fpcaObj$xiEst[,2], cex= .33, xlim = c(-xedge, xedge), ylim =c(-yedge, yedge), 
-       pch=10, xlab= xlabelString, ylab=ylabelString )
+       pch=10, xlab= xlabelString, ylab=ylabelString , main = titleString )
     abline(v=(seq(-xedge, xedge, length.out=  21)), col="lightgray", lty="dotted")
     abline(h=(seq(-yedge, yedge, length.out=  21)), col="lightgray", lty="dotted")  
     lines( bgObj$hull.bag[c(1:nrow(bgObj$hull.bag),1),], col=2, lwd=2)

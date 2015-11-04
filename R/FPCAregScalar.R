@@ -20,7 +20,7 @@
 
 FPCAregScalar <-  function (fpcaObjList, extVar = NULL, depVar, varSelect = NULL, bootStrap = FALSE, 
                             regressionType = NULL, y = NULL, t = NULL, lambda = 1e-9, ...) {
-
+  
   #If it is a single element automatically coerce it to be a single element list
   if (class(fpcaObjList) == "FPCA"){
     fpcaObjList = list(fpcaObjList)
@@ -35,7 +35,7 @@ FPCAregScalar <-  function (fpcaObjList, extVar = NULL, depVar, varSelect = NULL
     stop("Invalid fpcaObjList; the xiEst have different length.")
     return(NULL)
   }
- 
+  
   if ( is.null(regressionType)){
     regressionType = fpcaObjList[[1]]$optns$dataType
   }
@@ -50,13 +50,13 @@ FPCAregScalar <-  function (fpcaObjList, extVar = NULL, depVar, varSelect = NULL
     # Impute the data in the case of sparse object and turn on varSelection
     for (j in 1:length(fpcaObjList) ){
       if ( 'Sparse' == fpcaObjList[[j]]$optns$dataType ){
-       # fpcaObjList[[j]] = makeDenseObj( fpcaObjList[[j]] );
+        fpcaObjList[[j]] = makeDenseObj( fpcaObjList[[j]] );
         if ( is.null(varSelect)){
-        #   varSelect = 'AIC'
+          varSelect = 'AIC'
         }
       }
     }
-
+    
     # Make dataset to regress on
     plengths = sapply( fpcaObjList, function(x) ncol(x[['xiEst']]))
     p = sum( plengths );
@@ -64,7 +64,7 @@ FPCAregScalar <-  function (fpcaObjList, extVar = NULL, depVar, varSelect = NULL
     Xi =  data.frame(matrix( rep(0,q*p), ncol = p))
     # We set names equal to xiEst1A, xiEst2A,.. xiEstnA, xiEst1B, xiEst2B,....
     names(Xi) = unlist(mapply( function(ll,i) as.vector( mapply( paste,  
-                     rep('xiEstm',ll), LETTERS[i] ,1:ll, sep='')), plengths, seq_along(plengths) ))
+                                                                 rep('xiEstm',ll), LETTERS[i] ,1:ll, sep='')), plengths, seq_along(plengths) ))
     
     smallpEnd = cumsum(sapply( fpcaObjList, function(x) length(x[['lambda']])))   
     smallpBeg = c(1, smallpEnd + 1); smallpBeg = smallpBeg[-length(smallpBeg)] 
@@ -76,11 +76,11 @@ FPCAregScalar <-  function (fpcaObjList, extVar = NULL, depVar, varSelect = NULL
     } else {
       theData = data.frame( Xi, extVar,depVar);
     }
-
-  
+    
+    
     # perform multiple linear regression
     lmObject <- lm( depVar ~ . , data = na.omit(theData))
- 
+    
     # apply variable selection if requested
     if ( !is.null(varSelect)){
       if (varSelect == 'AIC') { 
@@ -89,7 +89,7 @@ FPCAregScalar <-  function (fpcaObjList, extVar = NULL, depVar, varSelect = NULL
         lmObject <- MASS::stepAIC( lmObject, trace = FALSE, k = log(length(depVar)) )
       } else {  
         print("Invalid variable selection argument used; it must be 'AIC' or 'BIC'.")
-       return(NULL)  
+        return(NULL)  
       }
     }
     
@@ -108,21 +108,21 @@ FPCAregScalar <-  function (fpcaObjList, extVar = NULL, depVar, varSelect = NULL
       B = cbind( depVar, model.matrix(lmObject))
       bootBeta = boot::boot( data = B , statistic= getBetas, R = 1000 )      
     }
-  
+    
     return( list(lmObject = lmObject, betaFunc = betaFunc, bootBeta =  bootBeta) )
-
+    
   } else if ( regressionType == 'Sparse'){
-
+    
     # Use the auto-covariance and cross-covariance matrices to fit a 
     # functional linear regression between the values of the scalar 
     # response and the predictors
-
+    
     print('Sparse regression is not yet implemented, contact Pantelis!')
     return(NULL)
-
+    
     y <- fpcaObjList[[1]]$inputData$y 
     t <- fpcaObjList[[1]]$inputData$t
-
+    
     # Convenient reminder: 
     #     Y: scal. response, Z: scal. predictor, X: funct. predictor
     
@@ -135,16 +135,16 @@ FPCAregScalar <-  function (fpcaObjList, extVar = NULL, depVar, varSelect = NULL
       KovZZ = NULL
       KKovZX = NULL
     }
-           
+    
     KovXX = fpcaObj$fittedCov
     KKovYX =  CrCovYZ(Z = depVar, Ly = y, Lt=t)$smoothedCC
     
     Knumer = makeCompositeCovMatrix(yx = KKovYX, yz = KKovYZ);
     Kdenom = makeCompositeCovMatrix(zz = KovZZ, xx = KovXX, zx = KovZX);
-        
+    
     betaFunc = solve(a = Kdenom + diag(x=lambda, nrow=nrow(Kdenom)), b = Knumer)
     return( lmObject = NULL, betaFunc = betaFunc )
-
+    
   } else {
     stop('Unknown regression type requested.')
     return(NULL)
@@ -175,7 +175,7 @@ getBetas = function(data,indx ){
 
 
 makeDenseObj = function( fo1 ){
- # Impute the data in the case of sparse object and turn on varSelection
+  # Impute the data in the case of sparse object and turn on varSelection
   imputedSample = fitted(fo1);
   s = fo1$workGrid
   N = dim(fo1$xiEst)[1];

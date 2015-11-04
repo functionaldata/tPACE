@@ -19,7 +19,7 @@
 #'
 #' @export
 
-createFuncBoxPlot <- function(fpcaObj, addIndx =NULL, variant= 'bagplot'){
+createFuncBoxPlot <- function(fpcaObj, addIndx =NULL, variant= 'bagplot', titleString = NULL){
  
   #if(openNewDev){ 
   #  dev.new(width=6.95, height=5.0, noRStudioGD=TRUE) ; 
@@ -45,7 +45,7 @@ createFuncBoxPlot <- function(fpcaObj, addIndx =NULL, variant= 'bagplot'){
  
   if ( variant == 'bagplot' && is.element('aplpack', installed.packages()[,1]) ){
   
-    plot(type='n', s, s, ylim=range(fittedCurves), xlab='s', ylab='y(s)')     
+    plot(type='n', s, s, ylim=range(fittedCurves, na.rm = TRUE), xlab='s', ylab='y(s)')     
     grid()         
     if (  length(fpcaObj$lambda) >1) {
       bgObj = aplpack::compute.bagplot(x= fpcaObj$xiEst[,1], y= fpcaObj$xiEst[,2], approx.limit=3333)     
@@ -62,7 +62,7 @@ createFuncBoxPlot <- function(fpcaObj, addIndx =NULL, variant= 'bagplot'){
             rev(apply(fittedCurvesBag,2,max))), col= 'darkgrey',border=1)  
     lines(x=s, y= apply(fittedCurves,2, mean) , col='red')
   } else if (variant== 'pointwise'){
-    plot(type='n', s, s, ylim=range(fittedCurves), xlab='s', ylab='y(s)')  
+    plot(type='n', s, s, ylim=range(fittedCurves), xlab='s', ylab='y(s)', main = titleString)  
     grid()     
     polygon(x=c(s, rev(s)), y = c(apply(fittedCurves,2, quantile, 0.007), 
             rev(apply(fittedCurves,2, quantile, 0.993))), col= 'lightgrey',border=0)
