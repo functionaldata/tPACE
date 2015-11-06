@@ -42,9 +42,13 @@ createDesignPlot = function(t, obsGrid = NULL, isColorPlot=FALSE, noDiagonal=TRU
   #   main = titleString, col = 'white')
 
   if(isColorPlot == TRUE){
+    par(pty="s")
   	createColorPlot(res, obsGrid,titleString)
+  	par(pty="m")
   } else {
+    par(pty="s")
   	createBlackPlot(res, obsGrid,titleString)
+  	par(pty="m")
   }
 
 }
@@ -88,7 +92,7 @@ createColorPlot = function(res, obsGrid,titleString ){
   colPalette = c('white', 'black', 'blue', 'green', 'red')
   resColPalt = colPalette[resVals+1]
 
-  # image(res, col= resColPalt, axes=FALSE, xlab = 'Observed time grid', ylab = 'Observed time grid', main = titleString)
+  # image(res, col= resColPalt, axes=FALSE, xlab = 'Observed support points', ylab = 'Observed support points', main = titleString)
   
   u1 = as.vector(res)
   u2 = as.vector(t(res))
@@ -97,9 +101,9 @@ createColorPlot = function(res, obsGrid,titleString ){
   plot(t1, t2, col= 'black' , t= 'n', xlab = 'Observed time grid', ylab = 'Observed time grid', main = titleString, pch = 19 )
   
   points(t1[u1 == 1], t2[u2 ==1], col= 'black', pch = 19, cex =0.3)
-  points(t1[u1 == 2], t2[u2 ==2], col= 'blue',  pch = 19, cex =0.6)
-  points(t1[u1 == 3], t2[u2 ==3], col= 'green', pch = 19, cex =0.9)
-  points(t1[u1 == 4], t2[u2 ==4], col= 'red',   pch = 19, cex =0.999)
+  points(t1[u1 == 2], t2[u2 ==2], col= 'blue',  pch = 19, cex =0.4)
+  points(t1[u1 == 3], t2[u2 ==3], col= 'green', pch = 19, cex =0.5)
+  points(t1[u1 == 4], t2[u2 ==4], col= 'red',   pch = 19, cex =0.6)
 #  axis(1, obsGrid[round(seq(1,length(obsGrid), length.out=11))], obsGrid[round(seq(1,length(obsGrid), length.out=11))],col.axis="black")
 #  axis(2, obsGrid[round(seq(1,length(obsGrid), length.out=11))], obsGrid[round(seq(1,length(obsGrid), length.out=11))],col.axis="black")
   legend('right', c('1', '2', '3', '4+'), pch = 19,  col = c('black','blue','green','red'), title = 'Count',bg='white' )

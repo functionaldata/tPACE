@@ -13,8 +13,10 @@
 #' @param ...  Additional arguments 
 #' 
 #' @references
-#' \cite{Yao, F., Mueller, H.G., Wang, J.L. "Functional Linear Regression Analysis for Longitudinal Data." Annals of Statistics 33, (2005): 2873-2903.(Dense data)} 
-#' \cite{Senturk, D., Nguyen, D.V. "Varying Coefficient Models for Sparse Noise-contaminated Longitudinal Data", Statistica Sinica 21(4), (2011): 1831-1856. (Sparse data)}
+#' \cite{Yao, F., Mueller, H.G., Wang, J.L. 
+  #' "Functional Linear Regression Analysis for Longitudinal Data." Annals of Statistics 33, (2005): 2873-2903.(Dense data)} 
+#' \cite{Senturk, D., Nguyen, D.V. "Varying Coefficient Models for Sparse Noise-contaminated Longitudinal Data", 
+#' Statistica Sinica 21(4), (2011): 1831-1856. (Sparse data)}
 #' @export
 
 
@@ -117,8 +119,8 @@ FPCAregScalar <-  function (fpcaObjList, extVar = NULL, depVar, varSelect = NULL
     # functional linear regression between the values of the scalar 
     # response and the predictors
     
-    print('Sparse regression is not yet implemented, contact Pantelis!')
-    return(NULL)
+    #print('Sparse regression is not yet implemented, contact Pantelis!')
+    #return(NULL)
     
     y <- fpcaObjList[[1]]$inputData$y 
     t <- fpcaObjList[[1]]$inputData$t
@@ -128,50 +130,45 @@ FPCAregScalar <-  function (fpcaObjList, extVar = NULL, depVar, varSelect = NULL
     
     if( !is.null(extVar) ){ 
       KKovYZ = cov(depVar, extVar); #Cross-covariance between y and z
-      KovZZ = cov(extVar)
-      KKovZX = CrCovYZ(Z = extVar, Ly = y, Lt=t)$smoothedCC # Semantic placeholder / this should fail
+      KovZZ = cov(extVar) 
+      KKovZX = matrix( rep(0, ncol(extVar)* length(fpcaObjList[[1]]$mu) ), ncol = ncol(extVar))
+      for (i in 1:ncol(extVar)){
+        KKovZX[,i] = CrCovYZ(Z = extVar[,i], Ly = y, Lt=t, Ymu = fpcaObjList[[1]]$mu)$smoothedCC
+      }
     } else { 
       KKovYZ = NULL
       KovZZ = NULL
       KKovZX = NULL
     }
     
-    KovXX = fpcaObj$fittedCov
-    KKovYX =  CrCovYZ(Z = depVar, Ly = y, Lt=t)$smoothedCC
+    KovXX =  fpcaObjList[[1]]$fittedCov
+    KKovYX =  CrCovYZ(Z = depVar, Ly = y, Lt=t, Ymu = fpcaObjList[[1]]$mu)$smoothedCC
     
-    Knumer = makeCompositeCovMatrix(yx = KKovYX, yz = KKovYZ);
-    Kdenom = makeCompositeCovMatrix(zz = KovZZ, xx = KovXX, zx = KovZX);
+    betaFuncs = matrix( rep(0, (1+ncol(extVar))* length(fpcaObjList[[1]]$mu) ), ncol = 1+ncol(extVar))
+    diagXX =  approx(x= fpcaObjList[[1]]$workGrid, y= diag(KovXX), fpcaObjList[[1]]$obsGrid)$y
+     
+    for (j in 1:length(fpcaObjList[[1]]$mu)){
+      a =  matrix( rep(0, (1+ncol(extVar))^2), ncol = 1+ncol(extVar) )
+      a[1:ncol(extVar), 1:ncol(extVar)] = KovZZ
+      a[1+ncol(extVar), 1+ncol(extVar)] = diagXX[j]
+      
+      for(q in 1:ncol(extVar)){
+        a[q, 1+ncol(extVar)] =  KKovZX[j,q]
+        a[1+ncol(extVar), q] =  KKovZX[j,q]
+      }
+      
+      b = c( KKovYZ, KKovYX[j] )
+      
+      betaFuncs[j,] = solve( a =a, b= b )
+    }
     
-    betaFunc = solve(a = Kdenom + diag(x=lambda, nrow=nrow(Kdenom)), b = Knumer)
-    return( lmObject = NULL, betaFunc = betaFunc )
+    return( list(lmObject = NULL, betaFunc = betaFuncs ))
     
   } else {
     stop('Unknown regression type requested.')
     return(NULL)
   } 
 } 
-
-makeCompositeCovMatrix <- function(yx = NULL, yz = NULL, xx = NULL, zz = NULL, zx = NULL){
-  if(         is.null(yx) &&  is.null(yz) && !is.null(xx) &&  is.null(zz) &&  is.null(zx) ){
-    K = xx
-  } else if( !is.null(yx) &&  is.null(yz) &&  is.null(xx) &&  is.null(zz) &&  is.null(zx) ){
-    K = yx
-  } else if(  is.null(yx) &&  is.null(yz) && !is.null(xx) && !is.null(zz) && !is.null(zx) ){
-    K =  matrix( c(zz, zx, rbind( zx, xx)  ),  dim(zz)[1] +  max(dim(zz)) )
-  } else if(  is.null(yx) &&  is.null(yz) && !is.null(xx) && !is.null(zz) && !is.null(zx) ){
-    K = rbind(yz, yx);
-  } else {
-    stop('Insufficient submatrices to construct composite matrix for regression.')    
-    return(NULL)
-  } 
-  return(K)
-}
-
-getBetas = function(data,indx ){  
-  # indx is the random indexes for the bootstrap sample
-  nsmall = dim(data)[2]; 
-  return( as.numeric( qr.solve( a = data[indx,c(2:nsmall)], b = data[indx,1])) )  
-}
 
 
 makeDenseObj = function( fo1 ){
@@ -185,4 +182,11 @@ makeDenseObj = function( fo1 ){
   return( fo2 )
 }
 
+
+
+getBetas = function(data,indx ){  
+  # indx is the random indexes for the bootstrap sample
+  nsmall = dim(data)[2]; 
+  return( as.numeric( qr.solve( a = data[indx,c(2:nsmall)], b = data[indx,1])) )  
+}
 

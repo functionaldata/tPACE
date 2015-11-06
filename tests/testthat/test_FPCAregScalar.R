@@ -37,7 +37,7 @@ test_that('FPCAreg for scalar case returns correct results for functional predic
    
   L3 = makePACEinputs(IDs = rep(1:N, each=M),tVec=rep(s,N), t(yTrue) )
   FPCAdense = FPCA(y = L3$Ly, t = L3$Lt)   
-  FREGres <- FPCAregScalar(FPCAdense, depVar= a, bootStrap=TRUE)
+  FREGres <- FPCAregScalar(FPCAdense, depVar= a, bootStrap=FALSE)
   expect_equal( 0,  rmsdiff(betaFunc,FREGres$betaFunc[[1]]) , tol= 1e-3  )
 }
 )
@@ -78,7 +78,7 @@ test_that('FPCAreg for scalar case returns correct results for functional predic
 
   L3 = makePACEinputs(IDs = rep(1:N, each=M),tVec=rep(s,N), t(yTrue) )
   FPCAdense = FPCA(y = L3$Ly, t = L3$Lt)
-  FREGres <- FPCAregScalar(FPCAdense, depVar= a, bootStrap=TRUE, extVar= data.frame(x1,x2))
+  FREGres <- FPCAregScalar(FPCAdense, depVar= a, bootStrap=FALSE, extVar= data.frame(x1,x2))
  
   expect_equal( 0,  rmsdiff(betaFunc,FREGres$betaFunc[[1]]) , tol= 1e-5  )
 
@@ -191,7 +191,7 @@ test_that('FPCAreg for scalar case returns correct results for two functional pr
   FPCAdenseA = FPCA(y = L3$Ly, t = L3$Lt)
   L3 = makePACEinputs(IDs = rep(1:N, each=M),tVec=rep(s,N), t(yTrueB) )
   FPCAdenseB = FPCA(y = L3$Ly, t = L3$Lt) 
-  FREGres <- FPCAregScalar( list(FPCAdenseA, FPCAdenseB), depVar= a, bootStrap=TRUE, extVar= data.frame(x1,x2)) 
+  FREGres <- FPCAregScalar( list(FPCAdenseA, FPCAdenseB), depVar= a, bootStrap=FALSE, extVar= data.frame(x1,x2)) 
   expect_equal( 0, rmsdiff(betaFuncB,FREGres$betaFunc[[2]]), tol= 2e-3  )
   expect_equal( 0, rmsdiff(betaFuncA,FREGres$betaFunc[[1]]), tol= 2e-3  )
 })

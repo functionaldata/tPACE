@@ -26,7 +26,7 @@
 #' @export
 
 CrCovYZ <- function(bw = NULL, Z, Zmu = NULL, Ly, Lt = NULL, Ymu = NULL, support = NULL){
-  
+   
   # If only Ly and Z are available assume DENSE data
   if( is.matrix(Ly) && is.null(Lt) && is.null(Ymu) ){
     rawCC <- GetRawCrCovFuncScal(Ly = Ly, Z = Z)
@@ -48,6 +48,9 @@ CrCovYZ <- function(bw = NULL, Z, Zmu = NULL, Ly, Lt = NULL, Ymu = NULL, support
     stop("Ly and Z are not compatible (possibly different number of subjects).")
   }
   
+  if (is.null(Ymu)){
+    stop("Ymu is missing without default.")
+  }
   
   rawCC = GetRawCrCovFuncScal(Ly = Ly, Lt = Lt, Ymu = Ymu, Z = Z, Zmu = Zmu )
 
