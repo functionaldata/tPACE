@@ -1,3 +1,4 @@
+# devtools::load_all()
 # setwd('misc/') 
 load('data/InputFormMllwlskInCpp.RData')
 if( !exists('Rmullwlsk') ) {
@@ -117,3 +118,13 @@ expect_equal(as.numeric( Rmullwlsk(0.2* IN$bw,t(IN$tPairs),cxxn=IN$cxxn, xgrid=I
 
 })
 
+
+# ## Speed test
+# n <- 1e5
+# bw <- 0.1
+# xin <- matrix(runif(2 * n), n, 2)
+# yin <- rnorm(n)
+# win <- rep(1, n)
+# xout1 <- xout2 <- seq(0, 1, length.out=100)
+# system.time(tmp <- Rmullwlsk(c(bw, bw), 'epan', t(xin), yin, win, xout1, xout2, FALSE))
+# system.time(tmp1 <- Rmullwlsk_old(c(bw, bw), 'epan', t(xin), yin, win, xout1, xout2, FALSE))

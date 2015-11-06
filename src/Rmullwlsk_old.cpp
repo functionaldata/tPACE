@@ -8,7 +8,7 @@
 // [[Rcpp::export]]
 
 
-Eigen::MatrixXd Rmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const std::string kernel_type, const Eigen::Map<Eigen::MatrixXd> & tPairs, const Eigen::Map<Eigen::MatrixXd> & cxxn, const Eigen::Map<Eigen::VectorXd> & win,  const Eigen::Map<Eigen::VectorXd> & xgrid, const Eigen::Map<Eigen::VectorXd> & ygrid, const bool & bwCheck, const bool & transp = true){ 
+Eigen::MatrixXd Rmullwlsk_old( const Eigen::Map<Eigen::VectorXd> & bw, const std::string kernel_type, const Eigen::Map<Eigen::MatrixXd> & tPairs, const Eigen::Map<Eigen::MatrixXd> & cxxn, const Eigen::Map<Eigen::VectorXd> & win,  const Eigen::Map<Eigen::VectorXd> & xgrid, const Eigen::Map<Eigen::VectorXd> & ygrid, const bool & bwCheck, const bool & transp = true){ 
 
   // tPairs : xin (in MATLAB code)
   // cxxn : yin (in MATLAB code)
@@ -60,13 +60,21 @@ Eigen::MatrixXd Rmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const std::st
       //if the kernel is not Gaussian
       if ( KernelName != 3) { 
         //construct listX as vectors / size is unknown originally
+        std::vector <unsigned int> list1, list2; 
         for (unsigned int y = 0; y != tPairs.cols(); y++){ 
-          if ( std::abs( tPairs(0,y) - xgrid(j) ) <= (bw(0)+ pow(10,-6)) && std::abs( tPairs(1,y) - ygrid(i) ) <= (bw(1)+ pow(10,-6)) ) {
+          if ( std::abs( tPairs(0,y) - xgrid(j) ) <= (bw(0)+ pow(10,-6))  ) {
           // legacy MATLAB equivalent form :  
           // if ( (tPairs(0,y) >= (xgrid(j) -(bw(0)+pow(10,-6)))) & (tPairs(0,y) <= (xgrid(j) + (bw(0)+ pow(10,-6))))) {
-            indx.push_back(y);
+            list1.push_back(y);
           }         
+          if ( std::abs( tPairs(1,y) - ygrid(i) ) <= (bw(1)+ pow(10,-6))  ) {
+            list2.push_back(y);
+          }
         }
+  
+        //get intersection between the two lists 
+        std::set_intersection(list1.begin(), list1.begin() + list1.size(), list2.begin(), list2.begin() + list2.size(), std::back_inserter(indx));   
+  
       } else{ // just get the whole deal
         for (unsigned int y = 0; y != tPairs.cols(); ++y){
           indx.push_back(y);
