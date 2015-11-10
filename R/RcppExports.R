@@ -29,6 +29,10 @@ Rmullwlsk <- function(bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck,
     .Call('tPACE_Rmullwlsk', PACKAGE = 'tPACE', bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck, transp)
 }
 
+Rmullwlsk_old <- function(bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck, transp = TRUE) {
+    .Call('tPACE_Rmullwlsk_old', PACKAGE = 'tPACE', bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck, transp)
+}
+
 Rrotatedmullwlsk <- function(bw, kernel_type, tPairs, cxxn, win, xygrid, npoly, bwCheck) {
     .Call('tPACE_Rrotatedmullwlsk', PACKAGE = 'tPACE', bw, kernel_type, tPairs, cxxn, win, xygrid, npoly, bwCheck)
 }
