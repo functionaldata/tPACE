@@ -49,7 +49,8 @@ GetRawCrCovFuncFunc <- function(Ly1, Lt1 = NULL, Ymu1, Ly2, Lt2 = NULL, Ymu2){
   RCC <-list()
   RCC$rawCCov = cyy
   RCC$tpairn = cbind(tPairs1, tPairs2)
+  RCC$IDs = rep( 1:length(Lt1), times = sapply(Lt1, length) * sapply(Lt2, length)  )
   return(RCC)
 }
 
-CheckEqualLengths <- function(x1,x2){ return(length(x1) == length(x2)) } 
+CheckEqualLengths <- function(x1,x2){ return( all.equal( sapply(x1, length) , sapply(x2, length) )) } 

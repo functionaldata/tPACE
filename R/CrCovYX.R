@@ -10,6 +10,7 @@
 #' @param Lt2 List of N vectors with timing information (X)
 #' @param Ymu2 Vector Q-1 Vector of length nObsGrid containing the mean function estimate (You can get that from FPCA) (X)
 #' @param bw2 Scalar bandwidth for smoothing the cross-covariance function (if NULL it will be automatically estimated) (X)
+#' @param fast Indicator to use gam smoothing instead of local-linear smoothing (semi-parametric option)
 #' If the variables Ly1 and Ly2 are in matrix form the data are assumed dense and only the raw cross-covariance is returned.
 #' @return A list containing:
 #' \item{smoothedCC}{The smoothed cross-covariance as a matrix}
@@ -30,7 +31,7 @@
 #' \cite{Yang, Wenjing, Hans‐Georg Müller, and Ulrich Stadtmüller. "Functional singular component analysis." Journal of the Royal Statistical Society: Series B (Statistical Methodology) 73.3 (2011): 303-324}
 #' @export
 
-CrCovYX <- function(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL, Ly2, Lt2 = NULL, Ymu2 = NULL){
+CrCovYX <- function(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL, Ly2, Lt2 = NULL, Ymu2 = NULL, fast = FALSE){
   
   # If only Ly1 and Ly2 are available assume DENSE data
   if( is.matrix(Ly1) && is.null(Lt1) && is.null(Ymu1) && is.matrix(Ly2) && is.null(Lt2) && is.null(Ymu2)){
@@ -53,6 +54,16 @@ CrCovYX <- function(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL, Ly2, L
   workGrid1 = seq(obsGrid1[1], max(obsGrid1), length.out = 51)
   workGrid2 = seq(obsGrid2[1], max(obsGrid2), length.out = 51)
   workGrid12 = matrix(c(workGrid1, workGrid2),ncol= 2)
+  
+  if (fast == TRUE){ 
+    Qdata = data.frame(x =  rawCC$tpairn[,1], y = rawCC$tpairn[,2], z = rawCC$rawCCov )
+    # I comparsed with 'ds' and 'gp' too, and 'tp' seems to have a slight edge for what we want
+    myGAM = gam( z ~ s(x,y, bs ='tp'), data= Qdata) 
+    estPoints = data.frame( x= rep(workGrid1, times=51), y= rep(workGrid2, each =51) )
+    smoothedCC = matrix(predict(myGAM, estPoints), 51)
+    return ( list(smoothedCC = smoothedCC, rawCC = rawCC, bw = NULL, score = NULL) )  
+  }
+  
   # If the bandwidth is known already smooth the raw CrCov
   if( is.numeric(bw1) &&  is.numeric(bw2)){
     smoothedCC <- smoothRCC2D(rcov =rawCC, bw1, bw2, workGrid1, workGrid2)    

@@ -93,14 +93,19 @@ test_that('The cross-covariance of two simple related process is correct. Same r
   yTrueA = Ksi[,1] %*% t(matrix(eigFunct1(s), ncol=1)) 
   yTrueB = Ksi[,2] %*% t(matrix(eigFunct1(s), ncol=1)) 
   
-  ySparseA = sparsify(yTrueA, s, c(3:9))    
-  ySparseB = sparsify(yTrueB, s, c(3:9))     
+  ySparseA = sparsify(yTrueA, s, c(3:5))    
+  ySparseB = sparsify(yTrueB, s, c(3:5))     
   
-  BB <- CrCovYX(Ly1 = ySparseA$yList, Lt1 = ySparseA$tList, Ly2 = ySparseB$yList, Lt2 = ySparseB$tList, 
-                Ymu1 = rep(0,M), Ymu2 = rep(0,M) , bw1 = 0.4, bw2=.4 )
+  BB1 <- CrCovYX(Ly1 = ySparseA$yList, Lt1 = ySparseA$tList, Ly2 = ySparseB$yList, Lt2 = ySparseB$tList, 
+                Ymu1 = rep(0,M), Ymu2 = rep(0,M), fast = TRUE  )
+  
+  BB2 <- CrCovYX(Ly1 = ySparseA$yList, Lt1 = ySparseA$tList, Ly2 = ySparseB$yList, Lt2 = ySparseB$tList, 
+                 Ymu1 = rep(0,M), Ymu2 = rep(0,M), bw1=0.4, bw2=0.4  )
   
   sSmall = seq(0,10,length.out = 51)
   
   # we know that the covariance between ksi_1 and ksi_2 is three
-  expect_equal( median(abs( eigFunct1(sSmall)%*%t(eigFunct1(sSmall))*3 - AA$smoothedCC )),  0.03, tol=.01, scale=1 )
+  expect_equal( median(abs( eigFunct1(sSmall)%*%t(eigFunct1(sSmall))*3 - BB1$smoothedCC )),  0.02, tol=.01, scale=1 )
+  expect_equal( median(abs( eigFunct1(sSmall)%*%t(eigFunct1(sSmall))*3 - BB2$smoothedCC )),  0.02, tol=.01, scale=1 )
+   
 })
