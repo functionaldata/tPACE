@@ -23,7 +23,7 @@
 
 
 FPCAregScalar <-  function (fpcaObjList, extVar = NULL, depVar, varSelect = NULL, bootStrap = FALSE, 
-                            regressionType = NULL, y = NULL, t = NULL, lambda = 1e-9, bwYZ = NULL ...) {
+                            regressionType = NULL, y = NULL, t = NULL, lambda = 1e-9, bwYZ = NULL, ...) {
   
   #If it is a single element automatically coerce it to be a single element list
   if (class(fpcaObjList) == "FPCA"){
