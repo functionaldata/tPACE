@@ -6,7 +6,7 @@ GetRawCrCovFuncFunc <- function(Ly1, Lt1 = NULL, Ymu1, Ly2, Lt2 = NULL, Ymu2){
        stop("Ly1 and Ly2 are not compatible")
      } 
      KK = cov(Ly1,Ly2,use="pairwise.complete.obs")
-     return( list(rawCCov =  0.5 * (KK + t(KK)), tpairn = NULL) )    
+     return( list(rawCCov =  1 * (KK), tpairn = NULL) )    
   }
   # otherwise assume SPARSE
   if ( ! CheckEqualLengths(Lt1,Ly1)){
