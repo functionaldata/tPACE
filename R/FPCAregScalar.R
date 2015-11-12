@@ -10,6 +10,8 @@
 #' @param y A list of \emph{n} vectors containing the observed values for each individual.
 #' @param t A list of \emph{n} vectors containing the observation time points for each individual corresponding to y.
 #' @param lambda A scalar for the ridge correction in the sparse regression 
+#' @param bwYZ A scalar for bandwidth used among along function-to-scalar cross-covariance estimations
+#' @param bwYX A scalar for bandwidth used among along function-to-function cross-covariance estimations
 #' @param ...  Additional arguments 
 #' 
 #' @references
@@ -21,7 +23,7 @@
 
 
 FPCAregScalar <-  function (fpcaObjList, extVar = NULL, depVar, varSelect = NULL, bootStrap = FALSE, 
-                            regressionType = NULL, y = NULL, t = NULL, lambda = 1e-9, ...) {
+                            regressionType = NULL, y = NULL, t = NULL, lambda = 1e-9, bwYZ = NULL, ...) {
   
   #If it is a single element automatically coerce it to be a single element list
   if (class(fpcaObjList) == "FPCA"){
@@ -133,7 +135,7 @@ FPCAregScalar <-  function (fpcaObjList, extVar = NULL, depVar, varSelect = NULL
       KovZZ = cov(extVar) 
       KKovZX = matrix( rep(0, ncol(extVar)* length(fpcaObjList[[1]]$mu) ), ncol = ncol(extVar))
       for (i in 1:ncol(extVar)){
-        KKovZX[,i] = CrCovYZ(Z = extVar[,i], Ly = y, Lt=t, Ymu = fpcaObjList[[1]]$mu)$smoothedCC
+        KKovZX[,i] = CrCovYZ(Z = extVar[,i], Ly = y, Lt=t, Ymu = fpcaObjList[[1]]$mu, bw = bwYZ)$smoothedCC
       }
     } else { 
       KKovYZ = NULL
@@ -142,7 +144,7 @@ FPCAregScalar <-  function (fpcaObjList, extVar = NULL, depVar, varSelect = NULL
     }
     
     KovXX =  fpcaObjList[[1]]$fittedCov
-    KKovYX =  CrCovYZ(Z = depVar, Ly = y, Lt=t, Ymu = fpcaObjList[[1]]$mu)$smoothedCC
+    KKovYX =  CrCovYZ(Z = depVar, Ly = y, Lt=t, Ymu = fpcaObjList[[1]]$mu, bw= bwYZ)$smoothedCC
     
     betaFuncs = matrix( rep(0, (1+ncol(extVar))* length(fpcaObjList[[1]]$mu) ), ncol = 1+ncol(extVar))
     diagXX =  approx(x= fpcaObjList[[1]]$workGrid, y= diag(KovXX), fpcaObjList[[1]]$obsGrid)$y
@@ -159,7 +161,7 @@ FPCAregScalar <-  function (fpcaObjList, extVar = NULL, depVar, varSelect = NULL
       
       b = c( KKovYZ, KKovYX[j] )
       
-      betaFuncs[j,] = solve( a =a, b= b )
+      betaFuncs[j,] = solve( a = a, b= b )
     }
     
     return( list(lmObject = NULL, betaFunc = betaFuncs ))
@@ -169,7 +171,6 @@ FPCAregScalar <-  function (fpcaObjList, extVar = NULL, depVar, varSelect = NULL
     return(NULL)
   } 
 } 
-
 
 makeDenseObj = function( fo1 ){
   # Impute the data in the case of sparse object and turn on varSelection
@@ -182,11 +183,8 @@ makeDenseObj = function( fo1 ){
   return( fo2 )
 }
 
-
-
 getBetas = function(data,indx ){  
   # indx is the random indexes for the bootstrap sample
   nsmall = dim(data)[2]; 
   return( as.numeric( qr.solve( a = data[indx,c(2:nsmall)], b = data[indx,1])) )  
 }
-

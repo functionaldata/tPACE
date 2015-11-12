@@ -30,4 +30,72 @@ test_that('The cross-covariance in the case of a sparse sample that is steadily 
   expect_equal( AA$r.squared, 0.9998, tol=0.0001)
 })
 
+test_that('The cross-covariance in the case of dense sample and a random variable with known variance',{
+  
+  set.seed(123)
+  N = 1111;   
+  M = 101;
+  
+  # Define the continuum
+  s = seq(0,10,length.out = M)
+  
+  # Define the mean and 2 eigencomponents 
+  eigFunct1 <- function(s) +cos(2*s*pi/10) / sqrt(5) 
+  
+  # Create FPC scores
+  Ksi = matrix(rnorm(N*2), ncol=2);
+  Ksi = apply(Ksi, 2, scale) 
+  Ksi = t(t(chol(matrix(c(5,3,3,4),2))) %*% t(Ksi))
+  
+  # Create Y_true
+  yTrue = Ksi[,1] %*% t(matrix(eigFunct1(s), ncol=1)) 
+  sccObj = CrCovYZ(Z= Ksi[,2], Ly=yTrue )
+  
+  # we know that the covariance between ksi_1 and z is three
+  expect_equal( max( abs( eigFunct1(s)*3 - sccObj$rawCC$rawCCov)),  0.03, tol=.01, scale=1 )
+}) 
+
+test_that('The cross-covariance in the case of sparse sample and a random variable with known variance and the GCV bandwidth choice.',{
+  
+  set.seed(123)
+  N = 3000;   
+  M = 101;
+  
+  # Define the continuum
+  s = seq(0,10,length.out = M)
+  
+  # Define the mean and 2 eigencomponents 
+  eigFunct1 <- function(s) +cos(2*s*pi/10) / sqrt(5) 
+  
+  # Create FPC scores
+  Ksi = matrix(rnorm(N*2), ncol=2);
+  Ksi = apply(Ksi, 2, scale) 
+  Ksi = t(t(chol(matrix(c(5,3,3,4),2))) %*% t(Ksi))
+  
+  # Create Y_true
+  yTrue = Ksi[,1] %*% t(matrix(eigFunct1(s), ncol=1)) 
+  ySparse = sparsify(yTrue, s, c(3:9))    
+  
+  # Use GCV to pick the bandwidth
+  sccObj = CrCovYZ( Z= Ksi[,2],Ly=ySparse$yList, Lt=ySparse$tList, Ymu = rep(0,M)  )
+  
+  # Uncomment to visually check coherence.  
+  # plot(s, sccObj$smoothedCC)
+  # lines(s, 3* eigFunct1(s))
+  
+  # we know that the covariance between ksi_1 and z is three
+  expect_equal(  mean(abs( 3*eigFunct1(s) - sccObj$smoothedCC)), 0.035, tol=.01, scale=1 )
+  
+  # check that the relevant GCV scores are worse
+  sccObjDOUBLE = CrCovYZ( bw = sccObj$bw*2,  Z= Ksi[,2],Ly=ySparse$yList, Lt=ySparse$tList, Ymu = rep(0,M)  )
+  sccObjHALF = CrCovYZ( bw = sccObj$bw*0.5,  Z= Ksi[,2],Ly=ySparse$yList, Lt=ySparse$tList, Ymu = rep(0,M)  )
+
+  expect_equal( min(c( sccObj$score, sccObjDOUBLE$score, sccObjHALF$score) ) , sccObj$score )
+})
+
+
+
+
+
+
 
