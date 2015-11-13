@@ -14,7 +14,7 @@ Description: PACE is a versatile package that provides implementation of various
 Depends: R (>= 3.1.0)
 License: BSD_3_clause 
 LazyData: false
-Imports: Rcpp (>= 0.11.5), RcppEigen, rARPACK, gtools, Hmisc, plot3D, MASS, pracma, numDeriv
+Imports: Rcpp (>= 0.11.5), RcppEigen, gtools, Hmisc, plot3D, MASS, pracma, numDeriv
 LinkingTo: Rcpp, RcppEigen
 Suggests: testthat, rgl, aplpack
 NeedsCompilation: yes

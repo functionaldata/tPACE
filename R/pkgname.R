@@ -30,7 +30,6 @@
 #' @name tPACE
 #' @useDynLib tPACE
 #' @import gtools Hmisc plot3D MASS Rcpp RcppEigen
-#' @importFrom rARPACK eigs
 #' @importFrom numDeriv grad
 #' @importFrom pracma meshgrid midpoint mod ones uniq
 NULL
