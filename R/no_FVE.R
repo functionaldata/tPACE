@@ -27,12 +27,15 @@
 no_FVE <- function(userCov, FVEthreshold=0.9999, returnEVec=FALSE, verbose=FALSE){
   numGrids = nrow(userCov)
   #optns.v0 = t(seq(0.1,0.9,length.out = numGrids))
-  eigObj <- eigen(userCov)
+  if(!isSymmetric(userCov)){  
+    stop(sprintf("The estimated auto-covairance surface is not symmetric!"))
+  }
+  eigObj <- eigen(userCov, symmetric = TRUE)
   d <- eigObj$values
   eVec <- eigObj$vectors
   
   if(any(is.complex(d))){ # if there are any imaginary eigenvalues
-    stop(sprintf("Some eigenvalues are complex. The estimated auto-covairance surface is not symmetric!"))
+    stop(sprintf("Some eigenvalues are complex. Check the estimated auto-covairance surface!"))
   }
   
   idx <- (d <= 0) # to remove nonpositive eigenvalues
