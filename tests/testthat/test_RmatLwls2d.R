@@ -70,7 +70,7 @@ set.seed(1)
 bw <- 0.1
 pts <- seq(0, 1, length.out=100L)
 mu <- rep(0, length(pts))
-a <- wiener(200, pts, sparsify=5:10)
+a <- wiener(1000, pts, sparsify=5:10)
 xout1 <- xout2 <- seq(0, 1, length.out=5)
 rcov <- BinRawCov(GetRawCov(a$yList, a$tList, pts, mu, 'Sparse', 0))
 matList <- matXinYinWin(rcov$tPairs, rcov$meanVals, rcov$count)
@@ -79,5 +79,5 @@ tmp1 <- with(rcov, RmullwlskCC(c(bw, bw), 'epan', t(tPairs), meanVals, count, xo
 expect_equal(tmp, t(tmp1))
 
 # # speed test
-# microbenchmark(tmp <- with(matList, RmatLwls2d(c(bw, bw), 'epan', yMat, wMat, x1Grid, x2Grid, xout1, xout2, FALSE, FALSE)), times=100L)
-# microbenchmark(tmp1 <- with(rcov, RmullwlskCC(c(bw, bw), 'epan', t(tPairs), meanVals, count, xout1, xout2, FALSE)), times=100L)
+microbenchmark(tmp <- with(matList, RmatLwls2d(c(bw, bw), 'epan', yMat, wMat, x1Grid, x2Grid, xout1, xout2, FALSE, FALSE)), times=10L)
+microbenchmark(tmp1 <- with(rcov, RmullwlskCC(c(bw, bw), 'epan', t(tPairs), meanVals, count, xout1, xout2, FALSE)), times=10L)

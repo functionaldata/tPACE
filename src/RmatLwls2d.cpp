@@ -60,14 +60,14 @@ Eigen::MatrixXd RmatLwls2d(
   const double* x2InDat = x2In.data();
   const unsigned int x1InSize = x1In.size();
   const unsigned int x2InSize = x2In.size();
-  std::ptrdiff_t* x1UpInd = new std::ptrdiff_t[x1InSize];
-  std::ptrdiff_t* x1LoInd = new std::ptrdiff_t[x1InSize];
-  std::ptrdiff_t* x2UpInd = new std::ptrdiff_t[x2InSize];
-  std::ptrdiff_t* x2LoInd = new std::ptrdiff_t[x2InSize];
-  // Eigen::VectorXi x1UpInd(x1InSize);
-  // Eigen::VectorXi x1LoInd(x1InSize);
-  // Eigen::VectorXi x2UpInd(x2InSize);
-  // Eigen::VectorXi x2LoInd(x2InSize);
+  // std::ptrdiff_t* x1UpInd = new std::ptrdiff_t[x1InSize];
+  // std::ptrdiff_t* x1LoInd = new std::ptrdiff_t[x1InSize];
+  // std::ptrdiff_t* x2UpInd = new std::ptrdiff_t[x2InSize];
+  // std::ptrdiff_t* x2LoInd = new std::ptrdiff_t[x2InSize];
+  Eigen::VectorXi x1UpInd(x1InSize);
+  Eigen::VectorXi x1LoInd(x1InSize);
+  Eigen::VectorXi x2UpInd(x2InSize);
+  Eigen::VectorXi x2LoInd(x2InSize);
 
   // Find the x-range
   for (unsigned int i = 0; i < x1OutSize; ++i) {
@@ -75,13 +75,9 @@ Eigen::MatrixXd RmatLwls2d(
                                      x1Out(i) + bw(0) + 1e-10);
     const double* loloc = std::lower_bound(x1InDat, x1InDat + x1InSize,
                                      x1Out(i) - bw(0) - 1e-10);
-    x1UpInd[i] = uploc - x1InDat - 1;
-    x1LoInd[i] = loloc - x1InDat;
-    if (x1UpInd[i] < x1LoInd[i]) {
-      delete[] x1UpInd;
-      delete[] x1LoInd;
-      delete[] x2UpInd;
-      delete[] x2LoInd;
+    x1UpInd(i) = uploc - x1InDat - 1;
+    x1LoInd(i) = loloc - x1InDat;
+    if (x1UpInd(i) < x1LoInd(i)) {
       Rcpp::stop("Not enough points in the local window");
     }
   }
@@ -92,38 +88,34 @@ Eigen::MatrixXd RmatLwls2d(
                                      x2Out(j) + bw(1) + 1e-10);
     const double* loloc = std::lower_bound(x2InDat, x2InDat + x2InSize,
                                      x2Out(j) - bw(1) - 1e-10);
-    x2UpInd[j] = uploc - x2InDat - 1;
-    x2LoInd[j] = loloc - x2InDat;
-    if (x2UpInd[j] < x2LoInd[j]) {
-      delete[] x1UpInd;
-      delete[] x1LoInd;
-      delete[] x2UpInd;
-      delete[] x2LoInd;
+    x2UpInd(j) = uploc - x2InDat - 1;
+    x2LoInd(j) = loloc - x2InDat;
+    if (x2UpInd(j) < x2LoInd(j)) {
       Rcpp::stop("Not enough points in the local window");
     }
   }
 
   // for (int i = 0; i < x1OutSize; ++i) {
-    // std::cout << x1LoInd[i] << x1UpInd[i] << std::endl;
+    // std::cout << x1LoInd(i) << x1UpInd(i) << std::endl;
   // }
   // for (int j = 0; j < x2OutSize; ++j) {
-    // std::cout << x2LoInd[j] << x2UpInd[j] << std::endl;
+    // std::cout << x2LoInd(j) << x2UpInd(j) << std::endl;
   // }
 
   // return(yMat);
   for (unsigned int j = 0; j < x2OutSize; ++j){  
     for (unsigned int i = 0; i < x1OutSize ; ++i){ 
 
-      unsigned int maxWinSize = (x1UpInd[i] - x1LoInd[i] + 1) * 
-                                (x2UpInd[j] - x2LoInd[j] + 1);
+      unsigned int maxWinSize = (x1UpInd(i) - x1LoInd(i) + 1) * 
+                                (x2UpInd(j) - x2LoInd(j) + 1);
       unsigned int nnz = 0; // number of non-zero weight points in the
                             // window.
       Eigen::Matrix2Xd lx(2, maxWinSize);
       Eigen::VectorXd ly(maxWinSize);
       Eigen::VectorXd lw(maxWinSize);  
-      for (unsigned int jw = x2LoInd[j]; jw <= x2UpInd[j]; ++jw) {
-        for (unsigned int iw = x1LoInd[i]; iw <= x1UpInd[i]; ++iw) {
-          if (wMat(iw + jw * x1InSize) > 1e-10) {
+      for (unsigned int jw = x2LoInd(j); jw <= x2UpInd(j); ++jw) {
+        for (unsigned int iw = x1LoInd(i); iw <= x1UpInd(i); ++iw) {
+          if (wMat(iw, jw) > 1e-10) {
             lx(0, nnz) = x1In(iw);
             lx(1, nnz) = x2In(jw);
             ly(nnz) = yMat(iw, jw);
@@ -203,20 +195,12 @@ Eigen::MatrixXd RmatLwls2d(
             checker(0,0) = 0.;
             return(checker);
         } else {
-          delete[] x1UpInd;
-          delete[] x1LoInd;
-          delete[] x2UpInd;
-          delete[] x2LoInd;
           Rcpp::stop("No enough points in local window, please increase bandwidth.");
         }
       }
     }
   }
 
-  delete[] x1UpInd;
-  delete[] x1LoInd;
-  delete[] x2UpInd;
-  delete[] x2LoInd;
 
   if (bwCheck){
      Eigen::MatrixXd checker(1,1); 
