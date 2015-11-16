@@ -84,9 +84,29 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
-// RmullwlskCC
-Eigen::MatrixXd RmullwlskCC(const Eigen::Map<Eigen::VectorXd>& bw, const std::string kernel_type, const Eigen::Map<Eigen::MatrixXd>& tPairs, const Eigen::Map<Eigen::MatrixXd>& cxxn, const Eigen::Map<Eigen::VectorXd>& win, const Eigen::Map<Eigen::VectorXd>& xgrid, const Eigen::Map<Eigen::VectorXd>& ygrid, const bool& bwCheck);
-RcppExport SEXP tPACE_RmullwlskCC(SEXP bwSEXP, SEXP kernel_typeSEXP, SEXP tPairsSEXP, SEXP cxxnSEXP, SEXP winSEXP, SEXP xgridSEXP, SEXP ygridSEXP, SEXP bwCheckSEXP) {
+// RmatLwls2d
+Eigen::MatrixXd RmatLwls2d(const Eigen::Map<Eigen::VectorXd>& bw, const std::string kernel_type, const Eigen::Map<Eigen::MatrixXd>& yMat, const Eigen::Map<Eigen::MatrixXd>& wMat, const Eigen::Map<Eigen::VectorXd>& x1In, const Eigen::Map<Eigen::VectorXd>& x2In, const Eigen::Map<Eigen::VectorXd>& x1Out, const Eigen::Map<Eigen::VectorXd>& x2Out, const bool& bwCheck, const bool& transp);
+RcppExport SEXP tPACE_RmatLwls2d(SEXP bwSEXP, SEXP kernel_typeSEXP, SEXP yMatSEXP, SEXP wMatSEXP, SEXP x1InSEXP, SEXP x2InSEXP, SEXP x1OutSEXP, SEXP x2OutSEXP, SEXP bwCheckSEXP, SEXP transpSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type bw(bwSEXP);
+    Rcpp::traits::input_parameter< const std::string >::type kernel_type(kernel_typeSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd>& >::type yMat(yMatSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd>& >::type wMat(wMatSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type x1In(x1InSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type x2In(x2InSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type x1Out(x1OutSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type x2Out(x2OutSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type bwCheck(bwCheckSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type transp(transpSEXP);
+    __result = Rcpp::wrap(RmatLwls2d(bw, kernel_type, yMat, wMat, x1In, x2In, x1Out, x2Out, bwCheck, transp));
+    return __result;
+END_RCPP
+}
+// Rmullwlsk_old
+Eigen::MatrixXd Rmullwlsk_old(const Eigen::Map<Eigen::VectorXd>& bw, const std::string kernel_type, const Eigen::Map<Eigen::MatrixXd>& tPairs, const Eigen::Map<Eigen::MatrixXd>& cxxn, const Eigen::Map<Eigen::VectorXd>& win, const Eigen::Map<Eigen::VectorXd>& xgrid, const Eigen::Map<Eigen::VectorXd>& ygrid, const bool& bwCheck, const bool& transp);
+RcppExport SEXP tPACE_Rmullwlsk_old(SEXP bwSEXP, SEXP kernel_typeSEXP, SEXP tPairsSEXP, SEXP cxxnSEXP, SEXP winSEXP, SEXP xgridSEXP, SEXP ygridSEXP, SEXP bwCheckSEXP, SEXP transpSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -98,7 +118,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type xgrid(xgridSEXP);
     Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type ygrid(ygridSEXP);
     Rcpp::traits::input_parameter< const bool& >::type bwCheck(bwCheckSEXP);
-    __result = Rcpp::wrap(RmullwlskCC(bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck));
+    Rcpp::traits::input_parameter< const bool& >::type transp(transpSEXP);
+    __result = Rcpp::wrap(Rmullwlsk_old(bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck, transp));
     return __result;
 END_RCPP
 }
@@ -121,9 +142,9 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
-// Rmullwlsk_old
-Eigen::MatrixXd Rmullwlsk_old(const Eigen::Map<Eigen::VectorXd>& bw, const std::string kernel_type, const Eigen::Map<Eigen::MatrixXd>& tPairs, const Eigen::Map<Eigen::MatrixXd>& cxxn, const Eigen::Map<Eigen::VectorXd>& win, const Eigen::Map<Eigen::VectorXd>& xgrid, const Eigen::Map<Eigen::VectorXd>& ygrid, const bool& bwCheck, const bool& transp);
-RcppExport SEXP tPACE_Rmullwlsk_old(SEXP bwSEXP, SEXP kernel_typeSEXP, SEXP tPairsSEXP, SEXP cxxnSEXP, SEXP winSEXP, SEXP xgridSEXP, SEXP ygridSEXP, SEXP bwCheckSEXP, SEXP transpSEXP) {
+// RmullwlskCC
+Eigen::MatrixXd RmullwlskCC(const Eigen::Map<Eigen::VectorXd>& bw, const std::string kernel_type, const Eigen::Map<Eigen::MatrixXd>& tPairs, const Eigen::Map<Eigen::MatrixXd>& cxxn, const Eigen::Map<Eigen::VectorXd>& win, const Eigen::Map<Eigen::VectorXd>& xgrid, const Eigen::Map<Eigen::VectorXd>& ygrid, const bool& bwCheck);
+RcppExport SEXP tPACE_RmullwlskCC(SEXP bwSEXP, SEXP kernel_typeSEXP, SEXP tPairsSEXP, SEXP cxxnSEXP, SEXP winSEXP, SEXP xgridSEXP, SEXP ygridSEXP, SEXP bwCheckSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -135,8 +156,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type xgrid(xgridSEXP);
     Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type ygrid(ygridSEXP);
     Rcpp::traits::input_parameter< const bool& >::type bwCheck(bwCheckSEXP);
-    Rcpp::traits::input_parameter< const bool& >::type transp(transpSEXP);
-    __result = Rcpp::wrap(Rmullwlsk_old(bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck, transp));
+    __result = Rcpp::wrap(RmullwlskCC(bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck));
     return __result;
 END_RCPP
 }
