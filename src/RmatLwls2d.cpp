@@ -114,8 +114,8 @@ Eigen::MatrixXd RmatLwls2d(
   for (unsigned int j = 0; j < x2OutSize; ++j){  
     for (unsigned int i = 0; i < x1OutSize ; ++i){ 
 
-      unsigned int maxWinSize = (x1UpInd[i] - x1LoInd[i]) * 
-                                (x2UpInd[j] - x2LoInd[j]);
+      unsigned int maxWinSize = (x1UpInd[i] - x1LoInd[i] + 1) * 
+                                (x2UpInd[j] - x2LoInd[j] + 1);
       unsigned int nnz = 0; // number of non-zero weight points in the
                             // window.
       Eigen::Matrix2Xd lx(2, maxWinSize);
