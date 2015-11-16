@@ -20,7 +20,7 @@ Rlwls1d <- function( bw, kernel_type, win, xin, yin, xout, npoly = 1L, nder = 0L
 
   # Deal with NA/NaN measurement values
   NAinY = is.na(yin);
-  if(any(NANinY)){
+  if(any(NAinY)){
       win = win[!NAinY]
       xin = xin[!NAinY]
       yin = yin[!NAinY]
