@@ -81,8 +81,9 @@ FPCAregFuncExp <- function(depVar,  expVarScal = NULL, expVarFunc = NULL, regres
     # Deal with X-variables next
     # Cross-covariance with other X-variables
     for (j in 1:nX){ # Xj-variable counter
-      y1 <- expVarFunc[[j]]$inputData$y 
-      t1 <- expVarFunc[[j]]$inputData$t  
+      y1  <- expVarFunc[[j]]$inputData$y 
+      t1  <- expVarFunc[[j]]$inputData$t  
+      mu1 <- expVarFunc[[j]]$mu
       for (i in j:nX){ # Xi-variable counter
         if (i == j){
           myDiag = diag(expVarFunc[[j]]$fittedCov)
@@ -90,8 +91,10 @@ FPCAregFuncExp <- function(depVar,  expVarScal = NULL, expVarFunc = NULL, regres
           
           y2 <- expVarFunc[[i]]$inputData$y 
           t2 <- expVarFunc[[i]]$inputData$t   
+          mu2 <- expVarFunc[[i]]$mu   
+          print('x1-x2')
           myDiag = diag(CrCovYX( Ly1 = y1, Lt1 = t1, Ly2 = y2, Lt2 = t2, fast = fastSmooth, bw1 = bwFunct, bw2 = bwFunct,
-                                 Ymu1 = expVarFunc[[i]]$mu, Ymu2 = expVarFunc[[j]]$mu)$smoothedCC)
+                                 Ymu1 =mu1, Ymu2 = mu2)$smoothedCC)
         }
         KovXXZZ[i,j,] = myDiag 
         KovXXZZ[j,i,] = myDiag 
@@ -99,8 +102,9 @@ FPCAregFuncExp <- function(depVar,  expVarScal = NULL, expVarFunc = NULL, regres
       
       yY <- depVar$inputData$y 
       tY <- depVar$inputData$t   
+      print('x-y')
       myDiag = diag(CrCovYX( Ly1 = y1, Lt1 = t1, Ly2 = yY, Lt2 = tY, fast = fastSmooth, bw1 = bwFunct, bw2 = bwFunct,
-                             Ymu1 = expVarFunc[[i]]$mu, Ymu2 = depVar$mu)$smoothedCC)
+                             Ymu1 = mu1, Ymu2 = depVar$mu)$smoothedCC)
       KovXYZ[j,] = myDiag
     }
     
@@ -108,7 +112,7 @@ FPCAregFuncExp <- function(depVar,  expVarScal = NULL, expVarFunc = NULL, regres
       betaFuncs[j,] = solve ( a =  KovXXZZ[,,j], b= KovXYZ[,j] )
     }
     
-    FRegObj <- list(betaFunctions = betaFuncs)
+    FRegObj <- list(betaFunctions = betaFuncs, regMats = list( KovXXZZ = KovXXZZ, KovXYZ = KovXYZ))
     return(FRegObj)
   }
   
