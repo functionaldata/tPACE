@@ -225,15 +225,12 @@ test_that('FPCAreg for scalar case returns correct results for a sparse function
   x2 <- rt(N,2)
   
   # Create scalar dep. variable a
-  a = c(); for (i in 1:N) { a[i] = rnorm(sd=0.1,1) + x2[i]*3 + pracma::trapz(s, yTrue[i,] * betaFunc); }
+  a = c(); for (i in 1:N) { a[i] = rnorm(sd=0.1,1) + x2[i]*3 +  (yTrue[i,]) %*% t(betaFunc); }
   
   ySparse = sparsify(yTrue, s, c(11:20))
   fpcaObjS = FPCA(ySparse$yList,t=ySparse$tList)
-  L3 = makePACEinputs(IDs = rep(1:N, each=M),tVec=rep(s,N), t(yTrue) )
-  fpcaObjD = FPCA(L3$Ly,t=L3$Lt)
-  
+ 
   FREGresS <- FPCAregScalarExp(fpcaObjS, extVar = data.frame(x2), depVar= a - mean(a), bootStrap=FALSE)
-  FREGresD <- FPCAregScalarExp(fpcaObjD, extVar = x2, depVar= a - mean(a), bootStrap=FALSE)
   # expect_equal( 0,  rmsdiff(betaFunc,FREGresD$betaFunc[[1]]) , tol= 1e-3  )
   
   AAA <- CrCovYZ(Z=a, Ly =L3$Ly, Lt=L3$Lt, Ymu = fpcaObjS$mu)
@@ -253,7 +250,7 @@ test_that('FPCAreg for scalar case returns correct results for a sparse function
   lines(s, diag( cov(yTrue)),col='red'  )
   
   plot(sSmall,FREGresS$betaFunc[,1])
-  lines(s, 5* betaFunc, col='blue')
+  lines(s,  betaFunc, col='blue')
   
    E = diag(W) / diag(cov(yTrue))
   lines(s,E, col='red')

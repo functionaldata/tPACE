@@ -123,6 +123,9 @@ FPCAregScalarExp <-  function (fpcaObjList, extVar = NULL, depVar, varSelect = N
     # Convenient reminder: 
     #     Y: scal. response, Z: scal. predictor, X: funct. predictor
     
+    #stop("The sparse case is not ready yet.")
+    #return(NULL)
+    
     if (is.null(fpcaObjList)){
       stop('You have no functional covariates; just use regular regression functions.')
     }
@@ -201,13 +204,13 @@ FPCAregScalarExp <-  function (fpcaObjList, extVar = NULL, depVar, varSelect = N
       betaFuncs[j,] = solve ( a =  KovXXZZ[,,j], b= KovXYZ[j,] )
     }
     
-    K_x = 2;
-    phi = fpcaObjList[[1]]$phi
-    b = rep(0,K_x) 
-    for (k in 1:K_x){
-      b[k] = crossprod( fpcaObjS$xiEst[,k], y = a)/crossprod( fpcaObjS$xiEst[,k] )
-    }
-    betaFuncs[,1] = crossprod( t(phi[,1:K_x]), b)
+    # K_x = 2;
+    # phi = fpcaObjList[[1]]$phi
+    # b = rep(0,K_x) 
+    # for (k in 1:K_x){
+    #  b[k] = crossprod( fpcaObjS$xiEst[,k], y = a)/crossprod( fpcaObjS$xiEst[,k] )
+    # }
+    # betaFuncs[,1] = crossprod( t(phi[,1:K_x]), b)
     # Notice that this works only for a single covariate
     
     return( list(lmObject = NULL, betaFunc = betaFuncs ))
