@@ -58,8 +58,8 @@ CrCovYX <- function(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL, Ly2, L
   if (fast == TRUE){ 
     Qdata = data.frame(x =  rawCC$tpairn[,1], y = rawCC$tpairn[,2], z = rawCC$rawCCov, group = rawCC$IDs  )
     # I comparsed with 're', ds' and 'gp' too, and 'tp' seems to have a slight edge for what we want
-    myGAM = mgcv::gamm( z ~ s(x,y, bs =c('tp','tp')), random=list(group=~1) , data= Qdata)$gam
-    # myGAM = mgcv::gam( z ~ s(x,y, bs =c('tp','tp')), data= Qdata)
+    # myGAM = mgcv::gamm( z ~ s(x,y, bs =c('tp','tp')), random=list(group=~1) , data= Qdata)$gam
+    myGAM = mgcv::gam( z ~ s(x,y, bs =c('tp','tp')), data= Qdata)
     estPoints = data.frame( x= rep(workGrid1, times=51), y= rep(workGrid2, each =51), group = rep(3,51*51 )) 
     smoothedCC = matrix(predict(myGAM, estPoints), 51)
     return ( list(smoothedCC = smoothedCC, rawCC = rawCC, bw = NULL, score = NULL) )  
