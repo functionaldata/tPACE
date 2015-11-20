@@ -29,7 +29,7 @@ createDiagnosticsPlot <-function(ret, openNewDev = TRUE){
   createDesignPlot(t)
   plot( obsGrid, mu, type='l', xlab='s',ylab='', main='Mean')  
   grid()
-  createScreePlot(fves);
+  createScreePlot(ret);
   K = length(fves);
   k =1;
   if(K>3){

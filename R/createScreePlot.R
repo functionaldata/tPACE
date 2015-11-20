@@ -2,7 +2,8 @@
 #'
 #' This function will open a new device if not instructed otherwise.
 #'
-#' @param ys a vector of FVE (functional variation explained) from FPCA object
+#' @param fpcaObj A object of class FPCA returned by the function FPCA().
+#' @param titleString a string variable to be used as title
 #'
 #' @examples
 #' set.seed(1)
@@ -14,8 +15,14 @@
 #' createScreePlot(res$cumFVE)
 #' @export
 
-createScreePlot <-function(ys){ 
+createScreePlot <-function(fpcaObj, titleString = NULL){ 
  
+  if(is.null(titleString)){
+    titleString = "Screeplot"
+  }
+  ys <- fpcaObj$cumFVE;
+  
+  
   if( !is.vector(ys) ){ 
     stop('Please use a vector as input.')   
   }
@@ -26,9 +33,9 @@ createScreePlot <-function(ys){
     stop('This does not appear to be a valid cummulative FVE vector. Please check it carefully.')
   }
 
-  dfbar <-barplot( rep(NA,length(ys)), ylim=c(0,105) ,axes=FALSE, xlab='Number of components', ylab='Fraction of Variance Explained', names.arg=1:length(ys), main="Screeplot")
+  dfbar <-barplot( rep(NA,length(ys)), ylim=c(0,105) ,axes=FALSE, 
+                   xlab='Number of components', ylab='Fraction of Variance Explained', names.arg=1:length(ys), main=titleString)
   
-
   abline(h=(seq(0,100,5)), col="lightgray", lty="dotted")
   barplot(c(ys[1], diff(ys)), add = TRUE )
   lines(dfbar, y= ys, col='red')

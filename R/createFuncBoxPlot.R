@@ -5,7 +5,8 @@
 #' @param fpcaObj A object of class FPCA returned by the function FPCA().
 #' @param addInx A vector of indeces corresponding to which samples one should overlay (Default: NULL)
 #' @param variant A character variable indicating which methodology should be used ('bagplot' or 'pointwise')to create the functional box-plot (Default: 'bagplot')
-#'
+#' @param titleString a string variable to be used as title
+#' 
 #' @examples
 #' set.seed(1)
 #' n <- 20
