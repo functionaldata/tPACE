@@ -8,7 +8,7 @@
 #' @param regressionType A string defining the type of regression to perform ('dense' or 'sparse'); (default : automatically determined based on 'depVar')
 #' @param bwScalar The value of bandwidth to be used for all scalar/functional cross-covariances (default: automatically determined using GCV)
 #' @param bwFunct The values of bandwiths to be used for all function/function cross-covariances (default: automatically determined using GCV)
-#' @param fastSmooth  Use thin-plate splines during the estimation of the cross-covariance (default: TRUE)
+#' @param fastSmooth  Use thin-plate splines during the estimation of the cross-covariance (default: FALSE)
 #' @param verbose If TRUE print out the bandwidth used during the GCV procedures of selecting them
 #' @param ...  Additional arguments 
 #' 
@@ -18,7 +18,7 @@
 #' @export
 
 FPCAregFuncExp <- function(depVar,  expVarScal = NULL, expVarFunc = NULL, regressionType = NULL, 
-                           bwScalar = NULL, bwFunct = NULL, fastSmooth = TRUE,  verbose = FALSE){
+                           bwScalar = NULL, bwFunct = NULL, fastSmooth = FALSE,  verbose = FALSE){
 
   if ( is.null(regressionType)){
     regressionType = depVar$optns$dataType

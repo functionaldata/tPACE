@@ -2,7 +2,7 @@
 #'
 #' This function will create using the first two FPC scores a set of convex hulls of the scores as these hulls are defined by the references.
 #'
-#' @param ret An FPCA class object returned by FPCA().
+#' @param fpcaObj An FPCA class object returned by FPCA().
 #' @param titleString String for plot title
 #'
 #' @examples

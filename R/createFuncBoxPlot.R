@@ -46,7 +46,7 @@ createFuncBoxPlot <- function(fpcaObj, addIndx =NULL, variant= 'bagplot', titleS
  
   if ( variant == 'bagplot' && is.element('aplpack', installed.packages()[,1]) ){
   
-    plot(type='n', s, s, ylim=range(fittedCurves, na.rm = TRUE), xlab='s', ylab='y(s)')     
+    plot(type='n', s, s, ylim=range(fittedCurves, na.rm = TRUE), xlab='s', ylab='y(s)', main = titleString)     
     grid()         
     if (  length(fpcaObj$lambda) >1) {
       bgObj = aplpack::compute.bagplot(x= fpcaObj$xiEst[,1], y= fpcaObj$xiEst[,2], approx.limit=3333)     
