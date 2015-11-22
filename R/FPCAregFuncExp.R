@@ -19,7 +19,7 @@
 
 FPCAregFuncExp <- function(depVar,  expVarScal = NULL, expVarFunc = NULL, regressionType = NULL, 
                            bwScalar = NULL, bwFunct = NULL, fastSmooth = FALSE,  verbose = FALSE){
-
+  
   if ( is.null(regressionType)){
     regressionType = depVar$optns$dataType
   }
@@ -32,6 +32,9 @@ FPCAregFuncExp <- function(depVar,  expVarScal = NULL, expVarFunc = NULL, regres
     if (is.null(expVarScal)){
       nZ = 0;
     } else {
+      if( is.vector(expVarScal)){
+        expVarScal = data.frame(expVarScal)
+      }
       nZ =  ncol(expVarScal)
     }
     

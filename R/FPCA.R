@@ -163,8 +163,12 @@ FPCA = function(y, t, optns = list()){
     stop('not implemented for dataType = "p>>n" yet!')
   }
 
+  
+  # convert mu to truncated workGrid
+  muWork <- ConvertSupport(obsGrid, toGrid = workGrid, mu=smcObj$mu)
+  
   # Get the results for the eigen-analysis
-  eigObj = GetEigenAnalysisResults(smoothCov = scsObj$smoothCov, workGrid, optns)
+  eigObj = GetEigenAnalysisResults(smoothCov = scsObj$smoothCov, workGrid, optns, muWork = muWork)
 
   # Truncated obsGrid, and observations. Empty observation due to truncation has length 0.
   truncObsGrid <- obsGrid

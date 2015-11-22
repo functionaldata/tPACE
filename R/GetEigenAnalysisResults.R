@@ -3,7 +3,7 @@
 # phi: a nRegGrid * no_FVE
 # The input smoothCov is possibly truncated.
 
-GetEigenAnalysisResults <- function(smoothCov, regGrid, optns) {
+GetEigenAnalysisResults <- function(smoothCov, regGrid, optns, muWork = NULL) {
 #   noeig \approx  maxK 
   noeig <- optns$maxK
   FVEthreshold <- optns$FVEthreshold
@@ -39,10 +39,15 @@ GetEigenAnalysisResults <- function(smoothCov, regGrid, optns) {
     eigenV <- matrix(eigenV); # In case it is a vector
   }
 
-# normalization
+  
+  # normalization
+  if (is.null(muWork)){
+    muWork = 1:dim(eigenV)[1]
+  }
+  
   phi <- apply(eigenV, 2, function(x) {
                     x <- x / sqrt(trapzRcpp(regGrid, x^2)) 
-                    if (which.max(x) <= which.min(x))
+                    if ( 0 <= cor(x, muWork) )
                       return(x)
                     else
                       return(-x)
