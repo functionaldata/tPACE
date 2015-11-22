@@ -20,11 +20,13 @@
 #'
 #' @export
 
-createFuncBoxPlot <- function(fpcaObj, addIndx =NULL, variant= 'bagplot', titleString = NULL){
+createFuncBoxPlot <- function(fpcaObj, addIndx =NULL, variant= 'bagplot',... ){
  
-  #if(openNewDev){ 
-  #  dev.new(width=6.95, height=5.0, noRStudioGD=TRUE) ; 
-  #}
+ 
+  args1 <- list( xlab='s', ylab='y(s)')  
+  inargs <- list(...)
+  args1[names(inargs)] <- inargs
+  
 
   if( is.na( any(match( variant, c('pointwise', 'bagplot') )) ) ){
    stop("This plotting utility function can only implement a 'bagplot' or 'pointwise' mapping.")
@@ -44,10 +46,16 @@ createFuncBoxPlot <- function(fpcaObj, addIndx =NULL, variant= 'bagplot', titleS
     warning('There is a single component used.');
   }
  
+  #plot(type='n', s, s, ylim=range(fittedCurves, na.rm = TRUE), xlab='s', ylab='y(s)', main = titleString)    
+  #plot(type='n', s, s, ylim=range(fittedCurves), xlab='s', ylab='y(s)', main = titleString)  
+    
+    do.call(plot, c(list(type='n'), list(x=s), list(y=s), 
+                    list(ylim=range(fittedCurves)), args1))
+    grid()   
+    
+    
   if ( variant == 'bagplot' && is.element('aplpack', installed.packages()[,1]) ){
-  
-    plot(type='n', s, s, ylim=range(fittedCurves, na.rm = TRUE), xlab='s', ylab='y(s)', main = titleString)     
-    grid()         
+         
     if (  length(fpcaObj$lambda) >1) {
       bgObj = aplpack::compute.bagplot(x= fpcaObj$xiEst[,1], y= fpcaObj$xiEst[,2], approx.limit=3333)     
       fittedCurvesFence = fittedCurves[ is.element( rowSums(fpcaObj$xiEst[,1:2]), rowSums(bgObj$pxy.outer) ),]; 
@@ -62,9 +70,7 @@ createFuncBoxPlot <- function(fpcaObj, addIndx =NULL, variant= 'bagplot', titleS
     polygon(x=c(s, rev(s)), y = c(apply(fittedCurvesBag,2, min), 
             rev(apply(fittedCurvesBag,2,max))), col= 'darkgrey',border=1)  
     lines(x=s, y= apply(fittedCurves,2, mean) , col='red')
-  } else if (variant== 'pointwise'){
-    plot(type='n', s, s, ylim=range(fittedCurves), xlab='s', ylab='y(s)', main = titleString)  
-    grid()     
+  } else if (variant== 'pointwise'){ 
     polygon(x=c(s, rev(s)), y = c(apply(fittedCurves,2, quantile, 0.007), 
             rev(apply(fittedCurves,2, quantile, 0.993))), col= 'lightgrey',border=0)
     polygon(x=c(s, rev(s)), y = c(apply(fittedCurves,2, quantile, 0.250), 
