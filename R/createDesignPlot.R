@@ -11,6 +11,7 @@
 #'                   TRUE:  remove diagonal time pairs
 #'                   FALSE:  do not remove diagonal time pairs
 #' @param yname the name of the variable containing functional observations
+#' @param ... Other arguments passed into \code{plot()}. 
 #'
 #' @examples
 #' set.seed(1)
@@ -112,7 +113,7 @@ createColorPlot = function(res, obsGrid,titleString, ... ){
   plot(t1[notZero], t2[notZero], col= colVec[nnres], xlab=xlab, ylab=ylab, main = titleString, pch = pchVec[nnres], cex=cexVec[nnres] )
   
   if (!identical(unique(nnres), 1))
-    legend('right', c('1', '2', '3', '4+'), pch = pchVec, col=colVec, pt.cex=cexVec, title = 'Count',bg='white' )
+    legend('right', colVec, pch = pchVec, col=colVec, pt.cex=cexVec, title = 'Count',bg='white' )
 }
 
 

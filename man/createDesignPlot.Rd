@@ -21,6 +21,8 @@ TRUE:  remove diagonal time pairs
 FALSE:  do not remove diagonal time pairs}
 
 \item{yname}{the name of the variable containing functional observations}
+
+\item{...}{Other arguments passed into \code{plot()}.}
 }
 \description{
 This function will open a new device if not instructed otherwise.
