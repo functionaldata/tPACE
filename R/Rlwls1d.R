@@ -18,8 +18,11 @@
 
 Rlwls1d <- function( bw, kernel_type, win, xin, yin, xout, npoly = 1L, nder = 0L){
 
+  if (is.unsorted(xout))
+    stop('`xout` needs to be sorted in increasing order')
+    
   # Deal with NA/NaN measurement values
-  NAinY = is.na(yin);
+  NAinY = is.na(xin) | is.na(yin) | is.na(win)
   if(any(NAinY)){
       win = win[!NAinY]
       xin = xin[!NAinY]

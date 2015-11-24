@@ -20,9 +20,8 @@ designPlotCount = function(t, obsGrid, noDiagonal, isColorPlot){
   N = length(obsGrid) # number of distinct observed time pts
   res = matrix(0, nrow = N, ncol = N)
 
-  for(i in 1:length(t)){
-    cur = t[[i]]
-    curidx = searchID(cur, obsGrid)
+  for(cur in t){
+    curidx = match(cur, obsGrid)
     if(isColorPlot == FALSE){
       res[curidx, curidx] = 1
     } else {
@@ -37,11 +36,11 @@ designPlotCount = function(t, obsGrid, noDiagonal, isColorPlot){
   return(res)
 }
 
-searchID = function(cur, obsGrid){
-  ni = length(cur)
-  id = rep(0, ni)
-  for(i in 1:ni){
-    id[i] = which(obsGrid == cur[i])
-  }
-  return(id)
-}
+# searchID = function(cur, obsGrid){
+  # ni = length(cur)
+  # id = rep(0, ni)
+  # for(i in 1:ni){
+    # id[i] = which(obsGrid == cur[i])
+  # }
+  # return(id)
+# }

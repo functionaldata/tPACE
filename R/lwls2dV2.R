@@ -1,16 +1,18 @@
+#' Two dimensional local linear kernel smoother.
+#'
+#' Two dimensional local weighted least squares smoother. Only local linear smoother for estimating the original curve is available (no higher order, no derivative). 
+#' @param bw A scalar or a vector of length 2 specifying the bandwidth.
+#' @param kern Kernel used: 'gauss', 'rect', 'gausvar', 'epan' (default), 'quar'.
+#' @param xin An n by 2 dataframe or matrix of x-coordinate.
+#' @param yin A vector of y-coordinate.
+#' @param win A vector of weights on the observations. 
+#' @param xout1: a p1-vector of first output coordinate grid. Defaults to the input gridpoints if left unspecified.
+#' @param xout2: a p2-vector of second output coordinate grid. Defaults to the input gridpoints if left unspecified.
+#' @param xout: alternative to xout1 and xout2. A matrix of p by 2 specifying the output points (may be inefficient if the size of \code{xout} is small).
+#' @return a p1 by p2 matrix of fitted values if xout is not specified. Otherwise a vector of length p corresponding to the rows of xout. 
+#' @export
+
 # Uses Pantelis' cpp code.
-# 2 dimensional local weighted least squares smoother. Only local linear smoother is implemented (no higher order, no derivative). 
-# bw: bandwidth, a scalar or a vector of length 2.
-# kern: kernel used: 'gauss', 'rect', 'gausvar', 'epan' (default), 'quar'
-# xin: an n by 2 dataframe or matrix of x-coordinate.
-# yin: a vector of y-coordinate.
-# win: a vector of weights on the observations. The number of count as in (maybe) raw covariance should be integrated into win.
-# xout1: a p1-vector of first output coordinate grid.
-# xout2: a p2-vector of second output coordinate grid. If both xout1 and xout2 are unspecified then the output gridpoints are set to the input gridpoints.
-# xout: alternative to xout1 and xout2. A matrix of p by 2 specifying the output points.
-
-# Returns a p1 by p2 matrix of fitted values if xout is not specified. Otherwise a vector of length p. 
-
 lwls2dV2 <- function(bw, kern='epan', xin, yin, win=NULL, xout1=NULL, xout2=NULL, xout=NULL, subset=NULL, crosscov = FALSE, userNumCores = NULL ) {
   if (length(bw) == 1){
     bw <- c(bw, bw)
@@ -30,7 +32,7 @@ lwls2dV2 <- function(bw, kern='epan', xin, yin, win=NULL, xout1=NULL, xout2=NULL
   }
   
   if (!is.null(xout1) && !is.null(xout2) && !is.null(xout)) {
-    stop('Either xout1/xout2 or xout should be specified.')
+    stop('Either xout1/xout2 or xout should be specified, but not both.')
   }
   
   if (is.null(xout1)) 
