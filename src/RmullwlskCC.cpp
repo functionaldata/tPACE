@@ -49,31 +49,22 @@ Eigen::MatrixXd RmullwlskCC( const Eigen::Map<Eigen::VectorXd> & bw, const std::
   unsigned int xgridN = xgrid.size();  
   unsigned int ygridN = ygrid.size();  
   
-  Eigen::MatrixXd mu(ygrid.size(),xgrid.size());
+  Eigen::MatrixXd mu(xgrid.size(), ygrid.size());
   mu.setZero();    
 
-  for (unsigned int i = 0; i != ygridN; ++i){  
-    for (unsigned int j = 0; j != xgridN ; ++j){ 
+  for (unsigned int j = 0; j != ygridN; ++j) { 
+    for (unsigned int i = 0; i != xgridN; ++i) {  
 
       //locating local window (LOL) (bad joke)
       std::vector <unsigned int> indx; 
       //if the kernel is not Gaussian
       if ( KernelName != 3) { 
         //construct listX as vectors / size is unknown originally
-        std::vector <unsigned int> list1, list2; 
         for (unsigned int y = 0; y != tPairs.cols(); y++){ 
-          if ( std::abs( tPairs(0,y) - xgrid(j) ) <= (bw(0)+ pow(10,-6))  ) {
-          // legacy MATLAB equivalent form :  
-          // if ( (tPairs(0,y) >= (xgrid(j) -(bw(0)+pow(10,-6)))) & (tPairs(0,y) <= (xgrid(j) + (bw(0)+ pow(10,-6))))) {
-            list1.push_back(y);
-          }         
-          if ( std::abs( tPairs(1,y) - ygrid(i) ) <= (bw(1)+ pow(10,-6))  ) {
-            list2.push_back(y);
+          if ( std::abs( tPairs(0,y) - xgrid(i) ) <= (bw(0)+ pow(10,-6)) && std::abs( tPairs(1,y) - ygrid(j) ) <= (bw(1)+ pow(10,-6)) ) {
+            indx.push_back(y);
           }
         }
-  
-        //get intersection between the two lists 
-        std::set_intersection(list1.begin(), list1.begin() + list1.size(), list2.begin(), list2.begin() + list2.size(), std::back_inserter(indx));   
   
       } else{ // just get the whole deal
         for (unsigned int y = 0; y != tPairs.cols(); ++y){
@@ -109,8 +100,8 @@ Eigen::MatrixXd RmullwlskCC( const Eigen::Map<Eigen::VectorXd> & bw, const std::
       if (meter >=  3 && !bwCheck) { 
         Eigen::VectorXd temp(indxSize);
         Eigen::MatrixXd llx(2, indxSize );  
-        llx.row(0) = (lx.row(0).array() - xgrid(j))/bw(0);  
-        llx.row(1) = (lx.row(1).array() - ygrid(i))/bw(1); 
+        llx.row(0) = (lx.row(0).array() - xgrid(i))/bw(0);  
+        llx.row(1) = (lx.row(1).array() - ygrid(j))/bw(1); 
 
         //define the kernel used 
 
@@ -144,8 +135,8 @@ Eigen::MatrixXd RmullwlskCC( const Eigen::Map<Eigen::VectorXd> & bw, const std::
         // make the design matrix
         Eigen::MatrixXd X(indxSize ,3);
         X.setOnes();    
-        X.col(1) = lx.row(0).array() - xgrid(j);
-        X.col(2) = lx.row(1).array() - ygrid(i); 
+        X.col(1) = lx.row(0).array() - xgrid(i);
+        X.col(2) = lx.row(1).array() - ygrid(j); 
         Eigen::LDLT<Eigen::MatrixXd> ldlt_XTWX(X.transpose() * temp.asDiagonal() *X);
         // The solver should stop if the value is NaN. See the HOLE example in gcvlwls2dV2.
         Eigen::VectorXd beta = ldlt_XTWX.solve(X.transpose() * temp.asDiagonal() * ly);  

@@ -33,7 +33,7 @@ if(1==1){
   
 }
 
-if(1==2){
+if(1==1){
   
   test_that('lwls2dV2 parallel works alright with a larger raw covariance',{
     
@@ -107,6 +107,7 @@ if(1==1){
     tPairs = matrix(c(1,3,4,1,2,1,1,2,3,4), ncol=2)
     
     AA = lwls2dV2(bw=c(0.5,0.5), kern ='gauss', xin=tPairs, yin=c(1,2,3,4,5), xout1=as.numeric(c(1,4)), xout2=as.numeric(c(1,4)), crosscov=TRUE);
+    AA2 = lwls2dV2(bw=c(0.5,0.5), kern ='gauss', xin=cbind(tPairs[, 2], tPairs[, 1]), yin=c(1,2,3,4,5), xout1=as.numeric(c(1,4)), xout2=as.numeric(c(1,4)), crosscov=TRUE);
     BB = lwls2dV2(bw=c(0.5,5.0), kern ='gauss', xin=tPairs, yin=c(1,2,3,4,5), xout1=as.numeric(c(1,4)), xout2=as.numeric(c(1,4)), crosscov=TRUE);
     CC = lwls2dV2(bw=c(5.0,5.0), kern ='gauss', xin=tPairs, yin=c(1,2,3,4,5), xout1=as.numeric(c(1,4)), xout2=as.numeric(c(1,4)), crosscov=TRUE);
     DD = lwls2dV2(bw=c(5.0,5.0), kern ='gauss', xin=tPairs, yin=c(1,2,3,4,5), xout1=as.numeric(c(1,4)), xout2=as.numeric(c(1,40)), crosscov=TRUE); 
@@ -118,6 +119,7 @@ if(1==1){
     # [invalid, DD]= mullwlsk_2([5.0,5.0], 'gauss', [1 3 4 1 2; 1 1 2 3 4], [1 2 3 4 5]', [1 1 1 1 1], [1  4], [1 40])
     # [invalid, ZZ]= mullwlsk_2([5.0,0.5], 'gauss', [1 3 4 1 2; 1 1 2 3 4], [1 2 3 4 5]', [1 1 1 1 1], [1  4], [1 4 4.5]); sum( ZZ(:))
     
+    expect_equal(AA, t(AA2))
     expect_equal(13.997323601735092, sum(AA), tolerance=1e-9)
     expect_equal(13.498112821557918, sum(BB), tolerance=1e-9)
     expect_equal(13.669203283501956, sum(CC), tolerance=1e-9)
