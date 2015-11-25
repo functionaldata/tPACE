@@ -69,7 +69,7 @@ Eigen::MatrixXd RmatLwls2d(
   Eigen::VectorXi x2UpInd(x2InSize);
   Eigen::VectorXi x2LoInd(x2InSize);
 
-  // Find the x-range
+  // Find the x-range (upper and lower ranges are inclusive)
   for (unsigned int i = 0; i < x1OutSize; ++i) {
     const double* uploc = std::lower_bound(x1InDat, x1InDat + x1InSize,
                                      x1Out(i) + bw(0) + 1e-10);
@@ -82,7 +82,7 @@ Eigen::MatrixXd RmatLwls2d(
     }
   }
 
-  // Find the y-range
+  // Find the y-range (upper and lower ranges are inclusive)
   for (unsigned int j = 0; j < x2OutSize; ++j) {
     const double* uploc = std::lower_bound(x2InDat, x2InDat + x2InSize,
                                      x2Out(j) + bw(1) + 1e-10);
@@ -106,20 +106,25 @@ Eigen::MatrixXd RmatLwls2d(
   for (unsigned int j = 0; j < x2OutSize; ++j){  
     for (unsigned int i = 0; i < x1OutSize ; ++i){ 
 
-      unsigned int maxWinSize = (x1UpInd(i) - x1LoInd(i) + 1) * 
-                                (x2UpInd(j) - x2LoInd(j) + 1);
-      unsigned int nnz = 0; // number of non-zero weight points in the
+      unsigned int subSize1 = x1UpInd(i) - x1LoInd(i) + 1,
+                   subSize2 = x2UpInd(j) - x2LoInd(j) + 1,
+                   maxWinSize = subSize1 * subSize2,
+                   nnz = 0; // number of non-zero weight points in the
                             // window.
       Eigen::Matrix2Xd lx(2, maxWinSize);
       Eigen::VectorXd ly(maxWinSize);
       Eigen::VectorXd lw(maxWinSize);  
-      for (unsigned int jw = x2LoInd(j); jw <= x2UpInd(j); ++jw) {
-        for (unsigned int iw = x1LoInd(i); iw <= x1UpInd(i); ++iw) {
-          if (wMat(iw, jw) > 1e-10) {
-            lx(0, nnz) = x1In(iw);
-            lx(1, nnz) = x2In(jw);
-            ly(nnz) = yMat(iw, jw);
-            lw(nnz) = wMat(iw, jw);
+      Eigen::MatrixXd subyMat = yMat.block(x1LoInd(i), x2LoInd(j), 
+                                           subSize1, subSize2),
+                      subwMat = wMat.block(x1LoInd(i), x2LoInd(j), 
+                                           subSize1, subSize2);
+      for (unsigned int jw = 0; jw < subSize2; ++jw) {
+        for (unsigned int iw = 0; iw < subSize1; ++iw) {
+          if (subwMat(iw, jw) > 1e-10) {
+            lx(0, nnz) = x1In(iw + x1LoInd(i));
+            lx(1, nnz) = x2In(jw + x2LoInd(j));
+            ly(nnz) = subyMat(iw, jw);
+            lw(nnz) = subwMat(iw, jw);
             ++nnz;
           }
         }

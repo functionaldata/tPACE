@@ -71,7 +71,7 @@ bw <- 0.1
 pts <- seq(0, 1, length.out=100L)
 mu <- rep(0, length(pts))
 a <- wiener(1000, pts, sparsify=5:10)
-xout1 <- xout2 <- seq(0, 1, length.out=5)
+xout1 <- xout2 <- seq(0, 1, length.out=20)
 rcov <- BinRawCov(GetRawCov(a$yList, a$tList, pts, mu, 'Sparse', 0))
 matList <- matXinYinWin(rcov$tPairs, rcov$meanVals, rcov$count)
 tmp <- with(matList, RmatLwls2d(c(bw, bw), 'epan', yMat, wMat, x1Grid, x2Grid, xout1, xout2, FALSE, FALSE))
