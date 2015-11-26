@@ -26,10 +26,16 @@ createDiagnosticsPlot <-function(ret, openNewDev = TRUE){
   workGrid = ret$workGrid
  
   par(mfrow=c(2,2))
+  ## Make Design plot
   createDesignPlot(t)
-  plot( obsGrid, mu, type='l', xlab='s',ylab='', main='Mean')  
-  grid()
+  
+  ## Make Mean trajectory plot
+  plot( obsGrid, mu, type='l', xlab='s',ylab='', main='Mean', panel.first = grid())   
+  
+  ## Make Scree plot
   createScreePlot(ret);
+  
+  ## Make Phi plot
   K = length(fves);
   k =1;
   if(K>3){
@@ -37,6 +43,8 @@ createDiagnosticsPlot <-function(ret, openNewDev = TRUE){
   } else {
     k = K;
   }
-  matplot(workGrid, ret$phi[,1:k], type='l', main="First Eigenfunctions", xlab='s', ylab='') 
+  matplot(workGrid, ret$phi[,1:k], type='n', main="First Eigenfunctions", xlab='s', ylab='') 
+  grid()
+  matlines(workGrid, ret$phi[,1:k] ) 
 }
 

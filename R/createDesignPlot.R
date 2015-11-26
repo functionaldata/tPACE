@@ -31,7 +31,7 @@ createDesignPlot = function(t, obsGrid = NULL, isColorPlot=TRUE, noDiagonal=TRUE
   } else {
     titleString =  paste('Design Plot of', yname)
   }
-
+  
   res = designPlotCount(t, obsGrid, noDiagonal, isColorPlot)
   # binrawcov is the function in place of designPlotCount
   # or getCount
@@ -41,26 +41,26 @@ createDesignPlot = function(t, obsGrid = NULL, isColorPlot=TRUE, noDiagonal=TRUE
   #   ylim = range(obsGrid),
   #   xlab = 'Observed time grid', ylab = 'Observed time grid',
   #   main = titleString, col = 'white')
-
+  
   oldpty <- par()[['pty']]
   par(pty="s")
   if(isColorPlot == TRUE){
-  	createColorPlot(res, obsGrid,titleString, ...)
+    createColorPlot(res, obsGrid,titleString, ...)
   } else {
-  	createBlackPlot(res, obsGrid,titleString)
+    createBlackPlot(res, obsGrid,titleString)
   }
   par(pty=oldpty)
 }
 
 createBlackPlot = function(res, obsGrid,titleString ){
-#  qpoints = c();
-#  rpoints = c();  
-#  for(i in 1:length(obsGrid)){
-#    idx = which(res[i,] > 0)
-#    qpoints = c(qpoints,rep(obsGrid[i], length(idx)))
-#    rpoints = c(rpoints,obsGrid[idx])
-#  }
-#  points(qpoints, rpoints, pch = '.')
+  #  qpoints = c();
+  #  rpoints = c();  
+  #  for(i in 1:length(obsGrid)){
+  #    idx = which(res[i,] > 0)
+  #    qpoints = c(qpoints,rep(obsGrid[i], length(idx)))
+  #    rpoints = c(rpoints,obsGrid[idx])
+  #  }
+  #  points(qpoints, rpoints, pch = '.')
   # image(res, col=c('white','black'), axes=FALSE, xlab = 'Observed time grid', ylab = 'Observed time grid', main = titleString)
   
   u1 = as.vector(res)
@@ -68,52 +68,52 @@ createBlackPlot = function(res, obsGrid,titleString ){
   t1 = rep(obsGrid, times = length(obsGrid) )
   t2 = rep(obsGrid, each = length(obsGrid)) 
   plot(t1[u1 != 0], t2[u2 !=0] , xlab = 'Observed time grid', ylab = 'Observed time grid', main = titleString, pch = 19, cex =0.33 )
- # axis(1, obsGrid[round(seq(1,length(obsGrid), length.out=11))], obsGrid[round(seq(1,length(obsGrid), length.out=11))],col.axis="black")
- # axis(2, obsGrid[round(seq(1,length(obsGrid), length.out=11))], obsGrid[round(seq(1,length(obsGrid), length.out=11))],col.axis="black")
-  
+ 
 }
 
 createColorPlot = function(res, obsGrid,titleString, ... ){
   res[res > 4] = 4;
-  # resVals = sort(unique(as.vector(res)));
-  # colPalette = c('white', 'black', 'blue', 'green', 'red')
-  # resColPalt = colPalette[resVals+1]
-  # image(res, col= resColPalt, axes=FALSE, xlab = 'Observed support points', ylab = 'Observed support points', main = titleString)
   
   notZero <- res != 0
   nnres <- res[notZero]
   ddd <- list(...)
   
   colVec <- c(`1`='black', `2`='blue', `3`='green', `4`='red')
-  if (!is.null(ddd[['col']]))
+  if (!is.null(ddd[['col']])){ 
     colVec[] <- ddd[['col']]
-    
+  }
+  
   pchVec <- rep(19, length(colVec))
   names(pchVec) <- names(colVec)
-  if (!is.null(ddd[['pch']]))
+  if (!is.null(ddd[['pch']])){
     pchVec[] <- ddd[['pch']]
-    
+  }
+  
   cexVec <- seq(from=0.3, by=0.1, length.out=length(colVec))
   names(cexVec) <- names(colVec)
-  if (!is.null(ddd[['cex']]))
+  if (!is.null(ddd[['cex']])){
     cexVec[] <- ddd[['cex']]
-    
-  if (!is.null(ddd[['xlab']]))
+  }
+  
+  if (!is.null(ddd[['xlab']])){ 
     xlab <- ddd[['xlab']]
-  else
+  } else {
     xlab <- 'Observed time grid'
-    
-  if (!is.null(ddd[['ylab']]))
+  }
+  
+  if (!is.null(ddd[['ylab']])){
     ylab <- ddd[['ylab']]
-  else
+  } else {
     ylab <- 'Observed time grid'
+  }
   
   t1 = rep(obsGrid, times = length(obsGrid))
   t2 = rep(obsGrid, each = length(obsGrid)) 
   plot(t1[notZero], t2[notZero], col= colVec[nnres], xlab=xlab, ylab=ylab, main = titleString, pch = pchVec[nnres], cex=cexVec[nnres] )
   
-  if (!identical(unique(nnres), 1))
-    legend('right', colVec, pch = pchVec, col=colVec, pt.cex=cexVec, title = 'Count',bg='white' )
+  if (!identical(unique(nnres), 1)){
+    legend('right', c('1','2','3','4+'), pch = pchVec, col=colVec, pt.cex=1.5, title = 'Count',bg='white' )
+  }
 }
 
 
