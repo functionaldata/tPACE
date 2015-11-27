@@ -109,3 +109,48 @@ test_that('The cross-covariance of two simple related process is correct. Same r
   expect_equal( median(abs( eigFunct1(sSmall)%*%t(eigFunct1(sSmall))*3 - BB2$smoothedCC )),  0.02, tol=.01, scale=1 )
    
 })
+
+
+test_that('The cross-covariance of two simple unrelated process is correct. Same readings lengths.',{
+  
+  set.seed(123)
+  N = 611;   
+  M = 101;
+  
+  # Define the continuum
+  s = seq(0,10,length.out = M)
+  
+  # Define the mean and 2 eigencomponents 
+  eigFunct1 <- function(s) +cos(2*s*pi/10) / sqrt(5) 
+  eigFunct2 <- function(s) +sin(2*s*pi/10) / sqrt(5) 
+  
+  # Create FPC scores
+  Ksi = matrix(rnorm(N*2), ncol=2);
+  Ksi = apply(Ksi, 2, scale) 
+  Ksi = t(t(chol(matrix(c(5,3,3,4),2))) %*% t(Ksi))
+  
+  # Create Y_true
+  yTrueA = Ksi[,1] %*% t(matrix(eigFunct1(s), ncol=1)) 
+  yTrueB = Ksi[,2] %*% t(matrix(eigFunct2(s), ncol=1)) 
+  
+  ySparseA = sparsify(yTrueA, s, c(3:5))    
+  ySparseB = sparsify(yTrueB, s, c(3:5))     
+  
+  BB1 <- CrCovYX(Ly1 = ySparseA$yList, Lt1 = ySparseA$tList, Ly2 = ySparseB$yList, Lt2 = ySparseB$tList, 
+                 Ymu1 = rep(0,M), Ymu2 = rep(0,M), fast = TRUE  )
+  
+  BB2 <- CrCovYX(Ly1 = ySparseA$yList, Lt1 = ySparseA$tList, Ly2 = ySparseB$yList, Lt2 = ySparseB$tList, 
+                 Ymu1 = rep(0,M), Ymu2 = rep(0,M), bw1=0.4, bw2=0.4  )
+  
+  sSmall = seq(0,10,length.out = 51)
+  
+  # we know that the covariance between ksi_1 and ksi_2 is three
+  expect_equal( median(abs( eigFunct1(sSmall)%*%t(eigFunct2(sSmall))*3 - BB1$smoothedCC )),  0.02, tol=.01, scale=1 )
+  expect_equal( median(abs( eigFunct1(sSmall)%*%t(eigFunct2(sSmall))*3 - BB2$smoothedCC )),  0.02, tol=.01, scale=1 )
+  
+})
+
+
+
+
+

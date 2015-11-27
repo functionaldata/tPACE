@@ -110,6 +110,7 @@ getBWidths <- function(ulLt1, ulLt2){
   return(bwCandidates)
 }
 
+smoothRCC2D <- function(rcov,bw1, bw2, xout1, xout2){
 # Calculate the smooth Covariances between two functional variables
 # rcov    : raw cross covariance list object returned by GetRawCrCovFuncFunc
 # bw1     : scalar
@@ -117,11 +118,11 @@ getBWidths <- function(ulLt1, ulLt2){
 # xout1   : vector M-1
 # xout2   : vector L-1
 # returns : matrix M-L
-smoothRCC2D <- function(rcov,bw1, bw2, xout1, xout2){
   return( lwls2dV2( bw = c(bw1, bw2), kern = 'gauss', xin=rcov$tpairn, 
                            yin=rcov$rawCC, xout1=xout1, xout2=xout2, crosscov=TRUE) )  
 }
 
+GCVgauss2D <- function( smoothedCC, smoothGrid, rawCC, rawGrid, bw1, bw2){ 
 # Calculate GCV cost off smoothed sample assuming a Gaussian kernel
 # smoothedY : vector M-1 
 # smoothedX : vector M-1
@@ -129,8 +130,6 @@ smoothRCC2D <- function(rcov,bw1, bw2, xout1, xout2){
 # rawY      : vector N-1
 # bw        : scalar
 # returns   : scalar
-GCVgauss2D <- function( smoothedCC, smoothGrid, rawCC, rawGrid, bw1, bw2){ 
-
   obsFit <- interp2lin(smoothGrid[,1], smoothGrid[,2], smoothedCC, as.numeric(rawGrid[, 1]), 
                               as.numeric(rawGrid[, 2]))    
   # workaround for degenerate case.
