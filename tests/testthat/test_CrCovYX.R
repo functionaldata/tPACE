@@ -114,7 +114,7 @@ test_that('The cross-covariance of two simple related process is correct. Same r
 test_that('The cross-covariance of two simple unrelated process is correct. Same readings lengths.',{
   
   set.seed(123)
-  N = 611;   
+  N = 1511;   
   M = 101;
   
   # Define the continuum
@@ -147,6 +147,11 @@ test_that('The cross-covariance of two simple unrelated process is correct. Same
   # we know that the covariance between ksi_1 and ksi_2 is three
   expect_equal( median(abs( eigFunct1(sSmall)%*%t(eigFunct2(sSmall))*3 - BB1$smoothedCC )),  0.02, tol=.01, scale=1 )
   expect_equal( median(abs( eigFunct1(sSmall)%*%t(eigFunct2(sSmall))*3 - BB2$smoothedCC )),  0.02, tol=.01, scale=1 )
+
+  # par(mfrow(1,3))
+  # plot3D::persp3D(s,s, z= cov(yTrueA,yTrueB))
+  # plot3D::persp3D(sSmall, sSmall, BB1$smoothedCC )
+  # plot3D::persp3D(sSmall, sSmall, BB2$smoothedCC )
   
 })
 

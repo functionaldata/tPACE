@@ -89,7 +89,7 @@ test_that('User provided mu and cov for simple example',{
   
   # Create sparse sample  
   # Each subject has one to five readings (median: 3);
-  ySparse = sparsify(yTrue, s, c(1:5))
+  ySparse = sparsify(yTrue, s, c(2:5))
     
   # Give your sample a bit of noise 
   ySparse$yNoisy = lapply( ySparse$yList, function(x) x +  0.025*rnorm(length(x))) 
