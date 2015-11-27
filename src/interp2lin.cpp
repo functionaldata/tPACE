@@ -19,9 +19,10 @@ Eigen::VectorXd interp2lin( const Eigen::Map<Eigen::VectorXd> & xin, const Eigen
 
   // Preliminary checks
 
-  if ( nXGrid != nYGrid ){
-    Rcpp::stop("Input Y-grid does not have the same number of points as Input X-grid.");
-  } else if ( nKnownPoints != zin.size() ) {  
+  // if ( nXGrid != nYGrid ){
+    // Rcpp::stop("Input Y-grid does not have the same number of points as Input X-grid.");
+  // } else 
+  if ( nKnownPoints != zin.size() ) {  
     Rcpp::stop("Input Z-grid does not have the same number of points as the product of #Input Y-grid times #Input X-grid.");
   } else if ( nUnknownPoints != you.size() ){
     Rcpp::stop("Output Y-grid does not have the same number of points as Output X-grid.");
@@ -69,7 +70,7 @@ Eigen::VectorXd interp2lin( const Eigen::Map<Eigen::VectorXd> & xin, const Eigen
       ya(1) = *y1;
 
       const double* x1p = std::find(&xin[0], &xin[nXGrid], xa(1));
-      const double* y1p = std::find(&yin[0], &yin[nXGrid], ya(1));
+      const double* y1p = std::find(&yin[0], &yin[nYGrid], ya(1));
       const double* x0p;
       const double* y0p;
 
@@ -91,14 +92,14 @@ Eigen::VectorXd interp2lin( const Eigen::Map<Eigen::VectorXd> & xin, const Eigen
      
 
 //      const double* x1p = std::find(&xin[0], &xin[nXGrid], xa(1));
-//      const double* y1p = std::find(&yin[0], &yin[nXGrid], ya(1));
+//      const double* y1p = std::find(&yin[0], &yin[nYGrid], ya(1));
 //      const double* x0p = x1p - 1;
 //      const double* y0p = y1p - 1;
 
-      za(0) = zin( (x0p -&xin[0]) * nXGrid + (y0p -&yin[0]) );
-      za(1) = zin( (x0p -&xin[0]) * nXGrid + (y1p -&yin[0]) );
-      za(2) = zin( (x1p -&xin[0]) * nXGrid + (y0p -&yin[0]) );
-      za(3) = zin( (x1p -&xin[0]) * nXGrid + (y1p -&yin[0]) );
+      za(0) = zin( (y0p -&yin[0]) * nXGrid +  (x0p -&xin[0]));
+      za(1) = zin( (y1p -&yin[0]) * nXGrid +  (x0p -&xin[0]));
+      za(2) = zin( (y0p -&yin[0]) * nXGrid +  (x1p -&xin[0]));
+      za(3) = zin( (y1p -&yin[0]) * nXGrid +  (x1p -&xin[0]));
 
       // Column 2  
       A(0,1) = xa(0);   A(1,1) = xa(0);
