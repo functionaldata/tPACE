@@ -31,6 +31,7 @@ SetOptions = function(y, t, optns){
   rotationCut =optns[['rotationCut']];    useBinnedData =optns[['useBinnedData']];
   #corrPlotType =optns[['corrPlotType']]; 
   useBinnedCov = optns[['useBinnedCov']]
+  lean = optns[['lean']]
 
   if(is.null(bwmu)){ # bandwidth choice for mean function is using CV or GCV
     bwmu = 0;   
@@ -197,6 +198,9 @@ SetOptions = function(y, t, optns){
       useBinnedCov <- FALSE
     } 
   }
+  if(is.null(lean)){ 
+    lean = FALSE;
+  } 
  
   #if(is.null(corrPlotType)){ 
   #  corrPlotType = 'Fitted';
@@ -208,7 +212,7 @@ SetOptions = function(y, t, optns){
           fitEigenValues = fitEigenValues,
           maxK = maxK, dataType = dataType, error = error, nRegGrid = nRegGrid, rotationCut = rotationCut,
           methodXi = methodXi, # shrink = shrink, # newdata = newdata, 
-          kernel = kernel, 
+          kernel = kernel,  lean = lean,
           # corrPlot = corrPlot, corrPlotType = corrPlotType,  screePlot = screePlot, designPlot = designPlot,
           # numComponents = numComponents,
           diagnosticsPlot = diagnosticsPlot,

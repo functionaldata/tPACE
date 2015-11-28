@@ -19,6 +19,7 @@
 #' \item{FVEthreshold}{Fraction-of-Variance-Explained threshold used during the SVD of the fitted covar. function; numeric (0,1] - default: 0.9999}
 #' \item{kernel}{Smoothing kernel choice, common for mu and covariance; "rect", "gauss", "epan", "gausvar", "quar" - default: "epan" for dense data else "gauss"}
 #' \item{kFoldCov}{The number of folds to be used for covariance smoothing. Default: 10}
+#' \item{lean}{If TRUE the 'inputData' field in the output list is empty. Default: FALSE}
 #' \item{methodCov}{The method to estimate the covariance; 'PACE','RARE','CrossSectional' - automatically determined, user input ignored}
 #' \item{methodMu}{The method to estimate mu; 'PACE','RARE','CrossSectional' - automatically determined, user input ignored }
 #' \item{maxK}{The maximum number of principal components to consider; positive integer smaller than 128 - default: min(20, N-1), N:# of curves}
@@ -52,7 +53,7 @@
 #' \item{rho}{A regularizing scalar for the measurement error variance estimate.}
 #' \item{cumFVE}{A vector with the percentages of the total variance explained by each FPC. Increase to almost 1.}
 #' \item{FVE}{A percentage indicating the total variance explained by chosen FPCs with corresponding 'FVEthreshold'.}
-#' \item{inputData}{A list containting the original 'y' and 't' lists used as inputs to FPCA.}
+#' \item{inputData}{A list containting the original 'y' and 't' lists used as inputs to FPCA. NULL if 'lean' was specified to be TRUE.}
 #' 
 #' @examples
 #' set.seed(1)
