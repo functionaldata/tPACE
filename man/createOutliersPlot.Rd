@@ -4,12 +4,12 @@
 \alias{createOutliersPlot}
 \title{Functional Principal Component Scores Plot}
 \usage{
-createOutliersPlot(fpcaObj, titleString = NULL)
+createOutliersPlot(fpcaObj, factor = 3, ...)
 }
 \arguments{
 \item{fpcaObj}{An FPCA class object returned by FPCA().}
 
-\item{titleString}{String for plot title}
+\item{factor}{Inflation factor defining the loop (see ?compute.bagplot).}
 }
 \description{
 This function will create using the first two FPC scores a set of convex hulls of the scores as these hulls are defined by the references.
@@ -24,6 +24,6 @@ res <- FPCA(sampWiener$yList, sampWiener$tList, list(dataType='Sparse', error=FA
 createOutliersPlot(res)
 }
 \references{
-\item{P. J. Rousseeuw, I. Ruts, J. W. Tukey (1999): The bagplot: a bivariate boxplot, The American Statistician, vol. 53, no. 4, 382-387}
+\cite{P. J. Rousseeuw, I. Ruts, J. W. Tukey (1999): The bagplot: a bivariate boxplot, The American Statistician, vol. 53, no. 4, 382-387}
 }
 
