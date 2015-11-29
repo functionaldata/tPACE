@@ -1,14 +1,7 @@
+# Bin a `RawCov` object. Observations with the same time pairs are binned together and only one entry will be returned, containting the mean value (`meanVals`), weight (`count`), and residual sums of squares at each point (`RSS`). If `rcov$diag` is used then also bin the diagonal of the raw covariance similarly (with fields `diagMeans`, `diagRSS`, and `diagCount`.
+# rcov: A `RawCov` object.
+# returns: A list of class `BinnedRawCov`. 
 BinRawCov <- function(rcov) {
-  # rcov: Assumes rcov has entries on a dataType grid.
-  # Returns: 
-  
-  #originalRange <- range(rcov$tPairs);
-  #rcov$tPairs <- signif(rcov$tPairs, 14)
-  #if (min(rcov$tPairs) < originalRange[1]){
-  #  stop("Binning truncation caused lower boundary issues.")
-  #} else if ((max(rcov$tPairs) > originalRange[2])){
-  #  stop("Binning truncation caused upper boundary issues.")
-  #}
   
   # Get the count, mean raw cov, and residual sum of squares at each pair of observed time points.
   tmp <- aggregate(rcov$cxxn, list(rcov$tPairs[, 1], rcov$tPairs[, 2]), 
@@ -34,7 +27,11 @@ BinRawCov <- function(rcov) {
     diagRSS[is.na(diagRSS)] <- 0
   }
   
-  res <- list(tPairs=tPairs, meanVals=meanVals, RSS=RSS, tDiag=tDiag, diagMeans=diagMeans, diagRSS=diagRSS, count=count, diagCount=diagCount, error=rcov$error, dataType=rcov$dataType)
+  res <- list(tPairs=tPairs, meanVals=meanVals, RSS=RSS, 
+              tDiag=tDiag, diagMeans=diagMeans, diagRSS=diagRSS, 
+              count=count, 
+              diagCount=diagCount, 
+              error=rcov$error, dataType=rcov$dataType)
   class(res) <- 'BinnedRawCov'
   
   return(res)
