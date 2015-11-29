@@ -12,7 +12,7 @@ BinRawCov <- function(rcov) {
   
   # Get the count, mean raw cov, and residual sum of squares at each pair of observed time points.
   tmp <- aggregate(rcov$cxxn, list(rcov$tPairs[, 1], rcov$tPairs[, 2]), 
-    function(yy) c(mean(yy), length(yy), var(yy) * (length(yy) - 1)))
+    function(yy) c(RCPPmean(yy), length(yy), RCPPvar(yy) * (length(yy) - 1)))
   
   tPairs <- unname(as.matrix(tmp[, 1:2]))
   summaryDat <- tmp[, 3]
@@ -24,7 +24,7 @@ BinRawCov <- function(rcov) {
   diagRSS <- diagCount <- diagMeans <- tDiag <- NULL
   if (!is.null(rcov$diag)) {
     tmp <- aggregate(rcov$diag[, 2], list(rcov$diag[, 1]), 
-      function(yy) c(mean(yy), length(yy), var(yy) * (length(yy) - 1)))
+      function(yy) c(RCPPmean(yy), length(yy), RCPPvar(yy) * (length(yy) - 1)))
       
     tDiag <- tmp[, 1]
     diagSummary <- tmp[, 2]
