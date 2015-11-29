@@ -7,14 +7,16 @@
 makePACEinputs(IDs = NULL, tVec, yVec, na.rm = FALSE)
 }
 \arguments{
-\item{IDs}{: n-by-1 vector of subject IDs}
+\item{IDs}{n-by-1 vector of subject IDs (Default: NULL)}
 
-\item{tVec}{: n-by-1 vector of measurement times}
+\item{tVec}{n-by-1 vector of measurement times}
 
-\item{yVec}{: n-by-1 vector of measurements from the variable of interest}
+\item{yVec}{n-by-1 vector of measurements from the variable of interest}
+
+\item{na.rm}{logical indicating if NA should be omitted (Default: FALSE)}
 }
 \value{
-L   : list containing 3 lists each of length 'm', 'm' being the number of unique subject IDs
+L list containing 3 lists each of length 'm', 'm' being the number of unique subject IDs
 }
 \description{
 Turn vector inputs to the list so they can be used in FPCA

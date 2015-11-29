@@ -8,7 +8,7 @@ rotateLwls2dV2 <- function(bw, kern='epan', xin, yin, win=NULL, xout) {
   }  
 
   if (missing(win) || is.null(win)){
-    win <- rep(1, nrow(datin))
+    win <- rep(1, length(xin))
   }
 
   if (  is.vector(xout)){

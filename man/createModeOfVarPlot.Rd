@@ -10,6 +10,8 @@ createModeOfVarPlot(ret, k = 1, ...)
 \item{ret}{An FPCA class object returned by FPCA().}
 
 \item{k}{The k-th mode of variation to plot (default k = 1)}
+
+\item{...}{Additional arguments for the 'plot' function.}
 }
 \description{
 This function will open a new device if not instructed otherwise.
@@ -20,7 +22,8 @@ n <- 20
 pts <- seq(0, 1, by=0.05)
 sampWiener <- wiener(n, pts)
 sampWiener <- sparsify(sampWiener, pts, 10)
-res <- FPCA(sampWiener$yList, sampWiener$tList, list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
+res <- FPCA(sampWiener$yList, sampWiener$tList, 
+            list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
 createDiagnosticsPlot(res)
 }
 

@@ -2,8 +2,7 @@
 #'
 #' Normalise sparse functional sample given in an FPCA object
 #'
-#' @param x An FPCA object.
-#' @param ... Not used.
+#' @param fpcaObj An FPCA object.
 #'
 #' @export
 GetNormalisedSample<- function(fpcaObj){

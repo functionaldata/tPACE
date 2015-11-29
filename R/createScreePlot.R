@@ -3,6 +3,7 @@
 #' This function will open a new device if not instructed otherwise.
 #'
 #' @param fpcaObj A object of class FPCA returned by the function FPCA().
+#' @param ... Additional arguments for the 'plot' function.
 #'
 #' @examples
 #' set.seed(1)
@@ -10,8 +11,9 @@
 #' pts <- seq(0, 1, by=0.05)
 #' sampWiener <- wiener(n, pts)
 #' sampWiener <- sparsify(sampWiener, pts, 10)
-#' res <- FPCA(sampWiener$yList, sampWiener$tList, list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
-#' createScreePlot(res$cumFVE)
+#' res <- FPCA(sampWiener$yList, sampWiener$tList, 
+#'             list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
+#' createScreePlot(res)
 #' @export
 
 createScreePlot <-function(fpcaObj, ...){ 

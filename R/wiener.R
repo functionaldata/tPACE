@@ -3,7 +3,7 @@
 #' Simulate \code{n} standard Wiener processes on [0, 1], possibly
 #' sparsifying the results.
 #'
-#' The algorithm is based on Karhunen–Loeve expansion.
+#' The algorithm is based on Karhunen-Loeve expansion.
 #' 
 #' @param n Sample size.
 #' @param pts A vector of points in [0, 1] specifying the support of the processes.

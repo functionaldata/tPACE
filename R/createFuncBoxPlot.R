@@ -3,9 +3,9 @@
 #' Using an FPCA object create a functional box-plot based on the function scores.
 #'
 #' @param fpcaObj A object of class FPCA returned by the function FPCA().
-#' @param addInx A vector of indeces corresponding to which samples one should overlay (Default: NULL)
+#' @param addIndx A vector of indeces corresponding to which samples one should overlay (Default: NULL)
 #' @param variant A character variable indicating which methodology should be used ('bagplot' or 'pointwise')to create the functional box-plot (Default: 'bagplot')
-#' @param titleString a string variable to be used as title
+#' @param ... Additional arguments for the 'plot' function.
 #' 
 #' @examples
 #' set.seed(1)
@@ -13,7 +13,8 @@
 #' pts <- seq(0, 1, by=0.05)
 #' sampWiener <- wiener(n, pts)
 #' sampWiener <- sparsify(sampWiener, pts, 10)
-#' res <- FPCA(sampWiener$yList, sampWiener$tList, list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
+#' res <- FPCA(sampWiener$yList, sampWiener$tList, 
+#'             list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
 #' createFuncBoxPlot(res, addIndx=c(1:3)) 
 #' @references
 #' \cite{P. J. Rousseeuw, I. Ruts, J. W. Tukey (1999): The bagplot: a bivariate boxplot, The American Statistician, vol. 53, no. 4, 382-387}

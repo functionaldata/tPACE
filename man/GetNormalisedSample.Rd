@@ -7,9 +7,7 @@
 GetNormalisedSample(fpcaObj)
 }
 \arguments{
-\item{x}{An FPCA object.}
-
-\item{...}{Not used.}
+\item{fpcaObj}{An FPCA object.}
 }
 \description{
 Normalise sparse functional sample given in an FPCA object

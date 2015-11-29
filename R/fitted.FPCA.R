@@ -13,7 +13,8 @@
 #' pts <- seq(0, 1, by=0.05)
 #' sampWiener <- wiener(n, pts)
 #' sampWiener <- sparsify(sampWiener, pts, 10)
-#' res <- FPCA(sampWiener$yList, sampWiener$tList, list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
+#' res <- FPCA(sampWiener$yList, sampWiener$tList, 
+#'             list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
 #' fittedY <- fitted(res)
 #' @references
 #' \cite{Liu, Bitao, and Hans-Georg Mueller. "Estimating derivatives for samples of sparsely observed functions, with application to online auction dynamics." Journal of the American Statistical Association 104, no. 486 (2009): 704-717. (Sparse data FPCA)}

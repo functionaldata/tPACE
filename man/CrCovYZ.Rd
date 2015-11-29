@@ -41,6 +41,6 @@ Z = rep(4,4) # Constant vector so the covariance has to be zero.
 sccObj = CrCovYZ(bw=1, Z= Z, Ly=yList, Lt=tList, Ymu=rep(4,5))
 }
 \references{
-\cite{Yang, Wenjing, Hans‐Georg Müller, and Ulrich Stadtmüller. "Functional singular component analysis." Journal of the Royal Statistical Society: Series B (Statistical Methodology) 73.3 (2011): 303-324}
+\cite{Yang, Wenjing, Hans-Georg Mueller, and Ulrich Stadtmueller. "Functional singular component analysis." Journal of the Royal Statistical Society: Series B (Statistical Methodology) 73.3 (2011): 303-324}
 }
 

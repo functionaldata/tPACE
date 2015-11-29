@@ -4,34 +4,34 @@
 getMinb <- function(t, obsGrid, dataType='Sparse', npoly=1, minUniqPts=3, minPts=6) {
 
   FutureFix = FALSE 
-  if (FutureFix){ 
-  # This is a fine idea but it even a dataset like FVE will fail due to memory constraints.
-  # See below for a work-around using simple Matrices.
-    if (dataType == 'Sparse') {
-      dstar <- minb(obsGrid, 2 + npoly) # rough 1D initial value 
+ # if (FutureFix){ 
+ # # This is a fine idea but it even a dataset like FVE will fail due to memory constraints.
+ # # See below for a work-around using simple Matrices.
+ #   if (dataType == 'Sparse') {
+ #     dstar <- minb(obsGrid, 2 + npoly) # rough 1D initial value 
 
-      if (class(rcov) == 'RawCov') {
-        countRes <- getCount(rcov$tPairs)
-        count <- countRes[, 3]
-        distMat <- as.matrix(dist(countRes[, 1:2]))
-      } else if (class(rcov) == 'BinnedRawCov') {
-        count <- rcov$count
-        distMat <- as.matrix(dist(rcov$tPairs))
-      }
-    
-      # find the bandwidth such that there are at least minUniqPts unique points and minPts points in the 2D window
-      bothBW <- sapply(1:ncol(distMat), function(j) {
-      # browser()
-        x <- distMat[, j]
-        ordNeighbors <- order(x)[1:minPts]
-        bwNeighbors <- x[ordNeighbors]
-        minUniqPtsBW <- bwNeighbors[minPts]
-        countNeighbors <- count[ordNeighbors]
-        minPtsBW <- bwNeighbors[which(cumsum(countNeighbors) >= minPts)[1]]
-        return(c(uniqbw=minUniqPtsBW, bw=minPtsBW))
-      })
-    }
-  }
+ #     if (class(rcov) == 'RawCov') {
+ #       countRes <- getCount(rcov$tPairs)
+ #       count <- countRes[, 3]
+ #       distMat <- as.matrix(dist(countRes[, 1:2]))
+ #     } else if (class(rcov) == 'BinnedRawCov') {
+ #       count <- rcov$count
+ #       distMat <- as.matrix(dist(rcov$tPairs))
+ #     }
+ #   
+ #     # find the bandwidth such that there are at least minUniqPts unique points and minPts points in the 2D window
+ #     bothBW <- sapply(1:ncol(distMat), function(j) {
+ #     # browser()
+ #       x <- distMat[, j]
+ #       ordNeighbors <- order(x)[1:minPts]
+ #       bwNeighbors <- x[ordNeighbors]
+ #       minUniqPtsBW <- bwNeighbors[minPts]
+ #       countNeighbors <- count[ordNeighbors]
+ #       minPtsBW <- bwNeighbors[which(cumsum(countNeighbors) >= minPts)[1]]
+ #       return(c(uniqbw=minUniqPtsBW, bw=minPtsBW))
+ #     })
+ #   }
+ # }
 
   if (dataType == 'Sparse') {
     dstar <- minb(obsGrid, 2 + npoly) # rough 1D initial value 

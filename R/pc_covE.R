@@ -46,7 +46,7 @@ pc_covE = function(obsGrid, regGrid, bw_userCov, rotationCut=c(0, 1), kernel = '
     # individual sums for each element in the matrix.
     # for dataType="Dense" case, the divider is n for
     # each subject.
-    cxxn = cxxn / rcov.count
+    cxxn = cxxn / rcov$count
   }
 
   if (class(rcov)[1] == 'BinnedRawCov')

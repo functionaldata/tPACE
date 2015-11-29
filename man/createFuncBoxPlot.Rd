@@ -9,11 +9,11 @@ createFuncBoxPlot(fpcaObj, addIndx = NULL, variant = "bagplot", ...)
 \arguments{
 \item{fpcaObj}{A object of class FPCA returned by the function FPCA().}
 
+\item{addIndx}{A vector of indeces corresponding to which samples one should overlay (Default: NULL)}
+
 \item{variant}{A character variable indicating which methodology should be used ('bagplot' or 'pointwise')to create the functional box-plot (Default: 'bagplot')}
 
-\item{addInx}{A vector of indeces corresponding to which samples one should overlay (Default: NULL)}
-
-\item{titleString}{a string variable to be used as title}
+\item{...}{Additional arguments for the 'plot' function.}
 }
 \description{
 Using an FPCA object create a functional box-plot based on the function scores.
@@ -24,7 +24,8 @@ n <- 20
 pts <- seq(0, 1, by=0.05)
 sampWiener <- wiener(n, pts)
 sampWiener <- sparsify(sampWiener, pts, 10)
-res <- FPCA(sampWiener$yList, sampWiener$tList, list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
+res <- FPCA(sampWiener$yList, sampWiener$tList, 
+            list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
 createFuncBoxPlot(res, addIndx=c(1:3)) 
 }
 \references{

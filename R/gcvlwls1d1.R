@@ -30,7 +30,7 @@ gcvlwls1d1 <- function(yy,tt, kernel, npoly, nder, dataType, verbose=TRUE) {
     if ( kernel == "gauss" ){
       h0 = 0.2 * r;
     }else{
-      error("The data is too sparse, no suitable bandwidth can be found! Try Gaussian kernel instead!\n")
+      stop("The data is too sparse, no suitable bandwidth can be found! Try Gaussian kernel instead!\n")
     }
   }  
   h0 <- min(h0,r)
@@ -71,7 +71,7 @@ gcvlwls1d1 <- function(yy,tt, kernel, npoly, nder, dataType, verbose=TRUE) {
 
   # If the problem persist we clearly have too sparse data
   if(all((is.infinite(gcvScores)))){
-    error("The data is too sparse, no suitable bandwidth can be found! Try Gaussian kernel instead!\n")      
+    stop("The data is too sparse, no suitable bandwidth can be found! Try Gaussian kernel instead!\n")      
   }
 
   bInd = which(gcvScores == min(gcvScores));
