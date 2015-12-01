@@ -91,8 +91,9 @@ if(1==1){
     CCp2 =   Rmullwlsk(c(3,4), kern="epan", tPairs=t(BB$tPairs), cxxn=(BB$cxxn), xgrid=seq(1,9,length.out=M), 
                        ygrid=seq(1,9,length.out=M), win=rep(1,1608),FALSE )  
     
-    retP  = lwls2d(c(3,4), kern="epan", xin =  (BB$tPairs), yin= (BB$cxxn), xout1= seq(1,9,length.out=M), xout2= seq(1,9,length.out=M), userNumCores = 3 )
-
+    # retP  = lwls2d(c(3,4), kern="epan", xin =  (BB$tPairs), yin= (BB$cxxn), xout1= seq(1,9,length.out=M), xout2= seq(1,9,length.out=M), userNumCores = 3)
+ 
+    retP  = lwls2d(c(3,4), kern="epan", xin =  (BB$tPairs), yin= (BB$cxxn), xout1= seq(1,9,length.out=M), xout2= seq(1,9,length.out=M))
     expect_equivalent(CCp, ret)
     expect_equivalent(CCp, retP)
     expect_equivalent(CCp, CCp2) 

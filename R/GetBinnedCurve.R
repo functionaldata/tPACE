@@ -41,18 +41,7 @@ GetBinnedCurve <- function(x, y, M = 10, isMnumBin = TRUE,
     return( zList );     
   }
   
-  # Auxilary function 'GetResMisOne'
-  GetResMisOne <-  function(x, y, h = diff(range(x))){
-    r = h;
-    M = 1;
-    midpoint = r*0.5;
-    count = length(x);
-    newy = mean(y);
-    zList = list(midpoint, newy, count, M, h)
-    return( zList );
-    
-  }
-  
+ 
   # Function 'GetBinnedCurve' starts here  
   if( M<0 ){  
     cat("Error: GetBinnedCurve is aborted because the argument: M is invalid!\n");  
@@ -114,3 +103,16 @@ GetBinnedCurve <- function(x, y, M = 10, isMnumBin = TRUE,
     
   }
 }
+
+ # Auxilary function 'GetResMisOne'
+  GetResMisOne <-  function(x, y, h = diff(range(x))){
+    r = h;
+    M = 1;
+    midpoint = r*0.5;
+    count = length(x);
+    newy = mean(y);
+    zList = list(midpoint, newy, count, M, h)
+    return( zList );
+    
+  }
+  

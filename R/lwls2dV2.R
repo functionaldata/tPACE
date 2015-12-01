@@ -6,14 +6,17 @@
 #' @param xin An n by 2 dataframe or matrix of x-coordinate.
 #' @param yin A vector of y-coordinate.
 #' @param win A vector of weights on the observations. 
-#' @param xout1: a p1-vector of first output coordinate grid. Defaults to the input gridpoints if left unspecified.
-#' @param xout2: a p2-vector of second output coordinate grid. Defaults to the input gridpoints if left unspecified.
-#' @param xout: alternative to xout1 and xout2. A matrix of p by 2 specifying the output points (may be inefficient if the size of \code{xout} is small).
+#' @param xout1 a p1-vector of first output coordinate grid. Defaults to the input gridpoints if left unspecified.
+#' @param xout2 a p2-vector of second output coordinate grid. Defaults to the input gridpoints if left unspecified.
+#' @param xout alternative to xout1 and xout2. A matrix of p by 2 specifying the output points (may be inefficient if the size of \code{xout} is small).
+#' @param crosscov using function for cross-covariance estimation (Default: FALSE)
+#' @param subset  a vector with the indeces of x-/y-/w-in to be used (Default: NULL)
 #' @return a p1 by p2 matrix of fitted values if xout is not specified. Otherwise a vector of length p corresponding to the rows of xout. 
 #' @export
 
 # Uses Pantelis' cpp code.
-lwls2d <- function(bw, kern='epan', xin, yin, win=NULL, xout1=NULL, xout2=NULL, xout=NULL, subset=NULL, crosscov = FALSE, userNumCores = NULL ) {
+lwls2d <- function(bw, kern='epan', xin, yin, win=NULL, xout1=NULL, xout2=NULL, xout=NULL, subset=NULL, crosscov = FALSE) {
+  userNumCores = NULL
   if (length(bw) == 1){
     bw <- c(bw, bw)
   }
