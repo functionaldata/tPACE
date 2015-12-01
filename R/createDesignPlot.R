@@ -23,6 +23,9 @@
 #' @export
 
 createDesignPlot = function(t, obsGrid = NULL, isColorPlot=TRUE, noDiagonal=TRUE, yname = NULL, ...){
+  if( class(t) != 'list'){
+    stop("You do need to pass a list argument to 'createDesignPlot'!");
+  }
   if( is.null(obsGrid)){
     obsGrid = sort(unique(unlist(t)))
   }
