@@ -4,9 +4,9 @@ library(testthat)
 test_that('The cross-covariance in the case of a dense matrix against a constant vector is zero and in the case of a steadily increasing matrix against a steadily increasing vector is stable',{
   set.seed(1)
   n <- 100
-  dccObj <- CrCovYZ(bw=1, Z= rep(4,n), Ly=  matrix( runif(10*n), n))
+  dccObj <- getCrCovYZ(bw=1, Z= rep(4,n), Ly=  matrix( runif(10*n), n))
   expect_equal( rep(0,10),  as.numeric(dccObj$rawCC$rawCCov) )
-  dccObj <- CrCovYZ( Z= 1:n, Ly= matrix(1:(10*n),n))
+  dccObj <- getCrCovYZ( Z= 1:n, Ly= matrix(1:(10*n),n))
   expect_equal( 0,  diff(range(dccObj$rawCC$rawCCov)) )
 })
 
@@ -16,7 +16,7 @@ test_that('The cross-covariance in the case of sparse sample and constant vector
   yList <- list( runif(5),  c(1:3), c(2:4), c(4))
   tList <- list( c(1:5), c(1:3), c(1:3), 4)
   Z = rep(4,4)
-  sccObj = CrCovYZ(bw=1, Z= Z, Ly=yList, Lt=tList, Ymu=rep(4,5))
+  sccObj = getCrCovYZ(bw=1, Z= Z, Ly=yList, Lt=tList, Ymu=rep(4,5))
   expect_equal( rep(0, sum(unlist(lapply(yList, length)))), sccObj$rawCC$rawCCov )
 })
 
@@ -25,7 +25,7 @@ test_that('The cross-covariance in the case of a sparse sample that is steadily 
   yList <- list(c(0:5),c(4.0000000000001), 5)
   tList <- list(c(0:5),c(4.0000000000001), 5)
   Z = c(2.5, 4.0000000000001, 5)
-  sccObj = CrCovYZ( Z= Z, Ly=yList, Lt=tList, Ymu=rep(4.5,7))
+  sccObj = getCrCovYZ( Z= Z, Ly=yList, Lt=tList, Ymu=rep(4.5,7))
   AA<- summary(lm( sccObj$smoothedCC ~  sort(unique(unlist(tList)))))
   expect_equal( AA$r.squared, 0.9998, tol=0.0001)
 })
@@ -49,7 +49,7 @@ test_that('The cross-covariance in the case of dense sample and a random variabl
   
   # Create Y_true
   yTrue = Ksi[,1] %*% t(matrix(eigFunct1(s), ncol=1)) 
-  sccObj = CrCovYZ(Z= Ksi[,2], Ly=yTrue )
+  sccObj = getCrCovYZ(Z= Ksi[,2], Ly=yTrue )
   
   # we know that the covariance between ksi_1 and z is three
   expect_equal( max( abs( eigFunct1(s)*3 - sccObj$rawCC$rawCCov)),  0.03, tol=.01, scale=1 )
@@ -77,7 +77,7 @@ test_that('The cross-covariance in the case of sparse sample and a random variab
   ySparse = sparsify(yTrue, s, c(3:9))    
   
   # Use GCV to pick the bandwidth
-  sccObj = CrCovYZ( Z= Ksi[,2],Ly=ySparse$yList, Lt=ySparse$tList, Ymu = rep(0,M)  )
+  sccObj = getCrCovYZ( Z= Ksi[,2],Ly=ySparse$yList, Lt=ySparse$tList, Ymu = rep(0,M)  )
   
   # Uncomment to visually check coherence.  
   # plot(s, sccObj$smoothedCC)
@@ -87,8 +87,8 @@ test_that('The cross-covariance in the case of sparse sample and a random variab
   expect_equal(  mean(abs( 3*eigFunct1(s) - sccObj$smoothedCC)), 0.035, tol=.01, scale=1 )
   
   # check that the relevant GCV scores are worse
-  sccObjDOUBLE = CrCovYZ( bw = sccObj$bw*2,  Z= Ksi[,2],Ly=ySparse$yList, Lt=ySparse$tList, Ymu = rep(0,M)  )
-  sccObjHALF = CrCovYZ( bw = sccObj$bw*0.5,  Z= Ksi[,2],Ly=ySparse$yList, Lt=ySparse$tList, Ymu = rep(0,M)  )
+  sccObjDOUBLE = getCrCovYZ( bw = sccObj$bw*2,  Z= Ksi[,2],Ly=ySparse$yList, Lt=ySparse$tList, Ymu = rep(0,M)  )
+  sccObjHALF = getCrCovYZ( bw = sccObj$bw*0.5,  Z= Ksi[,2],Ly=ySparse$yList, Lt=ySparse$tList, Ymu = rep(0,M)  )
 
   expect_equal( min(c( sccObj$score, sccObjDOUBLE$score, sccObjHALF$score) ) , sccObj$score )
 })
