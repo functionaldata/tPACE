@@ -51,5 +51,6 @@ Thumbs.db
 *.so
 #RcppExports.R 
 #RcppExports.cpp
-tmp.R
-ObsoleteFunctions
+tmp.R 
+ObsoleteFunctions 
+notesXiongtao.txt 

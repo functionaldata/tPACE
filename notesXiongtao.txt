@@ -1,4 +1,0 @@
-plan:
-Rotate smoother cut option integration and test cases.
-
-Make sure the 2D smoother does not oversmooth with global minimal GCV h.
