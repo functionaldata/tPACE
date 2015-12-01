@@ -4,7 +4,7 @@
 \alias{print.FPCA}
 \title{Print an FPCA object}
 \usage{
-print.FPCA(x, ...)
+\method{print}{FPCA}(x, ...)
 }
 \arguments{
 \item{x}{An FPCA object.}
