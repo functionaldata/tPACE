@@ -147,7 +147,7 @@ FPCAregFunc <- function(depVar,  expVarScal = NULL, expVarFunc = NULL, regressio
 #    nder = 0
 #    win = rep(1, length(xin));
 #    for (i in 1:nrow(BetaFunctions)){
-#      BetaFunctions[i,]= Rlwls1d( 1 * depVar$bwCov, kernel_type = 'gauss', npoly = npoly, nder = nder, xin = xin, yin= BetaFunctions[i,], xout = xin, win = win)
+#      BetaFunctions[i,]= lwls1d( 1 * depVar$bwCov, kernel_type = 'gauss', npoly = npoly, nder = nder, xin = xin, yin= BetaFunctions[i,], xout = xin, win = win)
 #    }   
 #  }
 #  

@@ -178,7 +178,7 @@ makeDenseObj = function( fo1 ){
   s = fo1$workGrid
   N = dim(fo1$xiEst)[1];
   M = length(s);
-  L3 = makePACEinputs(tVec= s, yVec = imputedSample )
+  L3 = makeFPCAinputs(tVec= s, yVec = imputedSample )
   fo2 = FPCA(y = L3$Ly, t = L3$Lt)
   return( fo2 )
 }

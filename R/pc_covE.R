@@ -66,7 +66,7 @@ pc_covE = function(obsGrid, regGrid, bw_userCov, rotationCut=c(0, 1), kernel = '
   # yvar = lwls1d(bw = bw_userCov[1], kern = kernel, xin = rcovdiag[,1],
   #  yin = rcovdiag[,2], win = win2, xout = rcutGrid, returnFit = FALSE)
   xorder = order(rcovdiag[,1]); 
-    yvar = Rlwls1d(bw = bw_userCov[1], kernel_type = kernel, xin = rcovdiag[xorder,1],
+    yvar = lwls1d(bw = bw_userCov[1], kernel_type = kernel, xin = rcovdiag[xorder,1],
                   yin = rcovdiag[xorder,2], win = win2, xout = rcutGrid)
 
 

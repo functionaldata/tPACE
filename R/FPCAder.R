@@ -38,7 +38,7 @@ FPCAder <-  function (fpcaObj, variant = 'simple') {
     impSampleDer <- t(apply( impSample,1,getDerivative, fpcaObj$workGrid));
     N = dim(impSample)[1];
     M = dim(impSample)[2];
-    L = makePACEinputs(IDs = rep(1:N,each=M), tVec=rep(fpcaObj$workGrid,N), as.vector(t(impSampleDer)))
+    L = makeFPCAinputs(IDs = rep(1:N,each=M), tVec=rep(fpcaObj$workGrid,N), as.vector(t(impSampleDer)))
     prefpcaObjDer = FPCA(y= L$Ly, t= L$Lt)
     fpcaObjDer = list( 
       phi = prefpcaObjDer$phi, mu =  prefpcaObjDer$mu, obsGrid = fpcaObj$obsGrid)     

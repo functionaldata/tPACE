@@ -118,7 +118,7 @@ smoothRCC2D <- function(rcov,bw1, bw2, xout1, xout2){
 # xout1   : vector M-1
 # xout2   : vector L-1
 # returns : matrix M-L
-  return( lwls2dV2( bw = c(bw1, bw2), kern = 'gauss', xin=rcov$tpairn, 
+  return( lwls2d( bw = c(bw1, bw2), kern = 'gauss', xin=rcov$tpairn, 
                            yin=rcov$rawCC, xout1=xout1, xout2=xout2, crosscov=TRUE) )  
 }
 

@@ -35,7 +35,7 @@ test_that('FPCAreg for scalar case returns correct results for a dense functiona
   # Create scalar dep. variable a
   a = c(); for (i in 1:N) { a[i] = rnorm(sd=0.1,1) + trapzRcpp(s, yTrue[i,] * betaFunc); }
    
-  L3 = makePACEinputs(IDs = rep(1:N, each=M),tVec=rep(s,N), t(yTrue) )
+  L3 = makeFPCAinputs(IDs = rep(1:N, each=M),tVec=rep(s,N), t(yTrue) )
   FPCAdense = FPCA(y = L3$Ly, t = L3$Lt)   
   FREGres <- FPCAregScalarExp(FPCAdense, depVar= a, bootStrap=FALSE)
   expect_equal( 0,  rmsdiff(betaFunc,FREGres$betaFunc[[1]]) , tol= 1e-3  )
@@ -75,7 +75,7 @@ test_that('FPCAreg for scalar case returns correct results for a dense functiona
   # Create scalar dep. variable a
   a = c(); for (i in 1:N) { a[i] = rnorm(sd=0.001,1) + trapzRcpp(s, yTrue[i,] * betaFunc) + x1[i]*2 + x2[i]*3  }
 
-  L3 = makePACEinputs(IDs = rep(1:N, each=M),tVec=rep(s,N), t(yTrue) )
+  L3 = makeFPCAinputs(IDs = rep(1:N, each=M),tVec=rep(s,N), t(yTrue) )
   FPCAdense = FPCA(y = L3$Ly, t = L3$Lt)
   FREGres <- FPCAregScalarExp(FPCAdense, depVar= a, bootStrap=FALSE, extVar= data.frame(x1,x2))
  
@@ -127,9 +127,9 @@ test_that('FPCAreg for scalar case returns correct results for two dense functio
   # Create scalar dep. variable a
   a = c(); for (i in 1:N) { a[i] = rnorm(sd=.1,1) + trapzRcpp(s, yTrueA[i,] * betaFuncA) + trapzRcpp(s, yTrueB[i,] * betaFuncB) ; }
 
-  L3 = makePACEinputs(IDs = rep(1:N, each=M),tVec=rep(s,N), t(yTrueA) )
+  L3 = makeFPCAinputs(IDs = rep(1:N, each=M),tVec=rep(s,N), t(yTrueA) )
   FPCAdenseA = FPCA(y = L3$Ly, t = L3$Lt)
-  L3 = makePACEinputs(IDs = rep(1:N, each=M),tVec=rep(s,N), t(yTrueB) )
+  L3 = makeFPCAinputs(IDs = rep(1:N, each=M),tVec=rep(s,N), t(yTrueB) )
   FPCAdenseB = FPCA(y = L3$Ly, t = L3$Lt)
 
   FREGres <- FPCAregScalarExp( list(FPCAdenseA, FPCAdenseB), depVar= a, bootStrap=TRUE) 
@@ -185,9 +185,9 @@ test_that('FPCAreg for scalar case returns correct results for two dense functio
   # Create scalar dep. variable a
   a = c(); for (i in 1:N) { a[i] = rnorm(sd=0.1,1) + trapzRcpp(s, yTrueA[i,] * betaFuncA) + trapzRcpp(s, yTrueB[i,] * betaFuncB) + x1[i] * 2 +  x2[i] * 3 ; }
 
-  L3 = makePACEinputs(IDs = rep(1:N, each=M),tVec=rep(s,N), t(yTrueA) )
+  L3 = makeFPCAinputs(IDs = rep(1:N, each=M),tVec=rep(s,N), t(yTrueA) )
   FPCAdenseA = FPCA(y = L3$Ly, t = L3$Lt)
-  L3 = makePACEinputs(IDs = rep(1:N, each=M),tVec=rep(s,N), t(yTrueB) )
+  L3 = makeFPCAinputs(IDs = rep(1:N, each=M),tVec=rep(s,N), t(yTrueB) )
   FPCAdenseB = FPCA(y = L3$Ly, t = L3$Lt) 
   FREGres <- FPCAregScalarExp( list(FPCAdenseA, FPCAdenseB), depVar= a, bootStrap=FALSE, extVar= data.frame(x1,x2)) 
   expect_equal( 0, rmsdiff(betaFuncB,FREGres$betaFunc[[2]]), tol= 2e-3  )

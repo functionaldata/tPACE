@@ -50,8 +50,8 @@ GetSmoothedMeanCurve <- function (y, t, obsGrid, regGrid, optns){
     yin = unlist(y)[order(xin)];
     xin = sort(xin);    
     win = rep(1, length(xin));
-    mu = Rlwls1d(bw_mu, kernel_type = kernel, npoly = npoly, nder = nder, xin = xin, yin= yin, xout = obsGrid, win = win)
-    muDense = Rlwls1d(bw_mu, kernel_type = kernel, npoly = npoly, nder = nder, xin = xin, yin= yin, xout = regGrid, win = win)
+    mu = lwls1d(bw_mu, kernel_type = kernel, npoly = npoly, nder = nder, xin = xin, yin= yin, xout = obsGrid, win = win)
+    muDense = lwls1d(bw_mu, kernel_type = kernel, npoly = npoly, nder = nder, xin = xin, yin= yin, xout = regGrid, win = win)
   }  
   
   result <- list( 'mu' = mu, 'muDense'= muDense, 'bw_mu' = bw_mu);

@@ -65,9 +65,9 @@ cvlwls1d <- function(yy, t, kernel, npoly, nder, dataType ){
  
 #        if (any(win==0)){
 #          nz = c(win != 0)
-#          mu = Rlwls1d(bw= bw[j], kern=kernel, npoly=npoly, nder= nder, xin = ttn[nz], yin= xxn[nz], xout=out, win = win[nz])       
+#          mu = lwls1d(bw= bw[j], kern=kernel, npoly=npoly, nder= nder, xin = ttn[nz], yin= xxn[nz], xout=out, win = win[nz])       
 #        } else {
-          mu = Rlwls1d(bw= bw[j], kernel_type = kernel, npoly=npoly, nder= nder, xin = ttn, yin= xxn, xout=out, win = win)
+          mu = lwls1d(bw= bw[j], kernel_type = kernel, npoly=npoly, nder= nder, xin = ttn, yin= xxn, xout=out, win = win)
        # }
 
         # if invalid==0 {

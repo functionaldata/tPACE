@@ -8,34 +8,34 @@ try(silent=TRUE, load('data/InputFormMllwlskInCpp.RData'))
 IN = InputFormMllwlskInCpp
 if(1==1){
   
-  test_that('lwls2dV2 interface is correct using xout1 and xout2', {
+  test_that('lwls2d interface is correct using xout1 and xout2', {
     AA = Rmullwlsk(2* IN$bw,t(IN$tPairs),cxxn=IN$cxxn, xgrid=IN$regGrid, ygrid=IN$regGrid, kernel_type='gauss',win=rep(1,38), FALSE)
     BB = Rmullwlsk(2* IN$bw,t(IN$tPairs),cxxn=IN$cxxn, xgrid=sort(unique(IN$tPairs[, 1])), ygrid=sort(unique(IN$tPairs[, 2])), kernel_type='gauss',win=rep(1,38), FALSE)
     CC = Rmullwlsk(2* IN$bw,t(IN$tPairs),cxxn=IN$cxxn, xgrid=IN$regGrid, ygrid=IN$regGrid, kernel_type='epan',win=rep(1,38), FALSE)
     DD = Rmullwlsk(2* IN$bw,t(IN$tPairs),cxxn=IN$cxxn, xgrid=sort(unique(IN$tPairs[, 1])), ygrid=sort(unique(IN$tPairs[, 2])), kernel_type='epan',win=rep(1,38), FALSE)
-    expect_equal(lwls2dV2(2* IN$bw, kern='gauss', IN$tPairs, IN$cxxn, xout1=IN$regGrid, xout2=IN$regGrid), AA)
-    expect_equal(lwls2dV2(2* IN$bw, kern='gauss', IN$tPairs, IN$cxxn), BB)
-    expect_equal(lwls2dV2(2* IN$bw, kern='epan', IN$tPairs, IN$cxxn, xout1=IN$regGrid, xout2=IN$regGrid), CC)
-    expect_equal(lwls2dV2(2* IN$bw, kern='epan', IN$tPairs, IN$cxxn), DD)
+    expect_equal(lwls2d(2* IN$bw, kern='gauss', IN$tPairs, IN$cxxn, xout1=IN$regGrid, xout2=IN$regGrid), AA)
+    expect_equal(lwls2d(2* IN$bw, kern='gauss', IN$tPairs, IN$cxxn), BB)
+    expect_equal(lwls2d(2* IN$bw, kern='epan', IN$tPairs, IN$cxxn, xout1=IN$regGrid, xout2=IN$regGrid), CC)
+    expect_equal(lwls2d(2* IN$bw, kern='epan', IN$tPairs, IN$cxxn), DD)
   })
   
   
-  test_that('lwls2dV2 interface is correct using xout', {
+  test_that('lwls2d interface is correct using xout', {
     AA = diag(Rmullwlsk(2* IN$bw,t(IN$tPairs),cxxn=IN$cxxn, xgrid=IN$regGrid, ygrid=IN$regGrid, kernel_type='gauss',win=rep(1,38), FALSE))
     BB = diag(Rmullwlsk(2* IN$bw,t(IN$tPairs),cxxn=IN$cxxn, xgrid=sort(unique(IN$tPairs[, 1])), ygrid=sort(unique(IN$tPairs[, 2])), kernel_type='gauss',win=rep(1,38), FALSE))
     CC = diag(Rmullwlsk(2* IN$bw,t(IN$tPairs),cxxn=IN$cxxn, xgrid=IN$regGrid, ygrid=IN$regGrid, kernel_type='epan',win=rep(1,38), FALSE))
     DD = diag(Rmullwlsk(2* IN$bw,t(IN$tPairs),cxxn=IN$cxxn, xgrid=sort(unique(IN$tPairs[, 1])), ygrid=sort(unique(IN$tPairs[, 2])), kernel_type='epan',win=rep(1,38), FALSE))
-    expect_equal(lwls2dV2(2* IN$bw, kern='gauss', IN$tPairs, IN$cxxn, xout=cbind(IN$regGrid, IN$regGrid)), AA, tolerance=0.05)
-    expect_equal(lwls2dV2(2* IN$bw, kern='gauss', IN$tPairs, IN$cxxn, xout=cbind(sort(unique(IN$tPairs[, 1])), sort(unique(IN$tPairs[, 2])))), BB)
-    expect_equal(lwls2dV2(2* IN$bw, kern='epan', IN$tPairs, IN$cxxn, xout=cbind(IN$regGrid, IN$regGrid)), CC, tolerance=0.05)
-    expect_equal(lwls2dV2(2* IN$bw, kern='epan', IN$tPairs, IN$cxxn, xout=cbind(sort(unique(IN$tPairs[, 1])), sort(unique(IN$tPairs[, 2])))), DD)
+    expect_equal(lwls2d(2* IN$bw, kern='gauss', IN$tPairs, IN$cxxn, xout=cbind(IN$regGrid, IN$regGrid)), AA, tolerance=0.05)
+    expect_equal(lwls2d(2* IN$bw, kern='gauss', IN$tPairs, IN$cxxn, xout=cbind(sort(unique(IN$tPairs[, 1])), sort(unique(IN$tPairs[, 2])))), BB)
+    expect_equal(lwls2d(2* IN$bw, kern='epan', IN$tPairs, IN$cxxn, xout=cbind(IN$regGrid, IN$regGrid)), CC, tolerance=0.05)
+    expect_equal(lwls2d(2* IN$bw, kern='epan', IN$tPairs, IN$cxxn, xout=cbind(sort(unique(IN$tPairs[, 1])), sort(unique(IN$tPairs[, 2])))), DD)
   })
   
 }
 
 if(1==1){
   
-  test_that('lwls2dV2 parallel works alright with a larger raw covariance',{
+  test_that('lwls2d parallel works alright with a larger raw covariance',{
     
     set.seed(123)
     N = 200;
@@ -64,7 +64,7 @@ if(1==1){
     BB = GetRawCov(ySparse$yNoisy,ySparse$tList, s, meanFunct(s),'Sparse', TRUE)
     M = 9 
     BB$bw = c(3,4)
-    ret  = lwls2dV2(c(3,4), kern="epan", xin =  (BB$tPairs), yin= (BB$cxxn), xout1= seq(1,9,length.out=M), xout2= seq(1,9,length.out=M) )
+    ret  = lwls2d(c(3,4), kern="epan", xin =  (BB$tPairs), yin= (BB$cxxn), xout1= seq(1,9,length.out=M), xout2= seq(1,9,length.out=M) )
     
     parSmooth2 <- function(bw, xin, yin, kernel_type, win, nc, xout){ 
       if ( dim(xin)[1] != 2) {stop("You need to have xin input in a 2-by-n format")}
@@ -91,7 +91,7 @@ if(1==1){
     CCp2 =   Rmullwlsk(c(3,4), kern="epan", tPairs=t(BB$tPairs), cxxn=(BB$cxxn), xgrid=seq(1,9,length.out=M), 
                        ygrid=seq(1,9,length.out=M), win=rep(1,1608),FALSE )  
     
-    retP  = lwls2dV2(c(3,4), kern="epan", xin =  (BB$tPairs), yin= (BB$cxxn), xout1= seq(1,9,length.out=M), xout2= seq(1,9,length.out=M), userNumCores = 3 )
+    retP  = lwls2d(c(3,4), kern="epan", xin =  (BB$tPairs), yin= (BB$cxxn), xout1= seq(1,9,length.out=M), xout2= seq(1,9,length.out=M), userNumCores = 3 )
 
     expect_equivalent(CCp, ret)
     expect_equivalent(CCp, retP)
@@ -102,16 +102,16 @@ if(1==1){
 
 if(1==1){
   
-  test_that('lwls2dV2 interface is correct using xout1 and xout for crosscovariances', {
+  test_that('lwls2d interface is correct using xout1 and xout for crosscovariances', {
     
     tPairs = matrix(c(1,3,4,1,2,1,1,2,3,4), ncol=2)
     
-    AA = lwls2dV2(bw=c(0.5,0.5), kern ='gauss', xin=tPairs, yin=c(1,2,3,4,5), xout1=as.numeric(c(1,4)), xout2=as.numeric(c(1,4)), crosscov=TRUE);
-    AA2 = lwls2dV2(bw=c(0.5,0.5), kern ='gauss', xin=cbind(tPairs[, 2], tPairs[, 1]), yin=c(1,2,3,4,5), xout1=as.numeric(c(1,4)), xout2=as.numeric(c(1,4)), crosscov=TRUE);
-    BB = lwls2dV2(bw=c(0.5,5.0), kern ='gauss', xin=tPairs, yin=c(1,2,3,4,5), xout1=as.numeric(c(1,4)), xout2=as.numeric(c(1,4)), crosscov=TRUE);
-    CC = lwls2dV2(bw=c(5.0,5.0), kern ='gauss', xin=tPairs, yin=c(1,2,3,4,5), xout1=as.numeric(c(1,4)), xout2=as.numeric(c(1,4)), crosscov=TRUE);
-    DD = lwls2dV2(bw=c(5.0,5.0), kern ='gauss', xin=tPairs, yin=c(1,2,3,4,5), xout1=as.numeric(c(1,4)), xout2=as.numeric(c(1,40)), crosscov=TRUE); 
-    ZZ = lwls2dV2(bw=c(5.0,0.5), kern ='gauss', xin=tPairs, yin=c(1,2,3,4,5), xout1=as.numeric(c(1,4)), xout2=as.numeric(c(1,4,4.5)), crosscov=TRUE); 
+    AA = lwls2d(bw=c(0.5,0.5), kern ='gauss', xin=tPairs, yin=c(1,2,3,4,5), xout1=as.numeric(c(1,4)), xout2=as.numeric(c(1,4)), crosscov=TRUE);
+    AA2 = lwls2d(bw=c(0.5,0.5), kern ='gauss', xin=cbind(tPairs[, 2], tPairs[, 1]), yin=c(1,2,3,4,5), xout1=as.numeric(c(1,4)), xout2=as.numeric(c(1,4)), crosscov=TRUE);
+    BB = lwls2d(bw=c(0.5,5.0), kern ='gauss', xin=tPairs, yin=c(1,2,3,4,5), xout1=as.numeric(c(1,4)), xout2=as.numeric(c(1,4)), crosscov=TRUE);
+    CC = lwls2d(bw=c(5.0,5.0), kern ='gauss', xin=tPairs, yin=c(1,2,3,4,5), xout1=as.numeric(c(1,4)), xout2=as.numeric(c(1,4)), crosscov=TRUE);
+    DD = lwls2d(bw=c(5.0,5.0), kern ='gauss', xin=tPairs, yin=c(1,2,3,4,5), xout1=as.numeric(c(1,4)), xout2=as.numeric(c(1,40)), crosscov=TRUE); 
+    ZZ = lwls2d(bw=c(5.0,0.5), kern ='gauss', xin=tPairs, yin=c(1,2,3,4,5), xout1=as.numeric(c(1,4)), xout2=as.numeric(c(1,4,4.5)), crosscov=TRUE); 
     # MATLAB equiv.
     # [invalid, AA]= mullwlsk_2([0.5,0.5], 'gauss', [1 3 4 1 2; 1 1 2 3 4], [1 2 3 4 5]', [1 1 1 1 1], [1  4], [1  4])
     # [invalid, BB]= mullwlsk_2([0.5,5.0], 'gauss', [1 3 4 1 2; 1 1 2 3 4], [1 2 3 4 5]', [1 1 1 1 1], [1  4], [1  4])

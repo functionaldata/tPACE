@@ -149,7 +149,7 @@ getGCVscoresV2 <- function(bw, kern, xin, yin, win=NULL, regGrid, RSS=NULL) {
   if (is.null(win))
     win <- rep(1, length(yin))
     
-  fit <- tryCatch(lwls2dV2(bw, kern, xin=xin, yin=yin, win=win, xout1=regGrid, xout2=regGrid), error=function(err) {
+  fit <- tryCatch(lwls2d(bw, kern, xin=xin, yin=yin, win=win, xout1=regGrid, xout2=regGrid), error=function(err) {
                warning('Invalid bandwidth. Try enlarging the window size.')
                return(Inf)
   })
@@ -193,7 +193,7 @@ getCVscoresV2 <- function(partition, bw, kern, xin, yin, win=NULL, regGrid, RSS=
   # browser()
   cvSubSum <- sapply(partition, function(testSet) {
     # browser()
-    fit <- tryCatch(lwls2dV2(bw, kern, xin=xin, yin=yin, win=win, xout1=regGrid, xout2=regGrid, subset=-testSet), error=function(err) {
+    fit <- tryCatch(lwls2d(bw, kern, xin=xin, yin=yin, win=win, xout1=regGrid, xout2=regGrid, subset=-testSet), error=function(err) {
                  warning('Invalid bandwidth. Try enlarging the window size.')
                  return(Inf)
     })

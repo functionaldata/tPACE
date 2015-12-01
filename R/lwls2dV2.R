@@ -13,7 +13,7 @@
 #' @export
 
 # Uses Pantelis' cpp code.
-lwls2dV2 <- function(bw, kern='epan', xin, yin, win=NULL, xout1=NULL, xout2=NULL, xout=NULL, subset=NULL, crosscov = FALSE, userNumCores = NULL ) {
+lwls2d <- function(bw, kern='epan', xin, yin, win=NULL, xout1=NULL, xout2=NULL, xout=NULL, subset=NULL, crosscov = FALSE, userNumCores = NULL ) {
   if (length(bw) == 1){
     bw <- c(bw, bw)
   }

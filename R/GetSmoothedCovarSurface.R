@@ -66,10 +66,10 @@ GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, optns, useBinned
   }
 
   if (!useBinnedCov){
-    smoothCov <- lwls2dV2(bwCov, kern, xin=rcov$tPairs, yin=rcov$cxxn,
+    smoothCov <- lwls2d(bwCov, kern, xin=rcov$tPairs, yin=rcov$cxxn,
                         xout1=cutRegGrid, xout2=cutRegGrid)
   } else { 
-    smoothCov <- lwls2dV2(bwCov, kern, xin=rcov$tPairs, yin=rcov$meanVals,
+    smoothCov <- lwls2d(bwCov, kern, xin=rcov$tPairs, yin=rcov$meanVals,
                         win=rcov$count, xout1=cutRegGrid, xout2=cutRegGrid)
   }
 

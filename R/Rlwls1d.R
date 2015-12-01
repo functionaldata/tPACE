@@ -16,7 +16,7 @@
 #' @export
 
 
-Rlwls1d <- function( bw, kernel_type, win, xin, yin, xout, npoly = 1L, nder = 0L){
+lwls1d <- function( bw, kernel_type, win, xin, yin, xout, npoly = 1L, nder = 0L){
 
   if (is.unsorted(xout))
     stop('`xout` needs to be sorted in increasing order')
