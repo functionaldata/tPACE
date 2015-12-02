@@ -10,6 +10,7 @@
 #' @param bwFunct The values of bandwiths to be used for all function/function cross-covariances (default: automatically determined using GCV)
 #' @param splineSmooth  Use thin-plate splines during the estimation of the cross-covariance (default: FALSE)
 #' @param verbose If TRUE print out the bandwidth used during the GCV procedures of selecting them
+#' @param getFitted If TRUE append the fitted values to the return object
 #' @param ...  Additional arguments 
 #' 
 #' @references
@@ -17,8 +18,8 @@
 #' \cite{Senturk, D., Nguyen, D.V. "Varying Coefficient Models for Sparse Noise-contaminated Longitudinal Data", Statistica Sinica 21(4), (2011): 1831-1856. (Sparse data)}
 #' @export
 
-FCReg <- function(depVar,  expVarScal = NULL, expVarFunc = NULL, regressionType = NULL, 
-                           bwScalar = NULL, bwFunct = NULL, splineSmooth = FALSE,  verbose = FALSE){
+FCReg <- function(depVar,  expVarScal = NULL, expVarFunc = NULL, regressionType = NULL, getFitted = TRUE, 
+                  bwScalar = NULL, bwFunct = NULL, splineSmooth = FALSE,  verbose = FALSE){
   
   if ( is.null(regressionType)){
     regressionType = depVar$optns$dataType
@@ -66,7 +67,7 @@ FCReg <- function(depVar,  expVarScal = NULL, expVarFunc = NULL, regressionType 
           t <- expVarFunc[[j]]$inputData$t  
           KovXXZZ[nX+i,j,] = approx(x = expVarFunc[[1]]$obsGrid, xout = expVarFunc[[1]]$workGrid, y = 
                                       getCrCovYZ(Z = expVarScal[,i], Ly = y, Lt=t, Ymu = expVarFunc[[1]]$mu, 
-                                              bw = bwScalar)$smoothedCC)$y
+                                                 bw = bwScalar)$smoothedCC)$y
           KovXXZZ[j,nX+i,] = KovXXZZ[nX+i,j,];
         }
       }
@@ -97,7 +98,7 @@ FCReg <- function(depVar,  expVarScal = NULL, expVarFunc = NULL, regressionType 
           mu2 <- expVarFunc[[i]]$mu   
           print('x1-x2')
           myDiag = diag(getCrCovYX( Ly1 = y1, Lt1 = t1, Ly2 = y2, Lt2 = t2, fast = splineSmooth, bw1 = bwFunct, bw2 = bwFunct,
-                                 Ymu1 =mu1, Ymu2 = mu2)$smoothedCC)
+                                    Ymu1 =mu1, Ymu2 = mu2)$smoothedCC)
         }
         KovXXZZ[i,j,] = myDiag 
         KovXXZZ[j,i,] = myDiag 
@@ -107,15 +108,49 @@ FCReg <- function(depVar,  expVarScal = NULL, expVarFunc = NULL, regressionType 
       tY <- depVar$inputData$t   
       print('x-y')
       myDiag = diag(getCrCovYX( Ly1 = y1, Lt1 = t1, Ly2 = yY, Lt2 = tY, fast = splineSmooth, bw1 = bwFunct, bw2 = bwFunct,
-                             Ymu1 = mu1, Ymu2 = depVar$mu)$smoothedCC)
+                                Ymu1 = mu1, Ymu2 = depVar$mu)$smoothedCC)
       KovXYZ[j,] = myDiag
     }
     
     for (j in 1:length(expVarFunc[[1]]$workGrid)){
       betaFuncs[j,] = solve ( a =  KovXXZZ[,,j], b= KovXYZ[,j] )
+    } 
+    browser()
+    # Get beta0
+    beta0 = approx(xout = depVar$workGrid, y = depVar$mu, x = depVar$obsGrid)$y - 0;
+    for (j in seq(1, nX, 1)){ 
+      beta0 = beta0 - betaFuncs[,j] * approx(xout = depVar$workGrid, y =  expVarFunc[[j]]$mu, x = depVar$obsGrid)$y 
+    }
+    for (j in seq(1, nZ, 1)){ 
+      beta0 = beta0  - betaFuncs[,nX+j] *  mean(expVarScal[,j]);
     }
     
-    FRegObj <- list(betaFunctions = betaFuncs, regMats = list( KovXXZZ = KovXXZZ, KovXYZ = KovXYZ))
+    # Get fitted values
+    if (getFitted){
+      yhat =  lapply(  depVar$inputData$y , function(x) rep(0, length(x)))
+      # For each sample-point
+      for (i in seq(1, length(depVar$inputData$t), 1)){
+        
+        # Get the time-readings and estimate the associated beta vectors 
+        ti = depVar$inputData$t[[i]]  
+        
+        for (j in seq(1, nX, 1)){
+          betaij = approx( x = expVarFunc[[1]]$workGrid, y = betaFuncs[,j], xout = ti)$y
+          yhat[[i]] = yhat[[i]]  + betaij *  expVarFunc[[j]]$inputData$y[[i]];
+        }
+        
+        for (j in seq(1, nZ, 1)){
+          betaij = approx( x = expVarFunc[[1]]$workGrid, y = betaFuncs[,(nX+j)], xout = ti)$y
+          yhat[[i]] = yhat[[i]]  + betaij * expVarScal[i,j];
+        }
+        
+        yhat[[i]] =  yhat[[i]] + approx( x =  depVar$workGrid, y = beta0, xout = ti)$y 
+        
+      }
+    }  
+    
+    FRegObj <- list(betaFunctions = betaFuncs, regMats = list( KovXXZZ = KovXXZZ, KovXYZ = KovXYZ),
+                    fittedValues = yhat, beta0 = beta0)
     return(FRegObj)
   }
   
