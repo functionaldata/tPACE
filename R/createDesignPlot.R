@@ -10,7 +10,6 @@
 #' @param noDiagonal an option specifying plotting the diagonal design points:
 #'                   TRUE:  remove diagonal time pairs
 #'                   FALSE:  do not remove diagonal time pairs
-#' @param yname the name of the variable containing functional observations
 #' @param ... Other arguments passed into \code{plot()}. 
 #'
 #' @examples
@@ -22,104 +21,78 @@
 #' createDesignPlot(sampWiener$tList, sort(unique(unlist(sampWiener$tList))))
 #' @export
 
-createDesignPlot = function(t, obsGrid = NULL, isColorPlot=TRUE, noDiagonal=TRUE, yname = NULL, ...){
+createDesignPlot = function(t, obsGrid = NULL, isColorPlot=TRUE, noDiagonal=TRUE, ...){
+  
   if( class(t) != 'list'){
     stop("You do need to pass a list argument to 'createDesignPlot'!");
   }
   if( is.null(obsGrid)){
     obsGrid = sort(unique(unlist(t)))
   }
-  if( is.null(yname)){
-    titleString =  paste('Design Plot')
-  } else {
-    titleString =  paste('Design Plot of', yname)
-  }
+  
+  args1 <- list( main="Design Title", xlab= 'Observed time grid', ylab= 'Observed time grid', col='black')
+  inargs <- list(...)
+  args1[names(inargs)] <- inargs 
   
   res = designPlotCount(t, obsGrid, noDiagonal, isColorPlot)
-  # binrawcov is the function in place of designPlotCount
-  # or getCount
-  
-  # construct plot structure
-  #  plot(obsGrid[1], obsGrid[1], xlim = range(obsGrid) + isColorPlot * 0.25 * c(0,diff(range(obsGrid))),
-  #   ylim = range(obsGrid),
-  #   xlab = 'Observed time grid', ylab = 'Observed time grid',
-  #   main = titleString, col = 'white')
-  
+    
   oldpty <- par()[['pty']]
   par(pty="s")
   if(isColorPlot == TRUE){
-    createColorPlot(res, obsGrid,titleString, ...)
+    createColorPlot(res, obsGrid, args1)
   } else {
-    createBlackPlot(res, obsGrid,titleString)
+    createBlackPlot(res, obsGrid, args1)
   }
   par(pty=oldpty)
+  
 }
 
-createBlackPlot = function(res, obsGrid,titleString ){
-  #  qpoints = c();
-  #  rpoints = c();  
-  #  for(i in 1:length(obsGrid)){
-  #    idx = which(res[i,] > 0)
-  #    qpoints = c(qpoints,rep(obsGrid[i], length(idx)))
-  #    rpoints = c(rpoints,obsGrid[idx])
-  #  }
-  #  points(qpoints, rpoints, pch = '.')
-  # image(res, col=c('white','black'), axes=FALSE, xlab = 'Observed time grid', ylab = 'Observed time grid', main = titleString)
-  
+createBlackPlot = function(res, obsGrid, args1){
+ 
   u1 = as.vector(res)
   u2 = as.vector(t(res))
   t1 = rep(obsGrid, times = length(obsGrid) )
   t2 = rep(obsGrid, each = length(obsGrid)) 
-  plot(t1[u1 != 0], t2[u2 !=0] , xlab = 'Observed time grid', ylab = 'Observed time grid', main = titleString, pch = 19, cex =0.33 )
- 
+  do.call( plot, c(args1, list(  pch = 19, cex =0.33, x = t1[u1 != 0], y = t2[u2 !=0] ) ) )  
+  
 }
 
-createColorPlot = function(res, obsGrid,titleString, ... ){
-  res[res > 4] = 4;
+createColorPlot = function(res, obsGrid, args1){
   
+  res[res > 4] = 4;
   notZero <- res != 0
   nnres <- res[notZero]
-  ddd <- list(...)
+
+  # The following three are too involved for a user to define outside 
+  # the function as they would need to read the function before-hand,
+  # no need to allow control over them from outside
   
+  args1$col = NULL
   colVec <- c(`1`='black', `2`='blue', `3`='green', `4`='red')
-  if (!is.null(ddd[['col']])){ 
-    colVec[] <- ddd[['col']]
-  }
+  # if (!is.null(ddd[['col']])){ 
+  #  colVec[] <- ddd[['col']]
+  # }
   
   pchVec <- rep(19, length(colVec))
   names(pchVec) <- names(colVec)
-  if (!is.null(ddd[['pch']])){
-    pchVec[] <- ddd[['pch']]
-  }
+  # if (!is.null(ddd[['pch']])){
+  #   pchVec[] <- ddd[['pch']]
+  # }
   
   cexVec <- seq(from=0.3, by=0.1, length.out=length(colVec))
   names(cexVec) <- names(colVec)
-  if (!is.null(ddd[['cex']])){
-    cexVec[] <- ddd[['cex']]
-  }
-  
-  if (!is.null(ddd[['xlab']])){ 
-    xlab <- ddd[['xlab']]
-  } else {
-    xlab <- 'Observed time grid'
-  }
-  
-  if (!is.null(ddd[['ylab']])){
-    ylab <- ddd[['ylab']]
-  } else {
-    ylab <- 'Observed time grid'
-  }
-  
+  # if (!is.null(ddd[['cex']])){
+  #   cexVec[] <- ddd[['cex']]
+  # }
+   
   t1 = rep(obsGrid, times = length(obsGrid))
   t2 = rep(obsGrid, each = length(obsGrid)) 
-  plot(t1[notZero], t2[notZero], col= colVec[nnres], xlab=xlab, ylab=ylab, main = titleString, pch = pchVec[nnres], cex=cexVec[nnres] )
+  do.call( plot, c(args1, list( x = t1[notZero], y = t2[notZero], col= colVec[nnres],  pch = pchVec[nnres], cex = cexVec[nnres] ) ))
   
   if (!identical(unique(nnres), 1)){
     legend('right', c('1','2','3','4+'), pch = pchVec, col=colVec, pt.cex=1.5, title = 'Count',bg='white' )
   }
+  
 }
-
-
-
 
 
