@@ -37,13 +37,13 @@ createDiagnosticsPlot <-function(ret, openNewDev = TRUE){
   createScreePlot(ret);
   
   ## Make Phi plot
-  K = length(fves);
+  K = ncol(ret$phi);
   k =1;
   if(K>3){
     k = 3;
   } else {
     k = K;
-  }
+  } 
   matplot(workGrid, ret$phi[,1:k], type='n', main="First Eigenfunctions", xlab='s', ylab='') 
   grid()
   matlines(workGrid, ret$phi[,1:k] ) 
