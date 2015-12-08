@@ -5,8 +5,8 @@
 \title{Functional Principal Component Analysis Concurrent Regression with Functional dependent variable}
 \usage{
 FCReg(depVar, expVarScal = NULL, expVarFunc = NULL, regressionType = NULL,
-  bwScalar = NULL, bwFunct = NULL, splineSmooth = FALSE,
-  verbose = FALSE)
+  getFitted = TRUE, bwScalar = NULL, bwFunct = NULL,
+  splineSmooth = FALSE, verbose = FALSE)
 }
 \arguments{
 \item{depVar}{An FPCA object}
@@ -16,6 +16,8 @@ FCReg(depVar, expVarScal = NULL, expVarFunc = NULL, regressionType = NULL,
 \item{expVarFunc}{A list holding the FPCA objects for each of the functional explanatory variables.}
 
 \item{regressionType}{A string defining the type of regression to perform ('dense' or 'sparse'); (default : automatically determined based on 'depVar')}
+
+\item{getFitted}{If TRUE append the fitted values to the return object}
 
 \item{bwScalar}{The value of bandwidth to be used for all scalar/functional cross-covariances (default: automatically determined using GCV)}
 

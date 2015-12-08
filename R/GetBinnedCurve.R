@@ -52,7 +52,7 @@ GetBinnedCurve <- function(x, y, M = 10, isMnumBin = TRUE,
     # Use bandwidth h
     h = M;
     if ( h >= diff(range(x))){
-      res = GetResMisOne(x,y,h)
+      res = getResMisOne(x,y,h)
       return(res);
     }
     
@@ -105,14 +105,14 @@ GetBinnedCurve <- function(x, y, M = 10, isMnumBin = TRUE,
 }
 
  # Auxilary function 'GetResMisOne'
-  GetResMisOne <-  function(x, y, h = diff(range(x))){
-    r = h;
-    M = 1;
-    midpoint = r*0.5;
-    count = length(x);
-    newy = mean(y);
-    zList = list(midpoint, newy, count, M, h)
-    return( zList );
-    
-  }
+getResMisOne <-  function(x, y, h = diff(range(x))){
+  r = h;
+  M = 1;
+  midpoint = r*0.5;
+  count = length(x);
+  newy = mean(y);
+  zList = list(midpoint, newy, count, M, h)
+  return( zList );
+ 
+}
   

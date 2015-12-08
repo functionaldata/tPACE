@@ -4,12 +4,17 @@
 \alias{createOutliersPlot}
 \title{Functional Principal Component Scores Plot}
 \usage{
-createOutliersPlot(fpcaObj, factor = 3, ...)
+createOutliersPlot(fpcaObj, variant = "KDE", factor = NULL,
+  outlierList = FALSE, ...)
 }
 \arguments{
 \item{fpcaObj}{An FPCA class object returned by FPCA().}
 
-\item{factor}{Inflation factor defining the loop (see ?compute.bagplot).}
+\item{variant}{Strng defining the outlier method used ('KDE' or 'bagplot') (default: 'KDE')}
+
+\item{factor}{Inflation factor for the bag-plot defining the loop of bag-plot or multiplying factor the KDE pilot bandwidth matrix.  (see ?aplpack::compute.bagplot/?ks::Hpi; default: 2.58/2).}
+
+\item{outlierList}{logical speciifying if a list with the grouping of points should be return (default: FALSE)}
 
 \item{...}{Additional arguments for the 'plot' function.}
 }
@@ -28,5 +33,6 @@ createOutliersPlot(res)
 }
 \references{
 \cite{P. J. Rousseeuw, I. Ruts, J. W. Tukey (1999): The bagplot: a bivariate boxplot, The American Statistician, vol. 53, no. 4, 382-387}
+\cite{R. J. Hyndman and H. L. Shang. (2010) Rainbow plots, bagplots, and boxplots for functional data, Journal of Computational and Graphical Statistics, 19(1), 29-45}
 }
 

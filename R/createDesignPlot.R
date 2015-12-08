@@ -30,7 +30,7 @@ createDesignPlot = function(t, obsGrid = NULL, isColorPlot=TRUE, noDiagonal=TRUE
     obsGrid = sort(unique(unlist(t)))
   }
   
-  args1 <- list( main="Design Title", xlab= 'Observed time grid', ylab= 'Observed time grid', col='black')
+  args1 <- list( main="Design Title", xlab= 'Observed time grid', ylab= 'Observed time grid')
   inargs <- list(...)
   args1[names(inargs)] <- inargs 
   
@@ -48,12 +48,22 @@ createDesignPlot = function(t, obsGrid = NULL, isColorPlot=TRUE, noDiagonal=TRUE
 }
 
 createBlackPlot = function(res, obsGrid, args1){
+
+  if( is.null(args1$col)){
+    args1$col = 'black'
+  }
+  if (is.null(args1$cex)){
+    args1$cex = 0.33
+  }
+  if (is.null(args1$pch)){
+    args1$pch = 19
+  }
  
   u1 = as.vector(res)
   u2 = as.vector(t(res))
   t1 = rep(obsGrid, times = length(obsGrid) )
   t2 = rep(obsGrid, each = length(obsGrid)) 
-  do.call( plot, c(args1, list(  pch = 19, cex =0.33, x = t1[u1 != 0], y = t2[u2 !=0] ) ) )  
+  do.call( plot, c(args1, list( x = t1[u1 != 0], y = t2[u2 !=0] ) ) )  
   
 }
 
@@ -62,32 +72,43 @@ createColorPlot = function(res, obsGrid, args1){
   res[res > 4] = 4;
   notZero <- res != 0
   nnres <- res[notZero]
+  
+  if ( is.null(args1$col) ){
+    colVec <- c(`1`='black', `2`='blue', `3`='green', `4`='red')
+    args1$col = colVec[nnres];
+  } else {
+    colVec = args1$col;
+  }
+ 
+ if ( is.null(args1$pch) ){
+    pchVec <- rep(19, length(colVec))
+    args1$pch = pchVec[nnres];
+  } else {
+    pchVec = args1$pch;
+  }
 
-  # The following three are too involved for a user to define outside 
-  # the function as they would need to read the function before-hand,
-  # no need to allow control over them from outside
-  
-  args1$col = NULL
-  colVec <- c(`1`='black', `2`='blue', `3`='green', `4`='red')
-  # if (!is.null(ddd[['col']])){ 
-  #  colVec[] <- ddd[['col']]
-  # }
-  
-  pchVec <- rep(19, length(colVec))
-  names(pchVec) <- names(colVec)
+  if ( is.null(args1$cex) ){
+    cexVec <- seq(from=0.3, by=0.1, length.out=length(colVec))
+    args1$cex <- cexVec[nnres]
+  } else {
+    cexVec <- args1$cex;
+  }
+ 
+  # pchVec <- rep(19, length(colVec))
+  # names(pchVec) <- names(colVec)
   # if (!is.null(ddd[['pch']])){
   #   pchVec[] <- ddd[['pch']]
   # }
   
-  cexVec <- seq(from=0.3, by=0.1, length.out=length(colVec))
-  names(cexVec) <- names(colVec)
+  # cexVec <- seq(from=0.3, by=0.1, length.out=length(colVec))
+  # names(cexVec) <- names(colVec)
   # if (!is.null(ddd[['cex']])){
   #   cexVec[] <- ddd[['cex']]
   # }
-   
+  
   t1 = rep(obsGrid, times = length(obsGrid))
   t2 = rep(obsGrid, each = length(obsGrid)) 
-  do.call( plot, c(args1, list( x = t1[notZero], y = t2[notZero], col= colVec[nnres],  pch = pchVec[nnres], cex = cexVec[nnres] ) ))
+  do.call( plot, c(args1, list( x = t1[notZero], y = t2[notZero]) ))
   
   if (!identical(unique(nnres), 1)){
     legend('right', c('1','2','3','4+'), pch = pchVec, col=colVec, pt.cex=1.5, title = 'Count',bg='white' )

@@ -42,6 +42,7 @@ Suggests:
     testthat,
     rgl,
     aplpack,
-    mgcv
+    mgcv,
+    ks
 NeedsCompilation: yes
 RoxygenNote: 5.0.1

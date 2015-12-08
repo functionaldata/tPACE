@@ -5,7 +5,7 @@
 #' @param fpcaObj An FPCA class object returned by FPCA().
 #' @param factor Inflation factor for the bag-plot defining the loop of bag-plot or multiplying factor the KDE pilot bandwidth matrix.  (see ?aplpack::compute.bagplot/?ks::Hpi; default: 2.58/2).
 #' @param variant Strng defining the outlier method used ('KDE' or 'bagplot') (default: 'KDE')
-#' @parem outlierList logical speciifying if a list with the grouping of points should be return (default: FALSE; relevant only if variant == 'KDE')
+#' @param outlierList logical speciifying if a list with the grouping of points should be return (default: FALSE)
 #' @param ... Additional arguments for the 'plot' function.
 #'
 #' @examples
@@ -69,6 +69,11 @@ createOutliersPlot <- function(fpcaObj,variant = 'KDE',  factor = NULL, outlierL
     lines( bgObj$hull.loop[c(1:nrow(bgObj$hull.loop),1),], col=4, lwd=2) 
     legend(legend= c('0.500', 'The fence'), x='topright', col=c(2,4), lwd=2)
     
+    if(outlierList){
+      return( list( 'bag' = match( apply(bgObj$pxy.bag,1, prod), apply( bgObj$xydata,1, prod)),
+                    'loop'= match( apply(bgObj$pxy.outer,1, prod), apply( bgObj$xydata,1, prod)), 
+                    'outlier' = match( apply(bgObj$pxy.outlier,1, prod) ,apply( bgObj$xydata,1, prod))) )
+    } 
   } else {
     
     if ( is.null((factor))){
