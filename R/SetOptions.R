@@ -8,14 +8,14 @@
 #'
 
 
-SetOptions = function(y, t, optns){ 
+SetOptions = function(y, t, optns){
 
   bwmu =optns[['bwmu']];                bwmuMethod =optns[['bwmuMethod']]; 
   bwuserCov =optns[['bwcov']];            bwuserCovGcv =optns[['bwuserCovGcv']];
   kFoldCov = optns[['kFoldCov']]
   # ngrid1 =optns[['ngrid1']]; 
   selectionMethod =optns[['selectionMethod']];  FVEthreshold =optns[['FVEthreshold']];
-  fitEigenValues <- optns[['fitEigenValues']]
+  fitEigenValues <- optns[['fitEigenValues']];  fixedK = optns[['fixedK']];
   maxK =optns[['maxK']];                
   dataType =optns[['dataType']];          error =optns[['error']];
   nRegGrid =optns[['nRegGrid']];              methodXi =optns[['methodXi']];
@@ -58,7 +58,7 @@ SetOptions = function(y, t, optns){
     # an internal FVE-based method for us
     selectionMethod = "FVE";
   }
-  if(selectionMethod == "FVE" && is.null(FVEthreshold)){  # the Fraction-of-Variance-Explained
+  if(is.null(FVEthreshold)){  # Default Value for the Fraction-of-Variance-Explained
      FVEthreshold = 0.9999;
   }
   if(is.null(maxK)){ # maximum number of principal components to consider
@@ -207,7 +207,7 @@ SetOptions = function(y, t, optns){
   #}
     
   return( list(bwmu = bwmu, bwmuMethod = bwmuMethod, bwuserCov = bwuserCov, bwuserCovGcv = bwuserCovGcv,
-          kFoldCov = kFoldCov, 
+          kFoldCov = kFoldCov, fixedK = fixedK,
           selectionMethod = selectionMethod, FVEthreshold = FVEthreshold,
           fitEigenValues = fitEigenValues,
           maxK = maxK, dataType = dataType, error = error, nRegGrid = nRegGrid, rotationCut = rotationCut,
