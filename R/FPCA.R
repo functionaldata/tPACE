@@ -21,8 +21,6 @@
 #' \item{kernel}{Smoothing kernel choice, common for mu and covariance; "rect", "gauss", "epan", "gausvar", "quar" - default: "epan" for dense data else "gauss"}
 #' \item{kFoldCov}{The number of folds to be used for covariance smoothing. Default: 10}
 #' \item{lean}{If TRUE the 'inputData' field in the output list is empty. Default: FALSE}
-#' \item{methodCov}{The method to estimate the covariance; 'PACE','RARE','CrossSectional' - automatically determined, user input ignored}
-#' \item{methodMu}{The method to estimate mu; 'PACE','RARE','CrossSectional' - automatically determined, user input ignored }
 #' \item{maxK}{The maximum number of principal components to consider; positive integer smaller than 128 - default: min(20, N-1), N:# of curves}
 #' \item{methodXi}{The method to estimate the PC scores; 'CE', 'IN' - default: 'CE'}
 #' \item{nRegGrid}{The number of support points in each direction of covariance surface; numeric - default: 51}
