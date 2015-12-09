@@ -11,7 +11,7 @@ createFuncBoxPlot(fpcaObj, addIndx = NULL, variant = "bagplot", ...)
 
 \item{addIndx}{A vector of indeces corresponding to which samples one should overlay (Default: NULL)}
 
-\item{variant}{A character variable indicating which methodology should be used ('bagplot' or 'pointwise')to create the functional box-plot (Default: 'bagplot')}
+\item{variant}{A character variable indicating which methodology should be used ('kde', 'bagplot' or 'pointwise') to create the functional box-plot (Default: 'bagplot')}
 
 \item{...}{Additional arguments for the 'plot' function.}
 }

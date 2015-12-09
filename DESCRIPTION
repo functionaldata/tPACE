@@ -33,7 +33,7 @@ Imports:
     Hmisc,
     plot3D,
     Matrix,
-    pracma,
+    pracma, MASS, gtools,
     numDeriv
 LinkingTo: Rcpp, RcppEigen
 Suggests:

@@ -31,6 +31,8 @@ A list containing the following fields:
 \item{rho}{A regularizing scalar for the measurement error variance estimate.}
 \item{cumFVE}{A vector with the percentages of the total variance explained by each FPC. Increase to almost 1.}
 \item{FVE}{A percentage indicating the total variance explained by chosen FPCs with corresponding 'FVEthreshold'.}
+\item{selectK}{A positive integer indicating the number of components chosen by the specified selectionMethod}
+\item{criterionValue}{A scalar specifying the criterion value obtained by the selected number of components with specific selectionMethod: FVE,AIC,BIC values or NULL for fixedK.}
 \item{inputData}{A list containting the original 'y' and 't' lists used as inputs to FPCA. NULL if 'lean' was specified to be TRUE.}
 }
 \description{
@@ -47,6 +49,7 @@ Available control options are
 \item{diagnosticsPlot}{Make diagnostics plot (design plot, mean, scree plot and first k (<=3) eigenfunctions); logical - default: FALSE}
 \item{error}{Assume measurement error in the dataset; logical - default: TRUE}
 \item{fitEigenValues}{Whether also to obtain a regression fit of the eigenvalues - default: FALSE}
+\item{fixedK}{The fixed number of components to be chosen when selectionMethod is 'fixedK' - default: NULL}
 \item{FVEthreshold}{Fraction-of-Variance-Explained threshold used during the SVD of the fitted covar. function; numeric (0,1] - default: 0.9999}
 \item{kernel}{Smoothing kernel choice, common for mu and covariance; "rect", "gauss", "epan", "gausvar", "quar" - default: "epan" for dense data else "gauss"}
 \item{kFoldCov}{The number of folds to be used for covariance smoothing. Default: 10}
@@ -57,7 +60,7 @@ Available control options are
 \item{methodXi}{The method to estimate the PC scores; 'CE', 'IN' - default: 'CE'}
 \item{nRegGrid}{The number of support points in each direction of covariance surface; numeric - default: 51}
 \item{numBins}{The number of bins to bin the data into; positive integer > 10, default: NULL}
-\item{selectionMethod}{The method of choosing the number of principal components K; 'FVE','AIC','BIC': default 'FVE' - only 'FVE' avaiable now/ default 'FVE')}
+\item{selectionMethod}{The method of choosing the number of principal components K; 'FVE','AIC','BIC','fixedK': default 'FVE')}
 \item{outPercent}{A 2-element vector in [0,1] indicating the outPercent data in the boundary - default (0,1)}
 \item{rho}{The truncation threshold for the iterative residual. 'cv': choose rho by leave-one-observation out cross-validation; 'no': no regularization - default "cv".}
 \item{rotationCut}{The 2-element vector in [0,1] indicating the percent of data truncated during sigma^2 estimation; default  (0.25, 0.75))}

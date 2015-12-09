@@ -5,6 +5,8 @@
 #' @param criterion A string specifying selection criterion for number of functional principal components, available options: 'FVE', 'AIC', 'BIC', 'fixedK' - default: 'AIC'
 #' @param FVEthreshold A threshold percentage specified by user when using "FVE" as selection criterion - default: NULL
 #' @param fixedK An integer: user-specified number of components to be chosen - default: NULL
+#' @param y A list of \emph{n} vectors containing the observed values for each individual - default: NULL
+#' @param t A list of \emph{n} vectors containing the observation time points for each individual corresponding to y - default: NULL
 #'
 #' @return A list including the following two fields:
 #' \item{k}{An integer indicating the selected number of components based on given criterion.}
