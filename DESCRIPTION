@@ -30,10 +30,8 @@ LazyData: false
 Imports:
     Rcpp (>= 0.11.5),
     RcppEigen,
-    gtools,
     Hmisc,
     plot3D,
-    MASS,
     Matrix,
     pracma,
     numDeriv

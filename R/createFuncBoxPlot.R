@@ -4,7 +4,7 @@
 #'
 #' @param fpcaObj A object of class FPCA returned by the function FPCA().
 #' @param addIndx A vector of indeces corresponding to which samples one should overlay (Default: NULL)
-#' @param variant A character variable indicating which methodology should be used ('bagplot' or 'pointwise')to create the functional box-plot (Default: 'bagplot')
+#' @param variant A character variable indicating which methodology should be used ('kde', 'bagplot' or 'pointwise') to create the functional box-plot (Default: 'bagplot')
 #' @param ... Additional arguments for the 'plot' function.
 #' 
 #' @examples
@@ -22,72 +22,146 @@
 #' @export
 
 createFuncBoxPlot <- function(fpcaObj, addIndx =NULL, variant= 'bagplot',... ){
- 
- 
+  
   args1 <- list( xlab='s', ylab='y(s)')  
   inargs <- list(...)
   args1[names(inargs)] <- inargs
   
-
-  if( is.na( any(match( variant, c('pointwise', 'bagplot') )) ) ){
-   stop("This plotting utility function can only implement a 'bagplot' or 'pointwise' mapping.")
-   return(NULL)
+  if( is.na( any(match( variant, c('pointwise', 'bagplot', 'KDE') )) ) ){
+    stop("This plotting utility function can only implement a 'KDE', 'bagplot' or 'pointwise' mapping.")
+    return(NULL)
   }
-
-  fittedCurves <- fitted(fpcaObj)   
-  s <- fpcaObj$workGrid
-  N <- nrow(fittedCurves)
   
   if ( variant == 'bagplot' && !is.element('aplpack', installed.packages()[,1])){
     warning('Cannot use bagplot because aplpack::compute.bagplot is unavailable; reverting to point-wise');
     variant = 'pointwise'
   }
- 
-  if ( length(fpcaObj$lambda) <2) {
-    warning('There is a single component used.');
+  
+  if ( variant == 'KDE' && !is.element('ks', installed.packages()[,1])){
+    warning('Cannot use KDE because ks::kde is unavailable; reverting to point-wise');
+    variant = 'pointwise'
   }
- 
-  #plot(type='n', s, s, ylim=range(fittedCurves, na.rm = TRUE), xlab='s', ylab='y(s)', main = titleString)    
-  #plot(type='n', s, s, ylim=range(fittedCurves), xlab='s', ylab='y(s)', main = titleString)  
+  
+  fittedCurves <- fitted(fpcaObj)   
+  s <- fpcaObj$workGrid
+  N <- nrow(fittedCurves)
+  
+  do.call(plot, c(list(type='n'), list(x=s), list(y=s), 
+                  list(ylim=range(fittedCurves)), args1))
+  grid()   
+  
+  if ( length(fpcaObj$lambda) <2) {
+    warning('There is a single component used. We will use a standard boxpot on the FPC scores.');
+    bgObj = boxplot(plot=FALSE, fpcaObj$xiEst[,1] )
+    fittedCurvesFence = fittedCurves[ (fpcaObj$xiEst > bgObj$stats[1]) & (fpcaObj$xiEst < bgObj$stats[5]),];
+    fittedCurvesBag = fittedCurves[ (fpcaObj$xiEst > bgObj$stats[2]) & (fpcaObj$xiEst < bgObj$stats[4]),];
+    polygon(x=c(s, rev(s)), y = c(apply(rbind(fittedCurvesFence, fittedCurvesBag),2, min), 
+                                  rev(apply(rbind( fittedCurvesFence, fittedCurvesBag),2, max))), col= 'lightgrey',border=0)
+    polygon(x=c(s, rev(s)), y = c(apply(fittedCurvesBag,2, min), 
+                                  rev(apply(fittedCurvesBag,2,max))), col= 'darkgrey',border=1)  
+    lines(x=s, y= apply(fittedCurves,2, mean) , col='red')
+  }
+  
+  if ( length(fpcaObj$lambda)> 1) {
     
-    do.call(plot, c(list(type='n'), list(x=s), list(y=s), 
-                    list(ylim=range(fittedCurves)), args1))
-    grid()   
-    
-    
-  if ( variant == 'bagplot' && is.element('aplpack', installed.packages()[,1]) ){
-         
-    if (  length(fpcaObj$lambda) >1) {
+    if ( variant == 'bagplot' ){
+      
       bgObj = aplpack::compute.bagplot(x= fpcaObj$xiEst[,1], y= fpcaObj$xiEst[,2], approx.limit=3333)     
       fittedCurvesFence = fittedCurves[ is.element( rowSums(fpcaObj$xiEst[,1:2]), rowSums(bgObj$pxy.outer) ),]; 
       fittedCurvesBag = fittedCurves[ is.element( rowSums(fpcaObj$xiEst[,1:2]), rowSums(bgObj$pxy.bag) ),];
-    } else {
-      bgObj = boxplot(plot=FALSE, fpcaObj$xiEst[,1] )
-      fittedCurvesFence = fittedCurves[ (fpcaObj$xiEst > bgObj$stats[1]) & (fpcaObj$xiEst < bgObj$stats[5]),];
-      fittedCurvesBag = fittedCurves[ (fpcaObj$xiEst > bgObj$stats[2]) & (fpcaObj$xiEst < bgObj$stats[4]),];
+      
+      polygon(x=c(s, rev(s)), y = c(apply(rbind(fittedCurvesFence, fittedCurvesBag),2, min), 
+                                    rev(apply(rbind( fittedCurvesFence, fittedCurvesBag),2, max))), col= 'lightgrey',border=0)
+      polygon(x=c(s, rev(s)), y = c(apply(fittedCurvesBag,2, min), 
+                                    rev(apply(fittedCurvesBag,2,max))), col= 'darkgrey',border=1)  
+      lines(x=s, y= apply(fittedCurves,2, mean) , col='red')
+    } else if (variant== 'pointwise'){ 
+      polygon(x=c(s, rev(s)), y = c(apply(fittedCurves,2, quantile, 0.007), 
+                                    rev(apply(fittedCurves,2, quantile, 0.993))), col= 'lightgrey',border=0)
+      polygon(x=c(s, rev(s)), y = c(apply(fittedCurves,2, quantile, 0.250), 
+                                    rev(apply(fittedCurves,2, quantile, 0.750))), col= 'darkgrey',border=1)  
+      lines(x=s, y= apply(fittedCurves,2, quantile, 0.500) , col='red')
+    } else if (variant == 'KDE') {
+      
+      fhat <- ks::kde(x=fpcaObj$xiEst[,1:2], gridsize = c(400,400), compute.cont = TRUE, 
+                      H = ks::Hpi( x=fpcaObj$xiEst[,1:2], binned=TRUE,  pilot="dscalar"  ) *  2) 
+      
+      maxIndex = which( fhat$estimate == max(fhat$estimate), arr.ind = TRUE)
+      qq = quickNNeval(xin = fhat$eval.points[[1]], yin = fhat$eval.points[[2]], 
+                       zin = monotoniseMatrix( fhat$estimate, maxIndex[1], maxIndex[2]), 
+                       xout = fpcaObj$xiEst[,1], yout = fpcaObj$xiEst[,2] ) 
+      curves0to50= which(qq >=  fhat$cont[50])
+      curves50to95 = which(qq >  fhat$cont[95] & qq <=  fhat$cont[50])
+      
+      fittedCurvesBag = fittedCurves[ c(curves0to50  ),]; 
+      fittedCurvesFence = fittedCurves[  c( curves50to95,curves0to50), ];
+      
+      polygon(x=c(s, rev(s)), y = c(apply(rbind(fittedCurvesFence, fittedCurvesBag),2, min), 
+                                    rev(apply(rbind( fittedCurvesFence, fittedCurvesBag),2, max))), col= 'lightgrey',border=0)
+      polygon(x=c(s, rev(s)), y = c(apply(fittedCurvesBag,2, min), 
+                                    rev(apply(fittedCurvesBag,2,max))), col= 'darkgrey',border=1)  
+      lines(x=s, y= apply(fittedCurves,2, mean) , col='red')
+      
+    } else  {
+      stop('Additional variants are not yet implemented')
     }
-    polygon(x=c(s, rev(s)), y = c(apply(fittedCurvesFence,2, min), 
-            rev(apply(fittedCurvesFence,2, max))), col= 'lightgrey',border=0)
-    polygon(x=c(s, rev(s)), y = c(apply(fittedCurvesBag,2, min), 
-            rev(apply(fittedCurvesBag,2,max))), col= 'darkgrey',border=1)  
-    lines(x=s, y= apply(fittedCurves,2, mean) , col='red')
-  } else if (variant== 'pointwise'){ 
-    polygon(x=c(s, rev(s)), y = c(apply(fittedCurves,2, quantile, 0.007), 
-            rev(apply(fittedCurves,2, quantile, 0.993))), col= 'lightgrey',border=0)
-    polygon(x=c(s, rev(s)), y = c(apply(fittedCurves,2, quantile, 0.250), 
-            rev(apply(fittedCurves,2, quantile, 0.750))), col= 'darkgrey',border=1)  
-    lines(x=s, y= apply(fittedCurves,2, quantile, 0.500) , col='red')
-  } else  {
-    stop('Additional variances are not yet implemented')
   }
- 
   yList = fpcaObj$inputData$y
   tList = fpcaObj$inputData$t 
- 
+  
   #add sample lines
   if (!is.null(addIndx) && !is.null(yList) && !is.null(tList)  ){
     for (i in 1:length(addIndx) ) {
       lines(x = tList[[addIndx[i]]] , y= yList[[addIndx[i]]], lwd = 1.5, type='o', pch=0)
     } 
   }
+}
+
+quickNNeval <- function(xin,yin, zin, xout, yout){
+  xindeces = sapply( xout, function(myArg) which.min( abs( xin - myArg) ), simplify = TRUE)
+  yindeces = sapply( yout, function(myArg) which.min( abs( yin - myArg) ), simplify = TRUE )
+  return( zin[ cbind(xindeces,yindeces)] )
+}
+
+monotonise <- function(x, maxIndex = NULL){
+  xq = x;
+  if (is.null(maxIndex)){
+    maxIndex = which.max(x);
+  }
+  
+  if( maxIndex != length(x) ){
+    for (i in 1:( length(x) - maxIndex)){
+      if( xq[ i + maxIndex] > xq[maxIndex + i - 1] ){
+        xq[ i + maxIndex] = xq[maxIndex + i - 1]
+      }
+    }
+  }
+  if (maxIndex >= 3){
+    for (i in 1:(maxIndex - 2 )){
+      if( xq[ - 1 - i + maxIndex] > xq[maxIndex - i] ){
+        xq[ - 1- i + maxIndex] = xq[maxIndex - i]
+      }
+    }
+  }
+  return(xq)
+} 
+
+monotoniseMatrix = function(zin, xmaxind, ymaxind){
+  if(is.null(xmaxind) && is.null(ymaxind)){
+    maxIndx = which( max(zin) == zin, arr.ind = TRUE)
+    xmaxind = maxIndx[1]
+    ymaxind = maxIndx[2]
+  }
+  zq = zin;
+  for (j in 1:dim(zin)[2]){
+    for (i in 1:dim(zin)[1]){
+      if (i == 1 || j == 1 || j == dim(zin)[1] || i == dim(zin)[2]){
+        sizeOut = max( abs(xmaxind - i) +1, abs(ymaxind - j) +1 )
+        xcoord = round(   ( seq(i, xmaxind , length.out = sizeOut) ) )
+        ycoord = round(   ( seq(j, ymaxind , length.out = sizeOut) ) ) 
+        zq[ cbind(xcoord,ycoord) ] = monotonise( zq[ cbind(xcoord,ycoord) ]) 
+      }
+    }
+  }
+  return(zq)
 }

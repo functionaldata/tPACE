@@ -3,7 +3,7 @@
 #' This function will open a new device if not instructed otherwise.
 #'
 #' @param ret An FPCA class object returned by FPCA().
-#' @param openNewDev A logical specifying if a new device should be opened - default: TRUE
+#' @param openNewDev A logical specifying if a new device should be opened - default: FALSE
 #'
 #' @examples
 #' set.seed(1)
@@ -12,11 +12,11 @@
 #' sampWiener <- wiener(n, pts)
 #' sampWiener <- sparsify(sampWiener, pts, 10)
 #' res <- FPCA(sampWiener$yList, sampWiener$tList, 
-#'             list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
+#'             list(dataType='Sparse', error=FALSE, kernel='epan', verbose=FALSE))
 #' createDiagnosticsPlot(res)
 #' @export
 
-createDiagnosticsPlot <-function(ret, openNewDev = TRUE){ 
+createDiagnosticsPlot <-function(ret, openNewDev = FALSE){ 
   t = ret$inputData$t
   if(openNewDev){ 
     dev.new(width=6.2, height=6.2, noRStudioGD=TRUE) ; 
