@@ -39,7 +39,6 @@ Imports:
     numDeriv
 LinkingTo: Rcpp, RcppEigen
 Suggests:
-    testthat,
     rgl,
     aplpack,
     mgcv,

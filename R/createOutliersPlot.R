@@ -59,7 +59,7 @@ createOutliersPlot <- function(fpcaObj,variant = 'KDE',  factor = NULL, outlierL
     bgObj = aplpack::compute.bagplot(x= fpcaObj$xiEst[,1], y= fpcaObj$xiEst[,2], 
                                      approx.limit=3333 , factor = factor)     
     
-    args2 = list (x = fpcaObj$xiEst[,1], y = fpcaObj$xiEst[,2], cex= .33,  panel.first = grid(), type='n' )
+    args2 = list (x = fpcaObj$xiEst[,1], y = fpcaObj$xiEst[,2], cex= .33,  type='n' )
     
     do.call(plot, c(args2, args1))   
     # I do this because panel.first() does not work with the do.call()
