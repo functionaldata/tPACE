@@ -79,7 +79,7 @@ pc_covE = function(obsGrid, regGrid, bw_userCov, rotationCut=c(0, 1), kernel = '
   sigma2 = trapzRcpp(rcutGrid, (yvar - xvar)) / (lint * rcutprop)
 
   if(sigma2 < 0){
-    warning("Warning: estimated sigma2 is negative, reset to 1e-6 now!")
+    warning("Estimated sigma2 is negative and is reset to 1e-6.")
     sigma2 = 1e-6
   }
 
