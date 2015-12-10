@@ -4,7 +4,8 @@
 \alias{createFuncBoxPlot}
 \title{Create functional boxplot using 'bagplot' or 'pointwise' methodology}
 \usage{
-createFuncBoxPlot(fpcaObj, addIndx = NULL, variant = "bagplot", ...)
+createFuncBoxPlot(fpcaObj, addIndx = NULL, variant = "bagplot",
+  enforceUnimodality = NULL, ifactor = NULL, ...)
 }
 \arguments{
 \item{fpcaObj}{A object of class FPCA returned by the function FPCA().}
@@ -12,6 +13,10 @@ createFuncBoxPlot(fpcaObj, addIndx = NULL, variant = "bagplot", ...)
 \item{addIndx}{A vector of indeces corresponding to which samples one should overlay (Default: NULL)}
 
 \item{variant}{A character variable indicating which methodology should be used ('kde', 'bagplot' or 'pointwise') to create the functional box-plot (Default: 'bagplot')}
+
+\item{enforceUnimodality}{logical specifying if the KDE estimate should be unimodal (default: TRUE, relavant only for variant='KDE')}
+
+\item{ifactor}{Inflation ifactor for the bag-plot defining the loop of bag-plot or multiplying ifactor the KDE pilot bandwidth matrix.  (see ?aplpack::compute.bagplot/?ks::Hpi; default: 2.58/2).}
 
 \item{...}{Additional arguments for the 'plot' function.}
 }

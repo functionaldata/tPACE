@@ -4,17 +4,19 @@
 \alias{createOutliersPlot}
 \title{Functional Principal Component Scores Plot}
 \usage{
-createOutliersPlot(fpcaObj, variant = "KDE", factor = NULL,
-  outlierList = FALSE, ...)
+createOutliersPlot(fpcaObj, variant = "KDE", ifactor = NULL,
+  outlierList = FALSE, enforceUnimodality = NULL, ...)
 }
 \arguments{
 \item{fpcaObj}{An FPCA class object returned by FPCA().}
 
 \item{variant}{Strng defining the outlier method used ('KDE' or 'bagplot') (default: 'KDE')}
 
-\item{factor}{Inflation factor for the bag-plot defining the loop of bag-plot or multiplying factor the KDE pilot bandwidth matrix.  (see ?aplpack::compute.bagplot/?ks::Hpi; default: 2.58/2).}
+\item{ifactor}{Inflation ifactor for the bag-plot defining the loop of bag-plot or multiplying ifactor the KDE pilot bandwidth matrix.  (see ?aplpack::compute.bagplot/?ks::Hpi; default: 2.58/2).}
 
-\item{outlierList}{logical speciifying if a list with the grouping of points should be return (default: FALSE)}
+\item{outlierList}{logical specifying if a list with the grouping of points should be return (default: FALSE)}
+
+\item{enforceUnimodality}{logical specifying if the KDE estimate should be unimodal (default: FALSE, relavant only for variant='KDE')}
 
 \item{...}{Additional arguments for the 'plot' function.}
 }

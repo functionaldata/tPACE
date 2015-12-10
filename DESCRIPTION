@@ -29,11 +29,11 @@ License: BSD_3_clause
 LazyData: false
 Imports:
     Rcpp (>= 0.11.5),
-    RcppEigen,
+    RcppEigen (>= 0.3.2.5.1),
     Hmisc,
     plot3D,
     Matrix,
-    pracma, MASS, gtools,
+    pracma, 
     numDeriv
 LinkingTo: Rcpp, RcppEigen
 Suggests:
