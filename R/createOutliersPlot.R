@@ -3,9 +3,10 @@
 #' This function will create using the first two FPC scores a set of convex hulls of the scores as these hulls are defined by the references.
 #'
 #' @param fpcaObj An FPCA class object returned by FPCA().
-#' @param factor Inflation factor for the bag-plot defining the loop of bag-plot or multiplying factor the KDE pilot bandwidth matrix.  (see ?aplpack::compute.bagplot/?ks::Hpi; default: 2.58/2).
+#' @param ifactor Inflation ifactor for the bag-plot defining the loop of bag-plot or multiplying ifactor the KDE pilot bandwidth matrix.  (see ?aplpack::compute.bagplot/?ks::Hpi; default: 2.58/2).
 #' @param variant Strng defining the outlier method used ('KDE' or 'bagplot') (default: 'KDE')
-#' @param outlierList logical speciifying if a list with the grouping of points should be return (default: FALSE)
+#' @param outlierList logical specifying if a list with the grouping of points should be return (default: FALSE)
+#' @param enforceUnimodality logical specifying if the KDE estimate should be unimodal (default: FALSE, relavant only for variant='KDE') 
 #' @param ... Additional arguments for the 'plot' function.
 #'
 #' @examples
@@ -23,7 +24,7 @@
 #'
 #' @export
 
-createOutliersPlot <- function(fpcaObj,variant = 'KDE',  factor = NULL, outlierList = FALSE, ...){
+createOutliersPlot <- function(fpcaObj,variant = 'KDE',  ifactor = NULL, outlierList = FALSE, enforceUnimodality = NULL, ...){
   
   if( !any( variant == c('KDE','bagplot')) ){
     stop("You request an outlier detection method.")
@@ -34,9 +35,14 @@ createOutliersPlot <- function(fpcaObj,variant = 'KDE',  factor = NULL, outlierL
   if ( variant == 'KDE' && !is.element('ks', installed.packages()[,1]) ){
     stop("Cannot the use the KDE method; the package 'ks' is unavailable.")
   } 
-  
-  
-  
+  if ( !is.null(enforceUnimodality) && !is.logical(enforceUnimodality) ){
+      stop("The variable 'enforceUnimodality' must be logical.")
+  } 
+  if (!is.null(ifactor) && (1 >= ifactor) ){
+    warning("It is nonsensical for an inflation factor to be <= 1. 'ifactor' set to 1.1.")
+    ifactor = 1.1;
+  }
+    
   xedge = 1.05 * max( abs(fpcaObj$xiEst[,1]))
   yedge = 1.05 * max( abs(fpcaObj$xiEst[,2]))  
   
@@ -53,11 +59,11 @@ createOutliersPlot <- function(fpcaObj,variant = 'KDE',  factor = NULL, outlierL
   
   if ( variant == 'bagplot' ){
     
-    if ( is.null((factor))){
-      factor = 2.58
+    if ( is.null((ifactor))){
+      ifactor = 2.58
     } 
     bgObj = aplpack::compute.bagplot(x= fpcaObj$xiEst[,1], y= fpcaObj$xiEst[,2], 
-                                     approx.limit=3333 , factor = factor)     
+                                     approx.limit=3333 , factor = ifactor)     
     
     args2 = list (x = fpcaObj$xiEst[,1], y = fpcaObj$xiEst[,2], cex= .33,  type='n' )
     
@@ -76,19 +82,23 @@ createOutliersPlot <- function(fpcaObj,variant = 'KDE',  factor = NULL, outlierL
     } 
   } else {
     
-    if ( is.null((factor))){
-      factor = 2
+    if ( is.null((ifactor))){
+      ifactor = 2
     } 
     fhat <- ks::kde(x=fpcaObj$xiEst[,1:2], gridsize = c(400,400), compute.cont = TRUE, 
-                    H = ks::Hpi( x=fpcaObj$xiEst[,1:2], binned=TRUE,  pilot="dscalar"  ) *  factor) 
+                    H = ks::Hpi( x=fpcaObj$xiEst[,1:2], binned=TRUE,  pilot="dscalar"  ) *  ifactor) 
+    zin = fhat$estimate
     
-    maxIndex = which( fhat$estimate == max(fhat$estimate), arr.ind = TRUE)
+    if( !is.null(enforceUnimodality) && enforceUnimodality ){
+      maxIndex = which( fhat$estimate == max(fhat$estimate), arr.ind = TRUE)
+      zin = monotoniseMatrix( fhat$estimate, maxIndex[1], maxIndex[2])
+    }
+
     qq = quickNNeval(xin = fhat$eval.points[[1]], yin = fhat$eval.points[[2]], 
-                     # zin =  fhat$estimate,  
-                     zin = monotoniseMatrix( fhat$estimate, maxIndex[1], maxIndex[2]), 
+                     zin =  zin, 
                      xout = fpcaObj$xiEst[,1], yout = fpcaObj$xiEst[,2] ) 
     
-    args2 = list (x= fhat$eval.points[[1]], y=fhat$eval.points[[2]], z = monotoniseMatrix( fhat$estimate, NULL, NULL), 
+    args2 = list (x= fhat$eval.points[[1]], y=fhat$eval.points[[2]], z = zin, 
                   labcex=1.66, col= c('black','blue','red'), levels = fhat$cont[c(50, 95, 99)], labels = c('50%', '95%', '99%'))
     do.call(contour, c(args2, args1)); 
     grid()

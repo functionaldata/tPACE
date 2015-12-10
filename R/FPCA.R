@@ -18,11 +18,11 @@
 #' \item{fitEigenValues}{Whether also to obtain a regression fit of the eigenvalues - default: FALSE}
 #' \item{fixedK}{The fixed number of components to be chosen when selectionMethod is 'fixedK' - default: NULL}
 #' \item{FVEthreshold}{Fraction-of-Variance-Explained threshold used during the SVD of the fitted covar. function; numeric (0,1] - default: 0.9999}
-#' \item{kernel}{Smoothing kernel choice, common for mu and covariance; "rect", "gauss", "epan", "gausvar", "quar" - default: "epan" for dense data else "gauss"}
+#' \item{kernel}{Smoothing kernel choice, common for mu and covariance; "rect", "gauss", "epan", "gausvar", "quar" - default: "gauss"; dense data are assumed noise-less so no smoothing is performed. }
 #' \item{kFoldCov}{The number of folds to be used for covariance smoothing. Default: 10}
 #' \item{lean}{If TRUE the 'inputData' field in the output list is empty. Default: FALSE}
 #' \item{maxK}{The maximum number of principal components to consider; positive integer smaller than 128 - default: min(20, N-1), N:# of curves}
-#' \item{methodXi}{The method to estimate the PC scores; 'CE', 'IN' - default: 'CE'}
+#' \item{methodXi}{The method to estimate the PC scores; 'CE' (Condit. Expectation), 'IN' (Numerical Integration) - default: 'CE' for sparse data, 'IN' for dense data.}
 #' \item{nRegGrid}{The number of support points in each direction of covariance surface; numeric - default: 51}
 #' \item{numBins}{The number of bins to bin the data into; positive integer > 10, default: NULL}
 #' \item{selectionMethod}{The method of choosing the number of principal components K; 'FVE','AIC','BIC','fixedK': default 'FVE')}

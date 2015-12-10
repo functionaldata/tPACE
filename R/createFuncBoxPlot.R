@@ -5,6 +5,8 @@
 #' @param fpcaObj A object of class FPCA returned by the function FPCA().
 #' @param addIndx A vector of indeces corresponding to which samples one should overlay (Default: NULL)
 #' @param variant A character variable indicating which methodology should be used ('kde', 'bagplot' or 'pointwise') to create the functional box-plot (Default: 'bagplot')
+#' @param ifactor Inflation ifactor for the bag-plot defining the loop of bag-plot or multiplying ifactor the KDE pilot bandwidth matrix.  (see ?aplpack::compute.bagplot/?ks::Hpi; default: 2.58/2).
+#' @param enforceUnimodality logical specifying if the KDE estimate should be unimodal (default: TRUE, relavant only for variant='KDE') 
 #' @param ... Additional arguments for the 'plot' function.
 #' 
 #' @examples
@@ -21,22 +23,19 @@
 #'
 #' @export
 
-createFuncBoxPlot <- function(fpcaObj, addIndx =NULL, variant= 'bagplot',... ){
+createFuncBoxPlot <- function(fpcaObj, addIndx =NULL, variant= 'bagplot', enforceUnimodality = NULL, ifactor = NULL,... ){
   
   args1 <- list( xlab='s', ylab='y(s)')  
   inargs <- list(...)
   args1[names(inargs)] <- inargs
-  
   if( is.na( any(match( variant, c('pointwise', 'bagplot', 'KDE') )) ) ){
     stop("This plotting utility function can only implement a 'KDE', 'bagplot' or 'pointwise' mapping.")
     return(NULL)
-  }
-  
+  }  
   if ( variant == 'bagplot' && !is.element('aplpack', installed.packages()[,1])){
     warning('Cannot use bagplot because aplpack::compute.bagplot is unavailable; reverting to point-wise');
     variant = 'pointwise'
-  }
-  
+  }  
   if ( variant == 'KDE' && !is.element('ks', installed.packages()[,1])){
     warning('Cannot use KDE because ks::kde is unavailable; reverting to point-wise');
     variant = 'pointwise'
@@ -63,10 +62,19 @@ createFuncBoxPlot <- function(fpcaObj, addIndx =NULL, variant= 'bagplot',... ){
   }
   
   if ( length(fpcaObj$lambda)> 1) {
-    
+  
+    if ( !is.null(ifactor) && (1 >= ifactor) ){
+      warning("It is nonsensical for an inflation factor to be <= 1. 'ifactor' set to 1.1.")
+      ifactor = 1.1;
+    } 
+
     if ( variant == 'bagplot' ){
-      
-      bgObj = aplpack::compute.bagplot(x= fpcaObj$xiEst[,1], y= fpcaObj$xiEst[,2], approx.limit=3333)     
+   
+      if ( is.null (ifactor) ){
+        ifactor = 2.58
+      }       
+   
+      bgObj = aplpack::compute.bagplot(x= fpcaObj$xiEst[,1], y= fpcaObj$xiEst[,2], approx.limit=3333, factor = ifactor)     
       fittedCurvesFence = fittedCurves[ is.element( rowSums(fpcaObj$xiEst[,1:2]), rowSums(bgObj$pxy.outer) ),]; 
       fittedCurvesBag = fittedCurves[ is.element( rowSums(fpcaObj$xiEst[,1:2]), rowSums(bgObj$pxy.bag) ),];
       
@@ -83,12 +91,22 @@ createFuncBoxPlot <- function(fpcaObj, addIndx =NULL, variant= 'bagplot',... ){
       lines(x=s, y= apply(fittedCurves,2, quantile, 0.500) , col='red')
     } else if (variant == 'KDE') {
       
+      if (is.null(ifactor)){
+        ifactor = 2
+      }
+
       fhat <- ks::kde(x=fpcaObj$xiEst[,1:2], gridsize = c(400,400), compute.cont = TRUE, 
-                      H = ks::Hpi( x=fpcaObj$xiEst[,1:2], binned=TRUE,  pilot="dscalar"  ) *  2) 
+                      H = ks::Hpi( x=fpcaObj$xiEst[,1:2], binned=TRUE,  pilot="dscalar"  ) *  ifactor) 
+   
+      zin = fhat$estimate
       
-      maxIndex = which( fhat$estimate == max(fhat$estimate), arr.ind = TRUE)
+      if( is.null(enforceUnimodality) || enforceUnimodality ){
+        maxIndex = which( fhat$estimate == max(fhat$estimate), arr.ind = TRUE)
+        zin = monotoniseMatrix( fhat$estimate, maxIndex[1], maxIndex[2])
+      }   
+      
       qq = quickNNeval(xin = fhat$eval.points[[1]], yin = fhat$eval.points[[2]], 
-                       zin = monotoniseMatrix( fhat$estimate, maxIndex[1], maxIndex[2]), 
+                       zin = zin, 
                        xout = fpcaObj$xiEst[,1], yout = fpcaObj$xiEst[,2] ) 
       curves0to50= which(qq >=  fhat$cont[50])
       curves50to95 = which(qq >  fhat$cont[95] & qq <=  fhat$cont[50])
