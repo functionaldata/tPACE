@@ -2,12 +2,18 @@
 #'
 #' This function will create using the first two FPC scores a set of convex hulls of the scores as these hulls are defined by the references.
 #'
-#' @param fpcaObj An FPCA class object returned by FPCA().
-#' @param ifactor Inflation ifactor for the bag-plot defining the loop of bag-plot or multiplying ifactor the KDE pilot bandwidth matrix.  (see ?aplpack::compute.bagplot/?ks::Hpi; default: 2.58/2).
-#' @param variant Strng defining the outlier method used ('KDE' or 'bagplot') (default: 'KDE')
-#' @param outlierList logical specifying if a list with the grouping of points should be return (default: FALSE)
-#' @param enforceUnimodality logical specifying if the KDE estimate should be unimodal (default: FALSE, relavant only for variant='KDE') 
-#' @param ... Additional arguments for the 'plot' function.
+#' @param fpcaObj An FPCA class object returned by FPCA().   
+#' @param optns A list of options control parameters specified by \code{list(name=value)}. See `Details'.
+#' @param ... Additional arguments for the 'plot' function. 
+#'
+#' @details Available control options are 
+#' \describe{
+#' \item{ifactor}{inflation ifactor for the bag-plot defining the loop of bag-plot or multiplying ifactor the KDE pilot bandwidth matrix. (see ?aplpack::compute.bagplot; ?ks::Hpi respectively; default: 2.58; 2 respectively).}
+#' \item{variant}{string defining the outlier method used ('KDE' or 'bagplot') (default: 'KDE')}
+#' \item{unimodal}{logical specifying if the KDE estimate should be unimodal (default: FALSE, relavant only for variant='KDE')}
+#' \item{nSlices}{integer between 3 and 16, denoting the number of slices to be used, default 4, relavant only for groupingType='slice' }
+#' \item{groupingType}{string specifying if a slice grouping ('slice') or a standard percentile/bagplot grouping ('standard') should be returned (default: 'standard')} 
+#' }
 #'
 #' @examples
 #' set.seed(1)
@@ -24,10 +30,50 @@
 #'
 #' @export
 
-createOutliersPlot <- function(fpcaObj,variant = 'KDE',  ifactor = NULL, outlierList = FALSE, enforceUnimodality = NULL, ...){
+createOutliersPlot <- function(fpcaObj, optns, ...){
   
+  
+  if(is.null(optns$ifactor)){
+    ifactor = NULL
+  } else {
+    ifactor = optns$ifactor
+  }
+  
+  if(is.null(optns$outlierList)){
+    outlierList = NULL
+  } else {
+    outlierList = optns$outlierList
+  }
+  
+  if(is.null(optns$unimodal)){
+    unimodal = NULL
+  } else {
+    unimodal = optns$unimodal
+  }
+  
+  if(is.null(optns$groupingType)){
+    groupingType = 'standard'
+  } else {
+    groupingType = optns$groupingType
+  }
+  
+  if(is.null(optns$variant)){
+    variant = 'KDE'
+  } else {
+    variant = optns$variant
+  }
+  
+  if(is.null(optns$nSlices)){
+    nSlices = 4
+  } else {
+    nSlices = optns$nSlices
+  }
+  
+  if( !any( groupingType == c('standard','slice')) ){
+    stop("You request an groupingType method not currenty available.")
+  }
   if( !any( variant == c('KDE','bagplot')) ){
-    stop("You request an outlier detection method.")
+    stop("You request an outlier detection method not currenty available.")
   }
   if ( variant == 'bagplot' && !is.element('aplpack', installed.packages()[,1]) ){
     stop("Cannot the use the bagplot method; the package 'aplpack' is unavailable.")
@@ -35,14 +81,18 @@ createOutliersPlot <- function(fpcaObj,variant = 'KDE',  ifactor = NULL, outlier
   if ( variant == 'KDE' && !is.element('ks', installed.packages()[,1]) ){
     stop("Cannot the use the KDE method; the package 'ks' is unavailable.")
   } 
-  if ( !is.null(enforceUnimodality) && !is.logical(enforceUnimodality) ){
-      stop("The variable 'enforceUnimodality' must be logical.")
+  if ( !is.null(unimodal) && !is.logical(unimodal) ){
+    stop("The variable 'unimodal' must be logical.")
   } 
   if (!is.null(ifactor) && (1 >= ifactor) ){
     warning("It is nonsensical for an inflation factor to be <= 1. 'ifactor' set to 1.1.")
     ifactor = 1.1;
   }
-    
+  if ( !(3 <= nSlices) || !(16 >= nSlices) || !(nSlices %% 1 == 0) ){
+    warning("nSlices must be between a natural number betweeb 3 and 16. 'nSlices' set to 4.")
+    nSlices = 4;
+  }
+  
   xedge = 1.05 * max( abs(fpcaObj$xiEst[,1]))
   yedge = 1.05 * max( abs(fpcaObj$xiEst[,2]))  
   
@@ -69,16 +119,48 @@ createOutliersPlot <- function(fpcaObj,variant = 'KDE',  ifactor = NULL, outlier
     
     do.call(plot, c(args2, args1))   
     # I do this because panel.first() does not work with the do.call()
-    points(x = fpcaObj$xiEst[,1], y = fpcaObj$xiEst[,2], cex= .33,  panel.first = grid(),  lwd= 2) 
-    
-    lines( bgObj$hull.bag[c(1:nrow(bgObj$hull.bag),1),], col=2, lwd=2)
-    lines( bgObj$hull.loop[c(1:nrow(bgObj$hull.loop),1),], col=4, lwd=2) 
-    legend(legend= c('0.500', 'The fence'), x='topright', col=c(2,4), lwd=2)
-    
-    if(outlierList){
-      return( list( 'bag' = match( apply(bgObj$pxy.bag,1, prod), apply( bgObj$xydata,1, prod)),
-                    'loop'= match( apply(bgObj$pxy.outer,1, prod), apply( bgObj$xydata,1, prod)), 
-                    'outlier' = match( apply(bgObj$pxy.outlier,1, prod) ,apply( bgObj$xydata,1, prod))) )
+     
+    if(groupingType =='standard'){
+      
+      points(x = fpcaObj$xiEst[,1], y = fpcaObj$xiEst[,2], cex= .33,  panel.first = grid(),  lwd= 2) 
+      lines( bgObj$hull.bag[c(1:nrow(bgObj$hull.bag),1),], col=2, lwd=2)
+      lines( bgObj$hull.loop[c(1:nrow(bgObj$hull.loop),1),], col=4, lwd=2) 
+      legend(legend= c('0.500', 'The fence'), x='topright', col=c(2,4), lwd=2)
+      
+      return( invisible( list( 
+        'bag' = match( apply(bgObj$pxy.bag,1, prod), apply( bgObj$xydata,1, prod)),
+        'loop'= match( apply(bgObj$pxy.outer,1, prod), apply( bgObj$xydata,1, prod)), 
+        'outlier' = match( apply(bgObj$pxy.outlier,1, prod) ,apply( bgObj$xydata,1, prod))
+      ) ) ) 
+    } else {
+      points(x = fpcaObj$xiEst[is.na(match(apply( bgObj$xydata,1, prod), apply(bgObj$pxy.outlier,1, prod))),1], 
+             y = fpcaObj$xiEst[is.na(match(apply( bgObj$xydata,1, prod), apply(bgObj$pxy.outlier,1, prod))),2], 
+             cex= .33,  panel.first = grid(),  lwd= 2) 
+      lines( bgObj$hull.bag[c(1:nrow(bgObj$hull.bag),1),], col=2, lwd=2)
+      lines( bgObj$hull.loop[c(1:nrow(bgObj$hull.loop),1),], col=4, lwd=2) 
+      legend(legend= c('0.500', 'The fence'), x='topright', col=c(2,4), lwd=2)
+      
+      Qstr = fpcaObj$xiEst[,1:2]  /  matrix( c( rep( sqrt(fpcaObj$lambda[1:2]), 
+                                                     each= length(fpcaObj$xiEst[,1]))), ncol=2);
+      colfunc <- colorRampPalette(c("red",  "yellow", 'blue'))
+      colPal = colfunc( nSlices )
+      v = 1:nSlices;
+      colPal = colPal[c( v[ v%%2 !=0], v[ v%%2 ==0] )]
+      
+      steps =  seq(-1, (nSlices-1) *2 -1 , by =2 )
+      for( i in 1:nSlices){
+        angle =steps[i] * pi/nSlices
+        multiplier1 = sign( sin( angle + pi/2) )
+        multiplier2 = sign( cos( angle + pi/ (nSlices/2)))
+        qrtIndx =  multiplier1 * Qstr[,2] > multiplier1 * tan(angle) * Qstr[,1] & 
+          multiplier2 * Qstr[,2] < multiplier2 * tan(angle + pi/ (nSlices/2) ) * Qstr[,1] 
+        outlierList[[i]] = qrtIndx  &!is.na(match(apply( bgObj$xydata,1, prod), apply(bgObj$pxy.outlier,1, prod)))
+        points(fpcaObj$xiEst[ outlierList[[i]],1:2], cex=0.93, col= colPal[i], pch=3, lwd =2 )  
+      }
+      
+      return( invisible( list( 'bag' = match( apply(bgObj$pxy.bag,1, prod), apply( bgObj$xydata,1, prod)),
+                               'loop'= match( apply(bgObj$pxy.outer,1, prod), apply( bgObj$xydata,1, prod)), 
+                               'outlier' = sapply(outlierList, which))) ) 
     } 
   } else {
     
@@ -89,20 +171,27 @@ createOutliersPlot <- function(fpcaObj,variant = 'KDE',  ifactor = NULL, outlier
                     H = ks::Hpi( x=fpcaObj$xiEst[,1:2], binned=TRUE,  pilot="dscalar"  ) *  ifactor) 
     zin = fhat$estimate
     
-    if( !is.null(enforceUnimodality) && enforceUnimodality ){
+    if( !is.null(unimodal) && unimodal ){
       maxIndex = which( fhat$estimate == max(fhat$estimate), arr.ind = TRUE)
       zin = monotoniseMatrix( fhat$estimate, maxIndex[1], maxIndex[2])
     }
-
+    
     qq = quickNNeval(xin = fhat$eval.points[[1]], yin = fhat$eval.points[[2]], 
                      zin =  zin, 
                      xout = fpcaObj$xiEst[,1], yout = fpcaObj$xiEst[,2] ) 
     
+    
+    
+    if(groupingType =='standard'){
+      
+      
     args2 = list (x= fhat$eval.points[[1]], y=fhat$eval.points[[2]], z = zin, 
                   labcex=1.66, col= c('black','blue','red'), levels = fhat$cont[c(50, 95, 99)], labels = c('50%', '95%', '99%'))
-    do.call(contour, c(args2, args1)); 
-    grid()
     
+    
+      do.call(contour, c(args2, args1)); 
+      grid()
+      
     points(fpcaObj$xiEst[qq <=  fhat$cont[99],1:2],cex=0.5, col='orange', pch=10 , lwd =2 ) 
     points(fpcaObj$xiEst[qq >  fhat$cont[99] & qq <=  fhat$cont[95],1:2],cex=0.33, col='red', pch=10, lwd =2 ) 
     points(fpcaObj$xiEst[qq >  fhat$cont[95] & qq <=  fhat$cont[50],1:2],cex=0.33, col='blue', pch=10 , lwd =2 ) 
@@ -111,14 +200,42 @@ createOutliersPlot <- function(fpcaObj,variant = 'KDE',  ifactor = NULL, outlier
     legend('bottomleft', c('< 50%','50%-95%','95%-99%','> 99%'), pch = 19, 
            col= c('black','blue','red', 'orange'), pt.cex=1.5, bg='white' )
     
-    if (outlierList){
-      return( list( 'p0to50'= which(qq >=  fhat$cont[50]),
-                    'p50to95' = which(qq >  fhat$cont[95] & qq <=  fhat$cont[50]),
-                    'p95to99' = which(qq >  fhat$cont[99] & qq <=  fhat$cont[95]),
-                    'p99plus' = which(qq <=  fhat$cont[99]) ))
+    return( invisible( list( 'p0to50'= which(qq >=  fhat$cont[50]),
+                             'p50to95' = which(qq >  fhat$cont[95] & qq <=  fhat$cont[50]),
+                             'p95to99' = which(qq >  fhat$cont[99] & qq <=  fhat$cont[95]),
+                             'p99plus' = which(qq <=  fhat$cont[99]) )))
+    } else{
+      
+      args2 = list (x= fhat$eval.points[[1]], y=fhat$eval.points[[2]], z = zin, 
+                    labcex=1.66, col= c('black'), levels = fhat$cont[c(95)], labels = c('95%'))
+      
+      do.call(contour, c(args2, args1)); 
+      grid()
+      
+      
+      points(fpcaObj$xiEst[qq >=  fhat$cont[95],1:2],cex=0.33, col='black' , pch=10, lwd =2 )
+      Qstr = fpcaObj$xiEst[,1:2]  /  matrix( c( rep( sqrt(fpcaObj$lambda[1:2]), 
+                                                     each= length(fpcaObj$xiEst[,1]))), ncol=2);
+      colfunc <- colorRampPalette(c("red",  "yellow", 'blue'))
+      colPal = colfunc( nSlices )
+      v = 1:nSlices;
+      colPal = colPal[c( v[ v%%2 !=0], v[ v%%2 ==0] )]
+      
+      steps =  seq(-1, (nSlices-1) *2 -1 , by =2 )
+      for( i in 1:nSlices){
+        angle =steps[i] * pi/nSlices
+        multiplier1 = sign( sin( angle + pi/2) )
+        multiplier2 = sign( cos( angle + pi/ (nSlices/2)))
+        qrtIndx =  multiplier1 * Qstr[,2] > multiplier1 * tan(angle) * Qstr[,1] & 
+          multiplier2 * Qstr[,2] < multiplier2 * tan(angle + pi/ (nSlices/2) ) * Qstr[,1] 
+        outlierList[[i]] = qrtIndx  & qq <=  fhat$cont[95]
+        points(fpcaObj$xiEst[ outlierList[[i]],1:2], cex=0.93, col= colPal[i], pch=3, lwd =2 )  
+      }
+      
+      return( invisible( list(  'p0to95'= which(qq >=  fhat$cont[95]), 
+                               'outlier' = sapply(outlierList, which))) ) 
     }
   } 
-  
 }
 
 quickNNeval <- function(xin,yin, zin, xout, yout){
