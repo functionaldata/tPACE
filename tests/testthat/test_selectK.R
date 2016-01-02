@@ -125,9 +125,9 @@ test_that("selectK works outside FPCA function for Dense data and gives the same
   # the following default FPCA run does not select number of components
   optnDenseError <- SetOptions(test4$yList, test4$tList, list(dataType='Dense', error=TRUE, kernel='epan', outPercent=c(0, 1), verbose=TRUE, lean = FALSE))
   test4FPCA <- FPCA(test4$yList, test4$tList, optnDenseError)
-  outAIC <- selectK(ret = test4FPCA, criterion = 'AIC')$k
-  outBIC <- selectK(ret = test4FPCA, criterion = 'BIC')$k
-  outFVE <- selectK(ret = test4FPCA, criterion = 'FVE', FVEthreshold = 0.85)$k
+  outAIC <- selectK(fpcaObj = test4FPCA, criterion = 'AIC')$k
+  outBIC <- selectK(fpcaObj = test4FPCA, criterion = 'BIC')$k
+  outFVE <- selectK(fpcaObj = test4FPCA, criterion = 'FVE', FVEthreshold = 0.85)$k
   expect_equal(test4FPCA_AIC$selectK, outAIC)
   expect_equal(test4FPCA_BIC$selectK, outBIC)
   expect_equal(test4FPCA_FVE$selectK, outFVE)
@@ -137,7 +137,7 @@ test_that("selectK works outside FPCA function for Dense data and gives the same
   test4FPCA_fixedK <- FPCA(test4$yList, test4$tList, optnDenseErrorfixedK)
   expect_equal(test4FPCA_fixedK$selectK, FixK)
   # we can get the same results if using selectK outside FPCA
-  outfixedK <- selectK(ret = test4FPCA, criterion = 'fixedK', fixedK = 3)$k
+  outfixedK <- selectK(fpcaObj = test4FPCA, criterion = 'fixedK', fixedK = 3)$k
   expect_equal(outfixedK, FixK)
 })
 
@@ -182,9 +182,9 @@ test_that("selectK works outside FPCA function for Sparse data and gives the sam
   # the following default FPCA run does not select number of components
   optnSparseError <- SetOptions(test3$yList, test3$tList, list(dataType='Sparse', error=TRUE, kernel='epan', outPercent=c(0, 1), verbose=TRUE, lean = FALSE))
   test3FPCA <- FPCA(test3$yList, test3$tList, optnSparseError)
-  outAIC <- selectK(ret = test3FPCA, criterion = 'AIC')$k
-  outBIC <- selectK(ret = test3FPCA, criterion = 'BIC')$k
-  outFVE <- selectK(ret = test3FPCA, criterion = 'FVE', FVEthreshold = 0.85)$k
+  outAIC <- selectK(fpcaObj = test3FPCA, criterion = 'AIC')$k
+  outBIC <- selectK(fpcaObj = test3FPCA, criterion = 'BIC')$k
+  outFVE <- selectK(fpcaObj = test3FPCA, criterion = 'FVE', FVEthreshold = 0.85)$k
   expect_equal(test3FPCA_AIC$selectK, outAIC)
   expect_equal(test3FPCA_BIC$selectK, outBIC)
   expect_equal(test3FPCA_FVE$selectK, outFVE)

@@ -52,7 +52,6 @@
 #' \item{rho}{A regularizing scalar for the measurement error variance estimate.}
 #' \item{cumFVE}{A vector with the percentages of the total variance explained by each FPC. Increase to almost 1.}
 #' \item{FVE}{A percentage indicating the total variance explained by chosen FPCs with corresponding 'FVEthreshold'.}
-#' \item{selectK}{A positive integer indicating the number of components chosen by the specified selectionMethod}
 #' \item{criterionValue}{A scalar specifying the criterion value obtained by the selected number of components with specific selectionMethod: FVE,AIC,BIC values or NULL for fixedK.}
 #' \item{inputData}{A list containting the original 'y' and 't' lists used as inputs to FPCA. NULL if 'lean' was specified to be TRUE.}
 #' 
@@ -219,10 +218,10 @@ FPCA = function(y, t, optns = list()){
   
   # select number of components based on specified criterion
   if(ret$optns$lean == TRUE){
-    selectedK <- selectK(ret = ret, criterion = NULL, FVEthreshold = optns$FVEthreshold, fixedK = optns$fixedK,
+    selectedK <- selectK(fpcaObj = ret, criterion = optns$selectionMethod, FVEthreshold = optns$FVEthreshold, fixedK = optns$fixedK,
                          y = y, t = t)
   } else {
-    selectedK <- selectK(ret = ret, criterion = NULL, FVEthreshold = optns$FVEthreshold, fixedK = optns$fixedK)
+    selectedK <- selectK(fpcaObj = ret, criterion = optns$selectionMethod, FVEthreshold = optns$FVEthreshold, fixedK = optns$fixedK)
   }
   
   ret <- append(ret, list(selectK = selectedK$k, criterionValue = selectedK$criterion))

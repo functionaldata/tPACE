@@ -45,12 +45,16 @@ CheckOptions = function(t,optns,n){
   #   cat("Error: FPCA is aborted because the argument: ngrid1 is invalid!\n");  
   #   return(TRUE);   
   # }
+  if(optns[['selectionMethod']] == 'fixedK' && is.null(optns[['fixedK']])){
+    cat("Error: Need to specify fixedK in optns when selectionMethod is 'fixedK'.\n")
+    return(TRUE)
+  }
   if( !(any(optns[['selectionMethod']] == c('FVE','AIC','BIC','fixedK')))){
-    if ( !( is.numeric(optns[['selectionMethod']]) &&  (length(optns[['selectionMethod']])==1) && (1>=optns[['selectionMethod']]) && (optns[['selectionMethod']]<n) )){          
-      # the method of choosing the number of principal components K
-      cat("Error: FPCA is aborted because the argument: selectionMethod is invalid!\n");  
-      return(TRUE);   
-    }
+    #if ( !( is.numeric(optns[['selectionMethod']]) &&  (length(optns[['selectionMethod']])==1) && (1>=optns[['selectionMethod']]) && (optns[['selectionMethod']]<n) )){          
+    # the method of choosing the number of principal components K
+    cat("Error: FPCA is aborted because the argument: selectionMethod is invalid!\n");  
+    return(TRUE);   
+    #}
   }
   if(  ( (length(optns[['FVEthreshold']])==1) &&  is.numeric(optns[['FVEthreshold']]) ) ){
     if (!( (0<=optns[['FVEthreshold']]) && (optns[['FVEthreshold']]<=1) ) ){  
