@@ -26,7 +26,10 @@ GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, optns, useBinned
   # If covariance function is provided
   if( !is.null(optns$userCov) && is.list( optns$userCov)){
     
-    if( !all( range(optns$userCov$t) >= range(cutRegGrid)) ){
+    rangeUser <- range(optns$userCov$t)
+    rangeCut <- range(cutRegGrid)
+    if( rangeUser[1] > rangeCut[1] + buff || 
+        rangeUser[2] < rangeCut[2] - buff   ) {
       stop('The range defined by the user provided covariance does not cover the support of the data.')
     }
     
