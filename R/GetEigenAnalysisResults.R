@@ -1,47 +1,38 @@
-# noeig: \approx maxK. The maximal number of eigenfunctions to use for implmentation.
-# Values:
 # phi: a nRegGrid * no_FVE
 # The input smoothCov is possibly truncated.
 
 GetEigenAnalysisResults <- function(smoothCov, regGrid, optns, muWork = NULL) {
-#   noeig \approx  maxK 
-  noeig <- optns$maxK
+
+  maxK <- optns$maxK
   FVEthreshold <- optns$FVEthreshold
   verbose <- optns$verbose
   
   gridSize <- regGrid[2] - regGrid[1]
   numGrids <- nrow(smoothCov)
   
-  FVEObj <- no_FVE(smoothCov, FVEthreshold=FVEthreshold, returnEVec=TRUE, verbose=verbose)
-  #optns.v0 <- t(seq(0.1,0.9,length.out = numGrids))
-  d <- FVEObj$lambda
-  eigenV <- FVEObj$eVec
-  
-  if(!is.matrix(eigenV)){
-    eigenV <- matrix(eigenV); # In case it is a vector
+  eig <- eigen(smoothCov)
+
+  positiveInd <- eig[['values']] >= 0
+  d <- eig[['values']][positiveInd]
+  eigenV <- eig[['vectors']][, positiveInd, drop=FALSE]
+
+  if (maxK < length(d)) {
+    if (optns[['verbose']]) {
+      cat(sprintf("At most %d number of PC can be selected, thresholded by `maxK` = %d. \n", length(d), maxK)) 
+    }
+    
+    d <- d[1:maxK]
+    eigenV <- eigenV[, 1:maxK, drop=FALSE]
   }
 
-  if (noeig > length(d)) {
-    noeig <- length(d);
-    warning(sprintf("At most %d number of PC can be selected!", noeig)) 
-    # the warning shows total number of pos eigenvalues from fitted cov, 
-    # not getting this means we only take first maxk components
-  }
-  # after checking for maxk, get updated eigenvalues and eigenfns
-  eigenV <- eigenV[, 1:noeig];
-  d <- d[1:noeig];
   # thresholding for corresponding FVE option 
   #(not before to avoid not being able to reach the FVEthreshold when pos eigenvalues > maxk)
   # i.e. default FVE 0.9999 outputs all components remained here.
   FVE <- cumsum(d) / sum(d) * 100  # cumulative FVE for all available eigenvalues from fitted cov
-  no_opt <- min(which(FVE >= FVEthreshold*100)) # final number of component chosen based on FVE
-  if(!is.matrix(eigenV)){
-    eigenV <- matrix(eigenV); # In case it is a vector
-  }
-
+  no_opt <- min(which(FVE >= FVEthreshold * 100)) # final number of component chosen based on FVE
   
   # normalization
-  if (is.null(muWork)){
+  if (is.null(muWork)) {
     muWork = 1:dim(eigenV)[1]
   }
   
@@ -55,8 +46,7 @@ GetEigenAnalysisResults <- function(smoothCov, regGrid, optns, muWork = NULL) {
   lambda <- gridSize * d;
 
   fittedCov <- phi %*% diag(x=lambda, nrow = length(lambda)) %*% t(phi)
-  # Garbage Collection
-  gc()
-  return(list(lambda = lambda[1:no_opt], phi = as.matrix(phi[,1:no_opt]), cumFVE = FVE,
-              kChoosen=no_opt, fittedCov=fittedCov))
+
+  return(list(lambda = lambda[1:no_opt], phi = phi[,1:no_opt, drop=FALSE], 
+              cumFVE = FVE, kChoosen=no_opt, fittedCov=fittedCov))
 }
