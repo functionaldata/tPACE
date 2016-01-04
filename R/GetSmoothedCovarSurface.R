@@ -33,7 +33,9 @@ GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, optns, useBinned
       stop('The range defined by the user provided covariance does not cover the support of the data.')
     }
     
-    sigma2 = NULL
+    # needs work
+    warning('User specified covariance but not sigma2. Use sigma2 = 1e-6')
+    sigma2 = 1e-6
     bwCov  = NULL
     smoothCov = ConvertSupport(fromGrid = optns$userCov$t, cutRegGrid, Cov =  optns$userCov$cov)
     res <- list( rawCov= rcov, smoothCov = (smoothCov + t(smoothCov)) * 0.5, bwCov = bwCov, sigma2 = sigma2, outGrid = cutRegGrid);
