@@ -28,6 +28,7 @@ SetOptions = function(y, t, optns){
   verbose =optns[['verbose']];          #corrPlot =optns[['corrPlot']];
   userMu =optns[['userMu']];                  methodMu =optns[['methodMu']];
   outPercent =optns[['outPercent']];  userCov =optns[['userCov']];
+  userSigma2 = optns[['userSigma2']]
   rotationCut =optns[['rotationCut']];    useBinnedData =optns[['useBinnedData']];
   #corrPlotType =optns[['corrPlotType']]; 
   useBinnedCov = optns[['useBinnedCov']]
@@ -77,7 +78,7 @@ SetOptions = function(y, t, optns){
     stop('Fit method only apply to sparse data')
   }
   if(is.null(error)){ # error assumption with measurement error
-    error = TRUE;    
+      error = TRUE;    
   }
   if(is.null(nRegGrid)){ # number of support points in each direction of covariance surface 
     if(dataType == 'Dense' || dataType == 'DenseWithMV'){
@@ -151,7 +152,11 @@ SetOptions = function(y, t, optns){
     diagnosticsPlot = FALSE;
   }
   if(is.null(rho)){ # truncation threshold for the iterative residual that is used
-    rho = "cv";
+    if (!is.null(userSigma2)) { # no regularization if sigma2 is specified
+      rho <- 'no'
+    } else {
+      rho <- 'cv'
+    }
   }
   if(is.null(verbose)){ # display diagnostic messages
     verbose = FALSE;
@@ -217,5 +222,7 @@ SetOptions = function(y, t, optns){
           # numComponents = numComponents,
           diagnosticsPlot = diagnosticsPlot,
           numBins = numBins, useBinnedCov = useBinnedCov, yname = yname,  rho = rho, 
-          verbose = verbose, userMu = userMu, userCov = userCov, methodMu= methodMu, outPercent = outPercent, useBinnedData = useBinnedData) )
+          verbose = verbose, 
+          userMu = userMu, userCov = userCov, userSigma2 = userSigma2, 
+          methodMu= methodMu, outPercent = outPercent, useBinnedData = useBinnedData) )
 }

@@ -31,7 +31,6 @@ A list containing the following fields:
 \item{rho}{A regularizing scalar for the measurement error variance estimate.}
 \item{cumFVE}{A vector with the percentages of the total variance explained by each FPC. Increase to almost 1.}
 \item{FVE}{A percentage indicating the total variance explained by chosen FPCs with corresponding 'FVEthreshold'.}
-\item{selectK}{A positive integer indicating the number of components chosen by the specified selectionMethod}
 \item{criterionValue}{A scalar specifying the criterion value obtained by the selected number of components with specific selectionMethod: FVE,AIC,BIC values or NULL for fixedK.}
 \item{inputData}{A list containting the original 'y' and 't' lists used as inputs to FPCA. NULL if 'lean' was specified to be TRUE.}
 }
@@ -66,6 +65,7 @@ Available control options are
 \item{useBinnedCov}{Whether to use the binned raw covariance for smoothing; logical - default:TRUE}
 \item{userCov}{The user-defined smoothed covariance function; list of two elements: numerical vector 't' and matrix 'cov', 't' must cover the support defined by 'y' - default: NULL}
 \item{userMu}{The user-defined smoothed mean function; list of two numerical vector 't' and 'mu' of equal size, 't' must cover the support defined 'y' - default: NULL}
+\item{userSigma2}{The user-defined measurement error variance. A positive scaler. If specified then no regularization is used (rho is set to 'no').}
 \item{verbose}{Display diagnostic messages; logical - default: FALSE}
 }
 }
