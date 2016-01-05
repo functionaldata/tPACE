@@ -214,8 +214,11 @@ FPCA = function(y, t, optns = list()){
   }
 
   # Make the return object by MakeResultFPCA
-  ret <- MakeResultFPCA(optns, smcObj, muObs, scsObj, eigObj, inputData = inputData,
-                        scoresObj, truncObsGrid, workGrid, rho=ifelse(optns$rho =='cv', rho, NA), fitLambda=fitLambda)
+  ret <- MakeResultFPCA(optns, smcObj, muObs, scsObj, eigObj, 
+                        inputData = inputData, 
+                        scoresObj, truncObsGrid, workGrid, 
+                        rho = if (optns$rho =='cv') rho else NULL, 
+                        fitLambda=fitLambda)
   
   # select number of components based on specified criterion
   if(ret$optns$lean == TRUE){
