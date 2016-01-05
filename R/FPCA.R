@@ -16,7 +16,6 @@
 #' \item{diagnosticsPlot}{Make diagnostics plot (design plot, mean, scree plot and first k (<=3) eigenfunctions); logical - default: FALSE}
 #' \item{error}{Assume measurement error in the dataset; logical - default: TRUE}
 #' \item{fitEigenValues}{Whether also to obtain a regression fit of the eigenvalues - default: FALSE}
-#' \item{fixedK}{The fixed number of components to be chosen when selectionMethod is 'fixedK' - default: NULL}
 #' \item{FVEthreshold}{Fraction-of-Variance-Explained threshold used during the SVD of the fitted covar. function; numeric (0,1] - default: 0.9999}
 #' \item{kernel}{Smoothing kernel choice, common for mu and covariance; "rect", "gauss", "epan", "gausvar", "quar" - default: "gauss"; dense data are assumed noise-less so no smoothing is performed. }
 #' \item{kFoldCov}{The number of folds to be used for covariance smoothing. Default: 10}
@@ -25,7 +24,7 @@
 #' \item{methodXi}{The method to estimate the PC scores; 'CE' (Condit. Expectation), 'IN' (Numerical Integration) - default: 'CE' for sparse data, 'IN' for dense data.}
 #' \item{nRegGrid}{The number of support points in each direction of covariance surface; numeric - default: 51}
 #' \item{numBins}{The number of bins to bin the data into; positive integer > 10, default: NULL}
-#' \item{selectionMethod}{The method of choosing the number of principal components K; 'FVE','AIC','BIC','fixedK': default 'FVE')}
+#' \item{selectionMethod}{The method of choosing the number of principal components K; 'FVE','AIC','BIC', or a positive integer as specified number of components: default 'FVE')}
 #' \item{outPercent}{A 2-element vector in [0,1] indicating the outPercent data in the boundary - default (0,1)}
 #' \item{rho}{The truncation threshold for the iterative residual. 'cv': choose rho by leave-one-observation out cross-validation; 'no': no regularization - default "cv".}
 #' \item{rotationCut}{The 2-element vector in [0,1] indicating the percent of data truncated during sigma^2 estimation; default  (0.25, 0.75))}
@@ -218,14 +217,15 @@ FPCA = function(y, t, optns = list()){
   
   # select number of components based on specified criterion
   if(ret$optns$lean == TRUE){
-    selectedK <- selectK(fpcaObj = ret, criterion = optns$selectionMethod, FVEthreshold = optns$FVEthreshold, fixedK = optns$fixedK,
+    selectedK <- selectK(fpcaObj = ret, criterion = optns$selectionMethod, FVEthreshold = optns$FVEthreshold,
                          y = y, t = t)
   } else {
-    selectedK <- selectK(fpcaObj = ret, criterion = optns$selectionMethod, FVEthreshold = optns$FVEthreshold, fixedK = optns$fixedK)
+    selectedK <- selectK(fpcaObj = ret, criterion = optns$selectionMethod, FVEthreshold = optns$FVEthreshold)
   }
   
   ret <- append(ret, list(selectK = selectedK$k, criterionValue = selectedK$criterion))
   class(ret) <- 'FPCA'
+  ret <- subsetFPCA(fpcaObj = ret, k = ret$selectK)
   
   # Make a quick diagnostics plot     
   if(optns$diagnosticsPlot){

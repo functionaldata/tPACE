@@ -15,7 +15,7 @@ SetOptions = function(y, t, optns){
   kFoldCov = optns[['kFoldCov']]
   # ngrid1 =optns[['ngrid1']]; 
   selectionMethod =optns[['selectionMethod']];  FVEthreshold =optns[['FVEthreshold']];
-  fitEigenValues <- optns[['fitEigenValues']];  fixedK = optns[['fixedK']];
+  fitEigenValues <- optns[['fitEigenValues']];
   maxK =optns[['maxK']];                
   dataType =optns[['dataType']];          error =optns[['error']];
   nRegGrid =optns[['nRegGrid']];              methodXi =optns[['methodXi']];
@@ -207,7 +207,7 @@ SetOptions = function(y, t, optns){
   #}
     
   return( list(bwmu = bwmu, bwmuMethod = bwmuMethod, bwuserCov = bwuserCov, bwuserCovGcv = bwuserCovGcv,
-          kFoldCov = kFoldCov, fixedK = fixedK,
+          kFoldCov = kFoldCov,
           selectionMethod = selectionMethod, FVEthreshold = FVEthreshold,
           fitEigenValues = fitEigenValues,
           maxK = maxK, dataType = dataType, error = error, nRegGrid = nRegGrid, rotationCut = rotationCut,
