@@ -2,9 +2,8 @@
 #' given FPCA output and selection criteria
 #'
 #' @param fpcaObj A list containing FPCA related subjects returned by MakeFPCAResults().
-#' @param criterion A string specifying selection criterion for number of functional principal components, available options: 'FVE', 'AIC', 'BIC', 'fixedK' - default: 'AIC'
+#' @param criterion A string or positive integer specifying selection criterion for number of functional principal components, available options: 'FVE', 'AIC', 'BIC', or the specified number of components - default: 'AIC'
 #' @param FVEthreshold A threshold percentage specified by user when using "FVE" as selection criterion: (0,1] - default: NULL
-#' @param fixedK An integer: user-specified number of components to be chosen - default: NULL
 #' @param y A list of \emph{n} vectors containing the observed values for each individual - default: NULL
 #' @param t A list of \emph{n} vectors containing the observation time points for each individual corresponding to y - default: NULL
 #'
@@ -14,11 +13,23 @@
 #'
 #' @export
 
-selectK = function(fpcaObj, criterion = 'AIC', FVEthreshold = NULL, fixedK = NULL, y = NULL, t = NULL){
-  if(class(fpcaObj) != 'FPCA'){stop('Invalid Input: not a FPCA object!')}
-  if(!(criterion %in% c('FVE', 'AIC', 'BIC', 'fixedK'))){
-    stop('Invalid selection criterion. Need to be one of "FVE", "AIC", "BIC" or "fixedK"!')
+selectK = function(fpcaObj, criterion = 'AIC', FVEthreshold = NULL, y = NULL, t = NULL){
+  if(class(fpcaObj) != 'FPCA'){
+    stop('Invalid Input: not a FPCA object!')
   }
+  if(is.null(criterion)){
+    stop('Invalid selection criterion. Selection criterion must not be NULL!')
+  }
+  if(!(criterion %in% c('FVE', 'AIC', 'BIC'))){
+    if(is.numeric(criterion)){
+      if(as.integer(criterion) != criterion || criterion <= 0){
+        stop('Invalid selection criterion. To select fixed number of component, criterion needs to be a positive integer.')
+      }
+    } else {
+      stop('Invalid selection criterion. Need to be one of "FVE", "AIC", "BIC" or a positive integer!')
+    }
+  }
+  
   if(criterion %in% c('AIC','BIC')) {
     if(fpcaObj$optns$lean == TRUE && (is.null(y) || is.null(t))){
     stop("Option lean is TRUE, need input data y and measurement time list t to calculate log-likelihood.")
@@ -54,10 +65,9 @@ selectK = function(fpcaObj, criterion = 'AIC', FVEthreshold = NULL, fixedK = NUL
     cumFVE = fpcaObj$cumFVE
     return( list(k = min( which(cumFVE > FVEthreshold * 100) ), criterion = cumFVE[min(which(cumFVE > FVEthreshold * 100))]))
   } else { # fixed K is specified.
-    if(is.null(fixedK)){stop("Need to specify fixedK in optns when selectionMethod is 'fixedK'.")}
-    if(fixedK > length(fpcaObj$lambda)){
-      stop("Specified number of components fixedK is more than available components.")
+    if(criterion > length(fpcaObj$lambda)){
+      stop("Specified number of components is more than available components.")
     }
-    return(list(k = fixedK, criterion = NULL))
+    return(list(k = criterion, criterion = NULL))
   }
 }

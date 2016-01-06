@@ -11,7 +11,7 @@ GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, optns, useBinned
 
 # get the truncation of the output grids.
   outPercent <- optns$outPercent
-  buff <- .Machine$double.eps * max(abs(obsGrid)) * 3
+  buff <- .Machine$double.eps * max(abs(obsGrid)) * 10
   rangeGrid <- range(regGrid)
   minGrid <- rangeGrid[1]
   maxGrid <- rangeGrid[2]

@@ -133,11 +133,11 @@ test_that("selectK works outside FPCA function for Dense data and gives the same
   expect_equal(test4FPCA_FVE$selectK, outFVE)
   # the option fixedK is tested below
   FixK <- 3
-  optnDenseErrorfixedK <- SetOptions(test4$yList, test4$tList, list(dataType='Dense', error=TRUE, kernel='epan', selectionMethod = 'fixedK', fixedK = FixK, outPercent=c(0, 1), verbose=TRUE, lean = FALSE))  
+  optnDenseErrorfixedK <- SetOptions(test4$yList, test4$tList, list(dataType='Dense', error=TRUE, kernel='epan', selectionMethod = FixK, outPercent=c(0, 1), verbose=TRUE, lean = FALSE))  
   test4FPCA_fixedK <- FPCA(test4$yList, test4$tList, optnDenseErrorfixedK)
   expect_equal(test4FPCA_fixedK$selectK, FixK)
   # we can get the same results if using selectK outside FPCA
-  outfixedK <- selectK(fpcaObj = test4FPCA, criterion = 'fixedK', fixedK = 3)$k
+  outfixedK <- selectK(fpcaObj = test4FPCA, criterion = FixK)$k
   expect_equal(outfixedK, FixK)
 })
 
