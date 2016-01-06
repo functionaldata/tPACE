@@ -14,7 +14,7 @@ GetSmoothedMeanCurve <- function (y, t, obsGrid, regGrid, optns){
   # If the user provided a mean function use it
   if ( is.list(userMu) && (length(userMu$mu) == length(userMu$t))){
     
-    buff <- .Machine$double.eps * max(abs(obsGrid)) * 3
+    buff <- .Machine$double.eps * max(abs(obsGrid)) * 10
     rangeUser <- range(optns$userMu$t)
     rangeObs <- range(obsGrid)
     if( rangeUser[1] > rangeObs[1] + buff || 
