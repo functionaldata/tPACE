@@ -32,6 +32,7 @@
 #' \item{useBinnedCov}{Whether to use the binned raw covariance for smoothing; logical - default:TRUE}
 #' \item{userCov}{The user-defined smoothed covariance function; list of two elements: numerical vector 't' and matrix 'cov', 't' must cover the support defined by 'y' - default: NULL}
 #' \item{userMu}{The user-defined smoothed mean function; list of two numerical vector 't' and 'mu' of equal size, 't' must cover the support defined 'y' - default: NULL}
+#' \item{userSigma2}{The user-defined measurement error variance. A positive scaler. If specified then no regularization is used (rho is set to 'no').}
 #' \item{verbose}{Display diagnostic messages; logical - default: FALSE}
 #' }
 #' @return A list containing the following fields:
@@ -212,8 +213,11 @@ FPCA = function(y, t, optns = list()){
   }
 
   # Make the return object by MakeResultFPCA
-  ret <- MakeResultFPCA(optns, smcObj, muObs, scsObj, eigObj, inputData = inputData,
-                        scoresObj, truncObsGrid, workGrid, rho=ifelse(optns$rho =='cv', rho, NA), fitLambda=fitLambda)
+  ret <- MakeResultFPCA(optns, smcObj, muObs, scsObj, eigObj, 
+                        inputData = inputData, 
+                        scoresObj, truncObsGrid, workGrid, 
+                        rho = if (optns$rho =='cv') rho else NULL, 
+                        fitLambda=fitLambda)
   
   # select number of components based on specified criterion
   if(ret$optns$lean == TRUE){

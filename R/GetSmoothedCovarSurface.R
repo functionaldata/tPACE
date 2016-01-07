@@ -20,12 +20,24 @@ GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, optns, useBinned
                         regGrid < minGrid + diff(rangeGrid) * outPercent[2] +
                         buff]
 
-  # Get raw covariance   
-  rcov <- GetRawCov(y, t, obsGrid, mu, dataType, error)
-
-  # If covariance function is provided
-  if( !is.null(optns$userCov) && is.list( optns$userCov)){
+  # Get raw covariance, unless user covariance/sigma2 are specified.
+  if (is.null(optns[['userCov']]) || 
+       (is.null(optns[['userSigma2']]) && error)) {
+       
+    rcov <- GetRawCov(y, t, obsGrid, mu, dataType, error)
+    if (useBinnedCov && bwuserCovGcv == 'CV') {
+      stop('If bwuserCovGcv == \'CV\' then we must use the unbinned rcov.')
+    }
     
+    if (useBinnedCov) {
+      rcov <- BinRawCov(rcov)
+    }
+  } else {
+    rcov <- NULL
+  }
+
+  # Obtain smoothed covariance.
+  if( !is.null(optns$userCov)) { # If covariance function is provided
     rangeUser <- range(optns$userCov$t)
     rangeCut <- range(cutRegGrid)
     if( rangeUser[1] > rangeCut[1] + buff || 
@@ -33,58 +45,69 @@ GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, optns, useBinned
       stop('The range defined by the user provided covariance does not cover the support of the data.')
     }
     
-    sigma2 = NULL
     bwCov  = NULL
     smoothCov = ConvertSupport(fromGrid = optns$userCov$t, cutRegGrid, Cov =  optns$userCov$cov)
-    res <- list( rawCov= rcov, smoothCov = (smoothCov + t(smoothCov)) * 0.5, bwCov = bwCov, sigma2 = sigma2, outGrid = cutRegGrid);
-    class(res) <- "SmoothCov"  
-    # Garbage Collection
-    gc()
-    return(res)
-  }
+  
+  } else { # estimate the smoothed covariance
+    
+    if (bwuserCov == 0) { # bandwidth selection
+      if (bwuserCovGcv %in% c('GCV', 'GMeanAndGCV')) { # GCV
+        gcvObj <- gcvlwls2dV2(obsGrid, regGrid, kern=kern, rcov=rcov, verbose=verbose, t=t)
+        bwCov <- gcvObj$h
+        if (bwuserCovGcv == 'GMeanAndGCV') {
+          bwCov <- sqrt(bwCov * gcvObj$minBW)
+        }  
+      } else if (bwuserCovGcv == 'CV') { # CV 10 fold
+        gcvObj <- gcvlwls2dV2(obsGrid, regGrid, kern=kern, rcov=rcov, t=t,
+                            verbose=optns$verbose, 
+                            CV=optns[['kFoldCov']])
+        bwCov <- gcvObj$h
+      }
+    } else if (bwuserCov != 0) {
+      bwCov <- bwuserCov
+    }
 
-  if (useBinnedCov && bwuserCovGcv == 'CV'){
-    stop('If bwuserCovGcv == \'CV\' then we must use the unbinned rcov.')
+    if (!useBinnedCov) {
+      smoothCov <- lwls2d(bwCov, kern, xin=rcov$tPairs, yin=rcov$cxxn,
+                          xout1=cutRegGrid, xout2=cutRegGrid)
+    } else { 
+      smoothCov <- lwls2d(bwCov, kern, xin=rcov$tPairs, yin=rcov$meanVals,
+                          win=rcov$count, xout1=cutRegGrid, xout2=cutRegGrid)
+    }
   }
   
-  if (useBinnedCov){
-    rcov <- BinRawCov(rcov)
-  }
-
-  if (bwuserCov == 0) { # bandwidth selection
-    if (bwuserCovGcv %in% c('GCV', 'GMeanAndGCV')) { # GCV
-      gcvObj <- gcvlwls2dV2(obsGrid, regGrid, kern=kern, rcov=rcov, verbose=verbose, t=t)
-      bwCov <- gcvObj$h
-      if (bwuserCovGcv == 'GMeanAndGCV') {
-        bwCov <- sqrt(bwCov * gcvObj$minBW)
-      }  
-    } else if (bwuserCovGcv == 'CV') { # CV 10 fold
-      gcvObj <- gcvlwls2dV2(obsGrid, regGrid, kern=kern, rcov=rcov, t=t,
-                          verbose=optns$verbose, 
-                          CV=optns[['kFoldCov']])
-      bwCov <- gcvObj$h
+  # Obtain the error sigma2.
+  if (error) {
+    if (!is.null(optns[['userSigma2']])) {
+      sigma2 <- optns[['userSigma2']]
+    } else if (!is.null(optns[['userCov']])) {
+      if (useBinnedCov) {
+        diagEst <- stats::weighted.mean(rcov[['diagMeans']], rcov[['diagCount']])
+      } else {
+        diagEst <- mean(rcov[['diag']])
+      }
+      sigma2 <- diagEst - mean(diag(optns[['userCov']][['cov']])) 
+      
+    } else { # has to estimate sigma2 from scratch
+      sigma2 <- pc_covE(obsGrid, regGrid, bwCov, rotationCut=rotationCut, kernel=kern, rcov=rcov)$sigma2
     }
-  } else if (bwuserCov != 0) {
-    bwCov <- bwuserCov
-  }
-
-  if (!useBinnedCov){
-    smoothCov <- lwls2d(bwCov, kern, xin=rcov$tPairs, yin=rcov$cxxn,
-                        xout1=cutRegGrid, xout2=cutRegGrid)
-  } else { 
-    smoothCov <- lwls2d(bwCov, kern, xin=rcov$tPairs, yin=rcov$meanVals,
-                        win=rcov$count, xout1=cutRegGrid, xout2=cutRegGrid)
-  }
-
-  if (error){
-    sigma2 <- pc_covE(obsGrid, regGrid, bwCov, rotationCut=rotationCut, kernel=kern, rcov=rcov)$sigma2
-  } else { 
+  
+    if(sigma2 < 0) {
+      warning("Estimated sigma2 is negative and thus is reset to 1e-6.")
+      sigma2 <- 1e-6
+    }
+    
+  } else { # error=FALSE
     sigma2 <- NULL
   }
-  res <- list( rawCov= rcov, smoothCov = (smoothCov + t(smoothCov)) / 2, bwCov = bwCov, sigma2 = sigma2, outGrid = cutRegGrid);
+  
+  res <- list(rawCov = rcov, 
+              smoothCov = (smoothCov + t(smoothCov)) / 2, 
+              bwCov = bwCov, 
+              sigma2 = sigma2, 
+              outGrid = cutRegGrid)
   class(res) <- "SmoothCov"  
   # Garbage Collection
   gc()
   return(res)
 }
-

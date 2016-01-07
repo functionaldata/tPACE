@@ -176,6 +176,20 @@ CheckOptions = function(t,optns,n){
     cat("Error: FPCA is aborted because the argument: userCov is invalid! (eg. Check if 'cov' is symmetric and 't' is of appropriate size.)\n");
     return(TRUE);
   }
+  
+  if (!is.null(optns[['userSigma2']])) {
+    if (!(is.numeric(optns[['userSigma2']]) && 
+          length(optns[['userSigma2']]) == 1 && 
+          optns[['userSigma2']] >= 0)) {
+      stop('userSigma2 invalid.')
+    }
+    
+    if (optns[['userSigma2']] == 0 && optns[['error']]) {
+      stop('userSigma2 specified to be 0 but error = TRUE. If no measurement error is assumed then use error = FALSE.')
+    }
+  }
+
+  
   if(!(any(optns[['methodMu']] == c('PACE','RARE','CrossSectional')))){ 
     # user-defined mean functions
     cat("Error: FPCA is aborted because the argument: methodMu is invalid!\n");     
