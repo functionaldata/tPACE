@@ -2,20 +2,30 @@
 % Please edit documentation in R/createPathPlot.R
 \name{createPathPlot}
 \alias{createPathPlot}
-\title{Create the covariance surface plot based on the results from FPCA() or FPCder().}
+\title{Create the sample path plot based on the results from FPCA().}
 \usage{
-createPathPlot(fpcaObj, subset, k = NULL, inputData = fpcaObj$inputData,
-  showObs = !is.null(inputData), ...)
+createPathPlot(fpcaObj, subset, k = NULL,
+  inputData = fpcaObj[["inputData"]], showObs = !is.null(inputData), ...)
 }
 \arguments{
-\item{fpcaObj}{returned object from FPCA().}
+\item{fpcaObj}{Returned object from FPCA().}
 
-\item{inputData}{A list of length 2 containing the sparse/dense (unsupported yet) observations. \code{inputData} needs to contain two fields: \code{t} for a list of time points and \code{y} for a list of observations.}
+\item{subset}{A vector of indices or a logical vector for subsetting the
+observations.}
+
+\item{k}{The number of components to reconstruct the sample paths.}
+
+\item{inputData}{A list of length 2 containing the sparse/dense
+(unsupported yet) observations. \code{inputData} needs to contain two
+fields: \code{t} for a list of time points and \code{y} for a list of
+observations. Default to the `inputData` field within `fpcaObj`.}
+
+\item{showObs}{Whether to plot the original observations for each subject.}
 
 \item{...}{other arguments passed into matplot for plotting options}
 }
 \description{
-This function will open a new device if not instructed otherwise.
+Create the sample path plot based on the results from FPCA().
 }
 \examples{
 set.seed(1)
@@ -24,7 +34,8 @@ pts <- seq(0, 1, by=0.05)
 sampWiener <- wiener(n, pts)
 sampWiener <- sparsify(sampWiener, pts, 10)
 res <- FPCA(sampWiener$yList, sampWiener$tList, 
-            list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
+            list(dataType='Sparse', error=FALSE, kernel='epan',
+            verbose=TRUE))
 createPathPlot(res, subset=1:5)
 }
 

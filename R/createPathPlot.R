@@ -1,9 +1,14 @@
-#' Create the covariance surface plot based on the results from FPCA() or FPCder().
+#' Create the sample path plot based on the results from FPCA().
 #'
-#' This function will open a new device if not instructed otherwise.
-#'
-#' @param fpcaObj returned object from FPCA().
-#' @param inputData A list of length 2 containing the sparse/dense (unsupported yet) observations. \code{inputData} needs to contain two fields: \code{t} for a list of time points and \code{y} for a list of observations.
+#' @param fpcaObj Returned object from FPCA().
+#' @param subset A vector of indices or a logical vector for subsetting the
+#' observations.
+#' @param k The number of components to reconstruct the sample paths.
+#' @param inputData A list of length 2 containing the sparse/dense
+#' (unsupported yet) observations. \code{inputData} needs to contain two
+#' fields: \code{t} for a list of time points and \code{y} for a list of
+#' observations. Default to the `inputData` field within `fpcaObj`.
+#' @param showObs Whether to plot the original observations for each subject.
 #' @param ... other arguments passed into matplot for plotting options
 #' @examples
 #' set.seed(1)
@@ -12,11 +17,12 @@
 #' sampWiener <- wiener(n, pts)
 #' sampWiener <- sparsify(sampWiener, pts, 10)
 #' res <- FPCA(sampWiener$yList, sampWiener$tList, 
-#'             list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
+#'             list(dataType='Sparse', error=FALSE, kernel='epan',
+#'             verbose=TRUE))
 #' createPathPlot(res, subset=1:5)
 #' @export
 
-createPathPlot = function(fpcaObj, subset, k=NULL, inputData=fpcaObj$inputData, showObs=!is.null(inputData), ...){
+createPathPlot = function(fpcaObj, subset, k=NULL, inputData=fpcaObj[['inputData']], showObs=!is.null(inputData), ...){
 
   n <- dim(fpcaObj[['xiEst']])[1]
   

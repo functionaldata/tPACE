@@ -48,7 +48,6 @@ Available control options are
 \item{diagnosticsPlot}{Make diagnostics plot (design plot, mean, scree plot and first k (<=3) eigenfunctions); logical - default: FALSE}
 \item{error}{Assume measurement error in the dataset; logical - default: TRUE}
 \item{fitEigenValues}{Whether also to obtain a regression fit of the eigenvalues - default: FALSE}
-\item{fixedK}{The fixed number of components to be chosen when selectionMethod is 'fixedK' - default: NULL}
 \item{FVEthreshold}{Fraction-of-Variance-Explained threshold used during the SVD of the fitted covar. function; numeric (0,1] - default: 0.9999}
 \item{kernel}{Smoothing kernel choice, common for mu and covariance; "rect", "gauss", "epan", "gausvar", "quar" - default: "gauss"; dense data are assumed noise-less so no smoothing is performed. }
 \item{kFoldCov}{The number of folds to be used for covariance smoothing. Default: 10}
@@ -57,7 +56,7 @@ Available control options are
 \item{methodXi}{The method to estimate the PC scores; 'CE' (Condit. Expectation), 'IN' (Numerical Integration) - default: 'CE' for sparse data, 'IN' for dense data.}
 \item{nRegGrid}{The number of support points in each direction of covariance surface; numeric - default: 51}
 \item{numBins}{The number of bins to bin the data into; positive integer > 10, default: NULL}
-\item{selectionMethod}{The method of choosing the number of principal components K; 'FVE','AIC','BIC','fixedK': default 'FVE')}
+\item{selectionMethod}{The method of choosing the number of principal components K; 'FVE','AIC','BIC', or a positive integer as specified number of components: default 'FVE')}
 \item{outPercent}{A 2-element vector in [0,1] indicating the outPercent data in the boundary - default (0,1)}
 \item{rho}{The truncation threshold for the iterative residual. 'cv': choose rho by leave-one-observation out cross-validation; 'no': no regularization - default "cv".}
 \item{rotationCut}{The 2-element vector in [0,1] indicating the percent of data truncated during sigma^2 estimation; default  (0.25, 0.75))}
@@ -65,7 +64,7 @@ Available control options are
 \item{useBinnedCov}{Whether to use the binned raw covariance for smoothing; logical - default:TRUE}
 \item{userCov}{The user-defined smoothed covariance function; list of two elements: numerical vector 't' and matrix 'cov', 't' must cover the support defined by 'y' - default: NULL}
 \item{userMu}{The user-defined smoothed mean function; list of two numerical vector 't' and 'mu' of equal size, 't' must cover the support defined 'y' - default: NULL}
-\item{userSigma2}{The user-defined measurement error variance. A positive scaler. If specified then no regularization is used (rho is set to 'no').}
+\item{userSigma2}{The user-defined measurement error variance. A positive scaler. If specified then no regularization is used (rho is set to 'no', unless specified otherwise). Default to `NULL`}
 \item{verbose}{Display diagnostic messages; logical - default: FALSE}
 }
 }
