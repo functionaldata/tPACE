@@ -32,7 +32,7 @@
 #' \item{useBinnedCov}{Whether to use the binned raw covariance for smoothing; logical - default:TRUE}
 #' \item{userCov}{The user-defined smoothed covariance function; list of two elements: numerical vector 't' and matrix 'cov', 't' must cover the support defined by 'y' - default: NULL}
 #' \item{userMu}{The user-defined smoothed mean function; list of two numerical vector 't' and 'mu' of equal size, 't' must cover the support defined 'y' - default: NULL}
-#' \item{userSigma2}{The user-defined measurement error variance. A positive scaler. If specified then no regularization is used (rho is set to 'no').}
+#' \item{userSigma2}{The user-defined measurement error variance. A positive scaler. If specified then no regularization is used (rho is set to 'no', unless specified otherwise). Default to `NULL`}
 #' \item{verbose}{Display diagnostic messages; logical - default: FALSE}
 #' }
 #' @return A list containing the following fields:
