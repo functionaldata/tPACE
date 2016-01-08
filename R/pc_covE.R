@@ -21,6 +21,7 @@
 # yvar:   smoothed cov along diagonal with measurement error
 
 pc_covE = function(obsGrid, regGrid, bw_userCov, rotationCut=c(0, 1), kernel = 'epan', rcov){
+  buff <- .Machine$double.eps * max(abs(obsGrid)) * 10
   a0 = min(obsGrid)
   b0 = max(obsGrid)
   lint = b0 - a0
@@ -29,9 +30,8 @@ pc_covE = function(obsGrid, regGrid, bw_userCov, rotationCut=c(0, 1), kernel = '
   if(rcutprop <= 0 || rcutprop > 1){
     warning("Invalid option: rotationCut.")
   }
-  rcutGrid = regGrid[intersect(which(regGrid > a0 + lint * rotationCut[1]),
-    which(regGrid < a0 + lint * rotationCut[2]))]
-  #out22 = rcutGrid # Xiongtao: out22 is redundant? Pantelis: Probably yes.
+  rcutGrid = regGrid[regGrid > a0 + lint * rotationCut[1] - buff & 
+                     regGrid < a0 + lint * rotationCut[2] + buff]
 
   tPairs = rcov$tPairs # time points pairs for raw covariance
   rcovdiag = rcov$diag # get raw covariance along diagonal direction

@@ -81,12 +81,21 @@ GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, optns, useBinned
     if (!is.null(optns[['userSigma2']])) {
       sigma2 <- optns[['userSigma2']]
     } else if (!is.null(optns[['userCov']])) {
+      a0 = min(regGrid)
+      b0 = max(regGrid)
+      lint = b0 - a0
+      middleCutRegGrid <- cutRegGrid > a0 + lint * rotationCut[1] - buff & 
+                          cutRegGrid < a0 + lint * rotationCut[2] + buff
       if (useBinnedCov) {
-        diagEst <- stats::weighted.mean(rcov[['diagMeans']], rcov[['diagCount']])
+        diagT <- rcov[['tDiag']]
+        diagVal <- rcov[['diagMeans']]
       } else {
-        diagEst <- mean(rcov[['diag']])
+        diagTV <- aggregate(rcov[['diag']][, 2], list(rcov[['diag']][, 1]), mean)
+        diagT <- diagTV[, 1]
+        diagVal <- diagTV[, 2]
       }
-      sigma2 <- diagEst - mean(diag(optns[['userCov']][['cov']])) 
+      diagEst <- approx(diagT, diagVal, cutRegGrid[middleCutRegGrid])[['y']]
+      sigma2 <- mean(diagEst - diag(smoothCov)[middleCutRegGrid])
       
     } else { # has to estimate sigma2 from scratch
       sigma2 <- pc_covE(obsGrid, regGrid, bwCov, rotationCut=rotationCut, kernel=kern, rcov=rcov)$sigma2

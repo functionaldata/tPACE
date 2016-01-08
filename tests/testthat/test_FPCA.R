@@ -78,30 +78,33 @@ test_that('User provided mu and cov for simple example',{
   meanFunct <- function(s) s  + 10*exp(-(s-5)^2)
   eigFunct1 <- function(s) +cos(2*s*pi/10) / sqrt(5)
   eigFunct2 <- function(s) -sin(2*s*pi/10) / sqrt(5)
+  ef <- matrix(c(eigFunct1(s),eigFunct2(s)), ncol=2)
+  ev <- c(5, 2)^2
+  covTrue <- ef %*% diag(ev) %*% t(ef)
   
   # Create FPC scores
   Ksi = matrix(rnorm(N*2), ncol=2);
   Ksi = apply(Ksi, 2, scale)
-  Ksi = Ksi %*% diag(c(5,2))
+  Ksi = Ksi %*% diag(sqrt(ev))
  
   # Create Y_true
-  yTrue = Ksi %*% t(matrix(c(eigFunct1(s),eigFunct2(s)), ncol=2)) + t(matrix(rep(meanFunct(s),N), nrow=M))
+  yTrue = Ksi %*% t(ef) + t(matrix(rep(meanFunct(s),N), nrow=M))
   
   # Create sparse sample  
   # Each subject has one to five readings (median: 3);
   ySparse = sparsify(yTrue, s, c(2:5))
     
   # Give your sample a bit of noise 
-  ySparse$yNoisy = lapply( ySparse$yList, function(x) x +  0.025*rnorm(length(x))) 
+  ySparse$yNoisy = lapply( ySparse$yList, function(x) x +  1 * rnorm(length(x))) 
   
   # Do FPCA on this sparse sample
   FPCAsparseA = FPCA(ySparse$yNoisy,t=ySparse$tList, optns = 
-                    list(userMu = list(t=s,mu= meanFunct(s)), userCov = list(t=s,cov= cov(yTrue)) ))
-    
+                    list(userMu = list(t=s,mu= meanFunct(s)), userCov = list(t=s,cov= covTrue) ))
+  
+  expect_equal(FPCAsparseA$sigma2, 1, tolerance=0.1)
   expect_equal( FPCAsparseA$mu,  expected = meanFunct(s), tolerance = 1e-9)
-  expect_equal( sqrt(FPCAsparseA$lambda), expected=c(5,2), tolerance = 1e-1)
-  expect_equal( abs(cor( FPCAsparseA$xiEst[,1], Ksi[,1])) > 0.95, TRUE)
-  expect_equal( abs(cor( FPCAsparseA$xiEst[,2], Ksi[,2])) > 0.90, TRUE)
+  expect_equal( FPCAsparseA$lambda, expected=ev, tolerance = 1e-1)
+  expect_equal( abs(cor( FPCAsparseA$xiEst[,1], Ksi[,1])) > 0.9, TRUE)
 })
 
 test_that('User provided mu, cov, and sigma2',{
