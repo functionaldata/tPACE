@@ -29,16 +29,16 @@ RCPPvar <- function(X) {
     .Call('tPACE_RCPPvar', PACKAGE = 'tPACE', X)
 }
 
-Rmullwlsk_old <- function(bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck, transp = TRUE) {
-    .Call('tPACE_Rmullwlsk_old', PACKAGE = 'tPACE', bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck, transp)
+RmullwlskCC <- function(bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck) {
+    .Call('tPACE_RmullwlskCC', PACKAGE = 'tPACE', bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck)
 }
 
 Rmullwlsk <- function(bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck, transp = TRUE) {
     .Call('tPACE_Rmullwlsk', PACKAGE = 'tPACE', bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck, transp)
 }
 
-RmullwlskCC <- function(bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck) {
-    .Call('tPACE_RmullwlskCC', PACKAGE = 'tPACE', bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck)
+Rmullwlsk_old <- function(bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck, transp = TRUE) {
+    .Call('tPACE_Rmullwlsk_old', PACKAGE = 'tPACE', bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck, transp)
 }
 
 Rrotatedmullwlsk <- function(bw, kernel_type, tPairs, cxxn, win, xygrid, npoly, bwCheck) {

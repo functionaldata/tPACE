@@ -30,7 +30,7 @@
 #'
 #' @export
 
-createOutliersPlot <- function(fpcaObj, optns, ...){
+createOutliersPlot <- function(fpcaObj, optns = NULL, ...){
   
   
   if(is.null(optns$ifactor)){
@@ -160,7 +160,8 @@ createOutliersPlot <- function(fpcaObj, optns, ...){
       
       return( invisible( list( 'bag' = match( apply(bgObj$pxy.bag,1, prod), apply( bgObj$xydata,1, prod)),
                                'loop'= match( apply(bgObj$pxy.outer,1, prod), apply( bgObj$xydata,1, prod)), 
-                               'outlier' = sapply(outlierList, which))) ) 
+                               'outlier' = sapply(outlierList, which),
+                               'outlierColours' = colPal)) ) 
     } 
   } else {
     
@@ -233,7 +234,8 @@ createOutliersPlot <- function(fpcaObj, optns, ...){
       }
       
       return( invisible( list(  'p0to95'= which(qq >=  fhat$cont[95]), 
-                               'outlier' = sapply(outlierList, which))) ) 
+                                'outlier' = sapply(outlierList, which),
+                                'outlierColours' = colPal)) ) 
     }
   } 
 }
