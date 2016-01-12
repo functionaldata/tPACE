@@ -5,5 +5,7 @@ subsetFPCA <- function(fpcaObj, k){
   fpcaObj$lambda <- fpcaObj$lambda[1:k]
   fpcaObj$phi <- fpcaObj$phi[,1:k, drop=FALSE]
   fpcaObj$xiEst <- fpcaObj$xiEst[,1:k, drop=FALSE]
+  fpcaObj$FVE <- fpcaObj$cumFVE[k]
+  fpcaObj$cumFVE <- fpcaObj$cumFVE[1:k]
   return(fpcaObj)
 }
