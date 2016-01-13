@@ -26,8 +26,10 @@ sparsify <- function(samp, pts, sparsity, aggressive = FALSE, fragment=FALSE) {
     } else if (fragment != FALSE) {
       nptsEach <- fragment / mean(diff(pts))
       indEach <- lapply(1:nrow(samp), function(x) {
-        mid <- runif(1, min(pts), max(pts))
-        usePts <- which(pts > mid - 1/2 * fragment & pts <= mid + 1/2 * fragment)
+        ranPts <- range(pts)
+        mid <- runif(1, ranPts[1], ranPts[2])
+        usePts <- which(pts >= mid - 1/2 * diff(ranPts) * fragment & 
+                        pts <= mid + 1/2 * diff(ranPts) * fragment)
         nSampPts <- sample(sparsity, 1)
         if (nSampPts >= length(usePts)) usePts else sort(sample(usePts, nSampPts))
       })
