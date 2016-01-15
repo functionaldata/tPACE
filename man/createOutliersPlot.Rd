@@ -4,7 +4,7 @@
 \alias{createOutliersPlot}
 \title{Functional Principal Component Scores Plot}
 \usage{
-createOutliersPlot(fpcaObj, optns, ...)
+createOutliersPlot(fpcaObj, optns = NULL, ...)
 }
 \arguments{
 \item{fpcaObj}{An FPCA class object returned by FPCA().}
