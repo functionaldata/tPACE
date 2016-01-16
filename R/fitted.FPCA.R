@@ -1,10 +1,11 @@
 #' Fitted functional sample from FPCA (or FPCAder) object
 #' 
-#' Combine the zero-meaned fitted values and the interpolated mean to get the final values.
+#' Combine the zero-meaned fitted values and the interpolated mean to get the fitted values for the trajectories or the first derivatives of these trajectories.
 #' 
 #' @param object A object of class FPCA returned by the function FPCA().   
-#' @param objectDer A object of class FPCAder returned by the function FPCAder(). 
-#' @param k The integer number of the first k components used for the representation.
+#' @param k The integer number of the first k components used for the representation. (default: length(fpcaObj$lambda ))
+#' @param der A logical specifying if derivatives should be returned or not (default: FALSE)  
+#' @param method The method used to produce the sample of derivatives ('EIG' (default) or 'QUO'). See Liu and Mueller (2009) for more details
 #' @param ... Additional arguments
 #'
 #' @examples
@@ -21,22 +22,12 @@
 #' @export
 
 
-fitted.FPCA <-  function (object, objectDer = NULL, k = NULL, ...) {
+fitted.FPCA <-  function (object, k = NULL, der = FALSE, method = NULL, ...) {
   
   fpcaObj <- object;
-  fpcaObjDer <- objectDer;
 
   if (class(fpcaObj) != 'FPCA'){
     stop("fitted.FPCA() requires an FPCA class object as basic input")
-  }
-
-  if ( is.null(objectDer) ){ 
-    objToUse <-fpcaObj 
-  } else {
-    if(class(objectDer) != "FPCAder"){
-      stop("'fitted.FPCA()' has not receive as input a valid FPCAder object.")  
-    }
-    objToUse <- fpcaObjDer
   }
 
   if( is.null(k) ){
@@ -48,8 +39,52 @@ fitted.FPCA <-  function (object, objectDer = NULL, k = NULL, ...) {
       stop("'fitted.FPCA()' is requested to use more components than it currently has available. (or 'k' is smaller than 1)")
     }
   }
+  
+  if( !der ){  
+    ZMFV = fpcaObj$xiEst[,1:k, drop = FALSE] %*% t(fpcaObj$phi[,1:k, drop = FALSE]);   
+    IM = approx(x= fpcaObj$obsGrid, y=fpcaObj$mu, fpcaObj$workGrid)$y 
+    return( t(apply( ZMFV, 1, function(x) x + IM))) 
+  } else { #Derivative is not zero
+   
+     if( is.null(method) ){
+      method = 'EIG'
+    }
 
-  ZMFV = fpcaObj$xiEst[,1:k, drop = FALSE] %*% t(objToUse$phi[,1:k, drop = FALSE]);   
-  IM = approx(x= objToUse$obsGrid, y=objToUse$mu, fpcaObj$workGrid)$y 
-  return( t(apply( ZMFV, 1, function(x) x + IM))) 
+    if( method =='EIG'){
+      phi = apply(fpcaObj$phi, 2, getDerivative, t= fpcaObj$workGrid)
+      mu = getDerivative(y = fpcaObj$mu, t = fpcaObj$obsGrid)
+  
+      if('smoothEIG' == 'FALSE'){
+        # Smooth very aggressively using splines / Placeholder code
+        phi = apply(phi,2, function(x) predict(gam(ft~s(t, k= 9), data=data.frame(t=as.vector(res$workGrid),ft=x))))
+        mu = predict(gam(ft~s(t, k= 9), data=data.frame(t=as.vector(res$obsGrid),ft=as.vector(mu))))
+      }
+
+      ZMFV = fpcaObj$xiEst[,1:k, drop = FALSE] %*% t(phi[,1:k, drop = FALSE]);
+      IM = approx(x= fpcaObj$obsGrid, y=mu, fpcaObj$workGrid)$y
+      return( t(apply( ZMFV, 1, function(x) x + IM)))
+    }
+    if( method == 'QUO'){
+      impSample <- fitted(fpcaObj); # Look ma! I do recursion!
+      impSampleDer <- t(apply( impSample,1,getDerivative, fpcaObj$workGrid));
+      return(impSampleDer)
+    }
+    warning('You asked for a derivation scheme that is not implemented.')
+    return(NULL)
+  }
 }
+
+getEnlargedGrid <- function(x){
+  N <- length(x)
+  return (  c( x[1] - 0.1 * diff(x[1:2]), x, x[N] + 0.1 * diff(x[(N-1):N])) )
+}
+
+getDerivative <- function(y,t){  # Consider using the smoother to get the derivatives
+  if( length(y) != length(t) ){
+    stop("getDerivative y/t lengths are unequal.")
+  }
+  newt = getEnlargedGrid(t) # This is a trick to get first derivatives everywhere
+  newy = Hmisc::approxExtrap(x=t, y=y, xout= newt)$y
+  return (numDeriv::grad( stats::splinefun(newt, newy) , x = t ) )
+}
+

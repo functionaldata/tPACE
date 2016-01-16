@@ -4,19 +4,21 @@
 \alias{fitted.FPCA}
 \title{Fitted functional sample from FPCA (or FPCAder) object}
 \usage{
-\method{fitted}{FPCA}(object, objectDer = NULL, k = NULL, ...)
+\method{fitted}{FPCA}(object, k = NULL, der = FALSE, method = NULL, ...)
 }
 \arguments{
 \item{object}{A object of class FPCA returned by the function FPCA().}
 
-\item{objectDer}{A object of class FPCAder returned by the function FPCAder().}
+\item{k}{The integer number of the first k components used for the representation. (default: length(fpcaObj$lambda ))}
 
-\item{k}{The integer number of the first k components used for the representation.}
+\item{der}{A logical specifying if derivatives should be returned or not (default: FALSE)}
+
+\item{method}{The method used to produce the sample of derivatives ('EIG' (default) or 'QUO'). See Liu and Mueller (2009) for more details}
 
 \item{...}{Additional arguments}
 }
 \description{
-Combine the zero-meaned fitted values and the interpolated mean to get the final values.
+Combine the zero-meaned fitted values and the interpolated mean to get the fitted values for the trajectories or the first derivatives of these trajectories.
 }
 \examples{
 set.seed(1)
