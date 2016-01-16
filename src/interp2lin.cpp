@@ -35,7 +35,6 @@ Eigen::VectorXd interp2lin( const Eigen::Map<Eigen::VectorXd> & xin, const Eigen
   } else if ( yin.maxCoeff() <  you.maxCoeff() ){
     Rcpp::warning("Output Y-grid  is outside the upper range of the input Y-grid.");
   } 
-  
  
   const double ymin = yin.minCoeff();
   const double xmin = xin.minCoeff();
@@ -63,14 +62,22 @@ Eigen::VectorXd interp2lin( const Eigen::Map<Eigen::VectorXd> & xin, const Eigen
     } else {
       // Find the appropriate x coordinates/save them in xa (2-by-1)
       // Get iterator pointing to the first element which is not less than xou(u)
-      const double* x1 = std::lower_bound(&xin[0], &xin[nXGrid], xou(u));
-      const double* y1 = std::lower_bound(&yin[0], &yin[nYGrid], you(u));
+      
+      // This works if compiled with g++ -DNDEBUG ... etc.  
+      //const double* x1 = std::lower_bound(&xin[0], &xin[nXGrid], xou(u));
+      //const double* y1 = std::lower_bound(&yin[0], &yin[nYGrid], you(u));
+    
+      const double* x1 = std::lower_bound(xin.data(), xin.data() + nXGrid, xou(u));
+      const double* y1 = std::lower_bound(yin.data(), yin.data() + nYGrid, you(u));
 
       xa(1) = *x1;
       ya(1) = *y1;
 
-      const double* x1p = std::find(&xin[0], &xin[nXGrid], xa(1));
-      const double* y1p = std::find(&yin[0], &yin[nYGrid], ya(1));
+//      const double* x1p = std::find(&xin[0], &xin[nXGrid], xa(1));
+//      const double* y1p = std::find(&yin[0], &yin[nYGrid], ya(1));
+      const double* x1p = std::find( xin.data(), xin.data() + nXGrid, xa(1));
+      const double* y1p = std::find( yin.data(), yin.data() + nYGrid, ya(1));
+
       const double* x0p;
       const double* y0p;
 
@@ -90,7 +97,6 @@ Eigen::VectorXd interp2lin( const Eigen::Map<Eigen::VectorXd> & xin, const Eigen
         x0p = x1p;
       }
      
-
 //      const double* x1p = std::find(&xin[0], &xin[nXGrid], xa(1));
 //      const double* y1p = std::find(&yin[0], &yin[nYGrid], ya(1));
 //      const double* x0p = x1p - 1;
