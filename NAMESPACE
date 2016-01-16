@@ -24,10 +24,10 @@ export(selectK)
 export(sparsify)
 export(wiener)
 import(Hmisc)
-import(MASS)
+# import(MASS) # Manually commented by PZH
 import(Rcpp)
-import(RcppEigen)
-import(gtools)
+# import(RcppEigen) # Manually commented by PZH
+# import(gtools)    # Manually commented by PZH
 import(plot3D)
 importFrom(numDeriv,grad)
 importFrom(pracma,meshgrid)

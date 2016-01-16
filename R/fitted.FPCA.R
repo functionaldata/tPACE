@@ -54,11 +54,11 @@ fitted.FPCA <-  function (object, k = NULL, der = FALSE, method = NULL, ...) {
       phi = apply(fpcaObj$phi, 2, getDerivative, t= fpcaObj$workGrid)
       mu = getDerivative(y = fpcaObj$mu, t = fpcaObj$obsGrid)
   
-      if('smoothEIG' == 'FALSE'){
-        # Smooth very aggressively using splines / Placeholder code
-        phi = apply(phi,2, function(x) predict(gam(ft~s(t, k= 9), data=data.frame(t=as.vector(res$workGrid),ft=x))))
-        mu = predict(gam(ft~s(t, k= 9), data=data.frame(t=as.vector(res$obsGrid),ft=as.vector(mu))))
-      }
+      #if('smoothEIG' == 'FALSE'){
+      #  # Smooth very aggressively using splines / Placeholder code
+      #  phi = apply(phi,2, function(x) predict(gam(ft~s(t, k= 9), data=data.frame(t=as.vector(fpcaObj$workGrid),ft=x))))
+      #  mu = predict(gam(ft~s(t, k= 9), data=data.frame(t=as.vector(fpcaObj$obsGrid),ft=as.vector(mu))))
+      #}
 
       ZMFV = fpcaObj$xiEst[,1:k, drop = FALSE] %*% t(phi[,1:k, drop = FALSE]);
       IM = approx(x= fpcaObj$obsGrid, y=mu, fpcaObj$workGrid)$y
