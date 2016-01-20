@@ -117,6 +117,13 @@ SetOptions = function(y, t, optns){
 #    cat('shrinkage method only has effects when methodXi = "IN" and error = TRUE! Reset to shrink = FALSE now!\n');
 #    shrink = FALSE      
 #  }
+  if(is.null(kernel)){ # smoothing kernel choice
+    if(dataType == "Dense"){
+      kernel = "epan";   # kernel: Epanechnikov
+    }else{
+      kernel = "gauss";  # kernel: Gaussian
+    }
+  }
   kernNames = c("rect", "gauss", "epan", "gausvar", "quar");
   if(!(kernel %in% kernNames)){ # Check suitability of kernel
     cat(paste('kernel', kernel, 'is unrecognizable! Reset to automatic selection now!\n')); 
