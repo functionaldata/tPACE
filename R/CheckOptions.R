@@ -40,12 +40,6 @@ CheckOptions = function(t,optns,n){
     stop('Invalid `kFoldCov` option')
   }
 
-  # if( !( (length(optns$ngrid1)==1) &&  is.numeric(optns$ngrid1) && (1<=optns$ngrid1) && (optns$ngrid1<90) ) ){ 
-    # number of support points for the covariance surface 
-  #   cat("Error: FPCA is aborted because the argument: ngrid1 is invalid!\n");  
-  #   return(TRUE);   
-  # }
-
   if( !(any(optns[['selectionMethod']] == c('FVE','AIC','BIC')))){
     if(is.numeric(optns[['selectionMethod']])){
       if(as.integer(optns[['selectionMethod']]) != optns[['selectionMethod']] || optns[['selectionMethod']] <= 0 || optns[['selectionMethod']] > n){
@@ -82,7 +76,6 @@ CheckOptions = function(t,optns,n){
     return(TRUE);     
   }   
   if( ( is.null(optns[['dataType']])  )){ 
- cat("Erroblaasdlf")
     optns[['dataType']] = IsRegular(t)
   }   
   if(!is.logical(optns[['error']])){ 
@@ -100,16 +93,6 @@ CheckOptions = function(t,optns,n){
     cat("Error: FPCA is aborted because the argument: methodXi is invalid!\n");   
     return(TRUE);   
   }
-  #if(!is.logical(optns$shrink)){ 
-  #  # apply shrinkage to estimates of random coefficients (dataType data only)
-  #  cat("Error: FPCA is aborted because the argument: shrink is invalid!\n");   
-  #  return(TRUE);   
-  #}
-  #if (! (  is.null(optns$newdata) || (is.numeric(optns$newdata) && is.vector(optns$newdata)))){
-  #  # new time vector to evaluate the final estimates
-  #  cat("Error: FPCA is aborted because the argument: newdata is invalid!\n");       
-  #  return(TRUE);     
-  #}
   if(!(any(optns[['kernel']] == c('epan','gauss','rect','quar','gausvar')))){ 
     #method to estimate the PC scores
     cat("Error: FPCA is aborted because the argument: kernel is invalid!\n");   
@@ -130,22 +113,6 @@ CheckOptions = function(t,optns,n){
     cat("Error: FPCA is aborted because the argument: yname is invalid!\n");  
     return(TRUE);        
   }
-  # if(!is.logical(optns$screePlot)){ 
-  #   # make screeplot 
-  #   cat("Error: FPCA is aborted because the argument: screePlot is invalid!\n");  
-  #   return(TRUE);      
-  # }
-  # if(!is.logical(optns$designPlot)){ 
-  #   # make designplot 
-  #   cat("Error: FPCA is aborted because the argument: designPlot is invalid!\n");    
-  #   return(TRUE);   
-  # }
-  # if(!is.logical(optns$corrPlot)){ 
-  #   cat(optns$corrPlot)
-  #   # make correlation plot 
-  #   cat("Error: FPCA is aborted because the argument: corrPlot is invalid!\n");   
-  #   return(TRUE);    
-  # }
   if(!is.logical(optns[['diagnosticsPlot']])){ 
     # make diagnosticsPlot 
     cat("Error: FPCA is aborted because the argument: diagnosticsPlot is invalid!\n");    
@@ -168,7 +135,6 @@ CheckOptions = function(t,optns,n){
     cat("Error: FPCA is aborted because the argument: userMu is invalid!\n");     
     return(TRUE);   
   }
-
   if (! ( is.null(optns[['userCov']]) ||
         ( is.list(optns[['userCov']]) && is.vector(optns[['userCov']][['t']]) &&  is.matrix(optns[['userCov']][['cov']]) &&
           (length(optns[['userCov']][['t']]) ==  ncol(optns[['userCov']][['cov']]) ) && ( isSymmetric(optns[['userCov']][['cov']]) ) ) ) ){
@@ -176,7 +142,6 @@ CheckOptions = function(t,optns,n){
     cat("Error: FPCA is aborted because the argument: userCov is invalid! (eg. Check if 'cov' is symmetric and 't' is of appropriate size.)\n");
     return(TRUE);
   }
-  
   if (!is.null(optns[['userSigma2']])) {
     if (!(is.numeric(optns[['userSigma2']]) && 
           length(optns[['userSigma2']]) == 1 && 
@@ -188,8 +153,6 @@ CheckOptions = function(t,optns,n){
       stop('userSigma2 specified to be 0 but error = TRUE. If no measurement error is assumed then use error = FALSE.')
     }
   }
-
-  
   if(!(any(optns[['methodMu']] == c('PACE','RARE','CrossSectional')))){ 
     # user-defined mean functions
     cat("Error: FPCA is aborted because the argument: methodMu is invalid!\n");     

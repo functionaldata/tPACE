@@ -10,27 +10,32 @@
 
 SetOptions = function(y, t, optns){
 
-  bwmu =optns[['bwmu']];                bwmuMethod =optns[['bwmuMethod']]; 
-  bwuserCov =optns[['bwcov']];            bwuserCovGcv =optns[['bwuserCovGcv']];
+  bwmu =optns[['bwmu']];                
+  bwmuMethod =optns[['bwmuMethod']]; 
+  bwuserCov =optns[['bwcov']];            
+  bwuserCovGcv =optns[['bwuserCovGcv']];
   kFoldCov = optns[['kFoldCov']]
-  # ngrid1 =optns[['ngrid1']]; 
-  selectionMethod =optns[['selectionMethod']];  FVEthreshold =optns[['FVEthreshold']];
+  selectionMethod =optns[['selectionMethod']];  
+  FVEthreshold =optns[['FVEthreshold']];
   fitEigenValues <- optns[['fitEigenValues']];
   maxK =optns[['maxK']];                
-  dataType =optns[['dataType']];          error =optns[['error']];
-  nRegGrid =optns[['nRegGrid']];              methodXi =optns[['methodXi']];
-#  shrink =optns[['shrink']];           # newdata =optns[['newdata']] ;
-  kernel =optns[['kernel']];            numBins =optns[['numBins']];
-#  numComponents =optns[['numComponents']];
-  yname =optns[['yname']];             # screePlot =optns[['screePlot']];
-#  designPlot =optns[['designPlot']];    
-  rho =optns[['rho']];                diagnosticsPlot =optns[['diagnosticsPlot']];
-  verbose =optns[['verbose']];          #corrPlot =optns[['corrPlot']];
-  userMu =optns[['userMu']];                  methodMu =optns[['methodMu']];
-  outPercent =optns[['outPercent']];  userCov =optns[['userCov']];
+  dataType =optns[['dataType']];          
+  error =optns[['error']];
+  nRegGrid =optns[['nRegGrid']];              
+  methodXi =optns[['methodXi']];
+  kernel =optns[['kernel']];            
+  numBins =optns[['numBins']];
+  yname =optns[['yname']];
+  rho =optns[['rho']];                
+  diagnosticsPlot =optns[['diagnosticsPlot']];
+  verbose =optns[['verbose']];   
+  userMu =optns[['userMu']];                  
+  methodMu =optns[['methodMu']];
+  outPercent =optns[['outPercent']];  
+  userCov =optns[['userCov']];
   userSigma2 = optns[['userSigma2']]
-  rotationCut =optns[['rotationCut']];    useBinnedData =optns[['useBinnedData']];
-  #corrPlotType =optns[['corrPlotType']]; 
+  rotationCut =optns[['rotationCut']];    
+  useBinnedData =optns[['useBinnedData']];
   useBinnedCov = optns[['useBinnedCov']]
   lean = optns[['lean']]
 
@@ -65,9 +70,6 @@ SetOptions = function(y, t, optns){
   if(is.null(maxK)){ # maximum number of principal components to consider
     maxK = min(20, length(y)-1);   
   }
-#  if(is.null(numComponents)){ # maximum number of principal components to return
-#    numComponents = NULL;
-#  }
   if(is.null(dataType)){ #do we have dataType or sparse functional data
     dataType = IsRegular(t);    
   }
@@ -115,6 +117,11 @@ SetOptions = function(y, t, optns){
 #    cat('shrinkage method only has effects when methodXi = "IN" and error = TRUE! Reset to shrink = FALSE now!\n');
 #    shrink = FALSE      
 #  }
+  kernNames = c("rect", "gauss", "epan", "gausvar", "quar");
+  if(!(kernel %in% kernNames)){ # Check suitability of kernel
+    cat(paste('kernel', kernel, 'is unrecognizable! Reset to automatic selection now!\n')); 
+    kernel = NULL; 
+  }  
   if(is.null(kernel)){ # smoothing kernel choice
     if(dataType == "Dense"){
       kernel = "epan";   # kernel: Epanechnikov
@@ -139,15 +146,6 @@ SetOptions = function(y, t, optns){
       FVEthreshold = 0.95;
     }
   }
-  #if(is.null(screePlot)){ # make screeplot
-  #  screePlot = FALSE;
-  #}
-  #if(is.null(designPlot)){ # make designplot
-  #  designPlot = FALSE;
-  #}
-  #if(is.null(corrPlot)){ # make corrplot
-  #  corrPlot = FALSE;
-  #}
   if(is.null(diagnosticsPlot)){ # make corrplot
     diagnosticsPlot = FALSE;
   }
@@ -161,9 +159,6 @@ SetOptions = function(y, t, optns){
   if(is.null(verbose)){ # display diagnostic messages
     verbose = FALSE;
   }  
-  #if(is.null(newdata)){ # new data points to estimate
-  #  newdata <- NULL
-  #}
   if(is.null(userMu)){ # user-defined mean functions valued at distinct input time points
     userMu <- NULL
   }
@@ -183,11 +178,6 @@ SetOptions = function(y, t, optns){
   #  cat('When assume no measurement error, cannot use "AIC" or "BIC". Reset to "BIC" now!\n')
   #  selectionMethod = "BIC" 
   #}
-  kernNames = c("rect", "gauss", "epan", "gausvar", "quar");
-  if(!(kernel %in% kernNames)){ # Check suitability of kernel
-    cat(paste('kernel', kernel, 'is unrecognizable! Reset to Epanechnikov kernel now!\n')); 
-    kernel = "epan"; 
-  }  
   if(!is.null(numBins)){ 
     if(numBins < 10){   # Check suitability of number of bins
       cat("Number of bins must be at least +10!!\n");
@@ -206,23 +196,12 @@ SetOptions = function(y, t, optns){
   if(is.null(lean)){ 
     lean = FALSE;
   } 
- 
-  #if(is.null(corrPlotType)){ 
-  #  corrPlotType = 'Fitted';
-  #}
     
   return( list(bwmu = bwmu, bwmuMethod = bwmuMethod, bwuserCov = bwuserCov, bwuserCovGcv = bwuserCovGcv,
-          kFoldCov = kFoldCov,
-          selectionMethod = selectionMethod, FVEthreshold = FVEthreshold,
-          fitEigenValues = fitEigenValues,
-          maxK = maxK, dataType = dataType, error = error, nRegGrid = nRegGrid, rotationCut = rotationCut,
-          methodXi = methodXi, # shrink = shrink, # newdata = newdata, 
-          kernel = kernel,  lean = lean,
-          # corrPlot = corrPlot, corrPlotType = corrPlotType,  screePlot = screePlot, designPlot = designPlot,
-          # numComponents = numComponents,
-          diagnosticsPlot = diagnosticsPlot,
-          numBins = numBins, useBinnedCov = useBinnedCov, yname = yname,  rho = rho, 
-          verbose = verbose, 
-          userMu = userMu, userCov = userCov, userSigma2 = userSigma2, 
-          methodMu= methodMu, outPercent = outPercent, useBinnedData = useBinnedData) )
+          kFoldCov = kFoldCov, selectionMethod = selectionMethod, FVEthreshold = FVEthreshold,
+          fitEigenValues = fitEigenValues, maxK = maxK, dataType = dataType, error = error, 
+          nRegGrid = nRegGrid, rotationCut = rotationCut, methodXi = methodXi, kernel = kernel, 
+          lean = lean, diagnosticsPlot = diagnosticsPlot, numBins = numBins, useBinnedCov = useBinnedCov, 
+          yname = yname,  rho = rho, verbose = verbose, userMu = userMu, userCov = userCov, 
+          userSigma2 = userSigma2, methodMu= methodMu, outPercent = outPercent, useBinnedData = useBinnedData) )
 }

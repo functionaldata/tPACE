@@ -1,10 +1,10 @@
-#' Fitted functional sample from FPCA (or FPCAder) object
+#' Fitted functional sample from FPCA object
 #' 
 #' Combine the zero-meaned fitted values and the interpolated mean to get the fitted values for the trajectories or the first derivatives of these trajectories.
 #' 
 #' @param object A object of class FPCA returned by the function FPCA().   
 #' @param k The integer number of the first k components used for the representation. (default: length(fpcaObj$lambda ))
-#' @param der A logical specifying if derivatives should be returned or not (default: FALSE)  
+#' @param der A logical specifying if derivatives should be returned or instead of the fitted values (default: FALSE)  
 #' @param method The method used to produce the sample of derivatives ('EIG' (default) or 'QUO'). See Liu and Mueller (2009) for more details
 #' @param ... Additional arguments
 #'
@@ -54,11 +54,11 @@ fitted.FPCA <-  function (object, k = NULL, der = FALSE, method = NULL, ...) {
       phi = apply(fpcaObj$phi, 2, getDerivative, t= fpcaObj$workGrid)
       mu = getDerivative(y = fpcaObj$mu, t = fpcaObj$obsGrid)
   
-      #if('smoothEIG' == 'FALSE'){
-      #  # Smooth very aggressively using splines / Placeholder code
-      #  phi = apply(phi,2, function(x) predict(gam(ft~s(t, k= 9), data=data.frame(t=as.vector(fpcaObj$workGrid),ft=x))))
-      #  mu = predict(gam(ft~s(t, k= 9), data=data.frame(t=as.vector(fpcaObj$obsGrid),ft=as.vector(mu))))
-      #}
+    # if('smoothEIG' == 'FALSE'){
+    #    # Smooth very aggressively using splines / Placeholder code
+    #    phi = apply(phi,2, function(x) predict(gam(ft~s(t, k= 9), data=data.frame(t=as.vector(fpcaObj$workGrid),ft=x))))
+    #    mu = predict(gam(ft~s(t, k= 9), data=data.frame(t=as.vector(fpcaObj$obsGrid),ft=as.vector(mu))))
+    # }
 
       ZMFV = fpcaObj$xiEst[,1:k, drop = FALSE] %*% t(phi[,1:k, drop = FALSE]);
       IM = approx(x= fpcaObj$obsGrid, y=mu, fpcaObj$workGrid)$y
@@ -69,7 +69,7 @@ fitted.FPCA <-  function (object, k = NULL, der = FALSE, method = NULL, ...) {
       impSampleDer <- t(apply( impSample,1,getDerivative, fpcaObj$workGrid));
       return(impSampleDer)
     }
-    warning('You asked for a derivation scheme that is not implemented.')
+    stop('You asked for a derivation scheme that is not implemented.')
     return(NULL)
   }
 }
