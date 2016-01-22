@@ -11,7 +11,8 @@
 #' \item{ifactor}{inflation ifactor for the bag-plot defining the loop of bag-plot or multiplying ifactor the KDE pilot bandwidth matrix. (see ?aplpack::compute.bagplot; ?ks::Hpi respectively; default: 2.58; 2 respectively).}
 #' \item{variant}{string defining the outlier method used ('KDE' or 'bagplot') (default: 'KDE')}
 #' \item{unimodal}{logical specifying if the KDE estimate should be unimodal (default: FALSE, relavant only for variant='KDE')}
-#' \item{nSlices}{integer between 3 and 16, denoting the number of slices to be used, default 4, relavant only for groupingType='slice' }
+#' \item{nSlices}{integer between 3 and 16, denoting the number of slices to be used (default: 4, relavant only for groupingType='slice') }
+#' \item{colSpectrum}{character vector to be use as input in the 'colorRampPalette' function defining the outliers colous(default: c("red",  "yellow", 'blue'), relavant only for groupingType='slice') }
 #' \item{groupingType}{string specifying if a slice grouping ('slice') or a standard percentile/bagplot grouping ('standard') should be returned (default: 'standard')} 
 #' }
 #'
@@ -51,6 +52,12 @@ createOutliersPlot <- function(fpcaObj, optns = NULL, ...){
     unimodal = optns$unimodal
   }
   
+  if(is.null(optns$colSpectrum)){
+    colSpectrum = NULL
+  } else {
+    colSpectrum = optns$colSpectrum
+  }
+  
   if(is.null(optns$groupingType)){
     groupingType = 'standard'
   } else {
@@ -84,6 +91,11 @@ createOutliersPlot <- function(fpcaObj, optns = NULL, ...){
   if ( !is.null(unimodal) && !is.logical(unimodal) ){
     stop("The variable 'unimodal' must be logical.")
   } 
+  if (is.null(colSpectrum)){
+    colFunc = colorRampPalette(c("red",  "yellow", 'blue'));
+  } else {
+    colFunc = colorRampPalette(colSpectrum)
+  }
   if (!is.null(ifactor) && (1 >= ifactor) ){
     warning("It is nonsensical for an inflation factor to be <= 1. 'ifactor' set to 1.1.")
     ifactor = 1.1;
@@ -142,11 +154,11 @@ createOutliersPlot <- function(fpcaObj, optns = NULL, ...){
       
       Qstr = fpcaObj$xiEst[,1:2]  /  matrix( c( rep( sqrt(fpcaObj$lambda[1:2]), 
                                                      each= length(fpcaObj$xiEst[,1]))), ncol=2);
-      colfunc <- colorRampPalette(c("red",  "yellow", 'blue'))
-      colPal = colfunc( nSlices )
+      colPal = colFunc( nSlices )
       v = 1:nSlices;
-      colPal = colPal[c( v[ v%%2 !=0], v[ v%%2 ==0] )]
-      
+      #colPal = colPal[c( v[ v%%2 !=0], v[ v%%2 ==0] )] # this maximizes the difference between two adjecent slices
+      colPal = colPal[v] # this just gives a smooth change and maximized the diffference between oppositve slices
+
       steps =  seq(-1, (nSlices-1) *2 -1 , by =2 )
       for( i in 1:nSlices){
         angle =steps[i] * pi/nSlices
@@ -216,11 +228,12 @@ createOutliersPlot <- function(fpcaObj, optns = NULL, ...){
       
       points(fpcaObj$xiEst[qq >=  fhat$cont[95],1:2],cex=0.33, col='black' , pch=10, lwd =2 )
       Qstr = fpcaObj$xiEst[,1:2]  /  matrix( c( rep( sqrt(fpcaObj$lambda[1:2]), 
-                                                     each= length(fpcaObj$xiEst[,1]))), ncol=2);
-      colfunc <- colorRampPalette(c("red",  "yellow", 'blue'))
-      colPal = colfunc( nSlices )
+                                                     each= length(fpcaObj$xiEst[,1]))), ncol=2); 
+      
+      colPal = colFunc( nSlices )
       v = 1:nSlices;
-      colPal = colPal[c( v[ v%%2 !=0], v[ v%%2 ==0] )]
+      #colPal = colPal[c( v[ v%%2 !=0], v[ v%%2 ==0] )] # this maximizes the difference between two adjecent slices
+      colPal = colPal[v] # this just gives a smooth change and maximized the diffference between oppositve slices
       
       steps =  seq(-1, (nSlices-1) *2 -1 , by =2 )
       for( i in 1:nSlices){

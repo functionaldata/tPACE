@@ -80,15 +80,15 @@ Eigen::VectorXd CPPlwls1d( const double & bw, const std::string kernel_type, con
       //construct listX as vectors / size is unknown originally
       // for (unsigned int y = 0; y != nXGrid; ++y){ if ( std::fabs( xout(i) - xin(y) ) <= bw ) { indx.push_back(y); }  }
       // Get iterator pointing to the first element which is not less than xou(u)
-      lower = std::lower_bound(&xin[0], &xin[nXGrid], xout(i) - bw);
-      upper = std::lower_bound(&xin[0], &xin[nXGrid], xout(i) + bw);
+      lower = std::lower_bound(xin.data(), xin.data() + nXGrid, xout(i) - bw);
+      upper = std::lower_bound(xin.data(), xin.data() + nXGrid, xout(i) + bw);
       //  const unsigned int firstElement = lower - &xin[0];
       //  for (unsigned int xx1 =0; xx1 != upper-lower; ++xx1){
       //   indx.push_back(  firstElement+ xx1 );
       //  }
     } else {
-      lower = &xin[0];
-      upper = &xin[nXGrid];
+      lower = xin.data();
+      upper = xin.data() + nXGrid;
     }
 
      const unsigned int firstElement = lower - &xin[0];

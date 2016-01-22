@@ -63,7 +63,8 @@ selectK = function(fpcaObj, criterion = 'AIC', FVEthreshold = NULL, y = NULL, t 
     # select FVE based on cumFVE in fpcaObj and specified FVEthreshold
     if(is.null(FVEthreshold)){stop('Need to specify FVEthreshold to choose number of components via FVE.')}
     cumFVE = fpcaObj$cumFVE
-    return( list(k = min( which(cumFVE > FVEthreshold * 100) ), criterion = cumFVE[min(which(cumFVE > FVEthreshold * 100))]))
+    buff <- .Machine[['double.eps']] * 100
+    return( list(k = min( which(cumFVE > FVEthreshold * 100 - buff) ), criterion = cumFVE[min(which(cumFVE > FVEthreshold * 100 - buff))]))
   } else { # fixed K is specified.
     if(criterion > length(fpcaObj$lambda)){
       stop("Specified number of components is more than available components.")
