@@ -180,3 +180,24 @@ test_that('Case where one component should be returned',{
 
 })
 
+
+test_that('GetCovDense with noise, get sigma2', {
+  # set.seed(1)
+  n <- 200
+  p <- 101
+  pts <- seq(0, 1, length.out=p)
+  sigma2 <- 0.1
+  mu <- pts
+  sampTrue <- wiener(n, pts) + matrix(pts, n, p, byrow=TRUE)
+  samp <- sampTrue + rnorm(n * length(pts), sd=sqrt(sigma2))
+  tmp <- makeFPCAinputs(tVec=pts, yVec=samp)
+
+  resNoerr <- FPCA(tmp$Ly, tmp$Lt, list(error=FALSE, dataType='Dense', lean=TRUE))
+  resErr <- FPCA(tmp$Ly, tmp$Lt, list(error=TRUE, dataType='Dense', shrink=TRUE, lean=TRUE))
+  resErr$optns
+
+  expect_equal(resErr$sigma2, sigma2, tolerance=1e-1)
+# shrinkage should be a bit better
+  expect_true(mean((fitted(resNoerr) - sampTrue) ^ 2) > 
+              mean((fitted(resErr) - sampTrue) ^ 2))
+})

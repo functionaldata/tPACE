@@ -23,6 +23,7 @@ SetOptions = function(y, t, optns){
   error =optns[['error']];
   nRegGrid =optns[['nRegGrid']];              
   methodXi =optns[['methodXi']];
+  shrink =optns[['shrink']]
   kernel =optns[['kernel']];            
   numBins =optns[['numBins']];
   yname =optns[['yname']];
@@ -97,26 +98,22 @@ SetOptions = function(y, t, optns){
   }   
   if(is.null(methodXi)){ # method to estimate the PC scores
     if(dataType == 'Dense'){
-      shrink = FALSE;
       methodXi = "IN";
     } else if(dataType == 'Sparse'){
-      shrink = FALSE;
       methodXi = "CE";
     } else if(dataType == 'DenseWithMV'){
-      shrink = FALSE;
       methodXi = "IN";
     } else { # for dataType = p>>n
-      shrink = FALSE;
       methodXi = "IN";
     }
   }
-#  if(is.null(shrink)){ # apply shrinkage to estimates of random coefficients (dataType data only)
-#    shrink = FALSE;
-#  }
-#  if(shrink == TRUE && (error != TRUE || methodXi != "IN")){ # Check for valid shrinkage choice
-#    cat('shrinkage method only has effects when methodXi = "IN" and error = TRUE! Reset to shrink = FALSE now!\n');
-#    shrink = FALSE      
-#  }
+   if(is.null(shrink)){ # apply shrinkage to estimates of random coefficients (dataType data only)
+     shrink = FALSE;
+   }
+   if(shrink == TRUE && (error != TRUE || methodXi != "IN")){ # Check for valid shrinkage choice
+     cat('shrinkage method only has effects when methodXi = "IN" and error = TRUE! Reset to shrink = FALSE now!\n');
+     shrink = FALSE      
+   }
   if(is.null(kernel)){ # smoothing kernel choice
     if(dataType == "Dense"){
       kernel = "epan";   # kernel: Epanechnikov
@@ -206,7 +203,7 @@ SetOptions = function(y, t, optns){
     
   return( list(bwmu = bwmu, bwmuMethod = bwmuMethod, bwuserCov = bwuserCov, bwuserCovGcv = bwuserCovGcv,
           kFoldCov = kFoldCov, selectionMethod = selectionMethod, FVEthreshold = FVEthreshold,
-          fitEigenValues = fitEigenValues, maxK = maxK, dataType = dataType, error = error, 
+          fitEigenValues = fitEigenValues, maxK = maxK, dataType = dataType, error = error, shrink = shrink,
           nRegGrid = nRegGrid, rotationCut = rotationCut, methodXi = methodXi, kernel = kernel, 
           lean = lean, diagnosticsPlot = diagnosticsPlot, numBins = numBins, useBinnedCov = useBinnedCov, 
           yname = yname,  rho = rho, verbose = verbose, userMu = userMu, userCov = userCov, 

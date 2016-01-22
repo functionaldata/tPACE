@@ -38,8 +38,18 @@ GetCovDense <- function(ymat, mu, optns){
     K = cov(ymat, use = 'pairwise.complete.obs') # sample variance using non-missing data
   }
   K = 0.5 * (K + t(K))                         # ensure that K is symmetric
+
+  if (optns[['error']]) {
+# 2nd order difference method for finding sigma2
+    ord <- 2 
+    sigma2 <- mean(diff(t(ymat), differences=ord)^2) / choose(2 * ord, ord)
+    diag(K) <- diag(K) - sigma2
+  } else {
+    sigma2 <- NULL
+  }
+
   ret = list('rawCov' = NULL, 'smoothCov' = K, 'bwCov' = NULL,
-   'sigma2' = NULL, outGrid = NULL)
+   'sigma2' = sigma2, outGrid = NULL)
   class(ret) = "SmoothCov"
   # Garbage Collection
   gc()

@@ -2,7 +2,7 @@
 % Please edit documentation in R/fitted.FPCA.R
 \name{fitted.FPCA}
 \alias{fitted.FPCA}
-\title{Fitted functional sample from FPCA (or FPCAder) object}
+\title{Fitted functional sample from FPCA object}
 \usage{
 \method{fitted}{FPCA}(object, k = NULL, der = FALSE, method = NULL, ...)
 }
@@ -11,7 +11,7 @@
 
 \item{k}{The integer number of the first k components used for the representation. (default: length(fpcaObj$lambda ))}
 
-\item{der}{A logical specifying if derivatives should be returned or not (default: FALSE)}
+\item{der}{A logical specifying if derivatives should be returned or instead of the fitted values (default: FALSE)}
 
 \item{method}{The method used to produce the sample of derivatives ('EIG' (default) or 'QUO'). See Liu and Mueller (2009) for more details}
 
