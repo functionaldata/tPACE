@@ -4,17 +4,20 @@
 \alias{createModeOfVarPlot}
 \title{Functional Principal Component Analysis mode of variation plot}
 \usage{
-createModeOfVarPlot(ret, k = 1, ...)
+createModeOfVarPlot(fpcaObj, k = 1, ...)
 }
 \arguments{
-\item{ret}{An FPCA class object returned by FPCA().}
+\item{fpcaObj}{An FPCA class object returned by FPCA().}
 
 \item{k}{The k-th mode of variation to plot (default k = 1)}
 
 \item{...}{Additional arguments for the 'plot' function.}
 }
 \description{
-This function will open a new device if not instructed otherwise.
+Create the k-th mode of variation plot around the mean. The red-line is
+the functional mean, the grey shaded areas show the range of variations
+around the mean: +/-Q \sqrt{\lambda_k} \phi_k;
+for the dark grey area Q = 1, and for the light grey are Q = 2.
 }
 \examples{
 set.seed(1)
@@ -24,6 +27,6 @@ sampWiener <- wiener(n, pts)
 sampWiener <- sparsify(sampWiener, pts, 10)
 res <- FPCA(sampWiener$yList, sampWiener$tList, 
             list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
-createDiagnosticsPlot(res)
+createModeOfVarPlot(res)
 }
 

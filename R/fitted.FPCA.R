@@ -10,8 +10,9 @@
 #' \describe{
 #' \item{p}{The order of the derivatives returned (default: 0, max: 2)}
 #' \item{method}{The method used to produce the sample of derivatives ('EIG' (default) or 'QUO'). See Liu and Mueller (2009) for more details}
-#' \item{GCV}{Logical specifying if GCV or CV should be used to calculated the optimal bandwidth (default: FALSE)
+#' \item{GCV}{Logical specifying if GCV or CV should be used to calculated the optimal bandwidth (default: FALSE)}
 #' \item{kernelType}{Smoothing kernel choice; same available types are FPCA(). default('epan')}
+#' }
 #' @param ... Additional arguments
 #'
 #' @examples

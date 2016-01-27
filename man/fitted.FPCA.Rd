@@ -4,21 +4,28 @@
 \alias{fitted.FPCA}
 \title{Fitted functional sample from FPCA object}
 \usage{
-\method{fitted}{FPCA}(object, k = NULL, der = FALSE, method = NULL, ...)
+\method{fitted}{FPCA}(object, k = NULL, derOptns = NULL, ...)
 }
 \arguments{
 \item{object}{A object of class FPCA returned by the function FPCA().}
 
 \item{k}{The integer number of the first k components used for the representation. (default: length(fpcaObj$lambda ))}
 
-\item{der}{A logical specifying if derivatives should be returned or instead of the fitted values (default: FALSE)}
-
-\item{method}{The method used to produce the sample of derivatives ('EIG' (default) or 'QUO'). See Liu and Mueller (2009) for more details}
+\item{derOptns}{A list of options to control the derivation parameters specified by \code{list(name=value)}. See `Details'. (default = NULL)}
 
 \item{...}{Additional arguments}
 }
 \description{
-Combine the zero-meaned fitted values and the interpolated mean to get the fitted values for the trajectories or the first derivatives of these trajectories.
+Combine the zero-meaned fitted values and the interpolated mean to get the fitted values for the trajectories or the derivatives of these trajectories.
+}
+\details{
+Available derivation control options are 
+\describe{
+\item{p}{The order of the derivatives returned (default: 0, max: 2)}
+\item{method}{The method used to produce the sample of derivatives ('EIG' (default) or 'QUO'). See Liu and Mueller (2009) for more details}
+\item{GCV}{Logical specifying if GCV or CV should be used to calculated the optimal bandwidth (default: FALSE)}
+\item{kernelType}{Smoothing kernel choice; same available types are FPCA(). default('epan')}
+}
 }
 \examples{
 set.seed(1)
