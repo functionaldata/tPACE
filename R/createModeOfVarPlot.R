@@ -1,8 +1,11 @@
 #' Functional Principal Component Analysis mode of variation plot
 #' 
-#' This function will open a new device if not instructed otherwise.
+#' Create the k-th mode of variation plot around the mean. The red-line is
+#' the functional mean, the grey shaded areas show the range of variations
+#' around the mean: +/-Q \sqrt{\lambda_k} \phi_k;
+#' for the dark grey area Q = 1, and for the light grey are Q = 2.
 #'
-#' @param ret An FPCA class object returned by FPCA(). 
+#' @param fpcaObj An FPCA class object returned by FPCA(). 
 #' @param k The k-th mode of variation to plot (default k = 1) 
 #' @param ... Additional arguments for the 'plot' function.
 #'
@@ -14,27 +17,27 @@
 #' sampWiener <- sparsify(sampWiener, pts, 10)
 #' res <- FPCA(sampWiener$yList, sampWiener$tList, 
 #'             list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
-#' createDiagnosticsPlot(res)
+#' createModeOfVarPlot(res)
 #' @export
 
-createModeOfVarPlot <-function(ret,  k = 1, ...){ 
+createModeOfVarPlot <-function(fpcaObj,  k = 1, ...){ 
   
   args1 <- list( main="Default Title", xlab='s', ylab='y(s)')  
   inargs <- list(...)
   args1[names(inargs)] <- inargs
   
-  if(k> length(ret$lambda) ){
+  if(k> length(fpcaObj$lambda) ){
     stop("You are asking to plot a mode of variation that is incomputable.")
   }  
   
-  obsGrid = ret$obsGrid      
-  s = ret$workGrid
-  mu = approx( y = ret$mu, x = obsGrid, xout = s)$y
+  obsGrid = fpcaObj$obsGrid      
+  s = fpcaObj$workGrid
+  mu = approx( y = fpcaObj$mu, x = obsGrid, xout = s)$y
   
-  sigma = sqrt(ret$lambda[k])
-  sigma1 = sqrt(ret$lambda[1])
-  phi = ret$phi[,k]
-  phi1 = ret$phi[,1]
+  sigma = sqrt(fpcaObj$lambda[k])
+  sigma1 = sqrt(fpcaObj$lambda[1])
+  phi = fpcaObj$phi[,k]
+  phi1 = fpcaObj$phi[,1]
   
   do.call(plot, c(list(type='n'), list(x=s), list(y=s), 
                   list(ylim=range(c( 3* sigma1 * phi1 + mu , -3* sigma1 * phi1 + mu ))), args1))

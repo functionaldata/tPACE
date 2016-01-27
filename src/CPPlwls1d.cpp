@@ -21,6 +21,10 @@ Eigen::VectorXd CPPlwls1d( const double & bw, const std::string kernel_type, con
   // ========================
   // The checks start here:
 
+  if(nXGrid == 0) {
+    Rcpp::stop("The input X-grid has length zero.");
+  }
+
   // Check that we have equal number of readings
   if( nXGrid != yin.size()){
     Rcpp::stop("The input Y-grid does not have the same number of points as input X-grid.");

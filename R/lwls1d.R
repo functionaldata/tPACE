@@ -18,9 +18,14 @@
 
 lwls1d <- function( bw, kernel_type, win, xin, yin, xout, npoly = 1L, nder = 0L){
 
-  if (is.unsorted(xout))
+  if(is.unsorted(xout)){
     stop('`xout` needs to be sorted in increasing order')
-    
+  }
+
+  if(all(is.na(win)) || all(is.na(xin)) || all(is.na(yin))){
+    stop(' win, xin or yin contain only NAs!')
+  }
+
   # Deal with NA/NaN measurement values
   NAinY = is.na(xin) | is.na(yin) | is.na(win)
   if(any(NAinY)){

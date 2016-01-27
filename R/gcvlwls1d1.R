@@ -1,9 +1,22 @@
-gcvlwls1d1 <- function(yy,tt, kernel, npoly, nder, dataType, verbose=TRUE) {
 # This function computes the optimal bandwidth choice for the mean
 # function use GCV method by pooling the longitudinal data together. 
 # verbose is unused for now
 # this is compatible with PACE because the GCV is calculated in a same way
-  
+
+gcvlwls1d1 <- function(yy,tt, kernel, npoly, nder, dataType, verbose=TRUE) {
+ 
+  # If 'yy' and 't' are vectors "cheat" and break them in 
+  # a list of 10 elements                                                                                                                                  
+  if ( is.vector(yy) && is.vector(tt) && !is.list(yy) && !is.list(tt) ){
+    if (length(t) < 21) {
+      stop("You are trying to use a local linear weight smoother in a vector with less than 21 values.\n")
+    }
+    myPartition =   c(1:10, sample(10, length(t)-10, replace=TRUE));
+    yy = split(yy, myPartition)
+    tt = split(tt, myPartition)
+    dataType = 'Sparse';
+  }
+
   t = unlist(tt);
   y = unlist(yy)[order(t)];
  

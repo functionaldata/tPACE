@@ -1,13 +1,26 @@
 cvlwls1d <- function(yy, t, kernel, npoly, nder, dataType ){
 
+  # If 'yy' and 't' are vectors "cheat" and break them in 
+  # a list of 10 elements
+  if ( is.vector(yy) && is.vector(t) && !is.list(t) && !is.list(yy) ){
+    if (length(t) < 21) {
+      stop("You are trying to use a local linear weight smoother in a vector with less than 21 values.\n")
+    }
+    myPartition =   c(1:10, sample(10, length(t)-10, replace=TRUE));
+    yy = split(yy, myPartition)
+    t = split(t, myPartition)
+    dataType = 'Sparse';
+  }
+
   ncohort = length(t);
   tt  = unlist(t);
   xx  = unlist(yy);
   ind = unlist(lapply( 1:ncohort, function(j) rep(j, times=length(t[[j]]))));
 
   xxn = xx[order(tt)];
+  ind = ind[order(tt)];
   ttn = sort(tt);
-  # xxn = xx;
+  
   a0=ttn[1];
   b0=ttn[length(ttn)];
   rang = b0-a0;
@@ -48,32 +61,22 @@ cvlwls1d <- function(yy, t, kernel, npoly, nder, dataType ){
     cv[j]=0;
     count[j]=0;
     for (i in 1:ncohort){
-        out=tt[ind==i];
-        obs=xx[ind==i];
-        win=rep(1,length(tt));
-        win[ind==i]=0;        
+      out=ttn[ind==i];
+      obs=xxn[ind==i];
+      win=rep(1,length(tt));
+      win[ind==i] = NA;        
         
-        if (dataType=='Dense') {
-            xxn=(ave*ncohort-t[[i]])/(ncohort-1);
-            ttn=t[[1]];
-            win=pracma::ones(1,length(t[[1]]));
-            
-            xxn = xxn[order(ttn)]
-            ttn = sort(ttn)           
-  
-	}
+      if (dataType=='Dense') {
+        xxn=(ave*ncohort-t[[i]])/(ncohort-1);
+        ttn=t[[1]];
+        win=pracma::ones(1,length(t[[1]]));    
+        xxn = xxn[order(ttn)]
+        ttn = sort(ttn)           
+      }  
  
-#        if (any(win==0)){
-#          nz = c(win != 0)
-#          mu = lwls1d(bw= bw[j], kern=kernel, npoly=npoly, nder= nder, xin = ttn[nz], yin= xxn[nz], xout=out, win = win[nz])       
-#        } else {
-          mu = lwls1d(bw= bw[j], kernel_type = kernel, npoly=npoly, nder= nder, xin = ttn, yin= xxn, xout=out, win = win)
-       # }
-
-        # if invalid==0 {
-        cv[j]=cv[j]+t(obs-mu)%*%(obs-mu);
-        count[j]=count[j]+1;
-        #}
+      mu = lwls1d(bw= bw[j], kernel_type = kernel, npoly=npoly, nder= nder, xin = ttn, yin= xxn, xout=out, win = win)
+      cv[j]=cv[j]+t(obs-mu)%*%(obs-mu);
+      count[j]=count[j]+1;
     }
   }
   cv = cv[(count/ncohort>0.90)];

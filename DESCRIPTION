@@ -24,7 +24,7 @@ Description: PACE is a versatile package that provides implementation of
     samples of realized trajectories, and for the analysis of underlying
     dynamics. The core computational algorithms are implemented using the
     'Eigen' C++ library for numerical linear algebra and 'RcppEigen' "glue".
-License: BSD_3_clause
+License: BSD_3_clause + file LICENSE
 LazyData: false
 Imports:
     Rcpp (>= 0.11.5), 

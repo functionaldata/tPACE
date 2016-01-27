@@ -1,11 +1,17 @@
 #' Fitted functional sample from FPCA object
 #' 
-#' Combine the zero-meaned fitted values and the interpolated mean to get the fitted values for the trajectories or the first derivatives of these trajectories.
+#' Combine the zero-meaned fitted values and the interpolated mean to get the fitted values for the trajectories or the derivatives of these trajectories.
 #' 
 #' @param object A object of class FPCA returned by the function FPCA().   
 #' @param k The integer number of the first k components used for the representation. (default: length(fpcaObj$lambda ))
-#' @param der A logical specifying if derivatives should be returned or instead of the fitted values (default: FALSE)  
-#' @param method The method used to produce the sample of derivatives ('EIG' (default) or 'QUO'). See Liu and Mueller (2009) for more details
+#' @param derOptns A list of options to control the derivation parameters specified by \code{list(name=value)}. See `Details'. (default = NULL)
+#'
+#' @details Available derivation control options are 
+#' \describe{
+#' \item{p}{The order of the derivatives returned (default: 0, max: 2)}
+#' \item{method}{The method used to produce the sample of derivatives ('EIG' (default) or 'QUO'). See Liu and Mueller (2009) for more details}
+#' \item{GCV}{Logical specifying if GCV or CV should be used to calculated the optimal bandwidth (default: FALSE)
+#' \item{kernelType}{Smoothing kernel choice; same available types are FPCA(). default('epan')}
 #' @param ... Additional arguments
 #'
 #' @examples
@@ -22,8 +28,17 @@
 #' @export
 
 
-fitted.FPCA <-  function (object, k = NULL, der = FALSE, method = NULL, ...) {
+fitted.FPCA <-  function (object, k = NULL, derOptns = NULL, ...) {
   
+  if( is.null(derOptns)){
+    p = 0L;
+  } else {
+    p = ifelse( is.null(derOptns$p), 0, derOptns$p);
+    method = ifelse( is.null(derOptns$method), 'EIG', derOptns$method);
+    GCV = ifelse( is.null(derOptns$GCV), FALSE, TRUE);
+    kernelType =  ifelse( is.null(derOptns$kernelType), 'epan', derOptns$kernelType)
+  }
+
   fpcaObj <- object;
 
   if (class(fpcaObj) != 'FPCA'){
@@ -40,35 +55,53 @@ fitted.FPCA <-  function (object, k = NULL, der = FALSE, method = NULL, ...) {
     }
   }
   
-  if( !der ){  
+  if( ! (p %in% c(0,1,2))){
+    stop("'fitted.FPCA()' is requested to use a derivative order other than p = {0,1,2}!")
+  } 
+
+  if( p < 1 ){  
     ZMFV = fpcaObj$xiEst[,1:k, drop = FALSE] %*% t(fpcaObj$phi[,1:k, drop = FALSE]);   
     IM = approx(x= fpcaObj$obsGrid, y=fpcaObj$mu, fpcaObj$workGrid)$y 
     return( t(apply( ZMFV, 1, function(x) x + IM))) 
   } else { #Derivative is not zero
    
-     if( is.null(method) ){
+    if( is.null(method) ){
       method = 'EIG'
     }
 
-    if( method =='EIG'){
-      phi = apply(fpcaObj$phi, 2, getDerivative, t= fpcaObj$workGrid)
-      mu = getDerivative(y = fpcaObj$mu, t = fpcaObj$obsGrid)
+    mu = fpcaObj$mu
+    phi = fpcaObj$phi
+
+    if ( method == 'EIG'){
+      for( p_th in 1:p){
+        # Get numerical derivatives
+        phi = apply(phi, 2, getDerivative, t= fpcaObj$workGrid)
+        mu = getDerivative(y = mu, t = fpcaObj$obsGrid)
   
-    # if('smoothEIG' == 'FALSE'){
-    #    # Smooth very aggressively using splines / Placeholder code
-    #    phi = apply(phi,2, function(x) predict(gam(ft~s(t, k= 9), data=data.frame(t=as.vector(fpcaObj$workGrid),ft=x))))
-    #    mu = predict(gam(ft~s(t, k= 9), data=data.frame(t=as.vector(fpcaObj$obsGrid),ft=as.vector(mu))))
-    # }
+        # Smooth the numerical derivatives
+        phi = apply(phi,2, function(x) getSmoothCurve(t=as.vector(fpcaObj$workGrid), ft=x, kernelType = kernelType ))
+        mu =  getSmoothCurve(t=as.vector(fpcaObj$obsGrid), ft= as.vector(mu), kernelType = kernelType)
+      }
 
       ZMFV = fpcaObj$xiEst[,1:k, drop = FALSE] %*% t(phi[,1:k, drop = FALSE]);
       IM = approx(x= fpcaObj$obsGrid, y=mu, fpcaObj$workGrid)$y
       return( t(apply( ZMFV, 1, function(x) x + IM)))
     }
+
+
     if( method == 'QUO'){
       impSample <- fitted(fpcaObj); # Look ma! I do recursion!
       impSampleDer <- t(apply( impSample,1,getDerivative, fpcaObj$workGrid));
-      return(impSampleDer)
+      impSampleDer <- t(apply(impSampleDer,1, function(x) getSmoothCurve(t=as.vector(fpcaObj$workGrid), ft=x, kernelType = kernelType )))
+      if( p < 2){
+        return(impSampleDer)
+      } else {
+        impSampleDer2 <- t(apply( impSampleDer,1,getDerivative, fpcaObj$workGrid))
+        impSampleDer2 <- t(apply(impSampleDer2,1, function(x) getSmoothCurve(t=as.vector(fpcaObj$workGrid), ft=x, kernelType = kernelType )))
+        return( impSampleDer2);
+      }
     }
+
     stop('You asked for a derivation scheme that is not implemented.')
     return(NULL)
   }
@@ -87,4 +120,14 @@ getDerivative <- function(y,t){  # Consider using the smoother to get the deriva
   newy = Hmisc::approxExtrap(x=t, y=y, xout= newt)$y
   return (numDeriv::grad( stats::splinefun(newt, newy) , x = t ) )
 }
+
+getSmoothCurve <- function(t, ft, GCV = FALSE, kernelType = 'epan'){
+  myBw = ifelse( GCV, gcvlwls1d1( yy= ft, tt =t, npoly=1, nder=0, dataType='Sparse', kernel=kernelType) ,
+                      cvlwls1d(   yy= ft, t = t, npoly=1, nder=0, dataType='Sparse', kernel=kernelType))
+  smoothCurve = lwls1d(bw = myBw, kernel_type= kernelType, win = rep(1, length(t)), yin = ft, xout = t, xin= t)
+  return(smoothCurve)
+}
+
+
+
 
