@@ -77,10 +77,7 @@
 FPCA = function(y, t, optns = list()){
   
   # Check the data validity for further analysis
-  if( CheckData(y,t) ){
-    cat('FPCA has stopped.')
-    return(FALSE);
-  }
+  CheckData(y,t)
   
   # Force the data to be list of numeric members and handle NA's
   #y <- lapply(y, as.numeric) 
@@ -89,10 +86,6 @@ FPCA = function(y, t, optns = list()){
   #inputData <- list(y=y, t=t);
 
   inputData <- HandleNumericsAndNAN(y,t);
-  if (is.logical(inputData)){
-     cat('FPCA has stopped.')
-     return(FALSE);
-  }
   y <- inputData$y;
   t <- inputData$t;
 
@@ -101,11 +94,7 @@ FPCA = function(y, t, optns = list()){
   
   # Check the options validity for the PCA function. 
   numOfCurves = length(y);
-  if( CheckOptions(t, optns,numOfCurves) ){
-    cat('FPCA has stopped.')
-    return(FALSE);
-  }
-
+  CheckOptions(t, optns,numOfCurves)
 
   if(optns$dataType == 'Dense' || optns$dataType == 'DenseWithMV'){
     # Only applicable to Dense and Regular functional data,

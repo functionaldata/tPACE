@@ -107,10 +107,13 @@ SetOptions = function(y, t, optns){
       methodXi = "IN";
     }
   }
-   if(is.null(shrink)){ # apply shrinkage to estimates of random coefficients (dataType data only)
+   if(is.null(shrink)){ 
+     # apply shrinkage to estimates of random coefficients (dataType data
+     # only)
      shrink = FALSE;
    }
-   if(shrink == TRUE && (error != TRUE || methodXi != "IN")){ # Check for valid shrinkage choice
+   if(shrink == TRUE && (error != TRUE || methodXi != "IN")){ 
+     # Check for valid shrinkage choice
      cat('shrinkage method only has effects when methodXi = "IN" and error = TRUE! Reset to shrink = FALSE now!\n');
      shrink = FALSE      
    }

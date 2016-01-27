@@ -11,9 +11,6 @@ CheckData(y, t)
 
 \item{t}{is a n-by-1 list of vectors}
 }
-\value{
-logical
-}
 \description{
 Check if there are problems with the form and basic structure of the functional data 'y' and the recorded times 't'.
 }

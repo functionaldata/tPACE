@@ -4,7 +4,6 @@
 #' 
 #' @param y is a n-by-1 list of vectors
 #' @param t is a n-by-1 list of vectors
-#' @return inputData list with curated sample / if NULL then FPCA() exists
 
 HandleNumericsAndNAN <- function(y,t){
  
@@ -19,14 +18,12 @@ HandleNumericsAndNAN <- function(y,t){
     t = lapply(1:length(y), function(i) t[[i]][validIndexes[[i]]])
 
     if( any(unlist(lapply(y, function(x) length(x) == 0))) ){
-       cat('Error: Subjects with only NA values are not allowed.\n')
-       return( inputData <- NULL );
+       stop('Subjects with only NA values are not allowed.\n')
     }
     
     ni_y = unlist(lapply(y,function(x) sum(!is.na(x))))
     if(all(ni_y == 1)){  
-      cat("Error:FPCA is aborted because the data do not contain repeated measurements after removing NA values.\n"); 
-      return( inputData <- NULL );    
+      stop("FPCA is aborted because the data do not contain repeated measurements after removing NA values.\n"); 
     }
   }
   

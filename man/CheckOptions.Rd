@@ -13,9 +13,6 @@ CheckOptions(t, optns, n)
 
 \item{n}{is a total number of sample curves}
 }
-\value{
-logical
-}
 \description{
 Check if the options structure is valid and set the ones that are NULL
 }

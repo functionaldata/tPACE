@@ -11,9 +11,6 @@ HandleNumericsAndNAN(y, t)
 
 \item{t}{is a n-by-1 list of vectors}
 }
-\value{
-inputData list with curated sample / if NULL then FPCA() exists
-}
 \description{
 Check if there are problems cause by missing values with the form and basic structure of the functional data 'y' and the recorded times 't'.
 }

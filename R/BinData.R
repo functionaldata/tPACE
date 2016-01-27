@@ -26,7 +26,7 @@ BinData = function(y,t,optns){
   if (is.null(numBins)){
     numBins = GetBinNum(n,m,dataType,verbose)
   }else if( numBins <1){
-    cat("Warning: number of bins must be positive integer! We reset to the default number of bins!\n")
+    warning("number of bins must be positive integer! We reset to the default number of bins!\n")
     numBins = GetBinNum(n,m,dataType,verbose)
   }
   

@@ -44,8 +44,7 @@ GetBinnedCurve <- function(x, y, M = 10, isMnumBin = TRUE,
  
   # Function 'GetBinnedCurve' starts here  
   if( M<0 ){  
-    cat("Error: GetBinnedCurve is aborted because the argument: M is invalid!\n");  
-    return(TRUE);   
+    stop("GetBinnedCurve is aborted because the argument: M is invalid!\n");  
   }
   
   if(!isMnumBin){
