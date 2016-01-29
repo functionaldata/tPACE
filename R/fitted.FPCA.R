@@ -2,7 +2,7 @@
 #' 
 #' Combine the zero-meaned fitted values and the interpolated mean to get the fitted values for the trajectories or the derivatives of these trajectories.
 #' 
-#' @param object A object of class FPCA returned by the function FPCA().   
+#' @param fpcaObj A object of class FPCA returned by the function FPCA().   
 #' @param k The integer number of the first k components used for the representation. (default: length(fpcaObj$lambda ))
 #' @param derOptns A list of options to control the derivation parameters specified by \code{list(name=value)}. See `Details'. (default = NULL)
 #'
@@ -29,18 +29,13 @@
 #' @export
 
 
-fitted.FPCA <-  function (object, k = NULL, derOptns = NULL, ...) {
+fitted.FPCA <-  function (fpcaObj, k = NULL, derOptns = list(), ...) {
   
-  if( is.null(derOptns)){
-    p = 0L;
-  } else {
-    p = ifelse( is.null(derOptns$p), 0, derOptns$p);
-    method = ifelse( is.null(derOptns$method), 'EIG', derOptns$method);
-    GCV = ifelse( is.null(derOptns$GCV), FALSE, TRUE);
-    kernelType =  ifelse( is.null(derOptns$kernelType), 'epan', derOptns$kernelType)
-  }
-
-  fpcaObj <- object;
+  derOptns <- SetDerOptions(derOptns)
+  p <- derOptns[['p']]
+  method <- derOptns[['method']]
+  GCV <- derOptns[['GCV']]
+  kernelType <- derOptns[['kernelType']]
 
   if (class(fpcaObj) != 'FPCA'){
     stop("fitted.FPCA() requires an FPCA class object as basic input")
@@ -113,13 +108,22 @@ getEnlargedGrid <- function(x){
   return (  c( x[1] - 0.1 * diff(x[1:2]), x, x[N] + 0.1 * diff(x[(N-1):N])) )
 }
 
-getDerivative <- function(y,t){  # Consider using the smoother to get the derivatives
+getDerivative <- function(y, t, ord=1){  # Consider using the smoother to get the derivatives
   if( length(y) != length(t) ){
     stop("getDerivative y/t lengths are unequal.")
   }
   newt = getEnlargedGrid(t) # This is a trick to get first derivatives everywhere
   newy = Hmisc::approxExtrap(x=t, y=y, xout= newt)$y
-  return (numDeriv::grad( stats::splinefun(newt, newy) , x = t ) )
+
+  if (ord == 1) {
+    der <- numDeriv::grad( stats::splinefun(newt, newy) , x = t )
+  } else if (ord == 2) {
+    der <- sapply(t, function(t0) 
+                  numDeriv::hessian( stats::splinefun(newt, newy) , x = t0 )
+                  )
+  }
+
+  der
 }
 
 getSmoothCurve <- function(t, ft, GCV = FALSE, kernelType = 'epan'){
