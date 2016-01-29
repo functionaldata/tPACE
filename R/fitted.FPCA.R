@@ -76,8 +76,8 @@ fitted.FPCA <-  function (object, k = NULL, derOptns = list(), ...) {
         mu = getDerivative(y = mu, t = fpcaObj$obsGrid)
   
         # Smooth the numerical derivatives
-        phi = apply(phi,2, function(x) getSmoothCurve(t=as.vector(fpcaObj$workGrid), ft=x, kernelType = kernelType ))
-        mu =  getSmoothCurve(t=as.vector(fpcaObj$obsGrid), ft= as.vector(mu), kernelType = kernelType)
+        phi = apply(phi,2, function(x) getSmoothCurve(t=as.vector(fpcaObj$workGrid), ft=x, kernelType = kernelType, GCV=GCV ))
+        mu =  getSmoothCurve(t=as.vector(fpcaObj$obsGrid), ft= as.vector(mu), kernelType = kernelType, GCV= GCV)
       }
 
       ZMFV = fpcaObj$xiEst[,1:k, drop = FALSE] %*% t(phi[,1:k, drop = FALSE]);
@@ -89,12 +89,12 @@ fitted.FPCA <-  function (object, k = NULL, derOptns = list(), ...) {
     if( method == 'QUO'){
       impSample <- fitted(fpcaObj); # Look ma! I do recursion!
       impSampleDer <- t(apply( impSample,1,getDerivative, fpcaObj$workGrid));
-      impSampleDer <- t(apply(impSampleDer,1, function(x) getSmoothCurve(t=as.vector(fpcaObj$workGrid), ft=x, kernelType = kernelType )))
+      impSampleDer <- t(apply(impSampleDer,1, function(x) getSmoothCurve(t=as.vector(fpcaObj$workGrid), ft=x, kernelType = kernelType, GCV = GCV )))
       if( p < 2){
         return(impSampleDer)
       } else {
         impSampleDer2 <- t(apply( impSampleDer,1,getDerivative, fpcaObj$workGrid))
-        impSampleDer2 <- t(apply(impSampleDer2,1, function(x) getSmoothCurve(t=as.vector(fpcaObj$workGrid), ft=x, kernelType = kernelType )))
+        impSampleDer2 <- t(apply(impSampleDer2,1, function(x) getSmoothCurve(t=as.vector(fpcaObj$workGrid), ft=x, kernelType = kernelType, GCV = GCV )))
         return( impSampleDer2);
       }
     }
