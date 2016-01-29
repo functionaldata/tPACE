@@ -22,7 +22,7 @@
 
 createModeOfVarPlot <-function(fpcaObj,  k = 1, ...){ 
   
-  args1 <- list( main="Default Title", xlab='s', ylab='y(s)')  
+  args1 <- list( main="Default Title", xlab='s', ylab='')  
   inargs <- list(...)
   args1[names(inargs)] <- inargs
   
