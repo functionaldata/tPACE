@@ -22,7 +22,7 @@ res <- FPCA(samp$yList, samp$tList,
 # matplot(t(fittedY[1:10, ]), type='l', ylim=c(0, 2))
 
 
-resDer <- deriv(res, list(p=1))
+resDer <- FPCAder(res, list(p=1))
 # plot(resDer$mu, type='l', ylim=c(-1, 1))
 # plot(resDer$muDer, type='l', ylim=c(-2, 2))
 # plot(resDer$phi[, 1], type='l', ylim=c(-2, 2))
