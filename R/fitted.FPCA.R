@@ -51,7 +51,7 @@ fitted.FPCA <-  function (object, k = NULL, derOptns = list(), ...) {
       stop("'fitted.FPCA()' is requested to use more components than it currently has available. (or 'k' is smaller than 1)")
     }
   }
-  
+ 
   if( ! (p %in% c(0,1,2))){
     stop("'fitted.FPCA()' is requested to use a derivative order other than p = {0,1,2}!")
   } 
@@ -61,7 +61,12 @@ fitted.FPCA <-  function (object, k = NULL, derOptns = list(), ...) {
     IM = approx(x= fpcaObj$obsGrid, y=fpcaObj$mu, fpcaObj$workGrid)$y 
     return( t(apply( ZMFV, 1, function(x) x + IM))) 
   } else { #Derivative is not zero
-   
+ 
+    if( k > selectK( fpcaObj, FVEthreshold=0.95, criterion='FVE')$k ){
+    warning("Potentially you use too many components to estimate derivatives. \n  Consider using selectK() to find a more informed estimate for 'k'.");
+    }
+
+  
     if( is.null(method) ){
       method = 'EIG'
     }
