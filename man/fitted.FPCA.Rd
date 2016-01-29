@@ -4,7 +4,7 @@
 \alias{fitted.FPCA}
 \title{Fitted functional sample from FPCA object}
 \usage{
-\method{fitted}{FPCA}(object, k = NULL, derOptns = NULL, ...)
+\method{fitted}{FPCA}(object, k = NULL, derOptns = list(), ...)
 }
 \arguments{
 \item{object}{A object of class FPCA returned by the function FPCA().}
