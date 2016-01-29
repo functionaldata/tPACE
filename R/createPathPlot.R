@@ -47,12 +47,21 @@ createPathPlot = function(fpcaObj, subset, k=NULL, inputData=fpcaObj[['inputData
   workGrid <- fpcaObj[['workGrid']]
   fit <- fitted(fpcaObj, k=k)[subset, , drop=FALSE]
   
+  args1 <- list( xlab= 's', ylab= ' ')                    
+  inargs <- list(...)
+  args1[names(inargs)] <- inargs
+
   # make a matrix with NAs for the sparse observations.
   maxN_i <- max(sapply(inputData[['t']][subset], length))
   obst <- sapply(inputData[['t']][subset], function(x) c(x, rep(NA, maxN_i - length(x))))
   obsy <- sapply(inputData[['y']][subset], function(x) c(x, rep(NA, maxN_i - length(x))))
-  matplot(obst, obsy, type='p', ...)
-  matplot(workGrid, t(fit), type='l', add=TRUE, ...)
+
+  #matplot(obst, obsy, type='p',...)
+  args2 = list (x = obst, y = obsy, type='p' )
+  do.call(matplot, c(args2, args1))   
+
+  matplot(workGrid, t(fit), type='l', add=TRUE)
+
  
   invisible()
 }

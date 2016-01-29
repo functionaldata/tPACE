@@ -2,7 +2,7 @@
 #' 
 #' Create the k-th mode of variation plot around the mean. The red-line is
 #' the functional mean, the grey shaded areas show the range of variations
-#' around the mean: +/-Q \sqrt{\lambda_k} \phi_k;
+#' around the mean: +/-Q sqrt{lambda_k} phi_k;
 #' for the dark grey area Q = 1, and for the light grey are Q = 2.
 #'
 #' @param fpcaObj An FPCA class object returned by FPCA(). 

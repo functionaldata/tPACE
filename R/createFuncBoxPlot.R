@@ -25,7 +25,7 @@
 
 createFuncBoxPlot <- function(fpcaObj, addIndx =NULL, variant= 'bagplot', enforceUnimodality = NULL, ifactor = NULL,... ){
   
-  args1 <- list( xlab='s', ylab='y(s)')  
+  args1 <- list( xlab='s', ylab='')  
   inargs <- list(...)
   args1[names(inargs)] <- inargs
   if( is.na( any(match( variant, c('pointwise', 'bagplot', 'KDE') )) ) ){
