@@ -24,7 +24,7 @@
 
 
 FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
-  
+
   derOptns <- SetDerOptions(derOptns)
   p <- derOptns[['p']]
   method <- derOptns[['method']]
@@ -58,7 +58,7 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
                                      kernelType = kernelType ))
   }
 
-
+  # muDenseDer <- Hmisc::approxExtrap(fpcaObj$obsGrid, muDer, fpcaObj$workGrid)
   fpcaObj <- append(fpcaObj, list(muDer = muDer, 
                                   phiDer = phiDer, 
                                   derOptns = derOptns))
