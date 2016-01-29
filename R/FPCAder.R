@@ -23,7 +23,7 @@
 #' @export
 
 
-deriv.FPCA <-  function (fpcaObj, derOptns = list(p=1)) {
+FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
   
   derOptns <- SetDerOptions(derOptns)
   p <- derOptns[['p']]
@@ -32,11 +32,11 @@ deriv.FPCA <-  function (fpcaObj, derOptns = list(p=1)) {
   kernelType <- derOptns[['kernelType']]
 
   if (!class(fpcaObj) %in% 'FPCA'){
-    stop("deriv.FPCA() requires an FPCA class object as basic input")
+    stop("FPCAder() requires an FPCA class object as basic input")
   }
 
   if( ! (p %in% c(1, 2))){
-    stop("'deriv.FPCA()' is requested to use a derivative order other than p = {1, 2}!")
+    stop("'FPCAder()' is requested to use a derivative order other than p = {1, 2}!")
   } 
 
   muDer <- fpcaObj$mu

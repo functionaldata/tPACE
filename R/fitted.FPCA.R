@@ -2,7 +2,7 @@
 #' 
 #' Combine the zero-meaned fitted values and the interpolated mean to get the fitted values for the trajectories or the derivatives of these trajectories.
 #' 
-#' @param fpcaObj A object of class FPCA returned by the function FPCA().   
+#' @param object A object of class FPCA returned by the function FPCA().   
 #' @param k The integer number of the first k components used for the representation. (default: length(fpcaObj$lambda ))
 #' @param derOptns A list of options to control the derivation parameters specified by \code{list(name=value)}. See `Details'. (default = NULL)
 #'
@@ -29,7 +29,7 @@
 #' @export
 
 
-fitted.FPCA <-  function (fpcaObj, k = NULL, derOptns = list(), ...) {
+fitted.FPCA <-  function (object, k = NULL, derOptns = list(), ...) {
   
   derOptns <- SetDerOptions(derOptns)
   p <- derOptns[['p']]
@@ -37,6 +37,7 @@ fitted.FPCA <-  function (fpcaObj, k = NULL, derOptns = list(), ...) {
   GCV <- derOptns[['GCV']]
   kernelType <- derOptns[['kernelType']]
 
+  fpcaObj <- object
   if (class(fpcaObj) != 'FPCA'){
     stop("fitted.FPCA() requires an FPCA class object as basic input")
   }
