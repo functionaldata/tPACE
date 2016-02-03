@@ -30,7 +30,7 @@ createDesignPlot = function(t, obsGrid = NULL, isColorPlot=TRUE, noDiagonal=TRUE
     obsGrid = sort(unique(unlist(t)))
   }
   
-  args1 <- list( main="Design Title", xlab= 'Observed time grid', ylab= 'Observed time grid')
+  args1 <- list( main="Design Plot", xlab= 'Observed time grid', ylab= 'Observed time grid')
   inargs <- list(...)
   args1[names(inargs)] <- inargs 
   
