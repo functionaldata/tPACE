@@ -10,6 +10,7 @@
 
 SetOptions = function(y, t, optns){
 
+  muCovEstMethod = optns[['muCovEstMethod']]
   bwmu =optns[['bwmu']];                
   bwmuMethod =optns[['bwmuMethod']]; 
   bwuserCov =optns[['bwcov']];            
@@ -130,7 +131,7 @@ SetOptions = function(y, t, optns){
     kernel = NULL; 
   }  
   if(is.null(kernel)){ # smoothing kernel choice
-    if(dataType == "Dense"){
+    if(dataType %in% c( "Dense", "DenseWithMV")){
       kernel = "epan";   # kernel: Epanechnikov
     }else{
       kernel = "gauss";  # kernel: Gaussian
@@ -203,14 +204,21 @@ SetOptions = function(y, t, optns){
   }
   if(is.null(lean)){ 
     lean = FALSE;
-  } 
+  }
+  if(is.null(muCovEstMethod)){
+    if (dataType == 'Dense'){
+      muCovEstMethod = 'smooth';
+    } else {
+      muCovEstMethod = 'cross-sectional';
+    }
+  }
     
   retOptns <- list(bwmu = bwmu, bwmuMethod = bwmuMethod, bwuserCov = bwuserCov, bwuserCovGcv = bwuserCovGcv,
           kFoldCov = kFoldCov, selectionMethod = selectionMethod, FVEthreshold = FVEthreshold,
           fitEigenValues = fitEigenValues, maxK = maxK, dataType = dataType, error = error, shrink = shrink,
           nRegGrid = nRegGrid, rotationCut = rotationCut, methodXi = methodXi, kernel = kernel, 
           lean = lean, diagnosticsPlot = diagnosticsPlot, numBins = numBins, useBinnedCov = useBinnedCov, 
-          yname = yname,  rho = rho, verbose = verbose, userMu = userMu, userCov = userCov, 
+          yname = yname,  rho = rho, verbose = verbose, userMu = userMu, userCov = userCov, muCovEstMethod = muCovEstMethod,
           userSigma2 = userSigma2, methodMu= methodMu, outPercent = outPercent, useBinnedData = useBinnedData)
 
   invalidNames <- !names(optns) %in% names(retOptns)

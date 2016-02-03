@@ -146,6 +146,9 @@ CheckOptions = function(t,optns,n){
     # display diagnostic messages
     stop("FPCA is aborted because the argument: userCov is invalid!\n");     
   }
-  
+  if(!(any(optns[['muCovEstMethod']] == c('smooth', 'cross-sectional')))){
+    stop("FPCA is aborted because the argument: muCovEstMethod is invalid!\n");    
+  }
+
 }
 
