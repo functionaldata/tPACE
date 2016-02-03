@@ -144,6 +144,7 @@ SetOptions = function(y, t, optns){
     maxK = nRegGrid -2;
   }
   if(is.numeric(selectionMethod)){
+    FVEthreshold <- 1 # disable FVE selection.
     if(selectionMethod > (nRegGrid-2)){ # check if a reasonable number of eigenfunctions is requested
       cat(paste("maxK can only be less than or equal to", nRegGrid-2,"! Reset to be", nRegGrid-2, "now!\n"));
       maxK = nRegGrid -2;
@@ -204,11 +205,18 @@ SetOptions = function(y, t, optns){
     lean = FALSE;
   } 
     
-  return( list(bwmu = bwmu, bwmuMethod = bwmuMethod, bwuserCov = bwuserCov, bwuserCovGcv = bwuserCovGcv,
+  retOptns <- list(bwmu = bwmu, bwmuMethod = bwmuMethod, bwuserCov = bwuserCov, bwuserCovGcv = bwuserCovGcv,
           kFoldCov = kFoldCov, selectionMethod = selectionMethod, FVEthreshold = FVEthreshold,
           fitEigenValues = fitEigenValues, maxK = maxK, dataType = dataType, error = error, shrink = shrink,
           nRegGrid = nRegGrid, rotationCut = rotationCut, methodXi = methodXi, kernel = kernel, 
           lean = lean, diagnosticsPlot = diagnosticsPlot, numBins = numBins, useBinnedCov = useBinnedCov, 
           yname = yname,  rho = rho, verbose = verbose, userMu = userMu, userCov = userCov, 
-          userSigma2 = userSigma2, methodMu= methodMu, outPercent = outPercent, useBinnedData = useBinnedData) )
+          userSigma2 = userSigma2, methodMu= methodMu, outPercent = outPercent, useBinnedData = useBinnedData)
+
+  invalidNames <- !names(optns) %in% names(retOptns)
+  if (any(invalidNames)) {
+    stop(sprintf('Invalid option names: %s',
+                 paste0(names(optns)[invalidNames], collapse=', ')))
+  }
+  return( retOptns )
 }
