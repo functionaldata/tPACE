@@ -31,7 +31,7 @@ createDiagnosticsPlot <-function(ret, openNewDev = FALSE){
   createDesignPlot(t)
   
   ## Make Mean trajectory plot
-  plot( obsGrid, mu, type='l', xlab='s',ylab='', main='Mean', panel.first = grid())   
+  plot( obsGrid, mu, type='l', xlab='s',ylab='', main='Mean Function', panel.first = grid())   
   
   ## Make Scree plot
   createScreePlot(ret);
@@ -43,8 +43,8 @@ createDiagnosticsPlot <-function(ret, openNewDev = FALSE){
     k = 3;
   } else {
     k = K;
-  } 
-  matplot(workGrid, ret$phi[,1:k], type='n', main="First Eigenfunctions", xlab='s', ylab='') 
+  } # paste(c("First ", as.character(3), " eigenfunctions"),collapse= '')
+  matplot(workGrid, ret$phi[,1:k], type='n', main=paste(collapse='', c("First ", as.character(k), " Eigenfunctions"))  , xlab='s', ylab='') 
   grid()
   matlines(workGrid, ret$phi[,1:k] ) 
 }
