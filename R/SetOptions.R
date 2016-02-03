@@ -32,7 +32,7 @@ SetOptions = function(y, t, optns){
   diagnosticsPlot =optns[['diagnosticsPlot']];
   verbose =optns[['verbose']];   
   userMu =optns[['userMu']];                  
-  methodMu =optns[['methodMu']];
+  #methodMu =optns[['methodMu']];
   outPercent =optns[['outPercent']];  
   userCov =optns[['userCov']];
   userSigma2 = optns[['userSigma2']]
@@ -174,9 +174,9 @@ SetOptions = function(y, t, optns){
   if(is.null(userCov)){
     userCov <- NULL
   }
-  if(is.null(methodMu)){ # method to estimate mu
-    methodMu <- 'PACE'
-  }
+  #if(is.null(methodMu)){ # method to estimate mu
+  #  methodMu <- 'PACE'
+  #}
   if(is.null(outPercent)){ 
     outPercent <- c(0,1)
   }  
@@ -219,7 +219,7 @@ SetOptions = function(y, t, optns){
           nRegGrid = nRegGrid, rotationCut = rotationCut, methodXi = methodXi, kernel = kernel, 
           lean = lean, diagnosticsPlot = diagnosticsPlot, numBins = numBins, useBinnedCov = useBinnedCov, 
           yname = yname,  rho = rho, verbose = verbose, userMu = userMu, userCov = userCov, muCovEstMethod = muCovEstMethod,
-          userSigma2 = userSigma2, methodMu= methodMu, outPercent = outPercent, useBinnedData = useBinnedData)
+          userSigma2 = userSigma2, outPercent = outPercent, useBinnedData = useBinnedData)
 
   invalidNames <- !names(optns) %in% names(retOptns)
   if (any(invalidNames)) {

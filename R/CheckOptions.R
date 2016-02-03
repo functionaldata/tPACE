@@ -130,10 +130,10 @@ CheckOptions = function(t,optns,n){
       stop('userSigma2 specified to be 0 but error = TRUE. If no measurement error is assumed then use error = FALSE.')
     }
   }
-  if(!(any(optns[['methodMu']] == c('PACE','RARE','CrossSectional')))){ 
-    # user-defined mean functions
-    stop("FPCA is aborted because the argument: methodMu is invalid!\n");     
-  }
+  #if(!(any(optns[['methodMu']] == c('PACE','RARE','CrossSectional')))){ 
+  #  # user-defined mean functions
+  #  stop("FPCA is aborted because the argument: methodMu is invalid!\n");     
+  #}
   if( !( (length(optns[['outPercent']])==2) &&  is.numeric(optns[['outPercent']]) && all(0<=optns[['outPercent']]) && all(optns[['outPercent']]<=1) )){ 
     # display diagnostic messages
     stop("FPCA is aborted because the argument: outPercent is invalid!\n");    
