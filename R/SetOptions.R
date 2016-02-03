@@ -206,8 +206,8 @@ SetOptions = function(y, t, optns){
     lean = FALSE;
   }
   if(is.null(muCovEstMethod)){
-    if (dataType == 'Dense'){
-      muCovEstMethod = 'smooth';
+    if (dataType == 'Sparse'){
+      muCovEstMethod = 'smooth'; #In the odd case that somehow we use this...
     } else {
       muCovEstMethod = 'cross-sectional';
     }
