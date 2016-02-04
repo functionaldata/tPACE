@@ -40,7 +40,7 @@ FPCA for dense or sparse functional data.
 \details{
 Available control options are 
 \describe{
-\item{bwcov}{The bandwidth value for the smoothed covariance function; positive numeric - default: determine automatically based on 'bwcovMethod'}
+\item{bwuserCov}{The bandwidth value for the smoothed covariance function; positive numeric - default: determine automatically based on 'bwcovMethod'}
 \item{bwcovMethod}{The bandwidth choice method for the smoothed covariance function; 'GMeanAndGCV','CV','GCV' - default: 'GMeanAndGCV'')}
 \item{bwmu}{The bandwidth value for the smoothed mean function (using 'CV' or 'GCV'); positive numeric - default: determine automatically based on 'bwmuMethod'}
 \item{bwmuMethod}{The bandwidth choice method for the mean function; 'GMeanAndGCV','CV','GCV' - default: 'GMeanAndGCV''} 
