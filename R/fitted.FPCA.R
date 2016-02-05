@@ -132,9 +132,10 @@ getDerivative <- function(y, t, ord=1){  # Consider using the smoother to get th
   der
 }
 
-getSmoothCurve <- function(t, ft, GCV = FALSE, kernelType = 'epan'){
-  myBw = ifelse( GCV, gcvlwls1d1( yy= ft, tt =t, npoly=1, nder=0, dataType='Sparse', kernel=kernelType) ,
+getSmoothCurve <- function(t, ft, GCV = FALSE, kernelType = 'epan', mult = 1){
+  myBw = ifelse( GCV, gcvlwls1d1( yy= ft, tt =t, npoly=1, nder=0, dataType='Sparse', kernel=kernelType)[['bOpt']] ,
                       cvlwls1d(   yy= ft, t = t, npoly=1, nder=0, dataType='Sparse', kernel=kernelType))
+  myBw <- myBw * mult
   smoothCurve = lwls1d(bw = myBw, kernel_type= kernelType, win = rep(1, length(t)), yin = ft, xout = t, xin= t)
   return(smoothCurve)
 }

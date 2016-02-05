@@ -7,7 +7,7 @@
 #' \describe{
 #' \item{p}{The order of the derivatives returned (default: 0, max: 2)}
 #' \item{method}{Not used}
-#' \item{GCV}{Logical specifying if GCV or CV should be used to calculated the optimal bandwidth (default: FALSE)}
+#' \item{GCV}{Logical specifying if GCV (TRUE) or CV (FALSE) should be used to calculated the optimal bandwidth (default: FALSE)}
 #' \item{kernelType}{Smoothing kernel choice; same available types are FPCA(). default('epan')}
 #' }
 #'
@@ -30,7 +30,9 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
   method <- derOptns[['method']]
   GCV <- derOptns[['GCV']]
   kernelType <- derOptns[['kernelType']]
-
+  obsGrid <- fpcaObj$obsGrid
+  workGrid <- fpcaObj$workGrid
+  
   if (!class(fpcaObj) %in% 'FPCA'){
     stop("FPCAder() requires an FPCA class object as basic input")
   }
@@ -38,27 +40,31 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
   if( ! (p %in% c(1, 2))){
     stop("'FPCAder()' is requested to use a derivative order other than p = {1, 2}!")
   } 
+  
+  if (p == 2) {
+    warning('Second derivative is experimental only.')
+  }
 
   muDer <- fpcaObj$mu
   phiDer <- fpcaObj$phi
 
-  for (i in seq_len(p)) {
+  # for (i in seq_len(p)) {
     # derivative
-    muDer <- getDerivative(y = muDer, t = fpcaObj$obsGrid)
-    phiDer <- apply(phiDer, 2, getDerivative, t= fpcaObj$workGrid)
+    muDer <- getDerivative(y = muDer, t = obsGrid, ord=p)
+    phiDer <- apply(phiDer, 2, getDerivative, t= workGrid, ord=p)
     # smooth
-    muDer <- getSmoothCurve(t=as.vector(fpcaObj$obsGrid), 
+    muDer <- getSmoothCurve(t=obsGrid, 
                             ft= muDer,
                             GCV = GCV,
-                            kernelType = kernelType)
+                            kernelType = kernelType, mult=2)
     phiDer <- apply(phiDer, 2, function(x)
-                      getSmoothCurve(t=as.vector(fpcaObj$workGrid), 
+                      getSmoothCurve(t=workGrid, 
                                      ft=x, 
                                      GCV = GCV, 
-                                     kernelType = kernelType ))
-  }
+                                     kernelType = kernelType, mult=2))
+  # }
 
-  # muDenseDer <- Hmisc::approxExtrap(fpcaObj$obsGrid, muDer, fpcaObj$workGrid)
+  # muDenseDer <- Hmisc::approxExtrap(obsGrid, muDer, workGrid)
   fpcaObj <- append(fpcaObj, list(muDer = muDer, 
                                   phiDer = phiDer, 
                                   derOptns = derOptns))

@@ -1,15 +1,12 @@
 devtools::load_all()
 library(testthat)
-library(fda) # for generating fourier basis
-options()
+# library(fda) # for generating fourier basis
+# options(error=recover)
+# trueLam <- 4 / ((2 * (1:50) - 1) * pi) ^ 2
 
-trueLam <- 4 / ((2 * (1:50) - 1) * pi) ^ 2
-
-devtools::load_all()
-library(testthat)
 set.seed(1)
 n <- 500
-p <- 100
+p <- 500
 pts <- seq(0, 1, length.out=p)
 # samp <- matrix(rnorm(n), n, p)
 samp <- wiener(n, pts)
@@ -18,15 +15,25 @@ samp <- samp + rnorm(n * p, sd=0.01) + matrix(pts, n, p, byrow=TRUE)
 samp <- sparsify(samp, pts, p)
 res <- FPCA(samp$yList, samp$tList, 
             list(dataType='Dense', error=FALSE, lean=TRUE))
+# smRes <- FPCA(samp$yList, samp$tList, 
+            # list(dataType='Dense', error=FALSE, lean=TRUE, 
+                 # muCovEstMethod='smooth'))            
 # fittedY <- fitted(res, derOptns=list(p=2))
 # matplot(t(fittedY[1:10, ]), type='l', ylim=c(0, 2))
 
 
-resDer <- FPCAder(res, list(p=1))
-# plot(resDer$mu, type='l', ylim=c(-1, 1))
-# plot(resDer$muDer, type='l', ylim=c(-2, 2))
-# plot(resDer$phi[, 1], type='l', ylim=c(-2, 2))
-# plot(resDer$phiDer[, 1], type='l', ylim=c(-2, 2))
+resDer <- FPCAder(res, list(p=1, GCV=TRUE))
+# smDer <- FPCAder(smRes, list(p=1, GCV=TRUE))
+plot(pts, resDer$mu, type='l', ylim=c(-1, 1))
+plot(pts, resDer$muDer, type='l', ylim=c(-2, 2))
+plot(pts, resDer$phi[, 1], type='l', ylim=c(-2, 2))
+plot(pts, -resDer$phiDer[, 1], type='l')
+plot(pts, resDer$phi[, 2], type='l', ylim=c(-2, 2))
+plot(pts, -resDer$phiDer[, 2], type='l')
+# plot(pts, smDer$mu, type='l', ylim=c(-1, 1))
+# plot(pts, smDer$muDer, type='l')
+# plot(pts, smDer$phi[, 1], type='l', ylim=c(-2, 2))
+# plot(pts, smDer$phiDer[, 1], type='l')
 test_that('first derivative is fine', {
   expect_equal(mean(resDer$muDer), 1, tolerance=0.1)
 })
