@@ -9,6 +9,9 @@ SetDerOptions <- function(derOptns = list()) {
   derOptns$GCV <- ifelse (is.null(derOptns$GCV), FALSE, TRUE)
   derOptns$kernelType <-  ifelse(is.null(derOptns$kernelType), 'epan',
                                  derOptns$kernelType)
+  if (is.null(derOptns$h)) {
+    derOptns$h <- derOptns$p * 0.1
+  }
 
   derOptns
 }

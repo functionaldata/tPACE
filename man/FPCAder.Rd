@@ -19,7 +19,7 @@ Available derivation control options are
 \describe{
 \item{p}{The order of the derivatives returned (default: 0, max: 2)}
 \item{method}{Not used}
-\item{GCV}{Logical specifying if GCV (TRUE) or CV (FALSE) should be used to calculated the optimal bandwidth (default: FALSE)}
+\item{h}{bandwidth in terms of proportion of input range. Default to 0.1*p}
 \item{kernelType}{Smoothing kernel choice; same available types are FPCA(). default('epan')}
 }
 }
