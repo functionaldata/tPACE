@@ -18,8 +18,7 @@ Take derivative of an FPCA object
 Available derivation control options are 
 \describe{
 \item{p}{The order of the derivatives returned (default: 0, max: 2)}
-\item{method}{Not used}
-\item{h}{bandwidth in terms of proportion of input range. Default to 0.1*p}
+\item{bw}{Bandwidth for smoothing the derivatives (default: p * 0.075 * S)}
 \item{kernelType}{Smoothing kernel choice; same available types are FPCA(). default('epan')}
 }
 }
