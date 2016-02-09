@@ -45,8 +45,8 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
     warning('Second derivative is experimental only.')
   }
 
-  muDer <- lwls1d(bw, kernelType, rep(1, length(obsGrid)), obsGrid, res$mu, obsGrid, p, p)
-  phiDer <- apply(res$phi, 2, function(phi) lwls1d(bw, kernelType, rep(1, length(workGrid)), workGrid, phi, workGrid, p, p))
+  muDer <- lwls1d(bw, kernelType, rep(1, length(obsGrid)), obsGrid, fpcaObj$mu, obsGrid, p, p)
+  phiDer <- apply(fpcaObj$phi, 2, function(phi) lwls1d(bw, kernelType, rep(1, length(workGrid)), workGrid, phi, workGrid, p, p))
 
  # muDer2<- fpcaObj$mu
  # phiDer2 <- fpcaObj$phi
