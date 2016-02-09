@@ -10,7 +10,7 @@
 #' \describe{
 #' \item{p}{The order of the derivatives returned (default: 0, max: 2)}
 #' \item{method}{The method used to produce the sample of derivatives ('EIG' (default) or 'QUO'). See Liu and Mueller (2009) for more details}
-#' \item{GCV}{Logical specifying if GCV or CV should be used to calculated the optimal bandwidth (default: FALSE)}
+#' \item{bw}{Bandwidth for smoothing the derivatives (default: p * 0.075 * S)}
 #' \item{kernelType}{Smoothing kernel choice; same available types are FPCA(). default('epan')}
 #' }
 #' @param ... Additional arguments
@@ -31,10 +31,10 @@
 
 fitted.FPCA <-  function (object, k = NULL, derOptns = list(), ...) {
   
-  derOptns <- SetDerOptions(derOptns)
+  derOptns <- SetDerOptions(fpcaObject = object, derOptns)
   p <- derOptns[['p']]
   method <- derOptns[['method']]
-  GCV <- derOptns[['GCV']]
+  bw <-  derOptns[['bw']] #  p * 0.075 * diff(range(object$workGrid))
   kernelType <- derOptns[['kernelType']]
 
   fpcaObj <- object
@@ -66,47 +66,33 @@ fitted.FPCA <-  function (object, k = NULL, derOptns = list(), ...) {
     warning("Potentially you use too many components to estimate derivatives. \n  Consider using selectK() to find a more informed estimate for 'k'.");
     }
 
-  
     if( is.null(method) ){
       method = 'EIG'
     }
 
     mu = fpcaObj$mu
     phi = fpcaObj$phi
+    obsGrid = fpcaObj$obsGrid
+    workGrid = fpcaObj$workGrid
 
     if ( method == 'EIG'){
-      for( p_th in 1:p){
-        # Get numerical derivatives
-        phi = apply(phi, 2, getDerivative, t= fpcaObj$workGrid)
-        mu = getDerivative(y = mu, t = fpcaObj$obsGrid)
-  
-        # Smooth the numerical derivatives
-        phi = apply(phi,2, function(x) getSmoothCurve(t=as.vector(fpcaObj$workGrid), ft=x, kernelType = kernelType, GCV=GCV ))
-        mu =  getSmoothCurve(t=as.vector(fpcaObj$obsGrid), ft= as.vector(mu), kernelType = kernelType, GCV= GCV)
-      }
-
+      phi = apply(phi, 2, function(phiI) lwls1d(bw = bw, kernelType, win = rep(1, length(workGrid)), 
+                                                  xin = workGrid, yin = phiI, xout = workGrid, npoly = p, nder = p))
+      mu = lwls1d(bw = bw, kernelType, win = rep(1, length(obsGrid)), xin = obsGrid, yin = mu, xout = obsGrid, npoly = p, nder = p)
       ZMFV = fpcaObj$xiEst[,1:k, drop = FALSE] %*% t(phi[,1:k, drop = FALSE]);
       IM = approx(x= fpcaObj$obsGrid, y=mu, fpcaObj$workGrid)$y
       return( t(apply( ZMFV, 1, function(x) x + IM)))
     }
 
-
     if( method == 'QUO'){
-      impSample <- fitted(fpcaObj); # Look ma! I do recursion!
-      impSampleDer <- t(apply( impSample,1,getDerivative, fpcaObj$workGrid));
-      impSampleDer <- t(apply(impSampleDer,1, function(x) getSmoothCurve(t=as.vector(fpcaObj$workGrid), ft=x, kernelType = kernelType, GCV = GCV )))
-      if( p < 2){
-        return(impSampleDer)
-      } else {
-        impSampleDer2 <- t(apply( impSampleDer,1,getDerivative, fpcaObj$workGrid))
-        impSampleDer2 <- t(apply(impSampleDer2,1, function(x) getSmoothCurve(t=as.vector(fpcaObj$workGrid), ft=x, kernelType = kernelType, GCV = GCV )))
-        return( impSampleDer2);
-      }
+      impSample <- fitted(fpcaObj, k = k); # Look ma! I do recursion!
+      return( apply(impSample, 1, function(curve) lwls1d(bw = bw, kernelType, win = rep(1, length(workGrid)), 
+                                                         xin = workGrid, yin = curve, xout = workGrid, npoly = p, nder = p)))
     }
-
-    stop('You asked for a derivation scheme that is not implemented.')
-    return(NULL)
   }
+
+  stop('You asked for a derivation scheme that is not implemented.')
+  return(NULL)
 }
 
 getEnlargedGrid <- function(x){
@@ -129,7 +115,7 @@ getDerivative <- function(y, t, ord=1){  # Consider using the smoother to get th
                   )
   }
 
-  der
+  return(der)
 }
 
 getSmoothCurve <- function(t, ft, GCV = FALSE, kernelType = 'epan', mult = 1){

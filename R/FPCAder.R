@@ -6,9 +6,7 @@
 #' @details Available derivation control options are 
 #' \describe{
 #' \item{p}{The order of the derivatives returned (default: 0, max: 2)}
-#' \item{method}{Not used}
-#' \item{h}{bandwidth in terms of proportion of input range. Default to 0.1*p}
-# #' \item{GCV}{Logical specifying if GCV (TRUE) or CV (FALSE) should be used to calculated the optimal bandwidth (default: FALSE)}
+#' \item{bw}{Bandwidth for smoothing the derivatives (default: p * 0.075 * S)}
 #' \item{kernelType}{Smoothing kernel choice; same available types are FPCA(). default('epan')}
 #' }
 #'
@@ -26,11 +24,10 @@
 
 FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
 
-  derOptns <- SetDerOptions(derOptns)
+  derOptns <- SetDerOptions(fpcaObj,derOptns = derOptns)
   p <- derOptns[['p']]
   method <- derOptns[['method']]
-  # GCV <- derOptns[['GCV']]
-  bw <- derOptns[['h']] * diff(range(fpcaObj$obsGrid))
+  bw <- derOptns[['bw']]
   kernelType <- derOptns[['kernelType']]
   
   obsGrid <- fpcaObj$obsGrid
@@ -49,31 +46,26 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
   }
 
   muDer <- lwls1d(bw, kernelType, rep(1, length(obsGrid)), obsGrid, res$mu, obsGrid, p, p)
-  phiDer <- apply(res$phi, 2, function(phi)
-    lwls1d(bw, kernelType, rep(1, length(obsGrid)), obsGrid, phi, obsGrid, p, p))
-  # muDer <- fpcaObj$mu
-  # phiDer <- fpcaObj$phi
+  phiDer <- apply(res$phi, 2, function(phi) lwls1d(bw, kernelType, rep(1, length(workGrid)), workGrid, phi, workGrid, p, p))
 
-  # for (i in seq_len(p)) {
-    # # derivative
-    # muDer <- getDerivative(y = muDer, t = obsGrid, ord=p)
-    # phiDer <- apply(phiDer, 2, getDerivative, t= workGrid, ord=p)
-    # # smooth
-    # muDer <- getSmoothCurve(t=obsGrid, 
-                            # ft= muDer,
-                            # GCV = GCV,
-                            # kernelType = kernelType, mult=2)
-    # phiDer <- apply(phiDer, 2, function(x)
-                      # getSmoothCurve(t=workGrid, 
-                                     # ft=x, 
-                                     # GCV = GCV, 
-                                     # kernelType = kernelType, mult=2))
-  # }
+ # muDer2<- fpcaObj$mu
+ # phiDer2 <- fpcaObj$phi
+ # for (i in seq_len(p)) {
+ #    # derivative
+ #    muDer2 <- getDerivative(y = muDer2, t = obsGrid, ord=p)
+ #    phiDer2 <- apply(phiDer2, 2, getDerivative, t= workGrid, ord=p)
+ #    # smooth
+ #    muDer2 <- getSmoothCurve(t=obsGrid, 
+ #                            ft= muDer2,
+ #                            GCV = TRUE,
+ #                            kernelType = kernelType, mult=2)
+ #    phiDer2 <- apply(phiDer2, 2, function(x)
+ #                      getSmoothCurve(t=workGrid, ft=x, GCV =TRUE, kernelType = kernelType, mult=1))
+ # }
 
-  # muDenseDer <- Hmisc::approxExtrap(obsGrid, muDer, workGrid)
-  fpcaObj <- append(fpcaObj, list(muDer = muDer, 
-                                  phiDer = phiDer, 
+  fpcaObj <- append(fpcaObj, list(muDer = muDer, phiDe = phiDer, 
+                                  #muDer2 = muDer2, phiDer2 = phiDer2,
                                   derOptns = derOptns))
   class(fpcaObj) <- c(class(fpcaObj), 'FPCAder')
-  fpcaObj
+  return(fpcaObj)
 }
