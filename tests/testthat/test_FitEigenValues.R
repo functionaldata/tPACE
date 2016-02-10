@@ -1,5 +1,5 @@
 devtools::load_all()
-#options(error=recover)
+##options(error=recover)
 library(testthat)
 
 test_that('FitEigenValues works for binned rcov, error=TRUE', {

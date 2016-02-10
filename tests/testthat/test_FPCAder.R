@@ -1,7 +1,7 @@
 devtools::load_all()
 library(testthat)
 # library(fda) # for generating fourier basis
-# options(error=recover)
+# #options(error=recover)
 # trueLam <- 4 / ((2 * (1:50) - 1) * pi) ^ 2
 
 set.seed(1)

@@ -1,4 +1,4 @@
-options(error=recover)
+#options(error=recover)
 library(testthat)
 library(caret)
 
