@@ -8,8 +8,8 @@ test_that('The binned version is exactly the same as the unbinned version.', {
   y <- samp3$yList
   t <- samp3$tList
 
-  resNoBin <- FPCA(y, t, list(datatype='Sparse', useBinnedData='OFF', useBinnedCov=FALSE))
-  resBin <- FPCA(y, t, list(datatype='Sparse', useBinnedData='OFF', useBinnedCov=TRUE))
+  resNoBin <- FPCA(y, t, list(dataType='Sparse', useBinnedData='OFF', useBinnedCov=FALSE))
+  resBin <- FPCA(y, t, list(dataType='Sparse', useBinnedData='OFF', useBinnedCov=TRUE))
 
   expect_equal(resNoBin[names(resNoBin) != 'optns'], resBin[names(resBin) != 'optns'])
 })

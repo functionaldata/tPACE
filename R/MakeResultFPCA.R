@@ -20,33 +20,37 @@
 
 MakeResultFPCA <- function(optns, smcObj, mu, scsObj, eigObj, 
                            scoresObj, obsGrid, workGrid, rho=NULL, fitLambda=NULL, inputData){
-  if(optns$dataType == 'Sparse'){
-    ret <- list(sigma2 = scsObj$sigma2, lambda = eigObj$lambda, phi = eigObj$phi,
-                xiEst = t(do.call(cbind, scoresObj[1, ])), xiVar = scoresObj[2, ], 
-                # fittedY = scoresObj[3, ], 
-                obsGrid = obsGrid, mu = mu, workGrid = workGrid, smoothedCov = scsObj$smoothCov, FVE = eigObj$cumFVE[eigObj$kChoosen], 
-                cumFVE =  eigObj$cumFVE, fittedCov = eigObj$fittedCov, optns = optns, bwMu = smcObj$bw_mu, bwCov = scsObj$bwCov, rho=rho, fitLambda=fitLambda)
-  } else if(optns$dataType %in% c('Dense','DenseWithMV')){
-    ret <- list(sigma2 = scsObj$sigma2, lambda = eigObj$lambda, phi = eigObj$phi,
-                xiEst = scoresObj$xiEst, xiVar = scoresObj$xiVar, 
-                # fittedY = scoresObj$fittedY, 
-                obsGrid = obsGrid, mu = mu, workGrid = workGrid, smoothedCov = scsObj$smoothCov, FVE = eigObj$cumFVE[eigObj$kChoosen], 
-                cumFVE = eigObj$cumFVE, fittedCov = eigObj$fittedCov, optns = optns, bwMu = smcObj$bw_mu, bwCov = scsObj$bwCov)
-  } else {
-    stop('Other dataType choices not implemented yet!')
+
+  if (optns$methodXi == 'CE') {
+    xiEst <- t(do.call(cbind, scoresObj[1, ])) 
+    xiVar <- scoresObj[2, ]
+  } else if (optns$methodXi == 'IN') {
+    xiEst <- scoresObj$xiEst
+    xiVar <- scoresObj$xiVar
   }
-  
-  #if (!is.null(optns$maxK)){
-  #  if( optns$maxK < length(ret$lambda) ){
-  #    Knew = optns$maxK;
-  #    ret$lambda <- ret$lambda[1:Knew];
-  #    ret$phi <-  ret$phi[,1:Knew];
-  #    ret$xiEst <-  ret$xiEst[,1:Knew]; 
-  #    ret$xiVar <- lapply( ret$xiVar, function(x) x[1:Knew, 1:Knew])
-  #  } else {
-  #    warning("The number of components requested is higher than estimated number of components. Consider increasing the FVE threshold.")
-  #  }
-  #}
+  ret <- list(sigma2 = scsObj$sigma2, 
+              lambda = eigObj$lambda, 
+              phi = eigObj$phi, 
+              xiEst = xiEst, 
+              xiVar = xiVar, 
+              obsGrid = obsGrid, 
+              mu = mu, 
+              workGrid = workGrid, 
+              smoothedCov = scsObj$smoothCov, 
+              FVE = eigObj$cumFVE[eigObj$kChoosen], 
+              cumFVE =  eigObj$cumFVE, 
+              fittedCov = eigObj$fittedCov, 
+              optns = optns, 
+              bwMu = smcObj$bw_mu, 
+              bwCov = scsObj$bwCov)
+
+  if (optns$methodXi == 'CE') {
+    ret$rho <- rho
+  }
+
+  if (optns$fitEigenValues) {
+    ret$fitLambda <- fitLambda
+  }
   
   if(!optns$lean){
     ret$inputData <- inputData;

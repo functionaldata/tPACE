@@ -30,6 +30,6 @@ sampWiener <- wiener(n, pts)
 sampWiener <- sparsify(sampWiener, pts, 10)
 res <- FPCA(sampWiener$yList, sampWiener$tList, 
             list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
-derRes <- deriv(res)
+derRes <- FPCAder(res)
 }
 

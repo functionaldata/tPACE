@@ -18,7 +18,7 @@
 #' sampWiener <- sparsify(sampWiener, pts, 10)
 #' res <- FPCA(sampWiener$yList, sampWiener$tList, 
 #'             list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
-#' derRes <- deriv(res)
+#' derRes <- FPCAder(res)
 #' @export
 
 
@@ -63,7 +63,7 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
  #                      getSmoothCurve(t=workGrid, ft=x, GCV =TRUE, kernelType = kernelType, mult=1))
  # }
 
-  fpcaObj <- append(fpcaObj, list(muDer = muDer, phiDe = phiDer, 
+  fpcaObj <- append(fpcaObj, list(muDer = muDer, phiDer = phiDer, 
                                   #muDer2 = muDer2, phiDer2 = phiDer2,
                                   derOptns = derOptns))
   class(fpcaObj) <- c(class(fpcaObj), 'FPCAder')

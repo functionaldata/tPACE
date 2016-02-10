@@ -17,11 +17,11 @@
 #    - NULL for all other entires
 ##########################################################################
 
-GetCovDense <- function(ymat, mu, optns, y, t){
+GetCovDense <- function(ymat, mu, optns) {
   if(!(optns$dataType %in% c('Dense', 'DenseWithMV'))){
     stop('Sample Covariance is only applicable for option: dataType = "Dense" or "DenseWithMV"!')
   }
-  if( optns$muCovEstMethod == 'cross-sectional' ){
+  # if( optns$muCovEstMethod == 'cross-sectional' ){
     n = nrow(ymat)
     m = ncol(ymat)
     if( !is.null(optns$userMu) ){
@@ -44,9 +44,14 @@ GetCovDense <- function(ymat, mu, optns, y, t){
   
     if (optns[['error']]) {
       # 2nd order difference method for finding sigma2
-      ord <- 2 
-      sigma2 <- mean(diff(t(ymat), differences=ord)^2) / choose(2 * ord, ord)
-      diag(K) <- diag(K) - sigma2
+      if (!is.null(optns[['userSigma2']])) {
+        sigma2 <- optns[['userSigma2']]
+      } else {
+        ord <- 2 
+        sigma2 <- mean(diff(t(ymat), differences=ord)^2, na.rm=TRUE) / 
+                  choose(2 * ord, ord)
+        diag(K) <- diag(K) - sigma2
+      }
     } else {
       sigma2 <- NULL
     }
@@ -57,11 +62,7 @@ GetCovDense <- function(ymat, mu, optns, y, t){
     # Garbage Collection
     gc()
     return(ret)
-  } else if(optns$muCovEstMethod == 'smooth'){
-       obsGrid = sort(unique( c(unlist(t))));
-       regGrid = seq(min(obsGrid), max(obsGrid),length.out = optns$nRegGrid);      
-       return( GetSmoothedCovarSurface(y, t, mu, obsGrid, regGrid, optns, optns$useBinnedCov) )
-  } else {
-    stop('optns$muCovEstMethod is unknown!\n')
-  }
+  # } else {
+    # stop('optns$muCovEstMethod is unknown!\n')
+  # }
 }

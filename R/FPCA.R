@@ -97,66 +97,63 @@ FPCA = function(y, t, optns = list()){
   numOfCurves = length(y);
   CheckOptions(t, optns,numOfCurves)
 
-  if(optns$dataType == 'Dense' || optns$dataType == 'DenseWithMV'){
-    # Only applicable to Dense and Regular functional data,
-    # or Dense data with Missing Values 
-    
-    # cross sectional mean and sample covariance for dense case
-    # assume no measurement error.
-    ymat = List2Mat(y,t)
-
-    # Define time grids
-    obsGrid = sort(unique(unlist(t)))
-    regGrid = obsGrid
-    workGrid = seq(min(obsGrid), max(obsGrid), length.out = optns$nRegGrid) 
-    
-    buff <- .Machine$double.eps * max(abs(obsGrid)) * 3 
-    minGrid <- min(workGrid)
-    maxGrid <- max(workGrid)
-    difGrid <- maxGrid - minGrid
-    workGrid <- workGrid[workGrid > minGrid + difGrid * optns$outPercent[1] - buff & 
-                         workGrid < minGrid + difGrid * optns$outPercent[2] + buff]
-                         
-    # get cross sectional mean and sample cov
-    smcObj = GetMeanDense(ymat, obsGrid, optns, y, t)
-    mu = smcObj$mu
-    smcObj$muDense = ConvertSupport(obsGrid, workGrid, mu = mu)
-    scsObj = GetCovDense(ymat, mu, optns, y, t)
-    sigma2 <- scsObj[['sigma2']]
-    scsObj$smoothCov = ConvertSupport(obsGrid, workGrid, Cov = scsObj$smoothCov)
-
-  } else if(optns$dataType == 'Sparse'){
-    # For Sparse case
-    
-    # Bin the data (potentially):
-    if ( optns$useBinnedData != 'OFF'){ 
-        BinnedDataset <- GetBinnedDataset(y,t,optns)
-        y = BinnedDataset$newy;
-        t = BinnedDataset$newt; 
-    }
-
-    # Generate basic grids:
-    # obsGrid:  the unique sorted pooled time points of the sample and the new data
-    # regGrid: the grid of time points for which the smoothed covariance surface assumes values
-    obsGrid = sort(unique( c(unlist(t))));
-    regGrid = seq(min(obsGrid), max(obsGrid),length.out = optns$nRegGrid);
-
-
-    # Get the smoothed mean curve
-    smcObj = GetSmoothedMeanCurve(y, t, obsGrid, regGrid, optns)
-
-
-    # Get the smoothed covariance surface
-    # mu: the smoothed mean curve evaluated at times 'obsGrid'
-    mu = smcObj$mu
-    scsObj = GetSmoothedCovarSurface(y, t, mu, obsGrid, regGrid, optns, optns$useBinnedCov) 
-    sigma2 <- scsObj$sigma2
-
-    # workGrid: possibly truncated version of the regGrid; truncation would occur during smoothing
-    workGrid <- scsObj$outGrid
-  } else {
-    stop('not implemented for dataType = "p>>n" yet!')
+  # Bin the data
+  if ( optns$useBinnedData != 'OFF'){ 
+      BinnedDataset <- GetBinnedDataset(y,t,optns)
+      y = BinnedDataset$newy;
+      t = BinnedDataset$newt; 
   }
+
+  # Generate basic grids:
+  # obsGrid:  the unique sorted pooled time points of the sample and the new
+  # data
+  # regGrid: the grid of time points for which the smoothed covariance
+  # surface assumes values
+  # cutRegGrid: truncated grid specified by optns$outPercent for the cov
+  # functions
+  obsGrid = sort(unique( c(unlist(t))));
+  regGrid = seq(min(obsGrid), max(obsGrid),length.out = optns$nRegGrid);
+  outPercent <- optns$outPercent
+  buff <- .Machine$double.eps * max(abs(obsGrid)) * 10
+  rangeGrid <- range(regGrid)
+  minGrid <- rangeGrid[1]
+  maxGrid <- rangeGrid[2]
+  cutRegGrid <- regGrid[regGrid > minGrid + diff(rangeGrid) * outPercent[1] -
+                        buff & 
+                        regGrid < minGrid + diff(rangeGrid) * outPercent[2] +
+                        buff]
+
+## Mean function
+  # If the user provided a mean function use it
+  userMu <- optns$userMu
+  if ( is.list(userMu) && (length(userMu$mu) == length(userMu$t))){
+    smcObj <- GetUserMeanCurve(optns, obsGrid, regGrid, buff)
+    smcObj$muDense = ConvertSupport(obsGrid, regGrid, mu = smcObj$mu)
+  } else if (optns$muCovEstMethod == 'smooth') { # smooth mean
+    smcObj = GetSmoothedMeanCurve(y, t, obsGrid, regGrid, optns)
+  } else if (optns$muCovEstMethod == 'cross-sectional') { # cross-sectional mean
+    ymat = List2Mat(y,t)
+    smcObj = GetMeanDense(ymat, obsGrid, optns)
+  }
+# mu: the smoothed mean curve evaluated at times 'obsGrid'
+  mu <- smcObj$mu
+
+## Covariance function and sigma2
+  if (!is.null(optns$userCov) && optns$muCovEstMethod != 'smooth') { 
+      scsObj <- GetUserCov(optns, obsGrid, cutRegGrid, buff, ymat)
+  } else if (optns$muCovEstMethod == 'smooth') {
+# smooth cov and/or sigma2
+    scsObj = GetSmoothedCovarSurface(y, t, mu, obsGrid, regGrid, optns,
+                                     optns$useBinnedCov) 
+  } else if (optns$muCovEstMethod == 'cross-sectional') {
+    scsObj = GetCovDense(ymat, mu, optns)
+    scsObj$smoothCov = ConvertSupport(obsGrid, cutRegGrid, Cov =
+                                      scsObj$smoothCov)
+    scsObj$outGrid <- cutRegGrid
+  }
+  sigma2 <- scsObj[['sigma2']]
+  # workGrid: possibly truncated version of the regGrid
+  workGrid <- scsObj$outGrid
 
   
   # convert mu to truncated workGrid
@@ -168,9 +165,8 @@ FPCA = function(y, t, optns = list()){
   # Truncated obsGrid, and observations. Empty observation due to truncation has length 0.
   truncObsGrid <- obsGrid
   if (!all(abs(optns$outPercent - c(0, 1)) < .Machine$double.eps * 2)) {
-    buff <- .Machine$double.eps * max(abs(truncObsGrid)) * 3
     truncObsGrid <- truncObsGrid[truncObsGrid >= min(workGrid) - buff &
-                            truncObsGrid <= max(workGrid) + buff]
+                                 truncObsGrid <= max(workGrid) + buff]
     tmp <- TruncateObs(y, t, truncObsGrid)
     y <- tmp$y
     t <- tmp$t
@@ -179,7 +175,9 @@ FPCA = function(y, t, optns = list()){
   # convert phi and fittedCov to obsGrid.
   muObs <- ConvertSupport(obsGrid, truncObsGrid, mu=mu)
   phiObs <- ConvertSupport(workGrid, truncObsGrid, phi=eigObj$phi)
-  CovObs <- ConvertSupport(workGrid, truncObsGrid, Cov=eigObj$fittedCov)
+  if (optns$methodXi == 'CE') {
+    CovObs <- ConvertSupport(workGrid, truncObsGrid, Cov=eigObj$fittedCov)
+  }
 
   # Get scores  
   if (optns$methodXi == 'CE') {
@@ -200,7 +198,6 @@ FPCA = function(y, t, optns = list()){
 
   if (optns$fitEigenValues) {
     fitLambda <- FitEigenValues(scsObj$rcov, workGrid, eigObj$phi, optns$maxK)
-
   } else {
     fitLambda <- NULL
   }
@@ -231,3 +228,4 @@ FPCA = function(y, t, optns = list()){
 
   return(ret); 
 }
+

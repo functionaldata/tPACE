@@ -93,7 +93,7 @@ SetOptions = function(y, t, optns){
     }    
   }
   methodNames = c("IN", "CE");
-  if(!is.null(methodXi) && !(methodXi %in% methodNames)){ # Check suitability of kernel
+  if(!is.null(methodXi) && !(methodXi %in% methodNames)){
     cat(paste('methodXi', methodXi, 'is unrecognizable! Reset to automatic selection now!\n')); 
     methodXi = NULL; 
   }   
@@ -212,6 +212,9 @@ SetOptions = function(y, t, optns){
       muCovEstMethod = 'cross-sectional';
     }
   }
+  # if (!all.equal(outPercent, c(0, 1)) && muCovEstMethod == 'cross-sectional') {
+    # stop('outPercent not supported for cross-sectional covariance estimate')
+  # }
     
   retOptns <- list(bwmu = bwmu, bwmuMethod = bwmuMethod, bwuserCov = bwuserCov, bwuserCovGcv = bwuserCovGcv,
           kFoldCov = kFoldCov, selectionMethod = selectionMethod, FVEthreshold = FVEthreshold,
