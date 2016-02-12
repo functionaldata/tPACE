@@ -2,7 +2,7 @@ library(testthat)
 library(mvtnorm)
 devtools::load_all()
 
-test_that("selectK works for dense FPCA wiener process with measurement error",{
+test_that("SelectK works for dense FPCA Wiener process with measurement error",{
   n = 100; K = 10; pts = seq(0, 1, length=50)
   lambda <- (1 / (1:K - 1/2) / pi)^2
   TrueFVE <- cumsum(lambda)/sum(lambda) * 100
@@ -10,10 +10,10 @@ test_that("selectK works for dense FPCA wiener process with measurement error",{
   set.seed(1)
   scores <- t(diag(1 / (1:K - 1/2) / pi) %*% matrix(rnorm(K * n), K, n))
   sd <- 0.01
-  # generate wiener process
+  # generate Wiener process
   test1 <- t(phi %*% t(scores)) # Dense data
   test2 <- test1 + matrix(rnorm(nrow(test1)*ncol(test1),mean=0,sd=sd),nrow=nrow(test1))
-  test4 <- sparsify(test2, pts, rep(length(pts),n)) # Dense Data with measurement errors
+  test4 <- Sparsify(test2, pts, rep(length(pts),n)) # Dense Data with measurement errors
   Trueloglik <- rep(0, K)
   for(i in 1:K){
     # marginal likelihood
@@ -43,7 +43,7 @@ test_that("selectK works for dense FPCA wiener process with measurement error",{
   expect_equal(test4FPCA_BIC$selectK, which(TrueBIC == min(TrueBIC)))
 })
 
-#test_that("selectK works for sparse FPCA wiener process with measurement error",{
+#test_that("SelectK works for sparse FPCA Wiener process with measurement error",{
 #  n = 1000; K = 5; pts = seq(0, 1, length=50)
 #  lambda <- (1 / (1:K - 1/2) / pi)^2
 #  TrueFVE <- cumsum(lambda)/sum(lambda) * 100
@@ -51,10 +51,10 @@ test_that("selectK works for dense FPCA wiener process with measurement error",{
 #  set.seed(1)
 #  scores <- t(diag(1 / (1:K - 1/2) / pi) %*% matrix(rnorm(K * n), K, n))
 #  sd <- 0.01
-#  # generate wiener process
+#  # generate Wiener process
 #  test1 <- t(phi %*% t(scores)) # Dense data
 #  test2 <- test1 + matrix(rnorm(nrow(test1)*ncol(test1),mean=0,sd=sd),nrow=nrow(test1))
-#  test3 <- sparsify(test2, pts, 4:10) # Sparse Data with measurement errors
+#  test3 <- Sparsify(test2, pts, 4:10) # Sparse Data with measurement errors
 #  Trueloglik <- rep(0, K)
 #  for(i in 1:K){
 #    # marginal likelihood
@@ -86,7 +86,7 @@ test_that("selectK works for dense FPCA wiener process with measurement error",{
 #  expect_equal(test3FPCA_FVE$selectK, min(which(TrueFVE >= 85)))
 #})
 
-test_that("selectK works outside FPCA function for Dense data and gives the same output with equivalent options",{
+test_that("SelectK works outside FPCA function for Dense data and gives the same output with equivalent options",{
   n = 100; K = 10; pts = seq(0, 1, length=50)
   lambda <- (1 / (1:K - 1/2) / pi)^2
   TrueFVE <- cumsum(lambda)/sum(lambda) * 100
@@ -94,10 +94,10 @@ test_that("selectK works outside FPCA function for Dense data and gives the same
   set.seed(1)
   scores <- t(diag(1 / (1:K - 1/2) / pi) %*% matrix(rnorm(K * n), K, n))
   sd <- 0.01
-  # generate wiener process
+  # generate Wiener process
   test1 <- t(phi %*% t(scores)) # Dense data
   test2 <- test1 + matrix(rnorm(nrow(test1)*ncol(test1),mean=0,sd=sd),nrow=nrow(test1))
-  test4 <- sparsify(test2, pts, rep(length(pts),n)) # Dense Data with measurement errors
+  test4 <- Sparsify(test2, pts, rep(length(pts),n)) # Dense Data with measurement errors
   Trueloglik <- rep(0, K)
   for(i in 1:K){
     # marginal likelihood
@@ -125,9 +125,9 @@ test_that("selectK works outside FPCA function for Dense data and gives the same
   # the following default FPCA run does not select number of components
   optnDenseError <- SetOptions(test4$yList, test4$tList, list(dataType='Dense', error=TRUE, kernel='epan', outPercent=c(0, 1), verbose=TRUE, lean = FALSE))
   test4FPCA <- FPCA(test4$yList, test4$tList, optnDenseError)
-  outAIC <- selectK(fpcaObj = test4FPCA, criterion = 'AIC')$k
-  outBIC <- selectK(fpcaObj = test4FPCA, criterion = 'BIC')$k
-  outFVE <- selectK(fpcaObj = test4FPCA, criterion = 'FVE', FVEthreshold = 0.85)$k
+  outAIC <- SelectK(fpcaObj = test4FPCA, criterion = 'AIC')$k
+  outBIC <- SelectK(fpcaObj = test4FPCA, criterion = 'BIC')$k
+  outFVE <- SelectK(fpcaObj = test4FPCA, criterion = 'FVE', FVEthreshold = 0.85)$k
   expect_equal(test4FPCA_AIC$selectK, outAIC)
   expect_equal(test4FPCA_BIC$selectK, outBIC)
   expect_equal(test4FPCA_FVE$selectK, outFVE)
@@ -136,12 +136,12 @@ test_that("selectK works outside FPCA function for Dense data and gives the same
   optnDenseErrorfixedK <- SetOptions(test4$yList, test4$tList, list(dataType='Dense', error=TRUE, kernel='epan', selectionMethod = FixK, outPercent=c(0, 1), verbose=TRUE, lean = FALSE))  
   test4FPCA_fixedK <- FPCA(test4$yList, test4$tList, optnDenseErrorfixedK)
   expect_equal(test4FPCA_fixedK$selectK, FixK)
-  # we can get the same results if using selectK outside FPCA
-  outfixedK <- selectK(fpcaObj = test4FPCA, criterion = FixK)$k
+  # we can get the same results if using SelectK outside FPCA
+  outfixedK <- SelectK(fpcaObj = test4FPCA, criterion = FixK)$k
   expect_equal(outfixedK, FixK)
 })
 
-test_that("selectK works outside FPCA function for Sparse data and gives the same output with equivalent options",{
+test_that("SelectK works outside FPCA function for Sparse data and gives the same output with equivalent options",{
   n = 1000; K = 5; pts = seq(0, 1, length=50)
   lambda <- (1 / (1:K - 1/2) / pi)^2
   TrueFVE <- cumsum(lambda)/sum(lambda) * 100
@@ -149,10 +149,10 @@ test_that("selectK works outside FPCA function for Sparse data and gives the sam
   set.seed(1)
   scores <- t(diag(1 / (1:K - 1/2) / pi) %*% matrix(rnorm(K * n), K, n))
   sd <- 0.01
-  # generate wiener process
+  # generate Wiener process
   test1 <- t(phi %*% t(scores)) # Dense data
   test2 <- test1 + matrix(rnorm(nrow(test1)*ncol(test1),mean=0,sd=sd),nrow=nrow(test1))
-  test3 <- sparsify(test2, pts, 4:10) # Sparse Data with measurement errors
+  test3 <- Sparsify(test2, pts, 4:10) # Sparse Data with measurement errors
   Trueloglik <- rep(0, K)
   for(i in 1:K){
     # marginal likelihood
@@ -182,9 +182,9 @@ test_that("selectK works outside FPCA function for Sparse data and gives the sam
   # the following default FPCA run does not select number of components
   optnSparseError <- SetOptions(test3$yList, test3$tList, list(dataType='Sparse', error=TRUE, kernel='epan', outPercent=c(0, 1), verbose=TRUE, lean = FALSE))
   test3FPCA <- FPCA(test3$yList, test3$tList, optnSparseError)
-  outAIC <- selectK(fpcaObj = test3FPCA, criterion = 'AIC')$k
-  outBIC <- selectK(fpcaObj = test3FPCA, criterion = 'BIC')$k
-  outFVE <- selectK(fpcaObj = test3FPCA, criterion = 'FVE', FVEthreshold = 0.85)$k
+  outAIC <- SelectK(fpcaObj = test3FPCA, criterion = 'AIC')$k
+  outBIC <- SelectK(fpcaObj = test3FPCA, criterion = 'BIC')$k
+  outFVE <- SelectK(fpcaObj = test3FPCA, criterion = 'FVE', FVEthreshold = 0.85)$k
   expect_equal(test3FPCA_AIC$selectK, outAIC)
   expect_equal(test3FPCA_BIC$selectK, outBIC)
   expect_equal(test3FPCA_FVE$selectK, outFVE)

@@ -16,15 +16,15 @@
 #' set.seed(1)
 #' n <- 20
 #' pts <- seq(0, 1, by=0.05)
-#' sampWiener <- wiener(n, pts)
-#' sampWiener <- sparsify(sampWiener, pts, 10)
-#' createDesignPlot(sampWiener$tList, sort(unique(unlist(sampWiener$tList))))
+#' sampWiener <- Wiener(n, pts)
+#' sampWiener <- Sparsify(sampWiener, pts, 10)
+#' CreateDesignPlot(sampWiener$tList, sort(unique(unlist(sampWiener$tList))))
 #' @export
 
-createDesignPlot = function(t, obsGrid = NULL, isColorPlot=TRUE, noDiagonal=TRUE, ...){
+CreateDesignPlot = function(t, obsGrid = NULL, isColorPlot=TRUE, noDiagonal=TRUE, ...){
   
   if( class(t) != 'list'){
-    stop("You do need to pass a list argument to 'createDesignPlot'!");
+    stop("You do need to pass a list argument to 'CreateDesignPlot'!");
   }
   if( is.null(obsGrid)){
     obsGrid = sort(unique(unlist(t)))
@@ -34,7 +34,7 @@ createDesignPlot = function(t, obsGrid = NULL, isColorPlot=TRUE, noDiagonal=TRUE
   inargs <- list(...)
   args1[names(inargs)] <- inargs 
   
-  res = designPlotCount(t, obsGrid, noDiagonal, isColorPlot)
+  res = DesignPlotCount(t, obsGrid, noDiagonal, isColorPlot)
     
   oldpty <- par()[['pty']]
   par(pty="s")

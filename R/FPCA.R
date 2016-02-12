@@ -61,11 +61,11 @@
 #' set.seed(1)
 #' n <- 20
 #' pts <- seq(0, 1, by=0.05)
-#' sampWiener <- wiener(n, pts)
-#' sampWiener <- sparsify(sampWiener, pts, 10)
+#' sampWiener <- Wiener(n, pts)
+#' sampWiener <- Sparsify(sampWiener, pts, 10)
 #' res <- FPCA(sampWiener$yList, sampWiener$tList, 
 #'             list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
-#' createCovPlot(res, 'Fitted')
+#' CreateCovPlot(res, 'Fitted')
 #' @references
 #' \cite{Yao, F., Mueller, H.G., Clifford, A.J., Dueker, S.R., Follett, J., Lin, Y., Buchholz, B., Vogel, J.S. (2003). "Shrinkage estimation for functional principal component scores, with application to the population kinetics of plasma folate." Biometrics 59, 676-685. (Shrinkage estimates for dense data)}
 #' \cite{Yao, Fang, Hans-Georg Mueller, and Jane-Ling Wang. "Functional data analysis for sparse longitudinal data." Journal of the American Statistical Association 100, no. 470 (2005): 577-590. (Sparse data FPCA)}
@@ -211,19 +211,19 @@ FPCA = function(y, t, optns = list()){
   
   # select number of components based on specified criterion
   if(ret$optns$lean == TRUE){
-    selectedK <- selectK(fpcaObj = ret, criterion = optns$selectionMethod, FVEthreshold = optns$FVEthreshold,
+    selectedK <- SelectK(fpcaObj = ret, criterion = optns$selectionMethod, FVEthreshold = optns$FVEthreshold,
                          y = y, t = t)
   } else {
-    selectedK <- selectK(fpcaObj = ret, criterion = optns$selectionMethod, FVEthreshold = optns$FVEthreshold)
+    selectedK <- SelectK(fpcaObj = ret, criterion = optns$selectionMethod, FVEthreshold = optns$FVEthreshold)
   }
   
   ret <- append(ret, list(selectK = selectedK$k, criterionValue = selectedK$criterion))
   class(ret) <- 'FPCA'
-  ret <- subsetFPCA(fpcaObj = ret, k = ret$selectK)
+  ret <- SubsetFPCA(fpcaObj = ret, k = ret$selectK)
   
   # Make a quick diagnostics plot     
   if(optns$diagnosticsPlot){
-    createDiagnosticsPlot(ret);
+    CreateDiagnosticsPlot(ret);
   }
 
   return(ret); 

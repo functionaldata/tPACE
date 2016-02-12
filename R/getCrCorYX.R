@@ -9,7 +9,7 @@
 #' @export
 #' 
 #' 
-getCrCorYX <- function(ccXY, ccXX , ccYY){
+GetCrCorYX <- function(ccXY, ccXX , ccYY){
   
   if(!is.matrix(ccXY)){
     stop('The cross-covariance matrix is must be a matrix.')

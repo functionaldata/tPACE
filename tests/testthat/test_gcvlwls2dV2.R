@@ -7,7 +7,7 @@ try(silent = TRUE, load('data/dataForGetRawCov.RData'))
 rcov <- GetRawCov(y,t, sort(unlist(t)), mu,'Sparse',FALSE) 
 r <- range(sort(unlist(t)))
 regGrid <- seq(r[1], r[2], length.out=101)
-tmp <- gcvlwls2dV2(sort(unlist(t)), regGrid, kern='epan', rcov=rcov, t=t)   ## Why is this guy outside a test?
+tmp <- GCVLwls2DV2(sort(unlist(t)), regGrid, kern='epan', rcov=rcov, t=t)   ## Why is this guy outside a test?
 getGCVscoresV2(tmp$minBW, 'epan', rcov$tPairs, rcov$cxxn, regGrid=regGrid)
 
 test_that('getGCVscoresV2 spits out Inf if bandwidth is too small', {
@@ -16,17 +16,17 @@ test_that('getGCVscoresV2 spits out Inf if bandwidth is too small', {
 })
 
 
-# debug(gcvlwls2dV2)
+# debug(GCVLwls2DV2)
 test_that('Binning works for GCV', {
   set.seed(1)
   pts <- seq(0, 1, by=0.05)
-  samp3 <- wiener(20, pts, sparsify=2:7)
+  samp3 <- Wiener(20, pts, sparsify=2:7)
   rcov3 <- GetRawCov(samp3$yList, samp3$tList, pts, rep(0, length(pts)), 'Sparse', error=FALSE)
   brcov3 <- BinRawCov(rcov3)
   obsGrid <- sort(unique(unlist(samp3$tList)))
   regGrid <- seq(min(obsGrid), max(obsGrid), length.out=101)
-  g1 <- gcvlwls2dV2(obsGrid, regGrid, kern='epan', rcov=rcov3, t=samp3$tList)
-  g2 <- gcvlwls2dV2(obsGrid, regGrid, kern='epan', rcov=brcov3, t=samp3$tList)
+  g1 <- GCVLwls2DV2(obsGrid, regGrid, kern='epan', rcov=rcov3, t=samp3$tList)
+  g2 <- GCVLwls2DV2(obsGrid, regGrid, kern='epan', rcov=brcov3, t=samp3$tList)
   expect_equal(g1, g2)
 })
 
@@ -35,7 +35,7 @@ test_that('Binning works for GCV', {
 test_that('getCVscoresV2 works for binning', {
   set.seed(1)
   pts <- seq(0, 1, by=0.05)
-  samp3 <- wiener(20, pts, sparsify=2:7)
+  samp3 <- Wiener(20, pts, sparsify=2:7)
   rcov3 <- GetRawCov(samp3$yList, samp3$tList, pts, rep(0, length(pts)), 'Sparse', error=FALSE)
   brcov3 <- BinRawCov(rcov3)
   obsGrid <- sort(unique(unlist(samp3$tList)))
@@ -50,12 +50,12 @@ test_that('getCVscoresV2 works for binning', {
 test_that('GCV is closed to CV', {
   set.seed(2)
   pts <- seq(0, 1, by=0.05)
-  samp3 <- wiener(20, pts, sparsify=2:7)
+  samp3 <- Wiener(20, pts, sparsify=2:7)
   rcov3 <- GetRawCov(samp3$yList, samp3$tList, pts, rep(0, length(pts)), 'Sparse', error=FALSE)
   obsGrid <- sort(unique(unlist(samp3$tList)))
   regGrid <- seq(min(obsGrid), max(obsGrid), length.out=101)
-  gcvRes <- gcvlwls2dV2(obsGrid, regGrid, kern='epan', rcov=rcov3, t=samp3$tList)
-  cvRes <- gcvlwls2dV2(obsGrid, regGrid, kern='epan', rcov=rcov3, CV=10, t=samp3$tList)
+  gcvRes <- GCVLwls2DV2(obsGrid, regGrid, kern='epan', rcov=rcov3, t=samp3$tList)
+  cvRes <- GCVLwls2DV2(obsGrid, regGrid, kern='epan', rcov=rcov3, CV=10, t=samp3$tList)
   expect_equal(gcvRes$h, cvRes$h, 0.1)
 })
 
@@ -67,7 +67,7 @@ test_that('GCV will avoid spitting out bandwidth that results in degenerate wind
   set.seed(2)
   n <- 20
   pts <- seq(0, 1, by=0.1)
-  samp4 <- wiener(20, pts, sparsify=length(pts))
+  samp4 <- Wiener(20, pts, sparsify=length(pts))
   # for the 10-15th observation retain only one
   for (i in 1:n) {
     retain <- sort(c(1, sample(c(2:3, (length(pts) - 3):length(pts)), 1), 4:(length(pts) - 4)))
@@ -75,10 +75,10 @@ test_that('GCV will avoid spitting out bandwidth that results in degenerate wind
     samp4$tList[[i]] <- samp4$tList[[i]][retain]
   }
   
-  # createDesignPlot(samp4$tList, pts, TRUE, FALSE, 'samp3')
+  # CreateDesignPlot(samp4$tList, pts, TRUE, FALSE, 'samp3')
 
   rcov4 <- GetRawCov(samp4$yList, samp4$tList, pts, rep(0, length(pts)), 'Sparse', error=FALSE)
-  g4 <- gcvlwls2dV2(pts, pts, kern='epan', rcov=rcov4, t=samp4$tList)
+  g4 <- GCVLwls2DV2(pts, pts, kern='epan', rcov=rcov4, t=samp4$tList)
   expect_true(g4$minBW > 0.3) # by eyeballing
 })
 

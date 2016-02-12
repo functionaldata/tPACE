@@ -28,9 +28,9 @@
  # matplot(t(yTrue), type='l', xlab='s',ylab='', main="True Sample Curves")
   
   # Create sparse sample
-  ySparse16 = sparsify(yTrue, s, 1:16)
-  ySparse08 = sparsify(yTrue, s, 1:8)
-  ySparse04 = sparsify(yTrue, s, 1:4)
+  ySparse16 = Sparsify(yTrue, s, 1:16)
+  ySparse08 = Sparsify(yTrue, s, 1:8)
+  ySparse04 = Sparsify(yTrue, s, 1:4)
     
   # Give it a bit of noise
   ySparse16$yNoisy = lapply( ySparse16$yList, function(x) x +  0.5*rnorm(length(x)))
@@ -40,7 +40,7 @@
  # A = FPCA(ySparse16$yNoisy, t= ySparse16$tList ) # Time consuming test
  # B = FPCA(ySparse08$yNoisy, t= ySparse08$tList ) # Time consuming test
   C = FPCA(ySparse04$yNoisy, t= ySparse04$tList )
-  QQ = makeFPCAinputs(IDs = rep(1:N, each=M),tVec=rep(s,N), t(yTrue) )
+  QQ = MakeFPCAInputs(IDs = rep(1:N, each=M),tVec=rep(s,N), t(yTrue) )
   D = FPCA(QQ$Ly, QQ$Lt) 
 
   # x11()
@@ -57,10 +57,10 @@
 
  # x11()
  # par(mfrow=c(2,2))  
- #createDesignPlot(t=ySparse16$tList, obsGrid= A$obsGrid, isColorPlot=FALSE, noDiagonal= TRUE,yname= '9 p.') 
- #createDesignPlot(t=ySparse08$tList, obsGrid= B$obsGrid, isColorPlot=FALSE, noDiagonal= TRUE,yname= '5 p.') 
- #createDesignPlot(t=ySparse04$tList, obsGrid= C$obsGrid, isColorPlot=FALSE, noDiagonal= TRUE,yname= '3 p.') 
- #createDesignPlot(t=QQ$Lt, obsGrid= D$obsGrid, isColorPlot=FALSE, noDiagonal= FALSE,yname= 'dense') 
+ #CreateDesignPlot(t=ySparse16$tList, obsGrid= A$obsGrid, isColorPlot=FALSE, noDiagonal= TRUE,yname= '9 p.') 
+ #CreateDesignPlot(t=ySparse08$tList, obsGrid= B$obsGrid, isColorPlot=FALSE, noDiagonal= TRUE,yname= '5 p.') 
+ #CreateDesignPlot(t=ySparse04$tList, obsGrid= C$obsGrid, isColorPlot=FALSE, noDiagonal= TRUE,yname= '3 p.') 
+ #CreateDesignPlot(t=QQ$Lt, obsGrid= D$obsGrid, isColorPlot=FALSE, noDiagonal= FALSE,yname= 'dense') 
   
   
   

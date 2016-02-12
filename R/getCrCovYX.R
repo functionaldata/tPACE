@@ -25,13 +25,13 @@
 #' Lt2 = list(1:7,1:3, 1);
 #' Ymu1 = rep(55,7);
 #' Ymu2 = rep(1.1,7);
-#' AA<-getCrCovYX(Ly1 = Ly1, Ly2= Ly2, Lt1=Lt1, Lt2=Lt2, Ymu1=Ymu1, Ymu2=Ymu2)
+#' AA<-GetCrCovYX(Ly1 = Ly1, Ly2= Ly2, Lt1=Lt1, Lt2=Lt2, Ymu1=Ymu1, Ymu2=Ymu2)
 #'   
 #' @references
 #' \cite{Yang, Wenjing, Hans-Georg Mueller, and Ulrich Stadtmueller. "Functional singular component analysis." Journal of the Royal Statistical Society: Series B (Statistical Methodology) 73.3 (2011): 303-324}
 #' @export
 
-getCrCovYX <- function(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL, Ly2, Lt2 = NULL, Ymu2 = NULL, fast = FALSE){
+GetCrCovYX <- function(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL, Ly2, Lt2 = NULL, Ymu2 = NULL, fast = FALSE){
   
   # If only Ly1 and Ly2 are available assume DENSE data
   if( is.matrix(Ly1) && is.null(Lt1) && is.null(Ymu1) && is.matrix(Ly2) && is.null(Lt2) && is.null(Ymu2)){
@@ -98,11 +98,11 @@ getCrCovYX <- function(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL, Ly2
 getBWidths <- function(ulLt1, ulLt2){
 
   bwCandidates <- matrix(rep(0,72),ncol=2)
-  h0 = 2.0 * minb( sort(ulLt1), 2+1); # 2x the bandwidth needed for at least 3 points in a window
+  h0 = 2.0 * Minb( sort(ulLt1), 2+1); # 2x the bandwidth needed for at least 3 points in a window
   r = diff(range(ulLt1))    
   q = (r/(4*h0))^(1/9);  
   bwCandidates[,1] = rep( sort(q^( seq(0,12,length.out=6) )*h0), times= 6);
-  h0 = 2.0 * minb( sort(ulLt2), 2+1); # 2x the bandwidth needed for at least 3 points in a window
+  h0 = 2.0 * Minb( sort(ulLt2), 2+1); # 2x the bandwidth needed for at least 3 points in a window
   r1 = diff(range(ulLt2))    
   q = (r/(4*h0))^(1/9);  
   bwCandidates[,2] =  rep( sort(q^( seq(0,12,length.out=6) )*h0), each= 6); 
@@ -118,7 +118,7 @@ smoothRCC2D <- function(rcov,bw1, bw2, xout1, xout2){
 # xout1   : vector M-1
 # xout2   : vector L-1
 # returns : matrix M-L
-  return( lwls2d( bw = c(bw1, bw2), kern = 'gauss', xin=rcov$tpairn, 
+  return( Lwls2D( bw = c(bw1, bw2), kern = 'gauss', xin=rcov$tpairn, 
                            yin=rcov$rawCC, xout1=xout1, xout2=xout2, crosscov=TRUE) )  
 }
 

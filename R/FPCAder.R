@@ -14,8 +14,8 @@
 #' set.seed(1)
 #' n <- 20
 #' pts <- seq(0, 1, by=0.05)
-#' sampWiener <- wiener(n, pts)
-#' sampWiener <- sparsify(sampWiener, pts, 10)
+#' sampWiener <- Wiener(n, pts)
+#' sampWiener <- Sparsify(sampWiener, pts, 10)
 #' res <- FPCA(sampWiener$yList, sampWiener$tList, 
 #'             list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
 #' derRes <- FPCAder(res)
@@ -45,8 +45,8 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
     warning('Second derivative is experimental only.')
   }
 
-  muDer <- lwls1d(bw, kernelType, rep(1, length(obsGrid)), obsGrid, fpcaObj$mu, obsGrid, p, p)
-  phiDer <- apply(fpcaObj$phi, 2, function(phi) lwls1d(bw, kernelType, rep(1, length(workGrid)), workGrid, phi, workGrid, p, p))
+  muDer <- Lwls1D(bw, kernelType, rep(1, length(obsGrid)), obsGrid, fpcaObj$mu, obsGrid, p, p)
+  phiDer <- apply(fpcaObj$phi, 2, function(phi) Lwls1D(bw, kernelType, rep(1, length(workGrid)), workGrid, phi, workGrid, p, p))
 
  # muDer2<- fpcaObj$mu
  # phiDer2 <- fpcaObj$phi

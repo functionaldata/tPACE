@@ -6,7 +6,7 @@ library(testthat)
 set.seed(1)
 pts <- seq(0, 1, by=0.05)
 regGrid <- seq(0, 1, by=0.1)
-samp3 <- wiener(50, pts, sparsify=length(pts))
+samp3 <- Wiener(50, pts, sparsify=length(pts))
 mu3 <- rep(0, length(pts))
 
 # without error
@@ -19,9 +19,9 @@ Err <- GetSmoothedCovarSurface(samp3$yList, samp3$tList, mu3, pts, regGrid, p1, 
 
 # unit tests: test the interface.
 rcov3 <- GetRawCov(samp3$yList, samp3$tList, pts, mu3, p1$dataType, p1$error)
-system.time(tmp <- gcvlwls2dV2(pts, regGrid=regGrid, kern='epan', rcov=rcov3, t=samp3$tList))
+system.time(tmp <- GCVLwls2DV2(pts, regGrid=regGrid, kern='epan', rcov=rcov3, t=samp3$tList))
 gcvBW3 <- sqrt(tmp$h * tmp$minBW)
-sigma23 <- pc_covE(pts, regGrid, gcvBW3, kernel='epan', rcov=rcov3, rotationCut=c(0.25, 0.75))$sigma2
+sigma23 <- PC_CovE(pts, regGrid, gcvBW3, kernel='epan', rcov=rcov3, rotationCut=c(0.25, 0.75))$sigma2
 test_that('Smooth Cov Surface interface is right', {
   expect_equal(rcov3, Err$rawCov)
   expect_equal(gcvBW3, Err$bwCov)

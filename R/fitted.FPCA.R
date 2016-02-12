@@ -19,8 +19,8 @@
 #' set.seed(1)
 #' n <- 20
 #' pts <- seq(0, 1, by=0.05)
-#' sampWiener <- wiener(n, pts)
-#' sampWiener <- sparsify(sampWiener, pts, 10)
+#' sampWiener <- Wiener(n, pts)
+#' sampWiener <- Sparsify(sampWiener, pts, 10)
 #' res <- FPCA(sampWiener$yList, sampWiener$tList, 
 #'             list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
 #' fittedY <- fitted(res)
@@ -62,8 +62,8 @@ fitted.FPCA <-  function (object, k = NULL, derOptns = list(), ...) {
     return( t(apply( ZMFV, 1, function(x) x + IM))) 
   } else { #Derivative is not zero
  
-    if( k > selectK( fpcaObj, FVEthreshold=0.95, criterion='FVE')$k ){
-    warning("Potentially you use too many components to estimate derivatives. \n  Consider using selectK() to find a more informed estimate for 'k'.");
+    if( k > SelectK( fpcaObj, FVEthreshold=0.95, criterion='FVE')$k ){
+    warning("Potentially you use too many components to estimate derivatives. \n  Consider using SelectK() to find a more informed estimate for 'k'.");
     }
 
     if( is.null(method) ){
@@ -76,9 +76,9 @@ fitted.FPCA <-  function (object, k = NULL, derOptns = list(), ...) {
     workGrid = fpcaObj$workGrid
 
     if ( method == 'EIG'){
-      phi = apply(phi, 2, function(phiI) lwls1d(bw = bw, kernelType, win = rep(1, length(workGrid)), 
+      phi = apply(phi, 2, function(phiI) Lwls1D(bw = bw, kernelType, win = rep(1, length(workGrid)), 
                                                   xin = workGrid, yin = phiI, xout = workGrid, npoly = p, nder = p))
-      mu = lwls1d(bw = bw, kernelType, win = rep(1, length(obsGrid)), xin = obsGrid, yin = mu, xout = obsGrid, npoly = p, nder = p)
+      mu = Lwls1D(bw = bw, kernelType, win = rep(1, length(obsGrid)), xin = obsGrid, yin = mu, xout = obsGrid, npoly = p, nder = p)
       ZMFV = fpcaObj$xiEst[,1:k, drop = FALSE] %*% t(phi[,1:k, drop = FALSE]);
       IM = approx(x= fpcaObj$obsGrid, y=mu, fpcaObj$workGrid)$y
       return( t(apply( ZMFV, 1, function(x) x + IM)))
@@ -86,7 +86,7 @@ fitted.FPCA <-  function (object, k = NULL, derOptns = list(), ...) {
 
     if( method == 'QUO'){
       impSample <- fitted(fpcaObj, k = k); # Look ma! I do recursion!
-      return( apply(impSample, 1, function(curve) lwls1d(bw = bw, kernelType, win = rep(1, length(workGrid)), 
+      return( apply(impSample, 1, function(curve) Lwls1D(bw = bw, kernelType, win = rep(1, length(workGrid)), 
                                                          xin = workGrid, yin = curve, xout = workGrid, npoly = p, nder = p)))
     }
   }
@@ -119,10 +119,10 @@ getDerivative <- function(y, t, ord=1){  # Consider using the smoother to get th
 }
 
 getSmoothCurve <- function(t, ft, GCV = FALSE, kernelType = 'epan', mult = 1){
-  myBw = ifelse( GCV, gcvlwls1d1( yy= ft, tt =t, npoly=1, nder=0, dataType='Sparse', kernel=kernelType)[['bOpt']] ,
-                      cvlwls1d(   yy= ft, t = t, npoly=1, nder=0, dataType='Sparse', kernel=kernelType))
+  myBw = ifelse( GCV, GCVLwls1D1( yy= ft, tt =t, npoly=1, nder=0, dataType='Sparse', kernel=kernelType)[['bOpt']] ,
+                      CVLwls1D(   yy= ft, t = t, npoly=1, nder=0, dataType='Sparse', kernel=kernelType))
   myBw <- myBw * mult
-  smoothCurve = lwls1d(bw = myBw, kernel_type= kernelType, win = rep(1, length(t)), yin = ft, xout = t, xin= t)
+  smoothCurve = Lwls1D(bw = myBw, kernel_type= kernelType, win = rep(1, length(t)), yin = ft, xout = t, xin= t)
   return(smoothCurve)
 }
 

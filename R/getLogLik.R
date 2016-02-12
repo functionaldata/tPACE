@@ -1,6 +1,6 @@
 # k: input denoting number of components used
 # returns -2 times log-likelihood
-getLogLik = function(fpcaObj, k, y = NULL, t = NULL){
+GetLogLik = function(fpcaObj, k, y = NULL, t = NULL){
   if(fpcaObj$optns$lean == TRUE && (is.null(y) || is.null(t))){
     stop("Option lean is TRUE, need input data y and measurement time list t to calculate log-likelihood.")
   }

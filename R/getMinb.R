@@ -1,17 +1,17 @@
 # Approximate the minimum bandwidth choice for% for the covariance function. 
 # In stead of the getMinb.m functionality we can garantee minimal number of neighboring points in here.
 # TODO: distMat is memory inefficient.
-getMinb <- function(t, obsGrid, dataType='Sparse', npoly=1, minUniqPts=3, minPts=6) {
+GetMinb <- function(t, obsGrid, dataType='Sparse', npoly=1, minUniqPts=3, minPts=6) {
 
   FutureFix = FALSE 
  # if (FutureFix){ 
  # # This is a fine idea but it even a dataset like FVE will fail due to memory constraints.
  # # See below for a work-around using simple Matrices.
  #   if (dataType == 'Sparse') {
- #     dstar <- minb(obsGrid, 2 + npoly) # rough 1D initial value 
+ #     dstar <- Minb(obsGrid, 2 + npoly) # rough 1D initial value 
 
  #     if (class(rcov) == 'RawCov') {
- #       countRes <- getCount(rcov$tPairs)
+ #       countRes <- GetCount(rcov$tPairs)
  #       count <- countRes[, 3]
  #       distMat <- as.matrix(dist(countRes[, 1:2]))
  #     } else if (class(rcov) == 'BinnedRawCov') {
@@ -34,7 +34,7 @@ getMinb <- function(t, obsGrid, dataType='Sparse', npoly=1, minUniqPts=3, minPts
  # }
 
   if (dataType == 'Sparse') {
-    dstar <- minb(obsGrid, 2 + npoly) # rough 1D initial value 
+    dstar <- Minb(obsGrid, 2 + npoly) # rough 1D initial value 
     n_obs = length(obsGrid);
     tmp1 =  matrix( rep(0, n_obs^2), ncol = n_obs)
     
@@ -53,9 +53,9 @@ getMinb <- function(t, obsGrid, dataType='Sparse', npoly=1, minUniqPts=3, minPts
     # between to [t_j(end) - t_{1+j}(1)] because this will be negative. This bandwidth tends to be conservative (too large).
     dstar = max(dstar, max(diff(b[ids])/2));
   } else if (dataType == 'RegularWithMV') {
-    dstar <- minb(obsGrid, 1 + npoly) * 2;
+    dstar <- Minb(obsGrid, 1 + npoly) * 2;
   } else if (dataType == 'Dense') {
-    dstar = minb(obsGrid, 2 + npoly) * 1.5;
+    dstar = Minb(obsGrid, 2 + npoly) * 1.5;
   }   
   return(dstar)
 }

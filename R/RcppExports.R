@@ -2,50 +2,50 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 CPPlwls1d <- function(bw, kernel_type, win, xin, yin, xout, npoly = 1L, nder = 0L) {
-    .Call('tPACE_CPPlwls1d', PACKAGE = 'tPACE', bw, kernel_type, win, xin, yin, xout, npoly, nder)
+    .Call('fdapace_CPPlwls1d', PACKAGE = 'fdapace', bw, kernel_type, win, xin, yin, xout, npoly, nder)
 }
 
 dropZeroElementsXYWin <- function(win, xin, yin) {
-    .Call('tPACE_dropZeroElementsXYWin', PACKAGE = 'tPACE', win, xin, yin)
+    .Call('fdapace_dropZeroElementsXYWin', PACKAGE = 'fdapace', win, xin, yin)
 }
 
 GetIndCEScoresCPP <- function(yVec, muVec, lamVec, phiMat, SigmaYi) {
-    .Call('tPACE_GetIndCEScoresCPP', PACKAGE = 'tPACE', yVec, muVec, lamVec, phiMat, SigmaYi)
+    .Call('fdapace_GetIndCEScoresCPP', PACKAGE = 'fdapace', yVec, muVec, lamVec, phiMat, SigmaYi)
 }
 
 GetIndCEScoresCPPnewInd <- function(yVec, muVec, lamVec, phiMat, SigmaYi, newPhi, newMu) {
-    .Call('tPACE_GetIndCEScoresCPPnewInd', PACKAGE = 'tPACE', yVec, muVec, lamVec, phiMat, SigmaYi, newPhi, newMu)
+    .Call('fdapace_GetIndCEScoresCPPnewInd', PACKAGE = 'fdapace', yVec, muVec, lamVec, phiMat, SigmaYi, newPhi, newMu)
 }
 
 interp2lin <- function(xin, yin, zin, xou, you) {
-    .Call('tPACE_interp2lin', PACKAGE = 'tPACE', xin, yin, zin, xou, you)
+    .Call('fdapace_interp2lin', PACKAGE = 'fdapace', xin, yin, zin, xou, you)
 }
 
 RCPPmean <- function(X) {
-    .Call('tPACE_RCPPmean', PACKAGE = 'tPACE', X)
+    .Call('fdapace_RCPPmean', PACKAGE = 'fdapace', X)
 }
 
 RCPPvar <- function(X) {
-    .Call('tPACE_RCPPvar', PACKAGE = 'tPACE', X)
-}
-
-RmullwlskCC <- function(bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck) {
-    .Call('tPACE_RmullwlskCC', PACKAGE = 'tPACE', bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck)
-}
-
-Rmullwlsk <- function(bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck, transp = TRUE) {
-    .Call('tPACE_Rmullwlsk', PACKAGE = 'tPACE', bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck, transp)
+    .Call('fdapace_RCPPvar', PACKAGE = 'fdapace', X)
 }
 
 Rmullwlsk_old <- function(bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck, transp = TRUE) {
-    .Call('tPACE_Rmullwlsk_old', PACKAGE = 'tPACE', bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck, transp)
+    .Call('fdapace_Rmullwlsk_old', PACKAGE = 'fdapace', bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck, transp)
+}
+
+Rmullwlsk <- function(bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck, transp = TRUE) {
+    .Call('fdapace_Rmullwlsk', PACKAGE = 'fdapace', bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck, transp)
+}
+
+RmullwlskCC <- function(bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck) {
+    .Call('fdapace_RmullwlskCC', PACKAGE = 'fdapace', bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck)
 }
 
 Rrotatedmullwlsk <- function(bw, kernel_type, tPairs, cxxn, win, xygrid, npoly, bwCheck) {
-    .Call('tPACE_Rrotatedmullwlsk', PACKAGE = 'tPACE', bw, kernel_type, tPairs, cxxn, win, xygrid, npoly, bwCheck)
+    .Call('fdapace_Rrotatedmullwlsk', PACKAGE = 'fdapace', bw, kernel_type, tPairs, cxxn, win, xygrid, npoly, bwCheck)
 }
 
 trapzRcpp <- function(X, Y) {
-    .Call('tPACE_trapzRcpp', PACKAGE = 'tPACE', X, Y)
+    .Call('fdapace_trapzRcpp', PACKAGE = 'fdapace', X, Y)
 }
 

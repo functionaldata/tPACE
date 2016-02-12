@@ -20,12 +20,12 @@
 #' yList <- list( runif(5),  c(1:3), c(2:4), c(4))
 #' tList <- list( c(1:5), c(1:3), c(1:3), 4)
 #' Z = rep(4,4) # Constant vector so the covariance has to be zero.
-#' sccObj = getCrCovYZ(bw=1, Z= Z, Ly=yList, Lt=tList, Ymu=rep(4,5))
+#' sccObj = GetCrCovYZ(bw=1, Z= Z, Ly=yList, Lt=tList, Ymu=rep(4,5))
 #' @references
 #' \cite{Yang, Wenjing, Hans-Georg Mueller, and Ulrich Stadtmueller. "Functional singular component analysis." Journal of the Royal Statistical Society: Series B (Statistical Methodology) 73.3 (2011): 303-324}
 #' @export
 
-getCrCovYZ <- function(bw = NULL, Z, Zmu = NULL, Ly, Lt = NULL, Ymu = NULL, support = NULL){
+GetCrCovYZ <- function(bw = NULL, Z, Zmu = NULL, Ly, Lt = NULL, Ymu = NULL, support = NULL){
    
   # If only Ly and Z are available assume DENSE data
   if( is.matrix(Ly) && is.null(Lt) && is.null(Ymu) ){
@@ -63,7 +63,7 @@ getCrCovYZ <- function(bw = NULL, Z, Zmu = NULL, Ly, Lt = NULL, Ymu = NULL, supp
   # If the bandwidth is unknown use GCV to take find it
   } else {
     # Construct candidate bw's
-    h0 = 2.0 * minb( sort(ulLt), 2+1); # 2x the bandwidth needed for at least 3 points in a window
+    h0 = 2.0 * Minb( sort(ulLt), 2+1); # 2x the bandwidth needed for at least 3 points in a window
     r = diff(range(ulLt))    
     q = (r/(4*h0))^(1/9);   
     bwCandidates = sort(q^(0:19)*h0);
@@ -93,7 +93,7 @@ getCrCovYZ <- function(bw = NULL, Z, Zmu = NULL, Ly, Lt = NULL, Ymu = NULL, supp
 smoothRCC <- function(rCC,bw,xout){
   x = matrix( unlist(rCC),  ncol=2)
   x= x[order(x[,1]),]
-  return( lwls1d(bw=bw, win=rep(1,nrow(x)), yin=x[,2], xin=x[,1], 'gauss', xout=xout) ) 
+  return( Lwls1D(bw=bw, win=rep(1,nrow(x)), yin=x[,2], xin=x[,1], 'gauss', xout=xout) ) 
 }
 
 # Calculate GCV cost off smoothed sample assuming a Gaussian kernel

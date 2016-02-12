@@ -9,10 +9,10 @@ n <- 500
 p <- 500
 pts <- seq(0, 1, length.out=p)
 # samp <- matrix(rnorm(n), n, p)
-samp <- wiener(n, pts)
+samp <- Wiener(n, pts)
 samp <- samp + rnorm(n * p, sd=0.01) + matrix(pts, n, p, byrow=TRUE)
 # matplot(t(samp[1:10, ]), type='l')
-samp <- sparsify(samp, pts, p)
+samp <- Sparsify(samp, pts, p)
 res <- FPCA(samp$yList, samp$tList, 
             list(dataType='Dense', error=FALSE, lean=TRUE))
 # smRes <- FPCA(samp$yList, samp$tList, 
@@ -47,7 +47,7 @@ test_that('first derivative is fine', {
   # mu <- 0:(length(pts)-1) / 50
   # samp1 <- t(mu + fourier(pts, nbasis=length(trueLam))[,1:50] %*% matrix(rnorm(n*length(trueLam),mean=0,sd=sqrt(rep(trueLam,n))),nrow=length(trueLam))+
     # rnorm(n * length(pts), mean = 0, sd = 0.1))
-  # samp2 <- sparsify(samp1, pts, 10)
+  # samp2 <- Sparsify(samp1, pts, 10)
   # samp11 <- list(tList = c(), yList = c())
   # for(i in 1:n){samp11$tList[[i]] <- pts; samp11$yList[[i]] <- samp1[i,]}
   # samp1 <- samp11

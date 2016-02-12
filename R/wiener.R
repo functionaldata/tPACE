@@ -12,10 +12,10 @@
 #'
 #' @return If \code{sparsify} is not specified, a matrix with \code{n} rows corresponding to the samples are returned. Otherwise the sparsified sample is returned. 
 #'
-#' @seealso sparsify
+#' @seealso Sparsify
 #' @export
 
-wiener <- function(n=1, pts=seq(0, 1, length=50), sparsify=NULL, K=50) {
+Wiener <- function(n=1, pts=seq(0, 1, length=50), sparsify=NULL, K=50) {
     pts <- as.matrix(pts)
     if (dim(pts)[1] < dim(pts)[2])
         pts <- t(pts)
@@ -24,7 +24,7 @@ wiener <- function(n=1, pts=seq(0, 1, length=50), sparsify=NULL, K=50) {
     samp <- t(basis %*% diag(1 / (1:K - 1/2) / pi) %*% matrix(rnorm(K * n), K, n))
     
     if (!is.null(sparsify)) {
-        samp <- sparsify(samp, pts, sparsify)
+        samp <- Sparsify(samp, pts, sparsify)
     }
     
     return(samp)
@@ -35,7 +35,7 @@ wiener <- function(n=1, pts=seq(0, 1, length=50), sparsify=NULL, K=50) {
 ## samp: a matrix of samples, with rows containing the samples
 ## pts: a vector of grid points, should be from 0 to 1
 ## sparsity: a vector of integers. The number of observation will be uniform distribution on sparsify.
-#sparsify <- function(samp, pts, sparsity) {
+#Sparsify <- function(samp, pts, sparsity) {
 #    if (length(sparsity) == 1)
 #            sparsity <- c(sparsity, sparsity) # avoid scaler case
 #    

@@ -13,7 +13,7 @@
 #'
 #' @export
 
-selectK = function(fpcaObj, criterion = 'AIC', FVEthreshold = NULL, y = NULL, t = NULL){
+SelectK = function(fpcaObj, criterion = 'AIC', FVEthreshold = NULL, y = NULL, t = NULL){
   if(class(fpcaObj) != 'FPCA'){
     stop('Invalid Input: not a FPCA object!')
   }
@@ -43,7 +43,7 @@ selectK = function(fpcaObj, criterion = 'AIC', FVEthreshold = NULL, y = NULL, t 
     # FVE is not the selection criterion
     IC = rep(Inf, length(fpcaObj$lambda))
     for(i in 1:length(fpcaObj$lambda)){
-      logliktemp = getLogLik(fpcaObj, i, y = y, t = t)
+      logliktemp = GetLogLik(fpcaObj, i, y = y, t = t)
       if(is.null(logliktemp)){
         stop('The covariance matrix of the estimated function is nearly singular! AIC or BIC is not applicable.')
       }

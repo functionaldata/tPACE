@@ -9,7 +9,7 @@
 #' @return L list containing 3 lists each of length 'm', 'm' being the number of unique subject IDs
 #' @export
 
-makeFPCAinputs <- function(IDs = NULL, tVec, yVec, na.rm=FALSE){
+MakeFPCAInputs <- function(IDs = NULL, tVec, yVec, na.rm=FALSE){
 
   if( !is.null(IDs) ){ 
     if (na.rm) {

@@ -16,7 +16,7 @@
 #  res: N * N matrix contains count for each distinct pairs of 
 #             time points
 
-designPlotCount = function(t, obsGrid, noDiagonal, isColorPlot){
+DesignPlotCount = function(t, obsGrid, noDiagonal, isColorPlot){
   N = length(obsGrid) # number of distinct observed time pts
   res = matrix(0, nrow = N, ncol = N)
 

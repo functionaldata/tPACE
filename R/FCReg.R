@@ -66,7 +66,7 @@ FCReg <- function(depVar,  expVarScal = NULL, expVarFunc = NULL, regressionType 
           y <- expVarFunc[[j]]$inputData$y 
           t <- expVarFunc[[j]]$inputData$t  
           KovXXZZ[nX+i,j,] = approx(x = expVarFunc[[1]]$obsGrid, xout = expVarFunc[[1]]$workGrid, y = 
-                                      getCrCovYZ(Z = expVarScal[,i], Ly = y, Lt=t, Ymu = expVarFunc[[1]]$mu, 
+                                      GetCrCovYZ(Z = expVarScal[,i], Ly = y, Lt=t, Ymu = expVarFunc[[1]]$mu, 
                                                  bw = bwScalar)$smoothedCC)$y
           KovXXZZ[j,nX+i,] = KovXXZZ[nX+i,j,];
         }
@@ -78,7 +78,7 @@ FCReg <- function(depVar,  expVarScal = NULL, expVarFunc = NULL, regressionType 
         y <- depVar$inputData$y 
         t <- depVar$inputData$t  
         KovXYZ[(nX+j),] = approx(x = expVarFunc[[1]]$obsGrid, xout = expVarFunc[[1]]$workGrid, y = 
-                                   getCrCovYZ(Z = expVarScal[,j], Ly = y, Lt=t, Ymu = depVar$mu, bw = bwScalar)$smoothedCC)$y
+                                   GetCrCovYZ(Z = expVarScal[,j], Ly = y, Lt=t, Ymu = depVar$mu, bw = bwScalar)$smoothedCC)$y
       }
     } 
     
@@ -97,7 +97,7 @@ FCReg <- function(depVar,  expVarScal = NULL, expVarFunc = NULL, regressionType 
           t2 <- expVarFunc[[i]]$inputData$t   
           mu2 <- expVarFunc[[i]]$mu   
           print('x1-x2')
-          myDiag = diag(getCrCovYX( Ly1 = y1, Lt1 = t1, Ly2 = y2, Lt2 = t2, fast = splineSmooth, bw1 = bwFunct, bw2 = bwFunct,
+          myDiag = diag(GetCrCovYX( Ly1 = y1, Lt1 = t1, Ly2 = y2, Lt2 = t2, fast = splineSmooth, bw1 = bwFunct, bw2 = bwFunct,
                                     Ymu1 =mu1, Ymu2 = mu2)$smoothedCC)
         }
         KovXXZZ[i,j,] = myDiag 
@@ -107,7 +107,7 @@ FCReg <- function(depVar,  expVarScal = NULL, expVarFunc = NULL, regressionType 
       yY <- depVar$inputData$y 
       tY <- depVar$inputData$t   
       print('x-y')
-      myDiag = diag(getCrCovYX( Ly1 = y1, Lt1 = t1, Ly2 = yY, Lt2 = tY, fast = splineSmooth, bw1 = bwFunct, bw2 = bwFunct,
+      myDiag = diag(GetCrCovYX( Ly1 = y1, Lt1 = t1, Ly2 = yY, Lt2 = tY, fast = splineSmooth, bw1 = bwFunct, bw2 = bwFunct,
                                 Ymu1 = mu1, Ymu2 = depVar$mu)$smoothedCC)
       KovXYZ[j,] = myDiag
     }

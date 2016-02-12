@@ -14,7 +14,7 @@
   # }   
 # }
 
-mapX1d <- function(x, y, newx) {
+MapX1D <- function(x, y, newx) {
     # if (!all(newx %in% x)) 
         # warning('Interpolation occured: you might want to increase the obsGrid coverage')
         

@@ -1,6 +1,6 @@
 # get the count number of time pairs output by GetRawCov
 # Output: a data.frame of three columns: t1, t2, count
-getCount <- function(tpairs) {
+GetCount <- function(tpairs) {
     # browser()
     tab <- table(tpairs[, 1], tpairs[, 2])
     pts <- sort(unique(as.numeric(tpairs)))

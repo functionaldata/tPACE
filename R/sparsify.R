@@ -12,7 +12,7 @@
 #' \item{tList}{A list of observation time points for each sample.}
 #' \item{yList}{A list of values for each sample, corresponding to the time points.}
 #' @export
-sparsify <- function(samp, pts, sparsity, aggressive = FALSE, fragment=FALSE) {
+Sparsify <- function(samp, pts, sparsity, aggressive = FALSE, fragment=FALSE) {
 
     if (length(sparsity) == 1)
       sparsity <- c(sparsity, sparsity) # avoid scaler case

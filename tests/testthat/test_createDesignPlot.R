@@ -9,7 +9,7 @@ sparsity <- 1:5
 tList <- replicate(n, runif(sample(sparsity, 1)), simplify=FALSE)
 obsGrid <- sort(unique(unlist(tList)))
 system.time(
-createDesignPlot(tList, obsGrid, isColorPlot=TRUE)
+CreateDesignPlot(tList, obsGrid, isColorPlot=TRUE)
 )
 
 # ... are passed in 
@@ -18,4 +18,4 @@ n <- 5e2
 sparsity <- 1:5
 tList <- replicate(n, round(runif(sample(sparsity, 1)), 2), simplify=FALSE)
 obsGrid <- sort(unique(unlist(tList)))
-createDesignPlot(tList, obsGrid, isColorPlot=TRUE, pch=1, cex=1, xlab='XX', ylab='YY')
+CreateDesignPlot(tList, obsGrid, isColorPlot=TRUE, pch=1, cex=1, xlab='XX', ylab='YY')

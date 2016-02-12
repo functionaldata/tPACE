@@ -10,7 +10,7 @@
 # Output: - bopt: bandwidth after adjustment
 ##########################################################################
 
-adjustBW1 <- function(kernel, bopt, npoly, nder, dataType, verbose){
+AdjustBW1 <- function(kernel, bopt, npoly, nder, dataType, verbose){
   # for Gaussian kernel
   if(kernel == 'gauss'){
     if(dataType == "Dense"){

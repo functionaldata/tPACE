@@ -13,17 +13,17 @@
 #' set.seed(1)
 #' n <- 20
 #' pts <- seq(0, 1, by=0.05)
-#' sampWiener <- wiener(n, pts)
-#' sampWiener <- sparsify(sampWiener, pts, 10)
+#' sampWiener <- Wiener(n, pts)
+#' sampWiener <- Sparsify(sampWiener, pts, 10)
 #' res <- FPCA(sampWiener$yList, sampWiener$tList, 
 #'             list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
-#' createFuncBoxPlot(res, addIndx=c(1:3)) 
+#' CreateFuncBoxPlot(res, addIndx=c(1:3)) 
 #' @references
 #' \cite{P. J. Rousseeuw, I. Ruts, J. W. Tukey (1999): The bagplot: a bivariate boxplot, The American Statistician, vol. 53, no. 4, 382-387}
 #'
 #' @export
 
-createFuncBoxPlot <- function(fpcaObj, addIndx =NULL, variant= 'bagplot', enforceUnimodality = NULL, ifactor = NULL,... ){
+CreateFuncBoxPlot <- function(fpcaObj, addIndx =NULL, variant= 'bagplot', enforceUnimodality = NULL, ifactor = NULL,... ){
   
   args1 <- list( xlab='s', ylab='')  
   inargs <- list(...)

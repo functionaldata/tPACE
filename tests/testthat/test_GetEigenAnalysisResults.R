@@ -6,7 +6,7 @@ trueLam <- 4 / ((2 * (1:50) - 1 ) * pi) ^ 2
 set.seed(1)
 pts <- seq(0, 1, by=0.05)
 regGrid <- seq(0, 1, by=0.01)
-samp3 <- wiener(50, pts, sparsify=length(pts))
+samp3 <- Wiener(50, pts, sparsify=length(pts))
 mu3 <- rep(0, length(pts))
 
 # without error

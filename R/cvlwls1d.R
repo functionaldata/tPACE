@@ -1,4 +1,4 @@
-cvlwls1d <- function(yy, t, kernel, npoly, nder, dataType ){
+CVLwls1D <- function(yy, t, kernel, npoly, nder, dataType ){
 
   # If 'yy' and 't' are vectors "cheat" and break them in 
   # a list of 10 elements
@@ -24,7 +24,7 @@ cvlwls1d <- function(yy, t, kernel, npoly, nder, dataType ){
   a0=ttn[1];
   b0=ttn[length(ttn)];
   rang = b0-a0;
-  dstar = minb(tt, npoly+2);
+  dstar = Minb(tt, npoly+2);
 
   if (dataType != 'Dense'){
    h0 = 2.5*dstar;
@@ -74,7 +74,7 @@ cvlwls1d <- function(yy, t, kernel, npoly, nder, dataType ){
         ttn = sort(ttn)           
       }  
  
-      mu = lwls1d(bw= bw[j], kernel_type = kernel, npoly=npoly, nder= nder, xin = ttn, yin= xxn, xout=out, win = win)
+      mu = Lwls1D(bw= bw[j], kernel_type = kernel, npoly=npoly, nder= nder, xin = ttn, yin= xxn, xout=out, win = win)
       cv[j]=cv[j]+t(obs-mu)%*%(obs-mu);
       count[j]=count[j]+1;
     }

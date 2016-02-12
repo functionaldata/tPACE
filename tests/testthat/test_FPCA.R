@@ -7,21 +7,21 @@ trueLam <- 4 / ((2 * (1:50) - 1 ) * pi) ^ 2
 # set.seed(1)
 # n <- 100
 # pts <- seq(0, 1, by=0.05)
-# samp3 <- wiener(n, pts) + rnorm(n * length(pts), sd=0.1)
-# samp3 <- sparsify(samp3, pts, 10)
+# samp3 <- Wiener(n, pts) + rnorm(n * length(pts), sd=0.1)
+# samp3 <- Sparsify(samp3, pts, 10)
 # res <- FPCA(samp3$yList, samp3$tList, list(dataType='Sparse', useBins=TRUE))
 # res$lambda / trueLam[1:length(res$lambda)]
 # res$sigma2
 
-# createCovPlot(res, 'Smoothed', FALSE)
+# CreateCovPlot(res, 'Smoothed', FALSE)
 
 test_that('Truncation works for FPCA Wiener process', {
   set.seed(1)
   n <- 100
   pts <- seq(0, 1, by=0.01)
   mu <- rep(0, length(pts))
-  samp4 <- wiener(n, pts) + rnorm(n * length(pts), sd=0.1)
-  samp4 <- sparsify(samp4, pts, 10)
+  samp4 <- Wiener(n, pts) + rnorm(n * length(pts), sd=0.1)
+  samp4 <- Sparsify(samp4, pts, 10)
   samp5 <- samp4
   samp4$yList[[1]] <- samp4$tList[[1]] <- c(0, 1)
   pTrunc <- SetOptions(samp4$yList, samp4$tList, list(dataType='Sparse', error=TRUE, kernel='epan', outPercent=c(0.03, 0.97), verbose=TRUE))
@@ -42,8 +42,8 @@ test_that('Missing values work for FPCA Wiener process', {
   n <- 200
   pts <- seq(0, 1, by=0.01)
   mu <- rep(0, length(pts))
-  samp4 <- wiener(n, pts) + rnorm(n * length(pts), sd=0.1)
-  samp4 <- sparsify(samp4, pts, 10)
+  samp4 <- Wiener(n, pts) + rnorm(n * length(pts), sd=0.1)
+  samp4 <- Sparsify(samp4, pts, 10)
   samp4$yList[[1]] <- samp4$tList[[1]] <- c(0, 1)
   pNoTrunc <- SetOptions(samp4$yList, samp4$tList, list(dataType='Sparse', error=TRUE, kernel='epan', outPercent=c(0, 1), verbose=TRUE))
 
@@ -92,7 +92,7 @@ test_that('User provided mu and cov for simple example',{
   
   # Create sparse sample  
   # Each subject has one to five readings (median: 3);
-  ySparse = sparsify(yTrue, s, c(2:5))
+  ySparse = Sparsify(yTrue, s, c(2:5))
     
   # Give your sample a bit of noise 
   ySparse$yNoisy = lapply( ySparse$yList, function(x) x +  1 * rnorm(length(x))) 
@@ -131,7 +131,7 @@ test_that('User provided mu, cov, and sigma2',{
   
   # Create sparse sample  
   # Each subject has one to five readings (median: 3);
-  ySparse = sparsify(yTrue, s, c(2:5))
+  ySparse = Sparsify(yTrue, s, c(2:5))
     
   # Give your sample a bit of noise 
   ySparse$yNoisy = lapply( ySparse$yList, function(x) x +  0.025*rnorm(length(x))) 
@@ -171,7 +171,7 @@ test_that('Case where one component should be returned',{
  
   # Create sparse sample  
   # Each subject has one to five readings (median: 3);
-  ySparse = sparsify(yTrue, s, c(1:5))    
+  ySparse = Sparsify(yTrue, s, c(1:5))    
   FPCAsparseA = FPCA(ySparse$yList,t=ySparse$tList, optns = 
     list( FVEthreshold = 0.4, userMu = list(t=s,mu= meanFunct(s)) ) )
 
@@ -188,9 +188,9 @@ test_that('GetCovDense with noise, get sigma2', {
   pts <- seq(0, 1, length.out=p)
   sigma2 <- 0.1
   mu <- pts
-  sampTrue <- wiener(n, pts) + matrix(pts, n, p, byrow=TRUE)
+  sampTrue <- Wiener(n, pts) + matrix(pts, n, p, byrow=TRUE)
   samp <- sampTrue + rnorm(n * length(pts), sd=sqrt(sigma2))
-  tmp <- makeFPCAinputs(tVec=pts, yVec=samp)
+  tmp <- MakeFPCAInputs(tVec=pts, yVec=samp)
 
   resNoerr <- FPCA(tmp$Ly, tmp$Lt, list(error=FALSE, dataType='Dense', lean=TRUE))
   resErr <- FPCA(tmp$Ly, tmp$Lt, list(error=TRUE, dataType='Dense', shrink=TRUE, lean=TRUE))
@@ -210,9 +210,9 @@ test_that('GetCovDense with noise, known cov, get sigma2', {
   pts <- seq(0, 1, length.out=p)
   sigma2 <- 0.1
   mu <- pts
-  sampTrue <- wiener(n, pts) + matrix(pts, n, p, byrow=TRUE)
+  sampTrue <- Wiener(n, pts) + matrix(pts, n, p, byrow=TRUE)
   samp <- sampTrue + rnorm(n * length(pts), sd=sqrt(sigma2))
-  tmp <- makeFPCAinputs(tVec=pts, yVec=samp)
+  tmp <- MakeFPCAInputs(tVec=pts, yVec=samp)
 
   resErr <- FPCA(tmp$Ly, tmp$Lt, list(error=TRUE, dataType='Dense', shrink=TRUE, lean=TRUE, userCov=list(t=pts, cov=outer(pts, pts, pmin))))
 
@@ -227,9 +227,9 @@ test_that('noisy dense data, cross-sectional mu/cov, use IN/CE score', {
   pts <- seq(0, 1, length.out=p)
   sigma2 <- 0.1
   mu <- pts
-  sampTrue <- wiener(n, pts) + matrix(pts, n, p, byrow=TRUE)
+  sampTrue <- Wiener(n, pts) + matrix(pts, n, p, byrow=TRUE)
   samp <- sampTrue + rnorm(n * length(pts), sd=sqrt(sigma2))
-  tmp <- makeFPCAinputs(tVec=pts, yVec=samp)
+  tmp <- MakeFPCAInputs(tVec=pts, yVec=samp)
 
   resErrCE <- FPCA(tmp$Ly, tmp$Lt, list(error=TRUE, dataType='Dense', lean=TRUE, methodXi='CE'))
   resErrCEKnownSigma2 <- FPCA(tmp$Ly, tmp$Lt, list(error=TRUE, dataType='Dense', lean=TRUE, methodXi='CE', userSigma2=sigma2))
@@ -249,9 +249,9 @@ test_that('noisy dense data, smooth mu/cov, use IN/CE score', {
   pts <- seq(0, 1, length.out=p)
   sigma2 <- 0.1
   mu <- pts
-  sampTrue <- wiener(n, pts) + matrix(pts, n, p, byrow=TRUE)
+  sampTrue <- Wiener(n, pts) + matrix(pts, n, p, byrow=TRUE)
   samp <- sampTrue + rnorm(n * length(pts), sd=sqrt(sigma2))
-  tmp <- makeFPCAinputs(tVec=pts, yVec=samp)
+  tmp <- MakeFPCAInputs(tVec=pts, yVec=samp)
 
   resErrCSCE <- FPCA(tmp$Ly, tmp$Lt, list(error=TRUE, dataType='Dense', lean=TRUE, muCovEstMethod='cross-sectional', methodXi='CE'))
   resErrCE <- FPCA(tmp$Ly, tmp$Lt, list(error=TRUE, dataType='Dense', lean=TRUE, muCovEstMethod='smooth', methodXi='CE'))

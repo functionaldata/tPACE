@@ -52,13 +52,13 @@ GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, optns, useBinned
     
     if (bwuserCov == 0) { # bandwidth selection
       if (bwuserCovGcv %in% c('GCV', 'GMeanAndGCV')) { # GCV
-        gcvObj <- gcvlwls2dV2(obsGrid, regGrid, kern=kern, rcov=rcov, verbose=verbose, t=t)
+        gcvObj <- GCVLwls2DV2(obsGrid, regGrid, kern=kern, rcov=rcov, verbose=verbose, t=t)
         bwCov <- gcvObj$h
         if (bwuserCovGcv == 'GMeanAndGCV') {
           bwCov <- sqrt(bwCov * gcvObj$minBW)
         }  
       } else if (bwuserCovGcv == 'CV') { # CV 10 fold
-        gcvObj <- gcvlwls2dV2(obsGrid, regGrid, kern=kern, rcov=rcov, t=t,
+        gcvObj <- GCVLwls2DV2(obsGrid, regGrid, kern=kern, rcov=rcov, t=t,
                             verbose=optns$verbose, 
                             CV=optns[['kFoldCov']])
         bwCov <- gcvObj$h
@@ -68,10 +68,10 @@ GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, optns, useBinned
     }
 
     if (!useBinnedCov) {
-      smoothCov <- lwls2d(bwCov, kern, xin=rcov$tPairs, yin=rcov$cxxn,
+      smoothCov <- Lwls2D(bwCov, kern, xin=rcov$tPairs, yin=rcov$cxxn,
                           xout1=cutRegGrid, xout2=cutRegGrid)
     } else { 
-      smoothCov <- lwls2d(bwCov, kern, xin=rcov$tPairs, yin=rcov$meanVals,
+      smoothCov <- Lwls2D(bwCov, kern, xin=rcov$tPairs, yin=rcov$meanVals,
                           win=rcov$count, xout1=cutRegGrid, xout2=cutRegGrid)
     }
   }
@@ -98,7 +98,7 @@ GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, optns, useBinned
       sigma2 <- mean(diagEst - diag(smoothCov)[middleCutRegGrid])
       
     } else { # has to estimate sigma2 from scratch
-      sigma2 <- pc_covE(obsGrid, regGrid, bwCov, rotationCut=rotationCut, kernel=kern, rcov=rcov)$sigma2
+      sigma2 <- PC_CovE(obsGrid, regGrid, bwCov, rotationCut=rotationCut, kernel=kern, rcov=rcov)$sigma2
     }
   
     if(sigma2 < 0) {

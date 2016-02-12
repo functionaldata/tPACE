@@ -10,7 +10,7 @@ test_that('The cross-covariance of two constant processes is zero.',{
   Ymu1 = rep(55,7);
   Ymu2 = rep(1.1,7);
   
-  AA<-getCrCovYX(Ly1 = Ly1, Ly2= Ly2, Lt1=Lt1, Lt2=Lt2, Ymu1=Ymu1, Ymu2=Ymu2)
+  AA<-GetCrCovYX(Ly1 = Ly1, Ly2= Ly2, Lt1=Lt1, Lt2=Lt2, Ymu1=Ymu1, Ymu2=Ymu2)
   expect_equal( 0,  sum(AA$smoothedCC)  )
   
 })
@@ -26,7 +26,7 @@ test_that('The cross-covariance of two unrelated process is close to zero.',{
   Ymu1 = rep(0.5, length(unique(unlist(Lt1))))
   Ymu2 = rep(0.1^9,  length(unique(unlist(Lt2))))
   
-  AA<-getCrCovYX(Ly1 = Ly1, Ly2= Ly2, Lt1=Lt1, Lt2=Lt2, Ymu1=Ymu1, Ymu2=Ymu2, bw1=2, bw2=2)
+  AA<-GetCrCovYX(Ly1 = Ly1, Ly2= Ly2, Lt1=Lt1, Lt2=Lt2, Ymu1=Ymu1, Ymu2=Ymu2, bw1=2, bw2=2)
   expect_equal( 0.0,  mean(AA$smoothedCC), tol=1e-3 )
 })
 
@@ -41,7 +41,7 @@ test_that('The cross-covariance of two unrelated process is close to zero. Diffe
   Ymu1 = rep(0.5, length(unique(unlist(Lt1))))
   Ymu2 = rep(0.1^9,  length(unique(unlist(Lt2))))
   
-  AA<-getCrCovYX(Ly1 = Ly1, Ly2= Ly2, Lt1=Lt1, Lt2=Lt2, Ymu1=Ymu1, Ymu2=Ymu2, bw1=2, bw2=2)
+  AA<-GetCrCovYX(Ly1 = Ly1, Ly2= Ly2, Lt1=Lt1, Lt2=Lt2, Ymu1=Ymu1, Ymu2=Ymu2, bw1=2, bw2=2)
   expect_equal( 0.0,  mean(AA$smoothedCC), tol=1e-3 )
 })
 
@@ -66,7 +66,7 @@ test_that('The cross-covariance of two simple related process is correct. Same r
   yTrueA = Ksi[,1] %*% t(matrix(eigFunct1(s), ncol=1)) 
   yTrueB = Ksi[,2] %*% t(matrix(eigFunct1(s), ncol=1)) 
   
-  AA <- getCrCovYX(Ly1 = yTrueB, Ly2 =yTrueA)
+  AA <- GetCrCovYX(Ly1 = yTrueB, Ly2 =yTrueA)
   
   # we know that the covariance between ksi_1 and ksi_2 is three
   expect_equal( max(abs( eigFunct1(s)%*%t(eigFunct1(s))*3 - AA$rawCC$rawCCov )),  0.01, tol=.01, scale=1 )
@@ -93,13 +93,13 @@ test_that('The cross-covariance of two simple related process is correct. Same r
   yTrueA = Ksi[,1] %*% t(matrix(eigFunct1(s), ncol=1)) 
   yTrueB = Ksi[,2] %*% t(matrix(eigFunct1(s), ncol=1)) 
   
-  ySparseA = sparsify(yTrueA, s, c(3:5))    
-  ySparseB = sparsify(yTrueB, s, c(3:5))     
+  ySparseA = Sparsify(yTrueA, s, c(3:5))    
+  ySparseB = Sparsify(yTrueB, s, c(3:5))     
   
-  BB1 <- getCrCovYX(Ly1 = ySparseA$yList, Lt1 = ySparseA$tList, Ly2 = ySparseB$yList, Lt2 = ySparseB$tList, 
+  BB1 <- GetCrCovYX(Ly1 = ySparseA$yList, Lt1 = ySparseA$tList, Ly2 = ySparseB$yList, Lt2 = ySparseB$tList, 
                 Ymu1 = rep(0,M), Ymu2 = rep(0,M), fast = TRUE  )
   
-  BB2 <- getCrCovYX(Ly1 = ySparseA$yList, Lt1 = ySparseA$tList, Ly2 = ySparseB$yList, Lt2 = ySparseB$tList, 
+  BB2 <- GetCrCovYX(Ly1 = ySparseA$yList, Lt1 = ySparseA$tList, Ly2 = ySparseB$yList, Lt2 = ySparseB$tList, 
                  Ymu1 = rep(0,M), Ymu2 = rep(0,M), bw1=0.4, bw2=0.4  )
   
   sSmall = seq(0,10,length.out = 51)
@@ -133,13 +133,13 @@ test_that('The cross-covariance of two simple unrelated process is correct. Same
   yTrueA = Ksi[,1] %*% t(matrix(eigFunct1(s), ncol=1)) 
   yTrueB = Ksi[,2] %*% t(matrix(eigFunct2(s), ncol=1)) 
   
-  ySparseA = sparsify(yTrueA, s, c(3:5))    
-  ySparseB = sparsify(yTrueB, s, c(3:5))     
+  ySparseA = Sparsify(yTrueA, s, c(3:5))    
+  ySparseB = Sparsify(yTrueB, s, c(3:5))     
   
-  BB1 <- getCrCovYX(Ly1 = ySparseA$yList, Lt1 = ySparseA$tList, Ly2 = ySparseB$yList, Lt2 = ySparseB$tList, 
+  BB1 <- GetCrCovYX(Ly1 = ySparseA$yList, Lt1 = ySparseA$tList, Ly2 = ySparseB$yList, Lt2 = ySparseB$tList, 
                  Ymu1 = rep(0,M), Ymu2 = rep(0,M), fast = TRUE  )
   
-  BB2 <- getCrCovYX(Ly1 = ySparseA$yList, Lt1 = ySparseA$tList, Ly2 = ySparseB$yList, Lt2 = ySparseB$tList, 
+  BB2 <- GetCrCovYX(Ly1 = ySparseA$yList, Lt1 = ySparseA$tList, Ly2 = ySparseB$yList, Lt2 = ySparseB$tList, 
                  Ymu1 = rep(0,M), Ymu2 = rep(0,M), bw1=0.4, bw2=0.4  )
   
   sSmall = seq(0,10,length.out = 51)

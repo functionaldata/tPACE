@@ -3,7 +3,7 @@
 # verbose is unused for now
 # this is compatible with PACE because the GCV is calculated in a same way
 
-gcvlwls1d1 <- function(yy,tt, kernel, npoly, nder, dataType, verbose=TRUE) {
+GCVLwls1D1 <- function(yy,tt, kernel, npoly, nder, dataType, verbose=TRUE) {
  
   # If 'yy' and 't' are vectors "cheat" and break them in 
   # a list of 10 elements                                                                                                                                  
@@ -28,16 +28,16 @@ gcvlwls1d1 <- function(yy,tt, kernel, npoly, nder, dataType, verbose=TRUE) {
 
   # Specify the starting bandwidth candidates
   if ( dataType == "Sparse") {
-    dstar = minb(t, npoly+2);
+    dstar = Minb(t, npoly+2);
     if ( dstar > r*0.25){
       dstar = dstar * 0.75;
       warning( c( "The min bandwidth choice is too big, reduce to ", dstar, "!\n"))
     }
     h0 = 2.5 * dstar;
   }else if(dataType == "DenseWithMV"){
-    h0 = 2.0 * minb(t, npoly+1);
+    h0 = 2.0 * Minb(t, npoly+1);
   } else {
-    h0 = 1.5 * minb(t,npoly+1);
+    h0 = 1.5 * Minb(t,npoly+1);
   }  
   if ( is.nan(h0) ){
     if ( kernel == "gauss" ){
@@ -65,8 +65,8 @@ gcvlwls1d1 <- function(yy,tt, kernel, npoly, nder, dataType, verbose=TRUE) {
   gcvScores <- c()
   # Get the corresponding GCV scores 
   for(i in 1:length(bwCandidates)){
-    # newmu = lwls1d(bwCandidates[i], kern=kernel, npoly=npoly, nder=nder, xin = t,yin= y,xout= sort(unique(t)))[idx]
-    newmu = lwls1d(bwCandidates[i], kernel_type=kernel, npoly=npoly, nder=nder, xin = t,yin= y, win = rep(1,length(y)),xout= sort(unique(t)))[idx]
+    # newmu = Lwls1D(bwCandidates[i], kern=kernel, npoly=npoly, nder=nder, xin = t,yin= y,xout= sort(unique(t)))[idx]
+    newmu = Lwls1D(bwCandidates[i], kernel_type=kernel, npoly=npoly, nder=nder, xin = t,yin= y, win = rep(1,length(y)),xout= sort(unique(t)))[idx]
     cvsum = sum((newmu -y)^2 )
     gcvScores[i] =cvsum/(1-(r*k0)/(N*bwCandidates[i]))^2
   }
@@ -75,8 +75,8 @@ gcvlwls1d1 <- function(yy,tt, kernel, npoly, nder, dataType, verbose=TRUE) {
   if(all((is.infinite(gcvScores)))){
     bwCandidates = seq( max(bwCandidates), r, length.out = 2*length(bwCandidates))
     for(i in 1:length(bwCandidates)){
-      # newmu = lwls1d(bwCandidates[i], kern=kernel, npoly=npoly, nder=nder, xin = t,yin= y,xout= sort(unique(t)))[idx]
-      newmu = lwls1d(bwCandidates[i], kernel_type =kernel, npoly=npoly, nder=nder, xin = t,yin= y, win = rep(1,length(y)), xout= sort(unique(t)))[idx]
+      # newmu = Lwls1D(bwCandidates[i], kern=kernel, npoly=npoly, nder=nder, xin = t,yin= y,xout= sort(unique(t)))[idx]
+      newmu = Lwls1D(bwCandidates[i], kernel_type =kernel, npoly=npoly, nder=nder, xin = t,yin= y, win = rep(1,length(y)), xout= sort(unique(t)))[idx]
       cvsum = sum((newmu -y)^2 )
       gcvScores[i] =cvsum/(1-(r*k0)/(N*bwCandidates[i]))^2
     }

@@ -1,7 +1,7 @@
 # Rotate the data and then smooth the diagonal elements. We use quadratic terms on either direction, rather than only orthogonal to the diagonal.
 # xout: a matrix of two columns containing the diagonal elements.
 
-rotateLwls2dV2 <- function(bw, kern='epan', xin, yin, win=NULL, xout) {
+RotateLwls2DV2 <- function(bw, kern='epan', xin, yin, win=NULL, xout) {
   
   if (length(bw) == 1){
     bw <- c(bw, bw)

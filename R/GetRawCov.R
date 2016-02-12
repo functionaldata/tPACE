@@ -24,7 +24,7 @@ GetRawCov <- function(y,t,obsGridnew, mu, dataType, error){
 
   ncohort <- length(y);
   obsGrid <- sort(unique(unlist(t)))
-  mu <- mapX1d(x = obsGridnew, y = mu, newx = obsGrid);
+  mu <- MapX1D(x = obsGridnew, y = mu, newx = obsGrid);
   count <- NULL
   indx = NULL 
   diag = NULL
@@ -67,7 +67,7 @@ GetRawCov <- function(y,t,obsGridnew, mu, dataType, error){
     }
 
     # win = pracma::ones(1, length(cxxn));
-    # count = getCount(tPairs)...
+    # count = GetCount(tPairs)...
 
   }else if(dataType == 'Dense'){
     

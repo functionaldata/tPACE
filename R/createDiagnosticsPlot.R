@@ -9,14 +9,14 @@
 #' set.seed(1)
 #' n <- 20
 #' pts <- seq(0, 1, by=0.05)
-#' sampWiener <- wiener(n, pts)
-#' sampWiener <- sparsify(sampWiener, pts, 10)
+#' sampWiener <- Wiener(n, pts)
+#' sampWiener <- Sparsify(sampWiener, pts, 10)
 #' res <- FPCA(sampWiener$yList, sampWiener$tList, 
 #'             list(dataType='Sparse', error=FALSE, kernel='epan', verbose=FALSE))
-#' createDiagnosticsPlot(res)
+#' CreateDiagnosticsPlot(res)
 #' @export
 
-createDiagnosticsPlot <-function(ret, openNewDev = FALSE){ 
+CreateDiagnosticsPlot <-function(ret, openNewDev = FALSE){ 
   t = ret$inputData$t
   if(openNewDev){ 
     dev.new(width=6.2, height=6.2, noRStudioGD=TRUE) ; 
@@ -28,13 +28,13 @@ createDiagnosticsPlot <-function(ret, openNewDev = FALSE){
  
   par(mfrow=c(2,2))
   ## Make Design plot
-  createDesignPlot(t)
+  CreateDesignPlot(t)
   
   ## Make Mean trajectory plot
   plot( obsGrid, mu, type='l', xlab='s',ylab='', main='Mean Function', panel.first = grid())   
   
   ## Make Scree plot
-  createScreePlot(ret);
+  CreateScreePlot(ret);
   
   ## Make Phi plot
   K = ncol(ret$phi);

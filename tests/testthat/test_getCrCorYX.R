@@ -1,6 +1,6 @@
 library(testthat)
 
-test_that('getCrCorYX works on a trivial example', {
+test_that('GetCrCorYX works on a trivial example', {
   
   set.seed(123)
   A = matrix(rnorm(10*7), ncol=7); 
@@ -10,13 +10,13 @@ test_that('getCrCorYX works on a trivial example', {
   covB = cov(B)
   covAB = cov(A,B) 
   
-  expect_equal(getCrCorYX(covAB, covA, covB),cor(A,B))  
+  expect_equal(GetCrCorYX(covAB, covA, covB),cor(A,B))  
   
-  expect_equal(getCrCorYX(covAB, diag(covA), diag(covB)),cor(A,B))  
+  expect_equal(GetCrCorYX(covAB, diag(covA), diag(covB)),cor(A,B))  
   
 })
 
-test_that('getCrCorYX works on a trivial example with a scalar', {
+test_that('GetCrCorYX works on a trivial example with a scalar', {
   
   set.seed(123)
   A = matrix(rnorm(101*7), ncol=7); 
@@ -26,9 +26,9 @@ test_that('getCrCorYX works on a trivial example with a scalar', {
   covB = var(B)
   covAB = cov(A,B) 
   
-  expect_equal(getCrCorYX(covAB, covA, covB),cor(A,B))  
+  expect_equal(GetCrCorYX(covAB, covA, covB),cor(A,B))  
   
-  expect_equal(getCrCorYX(covAB, diag(covA), covB),cor(A,B))  
+  expect_equal(GetCrCorYX(covAB, diag(covA), covB),cor(A,B))  
   
 })
 

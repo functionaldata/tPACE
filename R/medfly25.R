@@ -5,7 +5,7 @@
 #' the dataset used by Carey at al. (1998); only flies having lived at least 25 days 
 #' are shown. At the end of the recording period all flies were still alive.
 #'
-#' @name medfly25
+#' @name Medfly25
 #' @docType data
 #' @format A data frame with 789 rows and 26 variables:
 #' \describe{

@@ -1,4 +1,4 @@
-gcvlwls2dV2 <- function(obsGrid, regGrid, ngrid=NULL, dataType=rcov$dataType, error=rcov$error, kern, rcov, h0=NULL, verbose=FALSE, CV=FALSE, t) {
+GCVLwls2DV2 <- function(obsGrid, regGrid, ngrid=NULL, dataType=rcov$dataType, error=rcov$error, kern, rcov, h0=NULL, verbose=FALSE, CV=FALSE, t) {
 
 # TODO:? get the residual values only within truncated regGrid
 
@@ -14,7 +14,7 @@ gcvlwls2dV2 <- function(obsGrid, regGrid, ngrid=NULL, dataType=rcov$dataType, er
   
   r <- diff(range(obsGrid)) * sqrt(2) # sqrt(2) because the window is circular.
 
-  minBW <- getMinb(t, dataType=rcov$dataType, obsGrid=obsGrid)
+  minBW <- GetMinb(t, dataType=rcov$dataType, obsGrid=obsGrid)
 
   if (missing(h0)) {
     h0 <- minBW
@@ -143,13 +143,13 @@ gcvlwls2dV2 <- function(obsGrid, regGrid, ngrid=NULL, dataType=rcov$dataType, er
 
 
 getGCVscoresV2 <- function(bw, kern, xin, yin, win=NULL, regGrid, RSS=NULL) {
-# ...: passed on to lwls2d
+# ...: passed on to Lwls2D
 # RSS: for implementing GCV of binned rcov.
   # browser() 
   if (is.null(win))
     win <- rep(1, length(yin))
     
-  fit <- tryCatch(lwls2d(bw, kern, xin=xin, yin=yin, win=win, xout1=regGrid, xout2=regGrid), error=function(err) {
+  fit <- tryCatch(Lwls2D(bw, kern, xin=xin, yin=yin, win=win, xout1=regGrid, xout2=regGrid), error=function(err) {
                warning('Invalid bandwidth. Try enlarging the window size.')
                return(Inf)
   })
@@ -182,7 +182,7 @@ getGCVscoresV2 <- function(bw, kern, xin, yin, win=NULL, regGrid, RSS=NULL) {
 
 # k-fold CV
 # partition: a list of testset observation indices, returned by caret::createFolds
-# ...: passed on to lwls2d
+# ...: passed on to Lwls2D
 getCVscoresV2 <- function(partition, bw, kern, xin, yin, win=NULL, regGrid, RSS=NULL) {
 
   if (is.null(win))
@@ -193,7 +193,7 @@ getCVscoresV2 <- function(partition, bw, kern, xin, yin, win=NULL, regGrid, RSS=
   # browser()
   cvSubSum <- sapply(partition, function(testSet) {
     # browser()
-    fit <- tryCatch(lwls2d(bw, kern, xin=xin, yin=yin, win=win, xout1=regGrid, xout2=regGrid, subset=-testSet), error=function(err) {
+    fit <- tryCatch(Lwls2D(bw, kern, xin=xin, yin=yin, win=win, xout1=regGrid, xout2=regGrid, subset=-testSet), error=function(err) {
                  warning('Invalid bandwidth. Try enlarging the window size.')
                  return(Inf)
     })

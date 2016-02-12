@@ -7,7 +7,7 @@
 #' @return A list containing the normalised sample 'y' at times 't'
 #'
 #' @export
-getNormalisedSample<- function(fpcaObj){
+GetNormalisedSample<- function(fpcaObj){
   if (any( 0>=diag(fpcaObj$smoothedCov)) ){
     stop("The autocovariance functions appears to have negative or zero values.")
   }
