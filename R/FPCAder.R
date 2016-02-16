@@ -6,7 +6,7 @@
 #' @details Available derivation control options are 
 #' \describe{
 #' \item{p}{The order of the derivatives returned (default: 0, max: 2)}
-#' \item{bw}{Bandwidth for smoothing the derivatives (default: p * 0.075 * S)}
+#' \item{bw}{Bandwidth for smoothing the derivatives (default: p * 0.1 * S)}
 #' \item{kernelType}{Smoothing kernel choice; same available types are FPCA(). default('epan')}
 #' }
 #'
@@ -29,7 +29,8 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
   method <- derOptns[['method']]
   bw <- derOptns[['bw']]
   kernelType <- derOptns[['kernelType']]
-  
+  k <- derOptns[['k']]
+
   obsGrid <- fpcaObj$obsGrid
   workGrid <- fpcaObj$workGrid
   
@@ -43,10 +44,24 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
   
   if (p == 2) {
     warning('Second derivative is experimental only.')
-  }
+  } 
 
-  muDer <- Lwls1D(bw, kernelType, rep(1, length(obsGrid)), obsGrid, fpcaObj$mu, obsGrid, p, p)
-  phiDer <- apply(fpcaObj$phi, 2, function(phi) Lwls1D(bw, kernelType, rep(1, length(workGrid)), workGrid, phi, workGrid, p, p))
+  #if( k > SelectK( fpcaObj, FVEthreshold=0.95, criterion='FVE')$k ){
+  #    warning("Potentially you use too many components to estimate derivatives. \n  Consider using SelectK() to find a more informed estimate for 'k'.");
+  #}
+
+   #fittedCurves <- fitted(fpcaObj, k = k, derOpts = NULL)
+   #A = MakeFPCAInputs(yVec=fittedCurves, tVec= rep(fpcaObj$workGrid))
+   #fcfpcaObj <- FPCA(A$Ly, t= A$Lt, list(lean=TRUE))
+   #xin = unlist(fpcaObj$input$t );    
+   #yin = unlist(fpcaObj$input$y)[order(xin)];
+   #xin = sort(xin);    
+   #win = rep(1, length(xin));
+   
+   # muDer  = Lwls1D(bw, kernelType, npoly = p+1, nder = p, xin = xin, yin= yin, xout = obsGrid, win = win) 
+   
+   muDer <- Lwls1D(bw, kernelType, rep(1, length(obsGrid)), obsGrid, fpcaObj$mu, obsGrid, p, p)
+   phiDer <- apply(fpcaObj$phi, 2, function(phi) Lwls1D(bw, kernelType, rep(1, length(workGrid)), workGrid, phi, workGrid, p, p))
 
  # muDer2<- fpcaObj$mu
  # phiDer2 <- fpcaObj$phi
@@ -63,9 +78,7 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
  #                      getSmoothCurve(t=workGrid, ft=x, GCV =TRUE, kernelType = kernelType, mult=1))
  # }
 
-  fpcaObj <- append(fpcaObj, list(muDer = muDer, phiDer = phiDer, 
-                                  #muDer2 = muDer2, phiDer2 = phiDer2,
-                                  derOptns = derOptns))
+  fpcaObj <- append(fpcaObj, list(muDer = muDer, phiDer = phiDer, derOptns = derOptns))
   class(fpcaObj) <- c(class(fpcaObj), 'FPCAder')
   return(fpcaObj)
 }

@@ -10,7 +10,7 @@
 #' \describe{
 #' \item{p}{The order of the derivatives returned (default: 0, max: 2)}
 #' \item{method}{The method used to produce the sample of derivatives ('EIG' (default) or 'QUO'). See Liu and Mueller (2009) for more details}
-#' \item{bw}{Bandwidth for smoothing the derivatives (default: p * 0.075 * S)}
+#' \item{bw}{Bandwidth for smoothing the derivatives (default: p * 0.10 * S)}
 #' \item{kernelType}{Smoothing kernel choice; same available types are FPCA(). default('epan')}
 #' }
 #' @param ... Additional arguments
@@ -34,7 +34,7 @@ fitted.FPCA <-  function (object, k = NULL, derOptns = list(), ...) {
   derOptns <- SetDerOptions(fpcaObject = object, derOptns)
   p <- derOptns[['p']]
   method <- derOptns[['method']]
-  bw <-  derOptns[['bw']] #  p * 0.075 * diff(range(object$workGrid))
+  bw <-  derOptns[['bw']] # 
   kernelType <- derOptns[['kernelType']]
 
   fpcaObj <- object
@@ -81,13 +81,13 @@ fitted.FPCA <-  function (object, k = NULL, derOptns = list(), ...) {
       mu = Lwls1D(bw = bw, kernelType, win = rep(1, length(obsGrid)), xin = obsGrid, yin = mu, xout = obsGrid, npoly = p, nder = p)
       ZMFV = fpcaObj$xiEst[,1:k, drop = FALSE] %*% t(phi[,1:k, drop = FALSE]);
       IM = approx(x= fpcaObj$obsGrid, y=mu, fpcaObj$workGrid)$y
-      return( t(apply( ZMFV, 1, function(x) x + IM)))
+      return( t(apply( ZMFV, 1, function(x) x + IM) ))
     }
 
     if( method == 'QUO'){
       impSample <- fitted(fpcaObj, k = k); # Look ma! I do recursion!
-      return( apply(impSample, 1, function(curve) Lwls1D(bw = bw, kernelType, win = rep(1, length(workGrid)), 
-                                                         xin = workGrid, yin = curve, xout = workGrid, npoly = p, nder = p)))
+      return( t(apply(impSample, 1, function(curve) Lwls1D(bw = bw, kernelType, win = rep(1, length(workGrid)), 
+                                                         xin = workGrid, yin = curve, xout = workGrid, npoly = p, nder = p))))
     }
   }
 

@@ -1,5 +1,3 @@
- cat("\nTests for 'CreateTrueMean'")
-
 
 myEps <- .Machine$double.eps;
 

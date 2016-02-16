@@ -74,11 +74,11 @@ Available control options are
 set.seed(1)
 n <- 20
 pts <- seq(0, 1, by=0.05)
-sampWiener <- wiener(n, pts)
-sampWiener <- sparsify(sampWiener, pts, 10)
+sampWiener <- Wiener(n, pts)
+sampWiener <- Sparsify(sampWiener, pts, 10)
 res <- FPCA(sampWiener$yList, sampWiener$tList, 
             list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
-createCovPlot(res, 'Fitted')
+CreateCovPlot(res, 'Fitted')
 }
 \references{
 \cite{Yao, F., Mueller, H.G., Clifford, A.J., Dueker, S.R., Follett, J., Lin, Y., Buchholz, B., Vogel, J.S. (2003). "Shrinkage estimation for functional principal component scores, with application to the population kinetics of plasma folate." Biometrics 59, 676-685. (Shrinkage estimates for dense data)}

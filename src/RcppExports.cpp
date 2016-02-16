@@ -8,7 +8,7 @@ using namespace Rcpp;
 
 // CPPlwls1d
 Eigen::VectorXd CPPlwls1d(const double& bw, const std::string kernel_type, const Eigen::Map<Eigen::VectorXd>& win, const Eigen::Map<Eigen::VectorXd>& xin, const Eigen::Map<Eigen::VectorXd>& yin, const Eigen::Map<Eigen::VectorXd>& xout, const unsigned int& npoly, const unsigned int& nder);
-RcppExport SEXP tPACE_CPPlwls1d(SEXP bwSEXP, SEXP kernel_typeSEXP, SEXP winSEXP, SEXP xinSEXP, SEXP yinSEXP, SEXP xoutSEXP, SEXP npolySEXP, SEXP nderSEXP) {
+RcppExport SEXP fdapace_CPPlwls1d(SEXP bwSEXP, SEXP kernel_typeSEXP, SEXP winSEXP, SEXP xinSEXP, SEXP yinSEXP, SEXP xoutSEXP, SEXP npolySEXP, SEXP nderSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -26,7 +26,7 @@ END_RCPP
 }
 // dropZeroElementsXYWin
 Eigen::MatrixXd dropZeroElementsXYWin(const Eigen::Map<Eigen::VectorXd>& win, const Eigen::Map<Eigen::VectorXd>& xin, const Eigen::Map<Eigen::VectorXd>& yin);
-RcppExport SEXP tPACE_dropZeroElementsXYWin(SEXP winSEXP, SEXP xinSEXP, SEXP yinSEXP) {
+RcppExport SEXP fdapace_dropZeroElementsXYWin(SEXP winSEXP, SEXP xinSEXP, SEXP yinSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -39,7 +39,7 @@ END_RCPP
 }
 // GetIndCEScoresCPP
 Rcpp::List GetIndCEScoresCPP(const Eigen::Map<Eigen::VectorXd>& yVec, const Eigen::Map<Eigen::VectorXd>& muVec, const Eigen::Map<Eigen::VectorXd>& lamVec, const Eigen::Map<Eigen::MatrixXd>& phiMat, const Eigen::Map<Eigen::MatrixXd>& SigmaYi);
-RcppExport SEXP tPACE_GetIndCEScoresCPP(SEXP yVecSEXP, SEXP muVecSEXP, SEXP lamVecSEXP, SEXP phiMatSEXP, SEXP SigmaYiSEXP) {
+RcppExport SEXP fdapace_GetIndCEScoresCPP(SEXP yVecSEXP, SEXP muVecSEXP, SEXP lamVecSEXP, SEXP phiMatSEXP, SEXP SigmaYiSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -54,7 +54,7 @@ END_RCPP
 }
 // GetIndCEScoresCPPnewInd
 Rcpp::List GetIndCEScoresCPPnewInd(const Eigen::Map<Eigen::VectorXd>& yVec, const Eigen::Map<Eigen::VectorXd>& muVec, const Eigen::Map<Eigen::VectorXd>& lamVec, const Eigen::Map<Eigen::MatrixXd>& phiMat, const Eigen::Map<Eigen::MatrixXd>& SigmaYi, const Eigen::Map<Eigen::MatrixXd>& newPhi, const Eigen::Map<Eigen::VectorXd>& newMu);
-RcppExport SEXP tPACE_GetIndCEScoresCPPnewInd(SEXP yVecSEXP, SEXP muVecSEXP, SEXP lamVecSEXP, SEXP phiMatSEXP, SEXP SigmaYiSEXP, SEXP newPhiSEXP, SEXP newMuSEXP) {
+RcppExport SEXP fdapace_GetIndCEScoresCPPnewInd(SEXP yVecSEXP, SEXP muVecSEXP, SEXP lamVecSEXP, SEXP phiMatSEXP, SEXP SigmaYiSEXP, SEXP newPhiSEXP, SEXP newMuSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -71,7 +71,7 @@ END_RCPP
 }
 // interp2lin
 Eigen::VectorXd interp2lin(const Eigen::Map<Eigen::VectorXd>& xin, const Eigen::Map<Eigen::VectorXd>& yin, const Eigen::Map<Eigen::VectorXd>& zin, const Eigen::Map<Eigen::VectorXd>& xou, const Eigen::Map<Eigen::VectorXd>& you);
-RcppExport SEXP tPACE_interp2lin(SEXP xinSEXP, SEXP yinSEXP, SEXP zinSEXP, SEXP xouSEXP, SEXP youSEXP) {
+RcppExport SEXP fdapace_interp2lin(SEXP xinSEXP, SEXP yinSEXP, SEXP zinSEXP, SEXP xouSEXP, SEXP youSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -86,7 +86,7 @@ END_RCPP
 }
 // RCPPmean
 double RCPPmean(const Rcpp::NumericVector X);
-RcppExport SEXP tPACE_RCPPmean(SEXP XSEXP) {
+RcppExport SEXP fdapace_RCPPmean(SEXP XSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -97,7 +97,7 @@ END_RCPP
 }
 // RCPPvar
 double RCPPvar(const Rcpp::NumericVector X);
-RcppExport SEXP tPACE_RCPPvar(SEXP XSEXP) {
+RcppExport SEXP fdapace_RCPPvar(SEXP XSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -108,7 +108,7 @@ END_RCPP
 }
 // RmullwlskCC
 Eigen::MatrixXd RmullwlskCC(const Eigen::Map<Eigen::VectorXd>& bw, const std::string kernel_type, const Eigen::Map<Eigen::MatrixXd>& tPairs, const Eigen::Map<Eigen::MatrixXd>& cxxn, const Eigen::Map<Eigen::VectorXd>& win, const Eigen::Map<Eigen::VectorXd>& xgrid, const Eigen::Map<Eigen::VectorXd>& ygrid, const bool& bwCheck);
-RcppExport SEXP tPACE_RmullwlskCC(SEXP bwSEXP, SEXP kernel_typeSEXP, SEXP tPairsSEXP, SEXP cxxnSEXP, SEXP winSEXP, SEXP xgridSEXP, SEXP ygridSEXP, SEXP bwCheckSEXP) {
+RcppExport SEXP fdapace_RmullwlskCC(SEXP bwSEXP, SEXP kernel_typeSEXP, SEXP tPairsSEXP, SEXP cxxnSEXP, SEXP winSEXP, SEXP xgridSEXP, SEXP ygridSEXP, SEXP bwCheckSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -126,7 +126,7 @@ END_RCPP
 }
 // Rmullwlsk
 Eigen::MatrixXd Rmullwlsk(const Eigen::Map<Eigen::VectorXd>& bw, const std::string kernel_type, const Eigen::Map<Eigen::MatrixXd>& tPairs, const Eigen::Map<Eigen::MatrixXd>& cxxn, const Eigen::Map<Eigen::VectorXd>& win, const Eigen::Map<Eigen::VectorXd>& xgrid, const Eigen::Map<Eigen::VectorXd>& ygrid, const bool& bwCheck, const bool& transp);
-RcppExport SEXP tPACE_Rmullwlsk(SEXP bwSEXP, SEXP kernel_typeSEXP, SEXP tPairsSEXP, SEXP cxxnSEXP, SEXP winSEXP, SEXP xgridSEXP, SEXP ygridSEXP, SEXP bwCheckSEXP, SEXP transpSEXP) {
+RcppExport SEXP fdapace_Rmullwlsk(SEXP bwSEXP, SEXP kernel_typeSEXP, SEXP tPairsSEXP, SEXP cxxnSEXP, SEXP winSEXP, SEXP xgridSEXP, SEXP ygridSEXP, SEXP bwCheckSEXP, SEXP transpSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -145,7 +145,7 @@ END_RCPP
 }
 // Rmullwlsk_old
 Eigen::MatrixXd Rmullwlsk_old(const Eigen::Map<Eigen::VectorXd>& bw, const std::string kernel_type, const Eigen::Map<Eigen::MatrixXd>& tPairs, const Eigen::Map<Eigen::MatrixXd>& cxxn, const Eigen::Map<Eigen::VectorXd>& win, const Eigen::Map<Eigen::VectorXd>& xgrid, const Eigen::Map<Eigen::VectorXd>& ygrid, const bool& bwCheck, const bool& transp);
-RcppExport SEXP tPACE_Rmullwlsk_old(SEXP bwSEXP, SEXP kernel_typeSEXP, SEXP tPairsSEXP, SEXP cxxnSEXP, SEXP winSEXP, SEXP xgridSEXP, SEXP ygridSEXP, SEXP bwCheckSEXP, SEXP transpSEXP) {
+RcppExport SEXP fdapace_Rmullwlsk_old(SEXP bwSEXP, SEXP kernel_typeSEXP, SEXP tPairsSEXP, SEXP cxxnSEXP, SEXP winSEXP, SEXP xgridSEXP, SEXP ygridSEXP, SEXP bwCheckSEXP, SEXP transpSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -164,7 +164,7 @@ END_RCPP
 }
 // Rrotatedmullwlsk
 Eigen::VectorXd Rrotatedmullwlsk(const Eigen::Map<Eigen::VectorXd>& bw, const std::string kernel_type, const Eigen::Map<Eigen::MatrixXd>& tPairs, const Eigen::Map<Eigen::MatrixXd>& cxxn, const Eigen::Map<Eigen::VectorXd>& win, const Eigen::Map<Eigen::MatrixXd>& xygrid, const unsigned int npoly, const bool& bwCheck);
-RcppExport SEXP tPACE_Rrotatedmullwlsk(SEXP bwSEXP, SEXP kernel_typeSEXP, SEXP tPairsSEXP, SEXP cxxnSEXP, SEXP winSEXP, SEXP xygridSEXP, SEXP npolySEXP, SEXP bwCheckSEXP) {
+RcppExport SEXP fdapace_Rrotatedmullwlsk(SEXP bwSEXP, SEXP kernel_typeSEXP, SEXP tPairsSEXP, SEXP cxxnSEXP, SEXP winSEXP, SEXP xygridSEXP, SEXP npolySEXP, SEXP bwCheckSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -182,7 +182,7 @@ END_RCPP
 }
 // trapzRcpp
 double trapzRcpp(const Rcpp::NumericVector X, const Rcpp::NumericVector Y);
-RcppExport SEXP tPACE_trapzRcpp(SEXP XSEXP, SEXP YSEXP) {
+RcppExport SEXP fdapace_trapzRcpp(SEXP XSEXP, SEXP YSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;

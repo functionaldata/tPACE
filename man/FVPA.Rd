@@ -28,8 +28,8 @@ Functional Variance Process Analysis for sparse or dense functional data
 set.seed(1)
 n <- 20
 pts <- seq(0, 1, by=0.05)
-sampWiener <- wiener(n, pts)
-sampWiener <- sparsify(sampWiener, pts, 10) 
+sampWiener <- Wiener(n, pts)
+sampWiener <- Sparsify(sampWiener, pts, 10) 
 fvpaObj <- FVPA(sampWiener$yList, sampWiener$tList)
 }
 \references{
