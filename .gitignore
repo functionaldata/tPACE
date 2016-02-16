@@ -38,6 +38,8 @@ ehthumbs.db
 Thumbs.db
 
 # Specific to this repo
+Rmullwlsk_old.*
+symbols.rds
  .RData 
  .RDataTmp
 *.swp
