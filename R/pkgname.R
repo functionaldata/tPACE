@@ -27,8 +27,8 @@
 #' Maintainer: Pantelis Z. Hadjipantelis \email{pantelis@@ucdavis.edu}
 #'
 #' @docType package
-#' @name tPACE
-#' @useDynLib tPACE
+#' @name fdapace
+#' @useDynLib fdapace
 #' @import Hmisc plot3D Rcpp
 #' @importFrom numDeriv grad
 #' @importFrom pracma meshgrid midpoint mod ones uniq
