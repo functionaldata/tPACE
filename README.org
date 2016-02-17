@@ -9,5 +9,5 @@ devtools::install_github("hadjipantelis/tPACE", ref='demo')
 ** Load Package and Data
 Once installed you can load the package with:
 #+BEGIN_SRC R
-library(tPACE)
+library(fdapace)
 #+END_SRC
