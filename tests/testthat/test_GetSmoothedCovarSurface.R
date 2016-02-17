@@ -29,12 +29,12 @@ test_that('Smooth Cov Surface interface is right', {
 })
 
 # GCV
-p2 <- SetOptions(samp3$yList, samp3$tList, list(bwuserCovGcv='GCV', dataType='Sparse', error=FALSE, kernel='epan'))
+p2 <- SetOptions(samp3$yList, samp3$tList, list(methodBwCov='GCV', dataType='Sparse', error=FALSE, kernel='epan'))
 tmp2 <- GetSmoothedCovarSurface(samp3$yList, samp3$tList, mu3, pts, regGrid, p2, useBinnedCov=FALSE)
 sum((diag(tmp2$smoothCov) - seq(0, 1, by=0.1))^2)
 
 # CV
-p3 <- SetOptions(samp3$yList, samp3$tList, list(bwuserCovGcv='CV', dataType='Sparse', error=FALSE, kernel='epan'))
+p3 <- SetOptions(samp3$yList, samp3$tList, list(methodBwCov='CV', dataType='Sparse', error=FALSE, kernel='epan'))
 system.time(tmp3 <- GetSmoothedCovarSurface(samp3$yList, samp3$tList, mu3, pts, regGrid, p3, useBinnedCov=FALSE))
 sum((diag(tmp3$smoothCov) - seq(0, 1, by=0.1))^2)
 

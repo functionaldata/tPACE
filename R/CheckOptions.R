@@ -13,34 +13,34 @@ CheckOptions = function(t,optns,n){
     # Force, turn off or automatically decide about the use of bin data
     stop("FPCA is aborted because the argument: useBinnedData is invalid!\n"); 
   }
-  if(  !( (length(optns[['bwmu']])==1) &&  is.numeric(optns[['bwmu']]) && (0<=optns[['bwmu']]) ) ){ 
+  if(  !( (length(optns[['userBwMu']])==1) &&  is.numeric(optns[['userBwMu']]) && (0<=optns[['userBwMu']]) ) ){ 
     # bandwidth Bhoice for mean function is using CV or GCV
-    stop("FPCA is aborted because the argument: bwmu is invalid!\n"); 
+    stop("FPCA is aborted because the argument: userBwMu is invalid!\n"); 
   }
-  if( !(  any(optns[['bwmuMethod']] == c('CV','GCV','GMeanAndGCV')) )){ 
-    # bandwidth choice for mean function is GCV if bwmu = 0
-    stop("FPCA is aborted because the argument: bwmuMethod is invalid!\n"); 
+  if( !(  any(optns[['methodBwMu']] == c('CV','GCV','GMeanAndGCV')) )){ 
+    # bandwidth choice for mean function is GCV if userBwMu = 0
+    stop("FPCA is aborted because the argument: methodBwMu is invalid!\n"); 
   }
-  if(!(length(optns[['bwuserCov']])==1) &&  is.numeric(optns[['bwuserCov']]) && (all(optns[['bwuserCov']]>=0))){ 
+  if(!(length(optns[['userBwCov']])==1) &&  is.numeric(optns[['userBwCov']]) && (all(optns[['userBwCov']]>=0))){ 
     # bandwidth choice for covariance function is CV or GCV
-    stop("FPCA is aborted because the argument: bwuserCov is invalid!\n"); 
+    stop("FPCA is aborted because the argument: userBwCov is invalid!\n"); 
   }
-  if( !(  any(optns[['bwuserCovGcv']] == c('CV','GCV','GMeanAndGCV') ) )){ 
-    # bandwidth choice for covariance function is GCV if bwuserCov = c(0,0)
-    stop("FPCA is aborted because the argument: bwuserCovGcv is invalid!\n");  
+  if( !(  any(optns[['methodBwCov']] == c('CV','GCV','GMeanAndGCV') ) )){ 
+    # bandwidth choice for covariance function is GCV if userBwCov = c(0,0)
+    stop("FPCA is aborted because the argument: methodBwCov is invalid!\n");  
   }
 
   if (is.nan(optns[['kFoldCov']]) || optns[['kFoldCov']] < 2) {
     stop('Invalid `kFoldCov` option')
   }
 
-  if( !(any(optns[['selectionMethod']] == c('FVE','AIC','BIC')))){
-    if(is.numeric(optns[['selectionMethod']])){
-      if(as.integer(optns[['selectionMethod']]) != optns[['selectionMethod']] || optns[['selectionMethod']] <= 0 || optns[['selectionMethod']] > n){
-        stop('FPCA is aborted because the argument: selectionMethod is invalid!\n')
+  if( !(any(optns[['methodSelectK']] == c('FVE','AIC','BIC')))){
+    if(is.numeric(optns[['methodSelectK']])){
+      if(as.integer(optns[['methodSelectK']]) != optns[['methodSelectK']] || optns[['methodSelectK']] <= 0 || optns[['methodSelectK']] > n){
+        stop('FPCA is aborted because the argument: methodSelectK is invalid!\n')
       }
     } else {
-      stop('FPCA is aborted because the argument: selectionMethod is invalid!\n')
+      stop('FPCA is aborted because the argument: methodSelectK is invalid!\n')
     }
   }
   if(  ( (length(optns[['FVEthreshold']])==1) &&  is.numeric(optns[['FVEthreshold']]) ) ){
@@ -149,8 +149,8 @@ CheckOptions = function(t,optns,n){
     # display diagnostic messages
     stop("FPCA is aborted because the argument: userCov is invalid!\n");     
   }
-  if(!(any(optns[['muCovEstMethod']] == c('smooth', 'cross-sectional')))){
-    stop("FPCA is aborted because the argument: muCovEstMethod is invalid!\n");    
+  if(!(any(optns[['methodMuCovEst']] == c('smooth', 'cross-sectional')))){
+    stop("FPCA is aborted because the argument: methodMuCovEst is invalid!\n");    
   }
 
 }

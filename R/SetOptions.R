@@ -10,13 +10,13 @@
 
 SetOptions = function(y, t, optns){
 
-  muCovEstMethod = optns[['muCovEstMethod']]
-  bwmu =optns[['bwmu']];                
-  bwmuMethod =optns[['bwmuMethod']]; 
-  bwuserCov =optns[['bwuserCov']];            
-  bwuserCovGcv =optns[['bwuserCovGcv']];
+  methodMuCovEst = optns[['methodMuCovEst']]
+  userBwMu =optns[['userBwMu']];                
+  methodBwMu =optns[['methodBwMu']]; 
+  userBwCov =optns[['userBwCov']];            
+  methodBwCov =optns[['methodBwCov']];
   kFoldCov = optns[['kFoldCov']]
-  selectionMethod =optns[['selectionMethod']];  
+  methodSelectK =optns[['methodSelectK']];  
   FVEthreshold =optns[['FVEthreshold']];
   fitEigenValues <- optns[['fitEigenValues']];
   maxK =optns[['maxK']];                
@@ -41,17 +41,17 @@ SetOptions = function(y, t, optns){
   useBinnedCov = optns[['useBinnedCov']]
   lean = optns[['lean']]
 
-  if(is.null(bwmu)){ # bandwidth choice for mean function is using CV or GCV
-    bwmu = 0;   
+  if(is.null(userBwMu)){ # bandwidth choice for mean function is using CV or GCV
+    userBwMu = 0;   
   }
-  if(is.null(bwmuMethod)){ # bandwidth choice for mean function is GCV if bwmu = 0
-    bwmuMethod = 'GMeanAndGCV';  
+  if(is.null(methodBwMu)){ # bandwidth choice for mean function is GCV if userBwMu = 0
+    methodBwMu = 'GMeanAndGCV';  
   }
-  if(is.null(bwuserCov)){ # bandwidth choice for covariance function is CV or GCV
-    bwuserCov = 0; 
+  if(is.null(userBwCov)){ # bandwidth choice for covariance function is CV or GCV
+    userBwCov = 0; 
   }
-  if(is.null(bwuserCovGcv)){  # bandwidth choice for covariance function is GCV if bwuserCov = c(0,0)
-    bwuserCovGcv = 'GMeanAndGCV';
+  if(is.null(methodBwCov)){  # bandwidth choice for covariance function is GCV if userBwCov = c(0,0)
+    methodBwCov = 'GMeanAndGCV';
   }
   #if(is.null(ngrid1)){ # number of support points for the covariance surface 
   #  ngrid1 = 30;
@@ -61,10 +61,10 @@ SetOptions = function(y, t, optns){
   } else {
     kFoldCov <- as.integer(kFoldCov)
   }
-  if(is.null(selectionMethod)){ # the method of choosing the number of principal components K
+  if(is.null(methodSelectK)){ # the method of choosing the number of principal components K
     #  TODO : Possibly have user-defined selection methods for the # of FPCs and we keep
     # an internal FVE-based method for us
-    selectionMethod = "FVE";
+    methodSelectK = "FVE";
   }
   if(is.null(FVEthreshold)){  # Default Value for the Fraction-of-Variance-Explained
      FVEthreshold = 0.9999;
@@ -144,14 +144,14 @@ SetOptions = function(y, t, optns){
     cat(paste("maxK can only be less than or equal to", nRegGrid-2,"! Reset to be", nRegGrid-2, "now!\n"));
     maxK = nRegGrid -2;
   }
-  if(is.numeric(selectionMethod)){
+  if(is.numeric(methodSelectK)){
     FVEthreshold <- 1 # disable FVE selection.
-    if(selectionMethod > (nRegGrid-2)){ # check if a reasonable number of eigenfunctions is requested
+    if(methodSelectK > (nRegGrid-2)){ # check if a reasonable number of eigenfunctions is requested
       cat(paste("maxK can only be less than or equal to", nRegGrid-2,"! Reset to be", nRegGrid-2, "now!\n"));
       maxK = nRegGrid -2;
-    }else if(selectionMethod <= 0){ # check if a positive number of eigenfunctions is requested
-      cat("selectionMethod must be a positive integer! Reset to BIC now!\n");
-      selectionMethod = "BIC"
+    }else if(methodSelectK <= 0){ # check if a positive number of eigenfunctions is requested
+      cat("methodSelectK must be a positive integer! Reset to BIC now!\n");
+      methodSelectK = "BIC"
       FVEthreshold = 0.95;
     }
   }
@@ -183,9 +183,9 @@ SetOptions = function(y, t, optns){
   if(is.null(rotationCut)){ 
     rotationCut <- c(0.25,.75)
   } 
-  # if(error == FALSE && (selectionMethod == "AIC" || selectionMethod == "BIC")){ # Check suitability of information criterion
+  # if(error == FALSE && (methodSelectK == "AIC" || methodSelectK == "BIC")){ # Check suitability of information criterion
   #  cat('When assume no measurement error, cannot use "AIC" or "BIC". Reset to "BIC" now!\n')
-  #  selectionMethod = "BIC" 
+  #  methodSelectK = "BIC" 
   #}
   if(!is.null(numBins)){ 
     if(numBins < 10){   # Check suitability of number of bins
@@ -205,23 +205,23 @@ SetOptions = function(y, t, optns){
   if(is.null(lean)){ 
     lean = FALSE;
   }
-  if(is.null(muCovEstMethod)){
+  if(is.null(methodMuCovEst)){
     if (dataType == 'Sparse'){
-      muCovEstMethod = 'smooth'; #In the odd case that somehow we use this...
+      methodMuCovEst = 'smooth'; #In the odd case that somehow we use this...
     } else {
-      muCovEstMethod = 'cross-sectional';
+      methodMuCovEst = 'cross-sectional';
     }
   }
-  # if (!all.equal(outPercent, c(0, 1)) && muCovEstMethod == 'cross-sectional') {
+  # if (!all.equal(outPercent, c(0, 1)) && methodMuCovEst == 'cross-sectional') {
     # stop('outPercent not supported for cross-sectional covariance estimate')
   # }
     
-  retOptns <- list(bwmu = bwmu, bwmuMethod = bwmuMethod, bwuserCov = bwuserCov, bwuserCovGcv = bwuserCovGcv,
-          kFoldCov = kFoldCov, selectionMethod = selectionMethod, FVEthreshold = FVEthreshold,
+  retOptns <- list(userBwMu = userBwMu, methodBwMu = methodBwMu, userBwCov = userBwCov, methodBwCov = methodBwCov,
+          kFoldCov = kFoldCov, methodSelectK = methodSelectK, FVEthreshold = FVEthreshold,
           fitEigenValues = fitEigenValues, maxK = maxK, dataType = dataType, error = error, shrink = shrink,
           nRegGrid = nRegGrid, rotationCut = rotationCut, methodXi = methodXi, kernel = kernel, 
           lean = lean, diagnosticsPlot = diagnosticsPlot, numBins = numBins, useBinnedCov = useBinnedCov, 
-          yname = yname,  rho = rho, verbose = verbose, userMu = userMu, userCov = userCov, muCovEstMethod = muCovEstMethod,
+          yname = yname,  rho = rho, verbose = verbose, userMu = userMu, userCov = userCov, methodMuCovEst = methodMuCovEst,
           userSigma2 = userSigma2, outPercent = outPercent, useBinnedData = useBinnedData)
 
   invalidNames <- !names(optns) %in% names(retOptns)

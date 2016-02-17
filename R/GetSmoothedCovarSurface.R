@@ -4,8 +4,8 @@ GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, optns, useBinned
   dataType <- optns$dataType
   error <- optns$error
   kern <- optns$kernel
-  bwuserCov <- optns$bwuserCov
-  bwuserCovGcv <- optns$bwuserCovGcv
+  userBwCov <- optns$userBwCov
+  methodBwCov <- optns$methodBwCov
   verbose <- optns$verbose
   rotationCut <- optns$rotationCut
 
@@ -25,8 +25,8 @@ GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, optns, useBinned
        (is.null(optns[['userSigma2']]) && error)) {
        
     rcov <- GetRawCov(y, t, obsGrid, mu, dataType, error)
-    if (useBinnedCov && bwuserCovGcv == 'CV') {
-      stop('If bwuserCovGcv == \'CV\' then we must use the unbinned rcov.')
+    if (useBinnedCov && methodBwCov == 'CV') {
+      stop('If methodBwCov == \'CV\' then we must use the unbinned rcov.')
     }
     
     if (useBinnedCov) {
@@ -50,21 +50,21 @@ GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, optns, useBinned
   
   } else { # estimate the smoothed covariance
     
-    if (bwuserCov == 0) { # bandwidth selection
-      if (bwuserCovGcv %in% c('GCV', 'GMeanAndGCV')) { # GCV
+    if (userBwCov == 0) { # bandwidth selection
+      if (methodBwCov %in% c('GCV', 'GMeanAndGCV')) { # GCV
         gcvObj <- GCVLwls2DV2(obsGrid, regGrid, kern=kern, rcov=rcov, verbose=verbose, t=t)
         bwCov <- gcvObj$h
-        if (bwuserCovGcv == 'GMeanAndGCV') {
+        if (methodBwCov == 'GMeanAndGCV') {
           bwCov <- sqrt(bwCov * gcvObj$minBW)
         }  
-      } else if (bwuserCovGcv == 'CV') { # CV 10 fold
+      } else if (methodBwCov == 'CV') { # CV 10 fold
         gcvObj <- GCVLwls2DV2(obsGrid, regGrid, kern=kern, rcov=rcov, t=t,
                             verbose=optns$verbose, 
                             CV=optns[['kFoldCov']])
         bwCov <- gcvObj$h
       }
-    } else if (bwuserCov != 0) {
-      bwCov <- bwuserCov
+    } else if (userBwCov != 0) {
+      bwCov <- userBwCov
     }
 
     if (!useBinnedCov) {

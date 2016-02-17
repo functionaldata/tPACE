@@ -2,10 +2,10 @@
 % Please edit documentation in R/CreateFuncBoxPlot.R
 \name{CreateFuncBoxPlot}
 \alias{CreateFuncBoxPlot}
-\title{Create functional boxplot using 'bagplot' or 'pointwise' methodology}
+\title{Create functional boxplot using 'bagplot', 'KDE' or 'pointwise' methodology}
 \usage{
 CreateFuncBoxPlot(fpcaObj, addIndx = NULL, variant = "bagplot",
-  enforceUnimodality = NULL, ifactor = NULL, ...)
+  unimodal = NULL, ifactor = NULL, k = length(fpcaObj$lambda), ...)
 }
 \arguments{
 \item{fpcaObj}{A object of class FPCA returned by the function FPCA().}
@@ -14,9 +14,11 @@ CreateFuncBoxPlot(fpcaObj, addIndx = NULL, variant = "bagplot",
 
 \item{variant}{A character variable indicating which methodology should be used ('kde', 'bagplot' or 'pointwise') to create the functional box-plot (Default: 'bagplot')}
 
-\item{enforceUnimodality}{logical specifying if the KDE estimate should be unimodal (default: TRUE, relavant only for variant='KDE')}
+\item{unimodal}{logical specifying if the KDE estimate should be unimodal (default: TRUE, relavant only for variant='KDE')}
 
 \item{ifactor}{Inflation ifactor for the bag-plot defining the loop of bag-plot or multiplying ifactor the KDE pilot bandwidth matrix.  (see ?aplpack::compute.bagplot/?ks::Hpi; default: 2.58/2).}
+
+\item{k}{The integer number of the first k components used for the representation. (default: length(fpcaObj$lambda ))}
 
 \item{...}{Additional arguments for the 'plot' function.}
 }

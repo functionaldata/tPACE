@@ -31,7 +31,7 @@ A list containing the following fields:
 \item{rho}{A regularizing scalar for the measurement error variance estimate.}
 \item{cumFVE}{A vector with the percentages of the total variance explained by each FPC. Increase to almost 1.}
 \item{FVE}{A percentage indicating the total variance explained by chosen FPCs with corresponding 'FVEthreshold'.}
-\item{criterionValue}{A scalar specifying the criterion value obtained by the selected number of components with specific selectionMethod: FVE,AIC,BIC values or NULL for fixedK.}
+\item{criterionValue}{A scalar specifying the criterion value obtained by the selected number of components with specific methodSelectK: FVE,AIC,BIC values or NULL for fixedK.}
 \item{inputData}{A list containting the original 'y' and 't' lists used as inputs to FPCA. NULL if 'lean' was specified to be TRUE.}
 }
 \description{
@@ -40,10 +40,10 @@ FPCA for dense or sparse functional data.
 \details{
 Available control options are 
 \describe{
-\item{bwuserCov}{The bandwidth value for the smoothed covariance function; positive numeric - default: determine automatically based on 'bwcovMethod'}
-\item{bwcovMethod}{The bandwidth choice method for the smoothed covariance function; 'GMeanAndGCV','CV','GCV' - default: 'GMeanAndGCV'')}
-\item{bwmu}{The bandwidth value for the smoothed mean function (using 'CV' or 'GCV'); positive numeric - default: determine automatically based on 'bwmuMethod'}
-\item{bwmuMethod}{The bandwidth choice method for the mean function; 'GMeanAndGCV','CV','GCV' - default: 'GMeanAndGCV''} 
+\item{userBwCov}{The bandwidth value for the smoothed covariance function; positive numeric - default: determine automatically based on 'methodBwCov'}
+\item{methodBwCov}{The bandwidth choice method for the smoothed covariance function; 'GMeanAndGCV','CV','GCV' - default: 'GMeanAndGCV'')}
+\item{userBwMu}{The bandwidth value for the smoothed mean function (using 'CV' or 'GCV'); positive numeric - default: determine automatically based on 'methodBwMu'}
+\item{methodBwMu}{The bandwidth choice method for the mean function; 'GMeanAndGCV','CV','GCV' - default: 'GMeanAndGCV''} 
 \item{dataType}{The type of design we have (usually distinguishing between sparse or dense functional data); 'Sparse', 'Dense', 'DenseWithMV', 'p>>n' - default:  determine automatically based on 'IsRegular'}
 \item{diagnosticsPlot}{Make diagnostics plot (design plot, mean, scree plot and first k (<=3) eigenfunctions); logical - default: FALSE}
 \item{error}{Assume measurement error in the dataset; logical - default: TRUE}
@@ -54,10 +54,10 @@ Available control options are
 \item{lean}{If TRUE the 'inputData' field in the output list is empty. Default: FALSE}
 \item{maxK}{The maximum number of principal components to consider; positive integer smaller than 128 - default: min(20, N-1), N:# of curves}
 \item{methodXi}{The method to estimate the PC scores; 'CE' (Condit. Expectation), 'IN' (Numerical Integration) - default: 'CE' for sparse data, 'IN' for dense data.}
-\item{muCovEstMethod}{The method to estimate the mean and covariance in the case of dense functional data; 'cross-sectional', 'smooth' - default: 'cross-sectional'}
+\item{methodMuCovEst}{The method to estimate the mean and covariance in the case of dense functional data; 'cross-sectional', 'smooth' - default: 'cross-sectional'}
 \item{nRegGrid}{The number of support points in each direction of covariance surface; numeric - default: 51}
 \item{numBins}{The number of bins to bin the data into; positive integer > 10, default: NULL}
-\item{selectionMethod}{The method of choosing the number of principal components K; 'FVE','AIC','BIC', or a positive integer as specified number of components: default 'FVE')}
+\item{methodSelectK}{The method of choosing the number of principal components K; 'FVE','AIC','BIC', or a positive integer as specified number of components: default 'FVE')}
 \item{shrink}{Whether to use shrinkage method to estimate the scores in the dense case (see Yao et al 2003) - default FALSE}
 \item{outPercent}{A 2-element vector in [0,1] indicating the outPercent data in the boundary - default (0,1)}
 \item{rho}{The truncation threshold for the iterative residual. 'cv': choose rho by leave-one-observation out cross-validation; 'no': no regularization - default "cv".}
