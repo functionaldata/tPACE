@@ -42,7 +42,7 @@ GetCovDense <- function(ymat, mu, optns) {
     }
     K = 0.5 * (K + t(K)) # ensure that K is symmetric
   
-    if (optns[['error']]) {
+    if (optns[['error']] == TRUE) {
       # 2nd order difference method for finding sigma2
       if (!is.null(optns[['userSigma2']])) {
         sigma2 <- optns[['userSigma2']]

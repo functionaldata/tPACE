@@ -1,4 +1,4 @@
-#' Create functional boxplot using 'bagplot' or 'pointwise' methodology
+#' Create functional boxplot using 'bagplot', 'KDE' or 'pointwise' methodology
 #'
 #' Using an FPCA object create a functional box-plot based on the function scores.
 #'
@@ -6,7 +6,8 @@
 #' @param addIndx A vector of indeces corresponding to which samples one should overlay (Default: NULL)
 #' @param variant A character variable indicating which methodology should be used ('kde', 'bagplot' or 'pointwise') to create the functional box-plot (Default: 'bagplot')
 #' @param ifactor Inflation ifactor for the bag-plot defining the loop of bag-plot or multiplying ifactor the KDE pilot bandwidth matrix.  (see ?aplpack::compute.bagplot/?ks::Hpi; default: 2.58/2).
-#' @param enforceUnimodality logical specifying if the KDE estimate should be unimodal (default: TRUE, relavant only for variant='KDE') 
+#' @param unimodal logical specifying if the KDE estimate should be unimodal (default: TRUE, relavant only for variant='KDE') 
+#' @param k The integer number of the first k components used for the representation. (default: length(fpcaObj$lambda ))
 #' @param ... Additional arguments for the 'plot' function.
 #' 
 #' @examples
@@ -23,7 +24,7 @@
 #'
 #' @export
 
-CreateFuncBoxPlot <- function(fpcaObj, addIndx =NULL, variant= 'bagplot', enforceUnimodality = NULL, ifactor = NULL,... ){
+CreateFuncBoxPlot <- function(fpcaObj, addIndx =NULL, variant= 'bagplot', unimodal = NULL, ifactor = NULL, k = length(fpcaObj$lambda), ...){
   
   args1 <- list( xlab='s', ylab='')  
   inargs <- list(...)
@@ -41,7 +42,7 @@ CreateFuncBoxPlot <- function(fpcaObj, addIndx =NULL, variant= 'bagplot', enforc
     variant = 'pointwise'
   }
   
-  fittedCurves <- fitted(fpcaObj)   
+  fittedCurves <- fitted(fpcaObj,...)   
   s <- fpcaObj$workGrid
   N <- nrow(fittedCurves)
   
@@ -62,68 +63,67 @@ CreateFuncBoxPlot <- function(fpcaObj, addIndx =NULL, variant= 'bagplot', enforc
   }
   
   if ( length(fpcaObj$lambda)> 1) {
-  
+    
     if ( !is.null(ifactor) && (1 >= ifactor) ){
       warning("It is nonsensical for an inflation factor to be <= 1. 'ifactor' set to 1.1.")
       ifactor = 1.1;
     } 
-
+    
     if ( variant == 'bagplot' ){
-   
+      
       if ( is.null (ifactor) ){
         ifactor = 2.58
       }       
-   
+      
       bgObj = aplpack::compute.bagplot(x= fpcaObj$xiEst[,1], y= fpcaObj$xiEst[,2], approx.limit=3333, factor = ifactor)     
       fittedCurvesFence = fittedCurves[ is.element( rowSums(fpcaObj$xiEst[,1:2]), rowSums(bgObj$pxy.outer) ),]; 
       fittedCurvesBag = fittedCurves[ is.element( rowSums(fpcaObj$xiEst[,1:2]), rowSums(bgObj$pxy.bag) ),];
       
-      polygon(x=c(s, rev(s)), y = c(apply(rbind(fittedCurvesFence, fittedCurvesBag),2, min), 
-                                    rev(apply(rbind( fittedCurvesFence, fittedCurvesBag),2, max))), col= 'lightgrey',border=0)
-      polygon(x=c(s, rev(s)), y = c(apply(fittedCurvesBag,2, min), 
-                                    rev(apply(fittedCurvesBag,2,max))), col= 'darkgrey',border=1)  
-      lines(x=s, y= apply(fittedCurves,2, mean) , col='red')
+      Y95 = c(apply(rbind( fittedCurvesFence, fittedCurvesBag),2, min), 
+              rev(apply(rbind( fittedCurvesFence, fittedCurvesBag),2, max)))
+      Y50 = c(apply(fittedCurvesBag,2, min), rev(apply(fittedCurvesBag,2,max))) 
     } else if (variant== 'pointwise'){ 
-      polygon(x=c(s, rev(s)), y = c(apply(fittedCurves,2, quantile, 0.007), 
-                                    rev(apply(fittedCurves,2, quantile, 0.993))), col= 'lightgrey',border=0)
-      polygon(x=c(s, rev(s)), y = c(apply(fittedCurves,2, quantile, 0.250), 
-                                    rev(apply(fittedCurves,2, quantile, 0.750))), col= 'darkgrey',border=1)  
-      lines(x=s, y= apply(fittedCurves,2, quantile, 0.500) , col='red')
+      Y95 = c(apply(fittedCurves,2, quantile, 0.025), 
+              rev(apply(fittedCurves,2, quantile, 0.975))) 
+      Y50 = c(apply(fittedCurves,2, quantile, 0.25), 
+              rev(apply(fittedCurves,2, quantile, 0.75)))  
     } else if (variant == 'KDE') {
-      
       if (is.null(ifactor)){
         ifactor = 2
       }
-
       fhat <- ks::kde(x=fpcaObj$xiEst[,1:2], gridsize = c(400,400), compute.cont = TRUE, 
                       H = ks::Hpi( x=fpcaObj$xiEst[,1:2], binned=TRUE,  pilot="dscalar"  ) *  ifactor) 
-   
       zin = fhat$estimate
       
-      if( is.null(enforceUnimodality) || enforceUnimodality ){
-        maxIndex = which( fhat$estimate == max(fhat$estimate), arr.ind = TRUE)
+      if( is.null(unimodal) || unimodal ){
+        maxIndex = which( zin == max(zin), arr.ind = TRUE)
         zin = monotoniseMatrix( fhat$estimate, maxIndex[1], maxIndex[2])
       }   
       
-      qq = quickNNeval(xin = fhat$eval.points[[1]], yin = fhat$eval.points[[2]], 
-                       zin = zin, 
+      qq = quickNNeval(xin = fhat$eval.points[[1]], yin = fhat$eval.points[[2]], zin = zin, 
                        xout = fpcaObj$xiEst[,1], yout = fpcaObj$xiEst[,2] ) 
       curves0to50= which(qq >=  fhat$cont[50])
       curves50to95 = which(qq >  fhat$cont[95] & qq <=  fhat$cont[50])
       
       fittedCurvesBag = fittedCurves[ c(curves0to50  ),]; 
       fittedCurvesFence = fittedCurves[  c( curves50to95,curves0to50), ];
-      
-      polygon(x=c(s, rev(s)), y = c(apply(rbind(fittedCurvesFence, fittedCurvesBag),2, min), 
-                                    rev(apply(rbind( fittedCurvesFence, fittedCurvesBag),2, max))), col= 'lightgrey',border=0)
-      polygon(x=c(s, rev(s)), y = c(apply(fittedCurvesBag,2, min), 
-                                    rev(apply(fittedCurvesBag,2,max))), col= 'darkgrey',border=1)  
-      lines(x=s, y= apply(fittedCurves,2, mean) , col='red')
+      Y95 = c(  apply(rbind(fittedCurvesFence, fittedCurvesBag),2, min), 
+                rev(apply(rbind(fittedCurvesFence, fittedCurvesBag),2, max)))
+      Y50 = c(apply(fittedCurvesBag,2, min), rev(apply(fittedCurvesBag,2,max))) 
       
     } else  {
       stop('Additional variants are not yet implemented')
     }
+    n = length(Y95)*0.5
+    print(n)
+    polygon(x=c(s, rev(s)), y = Y95, col= 'lightgrey',border=1)
+    polygon(x=c(s, rev(s)), y = Y50, col= 'darkgrey', border=1)  
+    #lines(x=s, y= apply( cbind(Y95[1:n],Y50[1:n]),1, min) , col='black', lwd=1)
+    #lines(x=s, y= apply( cbind(rev(Y95[n+(1:n)]), rev(Y50[n+(1:n)])),1, max) , col='black', lwd=1)
+    
+    lines(x=s, y= apply(fittedCurves,2, median) , col='green', lwd=2)
   }
+  
   yList = fpcaObj$inputData$y
   tList = fpcaObj$inputData$t 
   
