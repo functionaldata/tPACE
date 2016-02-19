@@ -4,15 +4,20 @@
 \alias{CreateDiagnosticsPlot}
 \title{Functional Principal Component Analysis Diagnostics plot}
 \usage{
-CreateDiagnosticsPlot(ret, openNewDev = FALSE)
+CreateDiagnosticsPlot(fpcaObj, openNewDev = FALSE, derOptns = NULL)
 }
 \arguments{
-\item{ret}{An FPCA class object returned by FPCA().}
+\item{fpcaObj}{An FPCA class object returned by FPCA().}
 
 \item{openNewDev}{A logical specifying if a new device should be opened - default: FALSE}
+
+\item{derOptns}{A list of options to control the derivation parameters; see ?FPCAder. If NULL standard diagnostics are returned 
+- default: NULL}
 }
 \description{
-This function will open a new device if not instructed otherwise.
+This function by default creates standard diagnostics for a functional sample. It prints the design plot, mean function, scree-plot
+and first three eigenfunctions of a sample. If provided with a derivative options object (?FPCAder) it will return the 
+differentiated mean and first two principal modes of variations for 50%, 75%, 100%, 125% and 150% of the defined bandwidth choice.
 }
 \examples{
 set.seed(1)
@@ -20,8 +25,8 @@ n <- 20
 pts <- seq(0, 1, by=0.05)
 sampWiener <- Wiener(n, pts)
 sampWiener <- Sparsify(sampWiener, pts, 10)
-res <- FPCA(sampWiener$yList, sampWiener$tList, 
+res1 <- FPCA(sampWiener$yList, sampWiener$tList, 
             list(dataType='Sparse', error=FALSE, kernel='epan', verbose=FALSE))
-CreateDiagnosticsPlot(res)
+CreateDiagnosticsPlot(res1)
 }
 
