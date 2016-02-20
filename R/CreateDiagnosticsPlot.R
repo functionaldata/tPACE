@@ -20,7 +20,7 @@
 #' CreateDiagnosticsPlot(res1)
 #' @export
 
-CreateDiagnosticsPlot <-function(fpcaObj, openNewDev = FALSE, derOptns = NULL){ 
+CreateDiagnosticsPlot <-function(fpcaObj, derOptns = NULL, openNewDev = FALSE){ 
   
   if(class(fpcaObj) != 'FPCA'){
     stop("Input class is incorrect; CreateDiagnosticsPlot() is only usable from FPCA objects.")
