@@ -4,26 +4,30 @@
 \alias{CreateFuncBoxPlot}
 \title{Create functional boxplot using 'bagplot', 'KDE' or 'pointwise' methodology}
 \usage{
-CreateFuncBoxPlot(fpcaObj, addIndx = NULL, variant = "bagplot",
-  unimodal = NULL, ifactor = NULL, k = length(fpcaObj$lambda), ...)
+CreateFuncBoxPlot(fpcaObj, optns = list(), ...)
 }
 \arguments{
 \item{fpcaObj}{A object of class FPCA returned by the function FPCA().}
 
-\item{addIndx}{A vector of indeces corresponding to which samples one should overlay (Default: NULL)}
-
-\item{variant}{A character variable indicating which methodology should be used ('kde', 'bagplot' or 'pointwise') to create the functional box-plot (Default: 'bagplot')}
-
-\item{unimodal}{logical specifying if the KDE estimate should be unimodal (default: TRUE, relavant only for variant='KDE')}
-
-\item{ifactor}{Inflation ifactor for the bag-plot defining the loop of bag-plot or multiplying ifactor the KDE pilot bandwidth matrix.  (see ?aplpack::compute.bagplot/?ks::Hpi; default: 2.58/2).}
-
-\item{k}{The integer number of the first k components used for the representation. (default: length(fpcaObj$lambda ))}
+\item{optns}{A list of options control parameters specified by \code{list(name=value)}. See `Details'.}
 
 \item{...}{Additional arguments for the 'plot' function.}
 }
 \description{
 Using an FPCA object create a functional box-plot based on the function scores.
+The green line corresponds to the functional median, the dark grey area to the area spanned
+by the curves within the 25th and 75-th percentile and the light gret to the area spanned
+by the curves within the 2.5th and 97.5-th percentile.
+}
+\details{
+Available control options are 
+\describe{
+\item{ifactor}{inflation ifactor for the bag-plot defining the loop of bag-plot or multiplying ifactor the KDE pilot bandwidth matrix. (see ?aplpack::compute.bagplot; ?ks::Hpi respectively; default: 2.58; 2 respectively).}
+\item{variant}{string defining the method used ('KDE', 'pointwise' or 'bagplot') (default: 'bagplot')}
+\item{unimodal}{logical specifying if the KDE estimate should be unimodal (default: FALSE, relavant only for variant='KDE')}
+\item{addIndx}{vector of indeces corresponding to which samples one should overlay (Default: NULL)}
+\item{k}{integer number of the first k components used for the representation. (default: length(fpcaObj$lambda ))} 
+}
 }
 \examples{
 set.seed(1)
@@ -33,7 +37,7 @@ sampWiener <- Wiener(n, pts)
 sampWiener <- Sparsify(sampWiener, pts, 10)
 res <- FPCA(sampWiener$yList, sampWiener$tList, 
             list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
-CreateFuncBoxPlot(res, addIndx=c(1:3)) 
+CreateFuncBoxPlot(res, list(addIndx=c(1:3)) )
 }
 \references{
 \cite{P. J. Rousseeuw, I. Ruts, J. W. Tukey (1999): The bagplot: a bivariate boxplot, The American Statistician, vol. 53, no. 4, 382-387}

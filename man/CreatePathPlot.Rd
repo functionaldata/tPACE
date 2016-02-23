@@ -5,7 +5,8 @@
 \title{Create the sample path plot based on the results from FPCA().}
 \usage{
 CreatePathPlot(fpcaObj, subset, k = NULL,
-  inputData = fpcaObj[["inputData"]], showObs = !is.null(inputData), ...)
+  inputData = fpcaObj[["inputData"]], showObs = !is.null(inputData),
+  derOptns = NULL, ...)
 }
 \arguments{
 \item{fpcaObj}{Returned object from FPCA().}
@@ -21,6 +22,8 @@ fields: \code{t} for a list of time points and \code{y} for a list of
 observations. Default to the `inputData` field within `fpcaObj`.}
 
 \item{showObs}{Whether to plot the original observations for each subject.}
+
+\item{derOptns}{A list of options to control derivation parameters; see `fitted.FPCA'. (default = NULL)}
 
 \item{...}{other arguments passed into matplot for plotting options}
 }
