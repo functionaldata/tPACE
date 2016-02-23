@@ -142,7 +142,8 @@ CreateOutliersPlot <- function(fpcaObj, optns = NULL, ...){
       return( invisible( list( 
         'bag' = match( apply(bgObj$pxy.bag,1, prod), apply( bgObj$xydata,1, prod)),
         'loop'= match( apply(bgObj$pxy.outer,1, prod), apply( bgObj$xydata,1, prod)), 
-        'outlier' = match( apply(bgObj$pxy.outlier,1, prod) ,apply( bgObj$xydata,1, prod))
+        'outlier' = ifelse( is.null(bgObj$pxy.outlier), NA, 
+                            match( apply(bgObj$pxy.outlier,1, prod) ,apply( bgObj$xydata,1, prod)))
       ) ) ) 
     } else {
       points(x = fpcaObj$xiEst[is.na(match(apply( bgObj$xydata,1, prod), apply(bgObj$pxy.outlier,1, prod))),1], 

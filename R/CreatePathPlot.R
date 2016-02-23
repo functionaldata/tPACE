@@ -9,6 +9,7 @@
 #' fields: \code{t} for a list of time points and \code{y} for a list of
 #' observations. Default to the `inputData` field within `fpcaObj`.
 #' @param showObs Whether to plot the original observations for each subject.
+#' @param derOptns A list of options to control derivation parameters; see `fitted.FPCA'. (default = NULL)
 #' @param ... other arguments passed into matplot for plotting options
 #' @examples
 #' set.seed(1)
@@ -22,8 +23,9 @@
 #' CreatePathPlot(res, subset=1:5)
 #' @export
 
-CreatePathPlot = function(fpcaObj, subset, k=NULL, inputData=fpcaObj[['inputData']], showObs=!is.null(inputData), ...){
-
+CreatePathPlot = function(fpcaObj, subset, k=NULL, inputData=fpcaObj[['inputData']], 
+                          showObs=!is.null(inputData),  derOptns = NULL, ...){
+  
   n <- dim(fpcaObj[['xiEst']])[1]
   
   if (!is.null(inputData)) {
@@ -45,21 +47,27 @@ CreatePathPlot = function(fpcaObj, subset, k=NULL, inputData=fpcaObj[['inputData
   }
   # browser()
   workGrid <- fpcaObj[['workGrid']]
-  fit <- fitted(fpcaObj, k=k)[subset, , drop=FALSE]
+  fit <- fitted(fpcaObj, k=k, derOptns = derOptns)[subset, , drop=FALSE]
   
   args1 <- list( xlab= 's', ylab= ' ')                    
   inargs <- list(...)
   args1[names(inargs)] <- inargs
-
+  
   # make a matrix with NAs for the sparse observations.
   maxN_i <- max(sapply(inputData[['t']][subset], length))
   obst <- sapply(inputData[['t']][subset], function(x) c(x, rep(NA, maxN_i - length(x))))
   obsy <- sapply(inputData[['y']][subset], function(x) c(x, rep(NA, maxN_i - length(x))))
-
+  
   #matplot(obst, obsy, type='p',...)
-  args2 = list (x = obst, y = obsy, type='p' )
-  do.call(matplot, c(list(x=obst, y=obsy, type='p'), args1))
-  do.call(matplot, c(list(x=workGrid, y=t(fit), type='l', add=TRUE), args1))
- 
+  #args2 = list (x = obst, y = obsy, type='p' )
+  
+  if( showObs ){
+    do.call(matplot, c(list(x=obst, y=obsy, type='p'), args1))
+    do.call(matplot, c(list(x=workGrid, y=t(fit), type='l', add=TRUE)))
+  } else {
+      do.call(matplot, c(list(x=workGrid, y=t(fit), type='l'), args1))
+  }
+   
+  
   invisible()
 }

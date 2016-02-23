@@ -1,15 +1,23 @@
 #' Create functional boxplot using 'bagplot', 'KDE' or 'pointwise' methodology
 #'
 #' Using an FPCA object create a functional box-plot based on the function scores.
+#' The green line corresponds to the functional median, the dark grey area to the area spanned
+#' by the curves within the 25th and 75-th percentile and the light gret to the area spanned
+#' by the curves within the 2.5th and 97.5-th percentile. 
 #'
 #' @param fpcaObj A object of class FPCA returned by the function FPCA().
-#' @param addIndx A vector of indeces corresponding to which samples one should overlay (Default: NULL)
-#' @param variant A character variable indicating which methodology should be used ('kde', 'bagplot' or 'pointwise') to create the functional box-plot (Default: 'bagplot')
-#' @param ifactor Inflation ifactor for the bag-plot defining the loop of bag-plot or multiplying ifactor the KDE pilot bandwidth matrix.  (see ?aplpack::compute.bagplot/?ks::Hpi; default: 2.58/2).
-#' @param unimodal logical specifying if the KDE estimate should be unimodal (default: TRUE, relavant only for variant='KDE') 
-#' @param k The integer number of the first k components used for the representation. (default: length(fpcaObj$lambda ))
-#' @param ... Additional arguments for the 'plot' function.
+#' @param optns A list of options control parameters specified by \code{list(name=value)}. See `Details'.
+#' @param ... Additional arguments for the 'plot' function. 
 #' 
+#' @details Available control options are 
+#' \describe{
+#' \item{ifactor}{inflation ifactor for the bag-plot defining the loop of bag-plot or multiplying ifactor the KDE pilot bandwidth matrix. (see ?aplpack::compute.bagplot; ?ks::Hpi respectively; default: 2.58; 2 respectively).}
+#' \item{variant}{string defining the method used ('KDE', 'pointwise' or 'bagplot') (default: 'bagplot')}
+#' \item{unimodal}{logical specifying if the KDE estimate should be unimodal (default: FALSE, relavant only for variant='KDE')}
+#' \item{addIndx}{vector of indeces corresponding to which samples one should overlay (Default: NULL)}
+#' \item{k}{integer number of the first k components used for the representation. (default: length(fpcaObj$lambda ))} 
+#' }
+#'  
 #' @examples
 #' set.seed(1)
 #' n <- 20
@@ -18,14 +26,52 @@
 #' sampWiener <- Sparsify(sampWiener, pts, 10)
 #' res <- FPCA(sampWiener$yList, sampWiener$tList, 
 #'             list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
-#' CreateFuncBoxPlot(res, addIndx=c(1:3)) 
+#' CreateFuncBoxPlot(res, list(addIndx=c(1:3)) )
 #' @references
 #' \cite{P. J. Rousseeuw, I. Ruts, J. W. Tukey (1999): The bagplot: a bivariate boxplot, The American Statistician, vol. 53, no. 4, 382-387}
 #'
 #' @export
 
-CreateFuncBoxPlot <- function(fpcaObj, addIndx =NULL, variant= 'bagplot', unimodal = NULL, ifactor = NULL, k = length(fpcaObj$lambda), ...){
+CreateFuncBoxPlot <- function(fpcaObj, optns = list() , ...){
+   
+  if(is.null(optns$k)){
+    k = length(fpcaObj$lambda)
+  } else {
+    k = optns$k
+  }
   
+  if(is.null(optns$addIndx)){
+    addIndx = NULL
+  } else {
+    addIndx = optns$addIndx
+  }
+  
+  if(is.null(optns$ifactor)){
+    ifactor = NULL
+  } else {
+    ifactor = optns$ifactor
+  }
+  
+  if(is.null(optns$outlierList)){
+    outlierList = NULL
+  } else {
+    outlierList = optns$outlierList
+  }
+  
+  if(is.null(optns$unimodal)){
+    unimodal = FALSE
+  } else {
+    unimodal = optns$unimodal
+  }
+  
+  if(is.null(optns$variant)){
+    variant = 'bagplot'
+  } else {
+    variant = optns$variant
+  }
+  if ( !is.null(unimodal) && !is.logical(unimodal) ){
+    stop("The variable 'unimodal' must be logical.")
+  }  
   args1 <- list( xlab='s', ylab='')  
   inargs <- list(...)
   args1[names(inargs)] <- inargs
@@ -42,7 +88,7 @@ CreateFuncBoxPlot <- function(fpcaObj, addIndx =NULL, variant= 'bagplot', unimod
     variant = 'pointwise'
   }
   
-  fittedCurves <- fitted(fpcaObj,...)   
+  fittedCurves <- fitted(fpcaObj, k = k, ...)   
   s <- fpcaObj$workGrid
   N <- nrow(fittedCurves)
   
@@ -68,7 +114,6 @@ CreateFuncBoxPlot <- function(fpcaObj, addIndx =NULL, variant= 'bagplot', unimod
       warning("It is nonsensical for an inflation factor to be <= 1. 'ifactor' set to 1.1.")
       ifactor = 1.1;
     } 
-    
     if ( variant == 'bagplot' ){
       
       if ( is.null (ifactor) ){
@@ -82,11 +127,14 @@ CreateFuncBoxPlot <- function(fpcaObj, addIndx =NULL, variant= 'bagplot', unimod
       Y95 = c(apply(rbind( fittedCurvesFence, fittedCurvesBag),2, min), 
               rev(apply(rbind( fittedCurvesFence, fittedCurvesBag),2, max)))
       Y50 = c(apply(fittedCurvesBag,2, min), rev(apply(fittedCurvesBag,2,max))) 
+      medianPoint = which.min( apply( fpcaObj$xiEst[,1:2], 1, function(x) sqrt(sum( (x- bgObj$center)^2)) ) )
     } else if (variant== 'pointwise'){ 
       Y95 = c(apply(fittedCurves,2, quantile, 0.025), 
               rev(apply(fittedCurves,2, quantile, 0.975))) 
       Y50 = c(apply(fittedCurves,2, quantile, 0.25), 
               rev(apply(fittedCurves,2, quantile, 0.75)))  
+      mediansCurve = apply(fittedCurves,2, quantile, 0.50);
+      medianPoint = NULL
     } else if (variant == 'KDE') {
       if (is.null(ifactor)){
         ifactor = 2
@@ -110,19 +158,23 @@ CreateFuncBoxPlot <- function(fpcaObj, addIndx =NULL, variant= 'bagplot', unimod
       Y95 = c(  apply(rbind(fittedCurvesFence, fittedCurvesBag),2, min), 
                 rev(apply(rbind(fittedCurvesFence, fittedCurvesBag),2, max)))
       Y50 = c(apply(fittedCurvesBag,2, min), rev(apply(fittedCurvesBag,2,max))) 
+      medianPoint = which.min( apply( fpcaObj$xiEst[,1:2], 1, function(x)  sqrt(sum( (x- c(0,0))^2)) ) )
       
     } else  {
       stop('Additional variants are not yet implemented')
     }
-    n = length(Y95)*0.5
-    print(n)
     polygon(x=c(s, rev(s)), y = Y95, col= 'lightgrey',border=1)
     polygon(x=c(s, rev(s)), y = Y50, col= 'darkgrey', border=1)  
+    #n = length(Y95)*0.5 
     #lines(x=s, y= apply( cbind(Y95[1:n],Y50[1:n]),1, min) , col='black', lwd=1)
     #lines(x=s, y= apply( cbind(rev(Y95[n+(1:n)]), rev(Y50[n+(1:n)])),1, max) , col='black', lwd=1)
     
-    lines(x=s, y= apply(fittedCurves,2, median) , col='green', lwd=2)
-  }
+    if(!is.null(medianPoint)){
+      mediansCurve = fittedCurves[medianPoint,]
+    }
+    
+    lines(x=s, col='green', lwd=2, y = mediansCurve)
+  } 
   
   yList = fpcaObj$inputData$y
   tList = fpcaObj$inputData$t 
