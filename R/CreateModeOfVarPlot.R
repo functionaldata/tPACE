@@ -32,7 +32,7 @@ CreateModeOfVarPlot <-function(fpcaObj,  k = 1, ...){
   
   obsGrid = fpcaObj$obsGrid      
   s = fpcaObj$workGrid
-  mu = approx( y = fpcaObj$mu, x = obsGrid, xout = s)$y
+  mu = fpcaObj$mu
   
   sigma = sqrt(fpcaObj$lambda[k])
   sigma1 = sqrt(fpcaObj$lambda[1])

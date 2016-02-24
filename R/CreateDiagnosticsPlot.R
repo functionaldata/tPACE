@@ -77,17 +77,17 @@ CreateDiagnosticsPlot <-function(fpcaObj, derOptns = NULL, openNewDev = FALSE){
     par(mfrow=c(1,3))
     
     Z = rbind(sapply(1:5, function(x) yy[[x]]$muDer));
-    matplot(x = fpcaObj$workGrid, lty= 1, t='l',  Z, ylab= expression(paste(collapse = '', 'd', mu, "/ds")), 
+    matplot(x = fpcaObj$workGrid, lty= 1, type='l',  Z, ylab= expression(paste(collapse = '', 'd', mu, "/ds")), 
             main= substitute(paste("Derivatives of order ", p, " of ", mu)), xlab = 's')
     grid(); legend('topright', lty = 1, col=1:5, legend = apply( rbind( rep('bw: ',5), bwMultipliers * bw), 2, paste, collapse = ''))
     
     Z = rbind(sapply(1:5, function(x) yy[[x]]$phiDer[,1]));
-    matplot(x = fpcaObj$workGrid, lty= 1, t='l',  Z,   ylab= expression(paste(collapse = '', 'd', phi[1], "/ds")), 
+    matplot(x = fpcaObj$workGrid, lty= 1, type='l',  Z,   ylab= expression(paste(collapse = '', 'd', phi[1], "/ds")), 
             main= substitute(paste("Derivatives of order ", p, " of ", phi[1])), xlab = 's')
     grid(); legend('topright', lty = 1, col=1:5, legend = apply( rbind( rep('bw: ',5), bwMultipliers * bw), 2, paste, collapse = ''))
     
     Z = rbind(sapply(1:5, function(x) yy[[x]]$phiDer[,2]));
-    matplot(x = fpcaObj$workGrid, lty= 1, t='l',  Z, ylab= expression(paste(collapse = '', 'd', phi[2], "/ds")), 
+    matplot(x = fpcaObj$workGrid, lty= 1, type='l',  Z, ylab= expression(paste(collapse = '', 'd', phi[2], "/ds")), 
             main= substitute(paste("Derivatives of order ", p, " of ", phi[2])), xlab = 's')
     grid(); legend('topleft', lty = 1, col=1:5, legend = apply( rbind( rep('bw: ',5), bwMultipliers * bw), 2, paste, collapse = ''))
     
