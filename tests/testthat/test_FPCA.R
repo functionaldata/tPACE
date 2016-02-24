@@ -102,7 +102,8 @@ test_that('User provided mu and cov for simple example',{
                     list(userMu = list(t=s,mu= meanFunct(s)), userCov = list(t=s,cov= covTrue) ))
   
   expect_equal(FPCAsparseA$sigma2, 1, tolerance=0.1)
-  expect_equal( FPCAsparseA$mu,  expected = meanFunct(s), tolerance = 1e-9)
+  expect_equal( spline(y = FPCAsparseA$mu, x = FPCAsparseA$workGrid, xout = FPCAsparseA$obsGrid)$y, 
+                expected = meanFunct(s), tolerance = 1e-3)
   expect_equal( FPCAsparseA$lambda, expected=ev, tolerance = 1e-1)
   expect_equal( abs(cor( FPCAsparseA$xiEst[,1], Ksi[,1])) > 0.9, TRUE)
 })
@@ -175,11 +176,11 @@ test_that('Case where one component should be returned',{
   FPCAsparseA = FPCA(ySparse$yList,t=ySparse$tList, optns = 
     list( FVEthreshold = 0.4, userMu = list(t=s,mu= meanFunct(s)) ) )
 
-  expect_equal( FPCAsparseA$mu,  expected = meanFunct(s), tolerance = 1e-9)
+  expect_equal(spline(y = FPCAsparseA$mu, x = FPCAsparseA$workGrid, xout = FPCAsparseA$obsGrid)$y,
+               expected = meanFunct(s), tolerance = 1e-3)
   expect_equal( length(FPCAsparseA$lambda), 1)
 
 })
-
 
 test_that('GetCovDense with noise, get sigma2', {
   set.seed(1)
@@ -202,7 +203,6 @@ test_that('GetCovDense with noise, get sigma2', {
               mean((fitted(resErr) - sampTrue) ^ 2))
 })
 
-
 test_that('GetCovDense with noise, known cov, get sigma2', {
   set.seed(1)
   n <- 200
@@ -218,7 +218,6 @@ test_that('GetCovDense with noise, known cov, get sigma2', {
 
   expect_equal(resErr$sigma2, sigma2, tolerance=1e-1)
 })
-
 
 test_that('noisy dense data, cross-sectional mu/cov, use IN/CE score', {
   set.seed(1)
@@ -240,7 +239,6 @@ test_that('noisy dense data, cross-sectional mu/cov, use IN/CE score', {
   expect_equal(resErrCE$xiEst[, 3], resErrIN$xiEst[, 3], tolerance=1e-1)
   expect_equal(resErrCEKnownSigma2$xiEst[, 1], resErrIN$xiEst[, 1], tolerance=1e-2)
 })
-
 
 test_that('noisy dense data, smooth mu/cov, use IN/CE score', {
   set.seed(1)

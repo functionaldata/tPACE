@@ -60,7 +60,7 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
    
    # muDer  = Lwls1D(bw, kernelType, npoly = p+1, nder = p, xin = xin, yin= yin, xout = obsGrid, win = win) 
    
-   muDer <- Lwls1D(bw, kernelType, rep(1, length(obsGrid)), obsGrid, fpcaObj$mu, obsGrid, p+0, nder= p)
+   muDer <- Lwls1D(bw, kernelType, rep(1, length(workGrid)), workGrid, fpcaObj$mu, workGrid, p+0, nder= p)
    phiDer <- apply(fpcaObj$phi, 2, function(phi) Lwls1D(bw, kernelType, rep(1, length(workGrid)), workGrid, phi, workGrid, p+0, nder= p))
 
  # muDer2<- fpcaObj$mu

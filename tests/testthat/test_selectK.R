@@ -173,9 +173,12 @@ test_that("SelectK works outside FPCA function for Sparse data and gives the sam
   TrueBIC <- log(n)*(1:K) - 2*Trueloglik
   # FPCA
   #optnSparseError <- SetOptions(test3$yList, test3$tList, list(dataType='Sparse', error=FALSE, kernel='epan', outPercent=c(0, 1), verbose=TRUE))
-  optnSparseError_AIC <- SetOptions(test3$yList, test3$tList, list(dataType='Sparse', error=TRUE, kernel='epan', methodSelectK='AIC', outPercent=c(0, 1), verbose=TRUE))
-  optnSparseError_BIC <- SetOptions(test3$yList, test3$tList, list(dataType='Sparse', error=TRUE, kernel='epan', methodSelectK='BIC', outPercent=c(0, 1), verbose=TRUE))
-  optnSparseError_FVE <- SetOptions(test3$yList, test3$tList, list(dataType='Sparse', error=TRUE, kernel='epan', methodSelectK='FVE', FVEthreshold = 0.85, outPercent=c(0, 1), verbose=TRUE))
+  optnSparseError_AIC <- SetOptions(test3$yList, test3$tList, 
+                                    list(dataType='Sparse', error=TRUE, kernel='epan', methodSelectK='AIC', outPercent=c(0, 1), verbose=TRUE))
+  optnSparseError_BIC <- SetOptions(test3$yList, test3$tList, 
+                                    list(dataType='Sparse', error=TRUE, kernel='epan', methodSelectK='BIC', outPercent=c(0, 1), verbose=TRUE))
+  optnSparseError_FVE <- SetOptions(test3$yList, test3$tList, 
+                                    list(dataType='Sparse', error=TRUE, kernel='epan', methodSelectK='FVE', FVEthreshold = 0.85, outPercent=c(0,1), verbose=TRUE))
   test3FPCA_AIC <- FPCA(test3$yList, test3$tList, optnSparseError_AIC)
   test3FPCA_BIC <- FPCA(test3$yList, test3$tList, optnSparseError_BIC)
   test3FPCA_FVE <- FPCA(test3$yList, test3$tList, optnSparseError_FVE)

@@ -52,7 +52,7 @@ GetLogLik = function(fpcaObj, k, y = NULL, t = NULL){
         phi_i = ConvertSupport(fromGrid = fpcaObj$workGrid, toGrid = t[[i]],
                                phi = phi)
       }
-      mu_i = ConvertSupport(fromGrid = fpcaObj$obsGrid, toGrid = t[[i]],
+      mu_i = ConvertSupport(fromGrid = fpcaObj$workGrid, toGrid = t[[i]],
         mu = fpcaObj$mu)
       if(k == 1){
         Sigma_yi = phi_i %*% (lambda*diag(k)) %*% t(phi_i) + sigma2 * diag(rep(1,length(mu_i)))

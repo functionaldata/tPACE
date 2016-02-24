@@ -58,7 +58,7 @@ fitted.FPCA <-  function (object, k = NULL, derOptns = list(), ...) {
 
   if( p < 1 ){  
     ZMFV = fpcaObj$xiEst[,1:k, drop = FALSE] %*% t(fpcaObj$phi[,1:k, drop = FALSE]);   
-    IM = approx(x= fpcaObj$obsGrid, y=fpcaObj$mu, fpcaObj$workGrid)$y 
+    IM = fpcaObj$mu 
     return( t(apply( ZMFV, 1, function(x) x + IM))) 
   } else { #Derivative is not zero
  
@@ -78,9 +78,9 @@ fitted.FPCA <-  function (object, k = NULL, derOptns = list(), ...) {
     if ( method == 'EIG'){
       phi = apply(phi, 2, function(phiI) Lwls1D(bw = bw, kernelType, win = rep(1, length(workGrid)), 
                                                   xin = workGrid, yin = phiI, xout = workGrid, npoly = p, nder = p))
-      mu = Lwls1D(bw = bw, kernelType, win = rep(1, length(obsGrid)), xin = obsGrid, yin = mu, xout = obsGrid, npoly = p, nder = p)
+      mu = Lwls1D(bw = bw, kernelType, win = rep(1, length(workGrid)), xin = workGrid, yin = mu, xout = workGrid, npoly = p, nder = p)
       ZMFV = fpcaObj$xiEst[,1:k, drop = FALSE] %*% t(phi[,1:k, drop = FALSE]);
-      IM = approx(x= fpcaObj$obsGrid, y=mu, fpcaObj$workGrid)$y
+      IM = mu 
       return( t(apply( ZMFV, 1, function(x) x + IM) ))
     }
 
