@@ -73,7 +73,6 @@ Eigen::VectorXd CPPlwls1d( const double & bw, const std::string kernel_type, con
   // ===================
 
   for (unsigned int i = 0; i != nUnknownPoints; ++i){
-
     //locating local window (LOL) (bad joke)
     std::vector <unsigned int> indx;
     const double* lower ;
@@ -139,30 +138,35 @@ Eigen::VectorXd CPPlwls1d( const double & bw, const std::string kernel_type, con
         break;
     }
 
-    // make the design matrix
-    Eigen::MatrixXd X(indxSize ,npoly+1);
-    X.setOnes();
-    for (unsigned int y = 1; y <= npoly; ++y){
-      X.col(y) = (xout(i) - lx.array()).array().pow(y);
+    if(nder >= indxSize){
+      Rcpp::warning("Cannot estimate derivatives of order p with less than p+1 points.");
+      result(i) = std::numeric_limits<double>::quiet_NaN();
+    } else {
+      // make the design matrix
+      Eigen::MatrixXd X(indxSize, npoly+1);
+      X.setOnes();
+      for (unsigned int y = 1; y <= npoly; ++y){
+        X.col(y) = (xout(i) - lx.array()).array().pow(y);
+      }
+
+      Eigen::LDLT<Eigen::MatrixXd> ldlt_XTWX(X.transpose() * temp.asDiagonal() *X);
+      // The solver should stop if the value is NaN. See the HOLE example in gcvlwls2dV2.
+      Eigen::VectorXd beta = ldlt_XTWX.solve(X.transpose() * temp.asDiagonal() * ly);
+
+      //  Rcpp::Rcout << "lx: " << lx.transpose() << std::endl;
+      //  Rcpp::Rcout << "ly: " << ly.transpose() << std::endl;
+      //  Rcpp::Rcout << "temp: " << temp.transpose() << std::endl;
+      //  Rcpp::Rcout << "llx: " << llx.transpose() << std::endl;
+      //  Rcpp::Rcout << "xin: " << xin.transpose() << std::endl;
+      //  Rcpp::Rcout << "yin: " << yin.transpose() << std::endl;
+      //  Rcpp::Rcout << "xout: " << xout.transpose() << std::endl;
+      //  Rcpp::Rcout << "X: " << X.transpose() << std::endl;
+      //  Rcpp::Rcout << "beta: " << beta.transpose() << std::endl;
+      //  Rcpp::Rcout << "factorials[nder]: " << factorials[nder]  << std::endl;
+      //  Rcpp::Rcout << "pow (-1.0, nder): " << pow (-1.0, nder) << std::endl;
+
+      result(i) = beta(nder+0) * factorials[nder] *  pow (-1.0, nder);       
     }
-
-    Eigen::LDLT<Eigen::MatrixXd> ldlt_XTWX(X.transpose() * temp.asDiagonal() *X);
-    // The solver should stop if the value is NaN. See the HOLE example in gcvlwls2dV2.
-    Eigen::VectorXd beta = ldlt_XTWX.solve(X.transpose() * temp.asDiagonal() * ly);
-
-    //  Rcpp::Rcout << "lx: " << lx.transpose() << std::endl;
-    //  Rcpp::Rcout << "ly: " << ly.transpose() << std::endl;
-    //  Rcpp::Rcout << "temp: " << temp.transpose() << std::endl;
-    //  Rcpp::Rcout << "llx: " << llx.transpose() << std::endl;
-    //  Rcpp::Rcout << "xin: " << xin.transpose() << std::endl;
-    //  Rcpp::Rcout << "yin: " << yin.transpose() << std::endl;
-    //  Rcpp::Rcout << "xout: " << xout.transpose() << std::endl;
-    //  Rcpp::Rcout << "X: " << X.transpose() << std::endl;
-    //  Rcpp::Rcout << "beta: " << beta.transpose() << std::endl;
-    //  Rcpp::Rcout << "factorials[nder]: " << factorials[nder]  << std::endl;
-    //  Rcpp::Rcout << "pow (-1.0, nder): " << pow (-1.0, nder) << std::endl;
-
-    result(i) = beta(nder+0) * factorials[nder] *  pow (-1.0, nder);       
   }
   return result;
 }
