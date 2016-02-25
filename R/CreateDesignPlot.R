@@ -34,8 +34,16 @@ CreateDesignPlot = function(t, obsGrid = NULL, isColorPlot=TRUE, noDiagonal=TRUE
   inargs <- list(...)
   args1[names(inargs)] <- inargs 
   
-  res = DesignPlotCount(t, obsGrid, noDiagonal, isColorPlot)
-    
+  
+  # Check if we have very dense data (for visualization) on a regular grid
+  if ( all(sapply(t, function(u) all.equal(obsGrid, u))) & length(obsGrid) > 101){
+    res = matrix(5, nrow = 101, ncol = 101)
+    obsGrid = approx(x = seq(0,1,length.out = length(obsGrid)), y = obsGrid, 
+                     xout = seq(0,1,length.out = 101))$y
+  } else {
+    res = DesignPlotCount(t, obsGrid, noDiagonal, isColorPlot)
+  }
+  
   oldpty <- par()[['pty']]
   par(pty="s")
   if(isColorPlot == TRUE){
@@ -48,7 +56,7 @@ CreateDesignPlot = function(t, obsGrid = NULL, isColorPlot=TRUE, noDiagonal=TRUE
 }
 
 createBlackPlot = function(res, obsGrid, args1){
-
+  
   if( is.null(args1$col)){
     args1$col = 'black'
   }
@@ -58,7 +66,7 @@ createBlackPlot = function(res, obsGrid, args1){
   if (is.null(args1$pch)){
     args1$pch = 19
   }
- 
+  
   u1 = as.vector(res)
   u2 = as.vector(t(res))
   t1 = rep(obsGrid, times = length(obsGrid) )
@@ -79,21 +87,21 @@ createColorPlot = function(res, obsGrid, args1){
   } else {
     colVec = args1$col;
   }
- 
- if ( is.null(args1$pch) ){
+  
+  if ( is.null(args1$pch) ){
     pchVec <- rep(19, length(colVec))
     args1$pch = pchVec[nnres];
   } else {
     pchVec = args1$pch;
   }
-
+  
   if ( is.null(args1$cex) ){
     cexVec <- seq(from=0.3, by=0.1, length.out=length(colVec))
     args1$cex <- cexVec[nnres]
   } else {
     cexVec <- args1$cex;
   }
- 
+  
   # pchVec <- rep(19, length(colVec))
   # names(pchVec) <- names(colVec)
   # if (!is.null(ddd[['pch']])){
