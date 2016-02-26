@@ -36,7 +36,7 @@ CreateDesignPlot = function(t, obsGrid = NULL, isColorPlot=TRUE, noDiagonal=TRUE
   
   
   # Check if we have very dense data (for visualization) on a regular grid
-  if ( all(sapply(t, function(u) all.equal(obsGrid, u))) & length(obsGrid) > 101){
+  if( (length(obsGrid) > 101) & all(sapply(t, function(u) identical(obsGrid, u)))){
     res = matrix(5, nrow = 101, ncol = 101)
     obsGrid = approx(x = seq(0,1,length.out = length(obsGrid)), y = obsGrid, 
                      xout = seq(0,1,length.out = 101))$y

@@ -18,7 +18,7 @@
 
 CreateScreePlot <-function(fpcaObj, ...){ 
  
-  args1 <- list( main="Screeplot", ylab='Fraction of Variance Explained', xlab='Number of components')  
+  args1 <- list( main="Scree-plot", ylab='Fraction of Variance Explained', xlab='Number of components')  
   inargs <- list(...)
   args1[names(inargs)] <- inargs
  
