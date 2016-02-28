@@ -25,6 +25,7 @@ CreateDiagnosticsPlot <-function(fpcaObj, derOptns = NULL, openNewDev = FALSE){
   if(class(fpcaObj) != 'FPCA'){
     stop("Input class is incorrect; CreateDiagnosticsPlot() is only usable from FPCA objects.")
   }
+  oldPar <- par()
   
   if(is.null(derOptns) || !is.list(derOptns)){
     
@@ -92,5 +93,6 @@ CreateDiagnosticsPlot <-function(fpcaObj, derOptns = NULL, openNewDev = FALSE){
     grid(); legend('topleft', lty = 1, col=1:5, legend = apply( rbind( rep('bw: ',5), bwMultipliers * bw), 2, paste, collapse = ''))
     
   }
+  suppressWarnings(par(oldPar))
 }
 

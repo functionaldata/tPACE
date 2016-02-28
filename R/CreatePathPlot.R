@@ -28,6 +28,10 @@ CreatePathPlot = function(fpcaObj, subset, k=NULL, inputData=fpcaObj[['inputData
   
   n <- dim(fpcaObj[['xiEst']])[1]
   
+  if (!is.null(derOptns[['p']]) && derOptns[['p']] >= 1 && missing(showObs)) {
+  # makes no sense to show original observations with derivatives.
+    showObs <- FALSE 
+  }
   if (!is.null(inputData)) {
     if (!all(c('t', 'y') %in% names(inputData))) {
       stop('inputData does not contain the required fields `t` and `y`')
