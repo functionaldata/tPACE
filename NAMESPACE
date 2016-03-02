@@ -3,6 +3,7 @@
 S3method(fitted,FPCA)
 S3method(plot,FPCA)
 S3method(print,FPCA)
+export(CreateBWPlot)
 export(CreateCovPlot)
 export(CreateDesignPlot)
 export(CreateDiagnosticsPlot)
