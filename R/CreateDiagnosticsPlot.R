@@ -5,8 +5,6 @@
 #' differentiated mean and first two principal modes of variations for 50%, 75%, 100%, 125% and 150% of the defined bandwidth choice.
 #'
 #' @param fpcaObj An FPCA class object returned by FPCA().
-#' @param derOptns A list of options to control the derivation parameters; see ?FPCAder. If NULL standard diagnostics are returned 
-#' - default: NULL
 #' @param openNewDev A logical specifying if a new device should be opened - default: FALSE
 #'
 #' @examples
@@ -20,15 +18,15 @@
 #' CreateDiagnosticsPlot(res1)
 #' @export
 
-CreateDiagnosticsPlot <-function(fpcaObj, derOptns = NULL, openNewDev = FALSE){ 
+CreateDiagnosticsPlot <-function(fpcaObj, openNewDev = FALSE){ 
+  
+  oldPar <- par()
   
   if(class(fpcaObj) != 'FPCA'){
     stop("Input class is incorrect; CreateDiagnosticsPlot() is only usable from FPCA objects.")
-  }
-  oldPar <- par()
-  
-  if(is.null(derOptns) || !is.list(derOptns)){
+  } else {
     
+    #if(is.null(derOptns) || !is.list(derOptns)){ 
     t = fpcaObj$inputData$t
     if(openNewDev){ 
       dev.new(width=6.2, height=6.2, noRStudioGD=TRUE) ; 
@@ -39,6 +37,7 @@ CreateDiagnosticsPlot <-function(fpcaObj, derOptns = NULL, openNewDev = FALSE){
     workGrid = fpcaObj$workGrid
     
     par(mfrow=c(2,2))
+    
     ## Make Design plot
     CreateDesignPlot(t)
     
@@ -60,37 +59,38 @@ CreateDiagnosticsPlot <-function(fpcaObj, derOptns = NULL, openNewDev = FALSE){
             main=paste(collapse='', c("First ", as.character(k), " Eigenfunctions"))  , xlab='s', ylab='') 
     grid()
     matlines(workGrid, fpcaObj$phi[,1:k] ) 
-  } else {
     
-    derOptns <- SetDerOptions(fpcaObj,derOptns = derOptns) 
-    p <- derOptns[['p']]
-    method <- derOptns[['method']]
-    bw <- derOptns[['bw']]
-    kernelType <- derOptns[['kernelType']]
-    k <- derOptns[['k']]
-    if(p==0){
-      stop("Derivative diagnostics are inapplicable when p = 0")
-    }
-    
-    bwMultipliers = seq(0.50,1.5,by=0.25)
-    yy = lapply( bwMultipliers *  bw, function(x) FPCAder(fpcaObj, list(p=p, method = method, kernelType = kernelType, k = k, bw = x)))
-    
-    par(mfrow=c(1,3))
-    
-    Z = rbind(sapply(1:5, function(x) yy[[x]]$muDer));
-    matplot(x = fpcaObj$workGrid, lty= 1, type='l',  Z, ylab= expression(paste(collapse = '', 'd', mu, "/ds")), 
-            main= substitute(paste("Derivatives of order ", p, " of ", mu)), xlab = 's')
-    grid(); legend('topright', lty = 1, col=1:5, legend = apply( rbind( rep('bw: ',5), bwMultipliers * bw), 2, paste, collapse = ''))
-    
-    Z = rbind(sapply(1:5, function(x) yy[[x]]$phiDer[,1]));
-    matplot(x = fpcaObj$workGrid, lty= 1, type='l',  Z,   ylab= expression(paste(collapse = '', 'd', phi[1], "/ds")), 
-            main= substitute(paste("Derivatives of order ", p, " of ", phi[1])), xlab = 's')
-    grid(); legend('topright', lty = 1, col=1:5, legend = apply( rbind( rep('bw: ',5), bwMultipliers * bw), 2, paste, collapse = ''))
-    
-    Z = rbind(sapply(1:5, function(x) yy[[x]]$phiDer[,2]));
-    matplot(x = fpcaObj$workGrid, lty= 1, type='l',  Z, ylab= expression(paste(collapse = '', 'd', phi[2], "/ds")), 
-            main= substitute(paste("Derivatives of order ", p, " of ", phi[2])), xlab = 's')
-    grid(); legend('topleft', lty = 1, col=1:5, legend = apply( rbind( rep('bw: ',5), bwMultipliers * bw), 2, paste, collapse = ''))
+    # } else {
+    #   
+    #   derOptns <- SetDerOptions(fpcaObj,derOptns = derOptns) 
+    #   p <- derOptns[['p']]
+    #   method <- derOptns[['method']]
+    #   bw <- derOptns[['bw']]
+    #   kernelType <- derOptns[['kernelType']]
+    #   k <- derOptns[['k']]
+    #   if(p==0){
+    #     stop("Derivative diagnostics are inapplicable when p = 0")
+    #   }
+    #   
+    #   bwMultipliers = seq(0.50,1.5,by=0.25)
+    #   yy = lapply( bwMultipliers *  bw, function(x) FPCAder(fpcaObj, list(p=p, method = method, kernelType = kernelType, k = k, bw = x)))
+    #   
+    #   par(mfrow=c(1,3))
+    #   
+    #   Z = rbind(sapply(1:5, function(x) yy[[x]]$muDer));
+    #   matplot(x = fpcaObj$workGrid, lty= 1, type='l',  Z, ylab= expression(paste(collapse = '', 'd', mu, "/ds")), 
+    #           main= substitute(paste("Derivatives of order ", p, " of ", mu)), xlab = 's')
+    #   grid(); legend('topright', lty = 1, col=1:5, legend = apply( rbind( rep('bw: ',5), bwMultipliers * bw), 2, paste, collapse = ''))
+    #   
+    #   Z = rbind(sapply(1:5, function(x) yy[[x]]$phiDer[,1]));
+    #   matplot(x = fpcaObj$workGrid, lty= 1, type='l',  Z,   ylab= expression(paste(collapse = '', 'd', phi[1], "/ds")), 
+    #           main= substitute(paste("Derivatives of order ", p, " of ", phi[1])), xlab = 's')
+    #   grid(); legend('topright', lty = 1, col=1:5, legend = apply( rbind( rep('bw: ',5), bwMultipliers * bw), 2, paste, collapse = ''))
+    #   
+    #   Z = rbind(sapply(1:5, function(x) yy[[x]]$phiDer[,2]));
+    #   matplot(x = fpcaObj$workGrid, lty= 1, type='l',  Z, ylab= expression(paste(collapse = '', 'd', phi[2], "/ds")), 
+    #           main= substitute(paste("Derivatives of order ", p, " of ", phi[2])), xlab = 's')
+    #   grid(); legend('topleft', lty = 1, col=1:5, legend = apply( rbind( rep('bw: ',5), bwMultipliers * bw), 2, paste, collapse = ''))
     
   }
   suppressWarnings(par(oldPar))
