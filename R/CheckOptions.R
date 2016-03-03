@@ -30,8 +30,8 @@ CheckOptions = function(t,optns,n){
     stop("FPCA is aborted because the argument: methodBwCov is invalid!\n");  
   }
 
-  if (is.nan(optns[['kFoldCov']]) || optns[['kFoldCov']] < 2) {
-    stop('Invalid `kFoldCov` option')
+  if (is.nan(optns[['kFoldMuCov']]) || optns[['kFoldMuCov']] < 2) {
+    stop('Invalid `kFoldMuCov` option')
   }
 
   if( !(any(optns[['methodSelectK']] == c('FVE','AIC','BIC')))){

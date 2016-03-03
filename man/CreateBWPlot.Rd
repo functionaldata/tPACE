@@ -2,7 +2,7 @@
 % Please edit documentation in R/CreateBWPlot.R
 \name{CreateBWPlot}
 \alias{CreateBWPlot}
-\title{Functional Principal Component Analysisi Bandwidth Diagnostics plot}
+\title{Functional Principal Component Analysis Bandwidth Diagnostics plot}
 \usage{
 CreateBWPlot(fpcaObj, derOptns = NULL, bwMultipliers = NULL)
 }

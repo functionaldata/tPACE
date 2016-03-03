@@ -46,7 +46,7 @@ GetSmoothedMeanCurve <- function (y, t, obsGrid, regGrid, optns){
         } 
       } else {
         # get the bandwidth using CV to estimnate the mean function (below)
-        bw_mu = CVLwls1D(y, t, kernel= kernel, npoly=npoly, nder=nder, dataType= optns$dataType ); 
+        bw_mu = CVLwls1D(y, t, kernel= kernel, npoly=npoly, nder=nder, dataType= optns$dataType, kFolds = optns$kFoldMuCov ); 
       }
     }
     # Get the mean function using the bandwith estimated above:

@@ -15,7 +15,7 @@ SetOptions = function(y, t, optns){
   methodBwMu =optns[['methodBwMu']]; 
   userBwCov =optns[['userBwCov']];            
   methodBwCov =optns[['methodBwCov']];
-  kFoldCov = optns[['kFoldCov']]
+  kFoldMuCov = optns[['kFoldMuCov']]
   methodSelectK =optns[['methodSelectK']];  
   FVEthreshold =optns[['FVEthreshold']];
   fitEigenValues <- optns[['fitEigenValues']];
@@ -56,10 +56,10 @@ SetOptions = function(y, t, optns){
   #if(is.null(ngrid1)){ # number of support points for the covariance surface 
   #  ngrid1 = 30;
   #}
-  if (is.null(kFoldCov)) { # CV fold for covariance smoothing
-    kFoldCov <- 10L
+  if (is.null(kFoldMuCov)) { # CV fold for covariance smoothing
+    kFoldMuCov <- 10L
   } else {
-    kFoldCov <- as.integer(kFoldCov)
+    kFoldMuCov <- as.integer(kFoldMuCov)
   }
   if(is.null(methodSelectK)){ # the method of choosing the number of principal components K
     #  TODO : Possibly have user-defined selection methods for the # of FPCs and we keep
@@ -217,7 +217,7 @@ SetOptions = function(y, t, optns){
   # }
     
   retOptns <- list(userBwMu = userBwMu, methodBwMu = methodBwMu, userBwCov = userBwCov, methodBwCov = methodBwCov,
-          kFoldCov = kFoldCov, methodSelectK = methodSelectK, FVEthreshold = FVEthreshold,
+          kFoldMuCov = kFoldMuCov, methodSelectK = methodSelectK, FVEthreshold = FVEthreshold,
           fitEigenValues = fitEigenValues, maxK = maxK, dataType = dataType, error = error, shrink = shrink,
           nRegGrid = nRegGrid, rotationCut = rotationCut, methodXi = methodXi, kernel = kernel, 
           lean = lean, diagnosticsPlot = diagnosticsPlot, numBins = numBins, useBinnedCov = useBinnedCov, 

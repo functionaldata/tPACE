@@ -4,13 +4,10 @@
 \alias{CreateDiagnosticsPlot}
 \title{Functional Principal Component Analysis Diagnostics plot}
 \usage{
-CreateDiagnosticsPlot(fpcaObj, derOptns = NULL, openNewDev = FALSE)
+CreateDiagnosticsPlot(fpcaObj, openNewDev = FALSE)
 }
 \arguments{
 \item{fpcaObj}{An FPCA class object returned by FPCA().}
-
-\item{derOptns}{A list of options to control the derivation parameters; see ?FPCAder. If NULL standard diagnostics are returned 
-- default: NULL}
 
 \item{openNewDev}{A logical specifying if a new device should be opened - default: FALSE}
 }

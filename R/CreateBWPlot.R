@@ -1,4 +1,4 @@
-#' Functional Principal Component Analysisi Bandwidth Diagnostics plot
+#' Functional Principal Component Analysis Bandwidth Diagnostics plot
 #' 
 #' This function by default creates the mean and first principal modes of variation plots for
 #' 50%, 75%, 100%, 125% and 150% of the defined bandwidth choices in the fpcaObj provided as input.
