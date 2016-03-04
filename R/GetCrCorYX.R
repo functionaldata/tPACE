@@ -1,10 +1,12 @@
-#' Make cross-correlation matrix from cross-covariance matrix
+#' Make cross-correlation matrix from auto- and cross-covariance matrix
 #'
-#' Make cross-correlation matrix from cross-covariance matrix
+#' Make cross-correlation matrix from  auto- andcross-covariance matrix
 #'
 #' @param ccXY The cross-covariance matrix between variables X and Y.
 #' @param ccXX The auto-covariance matrix of variable X or the diagonal of that matrix.
 #' @param ccYY The auto-covariance matrix of variable Y or the diagonal of that matrix.
+#' 
+#' @return A cross-correlation matrix ebetween variables X and Y.
 #'
 #' @export
 #' 
