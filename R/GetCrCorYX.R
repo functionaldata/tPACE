@@ -6,7 +6,7 @@
 #' @param ccXX The auto-covariance matrix of variable X or the diagonal of that matrix.
 #' @param ccYY The auto-covariance matrix of variable Y or the diagonal of that matrix.
 #' 
-#' @return A cross-correlation matrix ebetween variables X and Y.
+#' @return A cross-correlation matrix between variables X and Y.
 #'
 #' @export
 #' 
@@ -53,7 +53,7 @@ GetCrCorYX <- function(ccXY, ccXX , ccYY){
     stop('The provided covariance for X are unreasonable small or negative. Rescale/check your data.')
   }
   
-  #return (solve(sqrt(diag(diagXX))) %*% ccXY %*% solve(sqrt(diag(diagYY))))
+  # return (solve(sqrt(diag(diagXX))) %*% ccXY %*% solve(sqrt(diag(diagYY))))
   return( diag(1/sqrt(diagXX) , nrow = length(diagXX)) %*% ccXY %*% diag(1/sqrt(diagYY), nrow = length(diagYY)) )
 }
 
