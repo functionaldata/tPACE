@@ -7,7 +7,7 @@
 CreateFuncBoxPlot(fpcaObj, optns = list(), ...)
 }
 \arguments{
-\item{fpcaObj}{A object of class FPCA returned by the function FPCA().}
+\item{fpcaObj}{An object of class FPCA returned by the function FPCA().}
 
 \item{optns}{A list of options control parameters specified by \code{list(name=value)}. See `Details'.}
 

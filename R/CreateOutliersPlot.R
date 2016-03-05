@@ -1,6 +1,6 @@
-#' Functional Principal Component Scores Plot
+#' Functional Principal Component Scores Plot using 'bagplot' or 'KDE' methodology
 #'
-#' This function will create using the first two FPC scores a set of convex hulls of the scores as these hulls are defined by the references.
+#' This function will create, using the first two FPC scores, a set of convex hulls of the scores based on 'bagplot' or 'KDE' methodology.
 #'
 #' @param fpcaObj An FPCA class object returned by FPCA().   
 #' @param optns A list of options control parameters specified by \code{list(name=value)}. See `Details'.
@@ -15,6 +15,8 @@
 #' \item{colSpectrum}{character vector to be use as input in the 'colorRampPalette' function defining the outliers colous(default: c("red",  "yellow", 'blue'), relavant only for groupingType='slice') }
 #' \item{groupingType}{string specifying if a slice grouping ('slice') or a standard percentile/bagplot grouping ('standard') should be returned (default: 'standard')} 
 #' }
+#'
+#' @return An (temporarily) invisible copy of a list containing the labels associated with each of sample curves. 
 #'
 #' @examples
 #' set.seed(1)

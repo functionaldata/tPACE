@@ -2,7 +2,7 @@
 % Please edit documentation in R/GetCrCorYX.R
 \name{GetCrCorYX}
 \alias{GetCrCorYX}
-\title{Make cross-correlation matrix from cross-covariance matrix}
+\title{Make cross-correlation matrix from auto- and cross-covariance matrix}
 \usage{
 GetCrCorYX(ccXY, ccXX, ccYY)
 }
@@ -13,7 +13,10 @@ GetCrCorYX(ccXY, ccXX, ccYY)
 
 \item{ccYY}{The auto-covariance matrix of variable Y or the diagonal of that matrix.}
 }
+\value{
+A cross-correlation matrix between variables X and Y.
+}
 \description{
-Make cross-correlation matrix from cross-covariance matrix
+Make cross-correlation matrix from  auto- andcross-covariance matrix
 }
 

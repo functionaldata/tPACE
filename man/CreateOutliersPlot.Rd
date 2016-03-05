@@ -2,7 +2,7 @@
 % Please edit documentation in R/CreateOutliersPlot.R
 \name{CreateOutliersPlot}
 \alias{CreateOutliersPlot}
-\title{Functional Principal Component Scores Plot}
+\title{Functional Principal Component Scores Plot using 'bagplot' or 'KDE' methodology}
 \usage{
 CreateOutliersPlot(fpcaObj, optns = NULL, ...)
 }
@@ -13,8 +13,11 @@ CreateOutliersPlot(fpcaObj, optns = NULL, ...)
 
 \item{...}{Additional arguments for the 'plot' function.}
 }
+\value{
+An (temporarily) invisible copy of a list containing the labels associated with each of sample curves.
+}
 \description{
-This function will create using the first two FPC scores a set of convex hulls of the scores as these hulls are defined by the references.
+This function will create, using the first two FPC scores, a set of convex hulls of the scores based on 'bagplot' or 'KDE' methodology.
 }
 \details{
 Available control options are 

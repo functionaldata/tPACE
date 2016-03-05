@@ -5,7 +5,7 @@
 #' by the curves within the 25th and 75-th percentile and the light gret to the area spanned
 #' by the curves within the 2.5th and 97.5-th percentile. 
 #'
-#' @param fpcaObj A object of class FPCA returned by the function FPCA().
+#' @param fpcaObj An object of class FPCA returned by the function FPCA().
 #' @param optns A list of options control parameters specified by \code{list(name=value)}. See `Details'.
 #' @param ... Additional arguments for the 'plot' function. 
 #' 
