@@ -93,9 +93,45 @@ test_that('The cross-covariance in the case of sparse sample and a random variab
   expect_equal( min(c( sccObj$score, sccObjDOUBLE$score, sccObjHALF$score) ) , sccObj$score )
 })
 
+test_that('Dense Wiener process has cov(int X(s) ds, X(t)) = int min(s,t) ds', {
+  set.seed(4)
+  n <- 2000
+  nGridIn <- 51
+  T <- matrix(seq(0, 1, length.out=nGridIn))
+
+## Corr(\int X(s) ds, X(t)) = \int min(s,t) ds
+  covTrue <- rowMeans(outer(as.numeric(T), as.numeric(T), pmin))
+
+  A <- Wiener(n, T)
+  B <- Wiener(n, T)
+  X <- A + B
+  Z <- rowMeans(A)
+
+  tmp <- GetCrCovYZ(NULL, Z, NULL, X, NULL, NULL, T)
+  expect_equal(as.numeric(tmp$rawCC$rawCCov), covTrue, tolerance=0.1)
+})
 
 
+test_that('Sparse Wiener process has cov(int X(s) ds, X(t)) = int min(s,t) ds', {
+  set.seed(4)
+  n <- 2000
+  nGridIn <- 51
+  sparsity <- 1:5 # must have length > 1
+  bw <- 0.2
+  kern <- 'epan'
+  T <- matrix(seq(0, 1, length.out=nGridIn))
 
+## Corr(\int X(s) ds, X(t)) = \int min(s,t) ds
+  covTrue <- rowMeans(outer(as.numeric(T), as.numeric(T), pmin))
 
+  A <- Wiener(n, T)
+  B <- Wiener(n, T)
+  X <- A + B
+  indEach <- lapply(1:n, function(x) sort(sample(nGridIn, sample(sparsity, 1))))
+  tAll <- lapply(1:n, function(i) T[indEach[[i]]])
+  Xsp <- lapply(1:n, function(i) X[i, indEach[[i]]])
+  Z <- rowMeans(A)
 
-
+  tmp <- GetCrCovYZ(bw, Z, NULL, Xsp, tAll, rep(0, nGridIn), T)
+  expect_equal(tmp$smoothedCC, covTrue, tolerance=0.1)
+})

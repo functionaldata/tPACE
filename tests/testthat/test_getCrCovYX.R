@@ -156,6 +156,50 @@ test_that('The cross-covariance of two simple unrelated process is correct. Same
 })
 
 
+test_that('Dense Wiener process has cov(s,t) = min(s,t)', {
+  set.seed(4)
+  n <- 500
+  nGridIn <- 51
+  sparsity <- 1:5 # must have length > 1
+  bw <- NA
+  T <- matrix(seq(0, 1, length.out=nGridIn))
+
+## Corr(X(t), Y(t)) = 1/2
+  A <- Wiener(n, T)
+  B <- Wiener(n, T)
+  C <- Wiener(n, T)
+  X <- A + B
+  Y <- A + C
+
+  tmp <- GetCrCovYX(bw, bw, Ly1=X, Ly2=Y)
+  tmp1 <- GetCrCovYX(NULL, NULL, Ly1=X, Ly2=Y)
+  expect_equal(diag(tmp$rawCC$rawCCov), as.numeric(T), tolerance=0.1)
+  expect_equal(tmp, tmp1) # for dense data no smoothing is used.
+})
 
 
+test_that('Sparse Wiener process has cov(s,t) = min(s,t)', {
+  set.seed(4)
+  n <- 200
+  nGridIn <- 51
+  sparsity <- 1:5 # must have length > 1
+  bw <- 0.2
+  kern <- 'epan'
+  T <- matrix(seq(0, 1, length.out=nGridIn))
 
+## Corr(X(t), Y(t)) = 1/2
+  A <- Wiener(n, T)
+  B <- Wiener(n, T)
+  C <- Wiener(n, T)# + matrix((1:nGridIn) , n, nGridIn, byrow=TRUE)
+  X <- A + B
+  Y <- A + C
+  indEach <- lapply(1:n, function(x) sort(sample(nGridIn, sample(sparsity, 1))))
+  tAll <- lapply(1:n, function(i) T[indEach[[i]]])
+  Xsp <- lapply(1:n, function(i) X[i, indEach[[i]]])
+  Ysp <- lapply(1:n, function(i) Y[i, indEach[[i]]])
+
+  tmp <- GetCrCovYX(bw, bw, Xsp, tAll, rep(0, nGridIn), Ysp, tAll, rep(0, nGridIn))
+  tmpGCV <- GetCrCovYX(NULL, NULL, Xsp, tAll, rep(0, nGridIn), Ysp, tAll, rep(0, nGridIn))
+  expect_equal(diag(tmp$smoothedCC), as.numeric(T), tolerance=0.3)
+  expect_equal(diag(tmpGCV$smoothedCC), as.numeric(T), tolerance=0.3)
+})
