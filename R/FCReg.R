@@ -97,7 +97,7 @@ FCReg <- function(depVar,  expVarScal = NULL, expVarFunc = NULL, regressionType 
           t2 <- expVarFunc[[i]]$inputData$t   
           mu2 <- expVarFunc[[i]]$mu   
           print('x1-x2')
-          myDiag = diag(GetCrCovYX( Ly1 = y1, Lt1 = t1, Ly2 = y2, Lt2 = t2, fast = splineSmooth, bw1 = bwFunct, bw2 = bwFunct,
+          myDiag = diag(GetCrCovYX( Ly1 = y1, Lt1 = t1, Ly2 = y2, Lt2 = t2, useGAM = splineSmooth, bw1 = bwFunct, bw2 = bwFunct,
                                     Ymu1 =mu1, Ymu2 = mu2)$smoothedCC)
         }
         KovXXZZ[i,j,] = myDiag 
@@ -107,7 +107,7 @@ FCReg <- function(depVar,  expVarScal = NULL, expVarFunc = NULL, regressionType 
       yY <- depVar$inputData$y 
       tY <- depVar$inputData$t   
       print('x-y')
-      myDiag = diag(GetCrCovYX( Ly1 = y1, Lt1 = t1, Ly2 = yY, Lt2 = tY, fast = splineSmooth, bw1 = bwFunct, bw2 = bwFunct,
+      myDiag = diag(GetCrCovYX( Ly1 = y1, Lt1 = t1, Ly2 = yY, Lt2 = tY, useGAM = splineSmooth, bw1 = bwFunct, bw2 = bwFunct,
                                 Ymu1 = mu1, Ymu2 = depVar$mu)$smoothedCC)
       KovXYZ[j,] = myDiag
     }

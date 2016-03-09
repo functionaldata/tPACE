@@ -7,6 +7,7 @@
 #'
 #' @param fpcaObj An FPCA class object returned by FPCA().
 #' @param derOptns A list of options to control the derivation parameters; see ?FPCAder. If NULL standard diagnostics are returned 
+#' @param bwMultipliers A vector of multipliers that the original 'bwMu' and 'bwCov' will be multiplied by. (default: c(0.50, 0.75, 1.00, 1.25, 1.50))
 #' - default: NULL
 #'
 #' @examples
