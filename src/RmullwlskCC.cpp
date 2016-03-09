@@ -61,7 +61,7 @@ Eigen::MatrixXd RmullwlskCC( const Eigen::Map<Eigen::VectorXd> & bw, const std::
       if ( KernelName != 3) { 
         //construct listX as vectors / size is unknown originally
         for (unsigned int y = 0; y != tPairs.cols(); y++){ 
-          if ( std::abs( tPairs(0,y) - xgrid(i) ) <= (bw(0)+ pow(10,-6)) && std::abs( tPairs(1,y) - ygrid(j) ) <= (bw(1)+ pow(10,-6)) ) {
+          if (  (std::abs( tPairs(0,y) - xgrid(i) ) <= (bw(0)+ pow(10,-6)) && std::abs( tPairs(1,y) - ygrid(j) ) <= (bw(1)+ pow(10,-6))) ) {
             indx.push_back(y);
           }
         }

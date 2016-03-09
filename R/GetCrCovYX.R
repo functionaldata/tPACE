@@ -10,7 +10,7 @@
 #' @param Lt2 List of N vectors with timing information (X)
 #' @param Ymu2 Vector Q-1 Vector of length nObsGrid containing the mean function estimate (You can get that from FPCA) (X)
 #' @param bw2 Scalar bandwidth for smoothing the cross-covariance function (if NULL it will be automatically estimated) (X)
-#' @param fast Indicator to use gam smoothing instead of local-linear smoothing (semi-parametric option)
+#' @param useGAM Indicator to use gam smoothing instead of local-linear smoothing (semi-parametric option)
 #' If the variables Ly1 and Ly2 are in matrix form the data are assumed dense and only the raw cross-covariance is returned.
 #' @return A list containing:
 #' \item{smoothedCC}{The smoothed cross-covariance as a matrix}
@@ -31,7 +31,7 @@
 #' \cite{Yang, Wenjing, Hans-Georg Mueller, and Ulrich Stadtmueller. "Functional singular component analysis." Journal of the Royal Statistical Society: Series B (Statistical Methodology) 73.3 (2011): 303-324}
 #' @export
 
-GetCrCovYX <- function(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL, Ly2, Lt2 = NULL, Ymu2 = NULL, fast = FALSE){
+GetCrCovYX <- function(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL, Ly2, Lt2 = NULL, Ymu2 = NULL, useGAM = FALSE){
   
   # If only Ly1 and Ly2 are available assume DENSE data
   if( is.matrix(Ly1) && is.null(Lt1) && is.null(Ymu1) && is.matrix(Ly2) && is.null(Lt2) && is.null(Ymu2)){
@@ -55,7 +55,7 @@ GetCrCovYX <- function(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL, Ly2
   workGrid2 = seq(obsGrid2[1], max(obsGrid2), length.out = 51)
   workGrid12 = matrix(c(workGrid1, workGrid2),ncol= 2)
   
-  if (fast == TRUE){ 
+  if (useGAM == TRUE){ 
     Qdata = data.frame(x =  rawCC$tpairn[,1], y = rawCC$tpairn[,2], z = rawCC$rawCCov, group = rawCC$IDs  )
     # I comparsed with 're', ds' and 'gp' too, and 'tp' seems to have a slight edge for what we want
     # myGAM = mgcv::gamm( z ~ s(x,y, bs =c('tp','tp')), random=list(group=~1) , data= Qdata)$gam
