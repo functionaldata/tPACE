@@ -1,4 +1,5 @@
 \documentclass[11pt,english]{article}
+%%\VignetteIndexEntry{fdapaceVignette}
 
 
 \usepackage{palatino,avant,graphicx,color,amsmath,verbatim,url, wrapfig}
