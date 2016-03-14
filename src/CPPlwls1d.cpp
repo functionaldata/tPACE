@@ -165,7 +165,7 @@ Eigen::VectorXd CPPlwls1d( const double & bw, const std::string kernel_type, con
       //  Rcpp::Rcout << "factorials[nder]: " << factorials[nder]  << std::endl;
       //  Rcpp::Rcout << "pow (-1.0, nder): " << pow (-1.0, nder) << std::endl;
 
-      result(i) = beta(nder+0) * factorials[nder] *  pow (-1.0, int(nder));       
+      result(i) = beta(nder+0) * factorials[nder] *  std::pow(-1.0, int(nder));       
     }
   }
   return result;
