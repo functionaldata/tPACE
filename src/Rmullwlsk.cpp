@@ -51,6 +51,7 @@ Eigen::MatrixXd Rmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const std::st
   
   Eigen::MatrixXd mu(ygrid.size(),xgrid.size());
   mu.setZero();    
+  double bufSmall =  pow(double(10),-6);
 
   for (unsigned int i = 0; i != ygridN; ++i){  
     for (unsigned int j = i; j < xgridN ; ++j){ 
@@ -61,7 +62,7 @@ Eigen::MatrixXd Rmullwlsk( const Eigen::Map<Eigen::VectorXd> & bw, const std::st
       if ( KernelName != 3) { 
         //construct listX as vectors / size is unknown originally
         for (unsigned int y = 0; y != tPairs.cols(); y++){ 
-          if ( std::abs( tPairs(0,y) - xgrid(j) ) <= (bw(0)+  pow(double(10),-6)) && std::abs( tPairs(1,y) - ygrid(i) ) <= (bw(1)+  pow(double(10),-6)) ) {
+          if ( std::abs( tPairs(0,y) - xgrid(j) ) <= (bw(0)+ bufSmall) && std::abs( tPairs(1,y) - ygrid(i) ) <= (bw(1)+ bufSmall) ) {
           // legacy MATLAB equivalent form :  
           // if ( (tPairs(0,y) >= (xgrid(j) -(bw(0)+ pow(double(10),-6)))) & (tPairs(0,y) <= (xgrid(j) + (bw(0)+  pow(double(10),-6))))) {
             indx.push_back(y);
