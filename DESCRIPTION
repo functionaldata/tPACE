@@ -1,7 +1,7 @@
 Package: fdapace
 Type: Package
 Title: Functional Data Analysis and Empirical Dynamics
-URL: https://github.com/hadjipantelis/tPACE (development branch)
+URL: https://github.com/hadjipantelis/tPACE 
 Version: 0.1.0
 Date: 2016-02-10
 Author: Xiongtao Dai,
