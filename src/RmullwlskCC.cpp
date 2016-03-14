@@ -51,7 +51,7 @@ Eigen::MatrixXd RmullwlskCC( const Eigen::Map<Eigen::VectorXd> & bw, const std::
   
   Eigen::MatrixXd mu(xgrid.size(), ygrid.size());
   mu.setZero();    
-  double bufSmall = pow(double(10),-6);
+  const  double bufSmall = 1e-6; // pow(double(10),-6);
 
   for (unsigned int j = 0; j != ygridN; ++j) { 
     for (unsigned int i = 0; i != xgridN; ++i) {  
