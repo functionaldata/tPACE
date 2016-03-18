@@ -53,4 +53,6 @@ GetRawCrCovFuncFunc <- function(Ly1, Lt1 = NULL, Ymu1, Ly2, Lt2 = NULL, Ymu2){
   return(RCC)
 }
 
-CheckEqualLengths <- function(x1,x2){ return( all.equal( sapply(x1, length) , sapply(x2, length) )) } 
+CheckEqualLengths <- function(x1,x2){ 
+  return( all.equal( unname(sapply(x1, length)), unname(sapply(x2, length) )))
+} 

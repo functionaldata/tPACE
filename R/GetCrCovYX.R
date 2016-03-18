@@ -31,8 +31,12 @@
 #' \cite{Yang, Wenjing, Hans-Georg Mueller, and Ulrich Stadtmueller. "Functional singular component analysis." Journal of the Royal Statistical Society: Series B (Statistical Methodology) 73.3 (2011): 303-324}
 #' @export
 
-GetCrCovYX <- function(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL, Ly2, Lt2 = NULL, Ymu2 = NULL, useGAM = FALSE){
+GetCrCovYX <- function(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL, Ly2, Lt2 = NULL, Ymu2 = NULL, useGAM = FALSE, rmDiag=FALSE, kern='gauss') {
   
+  if (kern != 'gauss' && (is.null(bw1) || is.null(bw2))) {
+    stop('Cannot select bandwidth for non-Gaussian kernel')
+  }
+
   # If only Ly1 and Ly2 are available assume DENSE data
   if( is.matrix(Ly1) && is.null(Lt1) && is.null(Ymu1) && is.matrix(Ly2) && is.null(Lt2) && is.null(Ymu2)){
     rawCC <- GetRawCrCovFuncFunc(Ly1 = Ly1, Ly2 = Ly2)
@@ -47,6 +51,12 @@ GetCrCovYX <- function(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL, Ly2
   # Get the Raw Cross-covariance    
   rawCC = GetRawCrCovFuncFunc(Ly1 = Ly1, Lt1 = Lt1, Ymu1 = Ymu1, Ly2 = Ly2, Lt2 = Lt2, Ymu2 = Ymu2)
   
+  if (rmDiag) {
+    diagInd <- rawCC$tpairn[, 1] == rawCC$tpairn[, 2]
+    rawCC$tpairn <- rawCC$tpairn[!diagInd, , drop=FALSE]
+    rawCC$rawCCov <- rawCC$rawCCov[!diagInd]
+  }
+
   # Calculate the observation and the working grids
   ulLt1 = unlist(Lt1);             ulLt2 = unlist(Lt2)
   obsGrid1 = sort(unique(ulLt1));  obsGrid2 = sort(unique(ulLt2))
@@ -67,9 +77,12 @@ GetCrCovYX <- function(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL, Ly2
   
   # If the bandwidth is known already smooth the raw CrCov
   if( is.numeric(bw1) &&  is.numeric(bw2)){
-    smoothedCC <- smoothRCC2D(rcov =rawCC, bw1, bw2, workGrid1, workGrid2)    
+    smoothedCC <- smoothRCC2D(rcov =rawCC, bw1, bw2, workGrid1, workGrid2,
+                              kern=kern)    
+    # potentially incorrect GCV score if the kernel is non-Gaussian
     score = GCVgauss2D(smoothedCC = smoothedCC, smoothGrid = workGrid12, 
-                       rawCC = rawCC$rawCCov, rawGrid = rawCC$tpairn, bw1 = bw1, bw2 = bw2)                      
+                       rawCC = rawCC$rawCCov, rawGrid = rawCC$tpairn, 
+                       bw1 = bw1, bw2 = bw2)                      
     return ( list(smoothedCC = smoothedCC, rawCC = rawCC, bw =  c(bw1, bw2), score = score, smoothGrid = workGrid12 ) )
     
   # If the bandwidths are unknown use GCV to take find it
@@ -79,8 +92,10 @@ GetCrCovYX <- function(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL, Ly2
     # Find their associated GCV scores 
     gcvScores = rep(Inf, nrow(bwCandidates)) 
     for (i in 1:length(bwCandidates)){
-      smoothedCC <- try(silent=TRUE, smoothRCC2D(rcov=rawCC, bw1 = bwCandidates[i,1], 
-                                                 bw2 = bwCandidates[i,2], workGrid1, workGrid2) )
+      smoothedCC <- 
+        try(silent=TRUE, smoothRCC2D(rcov=rawCC, bw1 = bwCandidates[i,1], 
+                                     bw2 = bwCandidates[i,2], workGrid1,
+                                     workGrid2, kern=kern) )
       if( is.numeric(smoothedCC) ){
         gcvScores[i] = GCVgauss2D( smoothedCC = smoothedCC, smoothGrid = workGrid12, rawCC = rawCC$rawCCov, 
                        rawGrid = rawCC$tpairn, bw1 = bwCandidates[i,1], bw2 = bwCandidates[i,2])
@@ -90,7 +105,7 @@ GetCrCovYX <- function(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL, Ly2
     bInd = which(gcvScores == min(gcvScores, na.rm=TRUE));
     bOpt1 = max(bwCandidates[bInd,1]);
     bOpt2 = max(bwCandidates[bInd,2]); 
-    smoothedCC <- smoothRCC2D(rcov=rawCC, bw1 =bOpt1, bw2 =bOpt2, workGrid1, workGrid2)
+    smoothedCC <- smoothRCC2D(rcov=rawCC, bw1 =bOpt1, bw2 =bOpt2, workGrid1, workGrid2, kern=kern)
     return ( list(smoothedCC = smoothedCC, rawCC = rawCC, bw = c(bOpt1, bOpt2), smoothGrid = workGrid12, score = min(gcvScores, na.rm=TRUE)) )
   }  
 }
@@ -110,7 +125,7 @@ getBWidths <- function(ulLt1, ulLt2){
   return(bwCandidates)
 }
 
-smoothRCC2D <- function(rcov,bw1, bw2, xout1, xout2){
+smoothRCC2D <- function(rcov,bw1, bw2, xout1, xout2, kern='gauss'){
 # Calculate the smooth Covariances between two functional variables
 # rcov    : raw cross covariance list object returned by GetRawCrCovFuncFunc
 # bw1     : scalar
@@ -118,7 +133,7 @@ smoothRCC2D <- function(rcov,bw1, bw2, xout1, xout2){
 # xout1   : vector M-1
 # xout2   : vector L-1
 # returns : matrix M-L
-  return( Lwls2D( bw = c(bw1, bw2), kern = 'gauss', xin=rcov$tpairn, 
+  return( Lwls2D( bw = c(bw1, bw2), kern = kern, xin=rcov$tpairn, 
                            yin=rcov$rawCC, xout1=xout1, xout2=xout2, crosscov=TRUE) )  
 }
 
