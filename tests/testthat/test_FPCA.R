@@ -112,7 +112,7 @@ test_that('User provided mu, cov, and sigma2',{
 
   set.seed(123)
   N = 200;   
-  M = 100;
+  M = 90;
   
   # Define the continuum
   s = seq(0,10,length.out = M)
