@@ -29,7 +29,7 @@ If the variables Ly1 and Ly2 are in matrix form the data are assumed dense and o
 }
 \value{
 A list containing:
-\item{smoothedCC}{The smoothed cross-covariance as a matrix}
+\item{smoothedCC}{The smoothed cross-covariance as a matrix (currently only 51 by 51)}
 \item{rawCC}{The raw cross-covariance as a list}
 \item{bw}{The bandwidth used for smoohting as a vector of lengh 2}
 \item{score}{The GCV score associated with the scalar used}

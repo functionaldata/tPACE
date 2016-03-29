@@ -6,6 +6,8 @@
 #'
 #' @return A list containing the normalised sample 'y' at times 't'
 #'
+#' @references
+#' \cite{Chiou, Jeng-Min and Chen, Yu-Ting and Yang, Ya-Fang. "Multivariate Functional Principal Component Analysis: A Normalization Approach" Statistica Sinica 24 (2014): 1571-1596}
 #' @export
 GetNormalisedSample<- function(fpcaObj){
   if (any( 0>=diag(fpcaObj$smoothedCov)) ){
