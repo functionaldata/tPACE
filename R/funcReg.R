@@ -1,6 +1,11 @@
 ## Concurrent Functional regression by 2D smoothing method.
-## vars: a list of input functional/scaler covariates. Each field  can correspond to a covariate. The last entry is assumed to be the response if no entry is names 'Y'.
+# vars: a list of input functional/scaler covariates. Each field corresponds to a functional (a list) or scaler (a vector) covariate. The last entry is assumed to be the response if no entry is names 'Y'. If a field corresponds to a functional covariate, it should have two fields: 'tList', a list of time points, and 'yList', a list of function values.
+# bw: bandwidth used.
+# Tout: output time points.
+# kern: kernel used.
+# measurementError: whether measurement errors on the functional observations should be assumed. If TRUE the diagonal raw covariance will be removed when smoothing.
 # diag1D: A string specifying whether to use 1D smoothing for the diagonal line of the covariance. 'none': don't use 1D smoothing; 'cross': use 1D only for cross-covariances; 'all': use 1D for both auto- and cross-covariances.
+# returnCov: whether to return the covariance surfaces, which is a four dimensional array. The first two dimensions correspond to Tout, and the last two correspond to the covariates and the response, i.e. (i, j, k, l) entry being Cov(X_k(t_i), X_l(t_j))
 mvConReg <- function(vars, bw, Tout, kern='gauss', measurementError=TRUE, diag1D='none', returnCov=TRUE) {
   
   n <- lengthVars(vars)
@@ -228,7 +233,7 @@ uniCov <- function(X, Y, bw, Tout, kern='gauss', rmDiag=FALSE, center=TRUE, use1
 }
 
 
-## Concurrent functional regression by imputation.
+## Concurrent functional regression by imputation. This does not provide consistent estimates.
 ## FPCAlist: a list of functional covariates and response. Each field corresponds to a covariate. The last entry is assumed to be the response if no entry is names 'Y'.
 imputeConReg <- function(FPCAlist, Z, Tout) {
 
