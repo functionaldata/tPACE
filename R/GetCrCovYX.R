@@ -31,12 +31,12 @@
 #' \cite{Yang, Wenjing, Hans-Georg Mueller, and Ulrich Stadtmueller. "Functional singular component analysis." Journal of the Royal Statistical Society: Series B (Statistical Methodology) 73.3 (2011): 303-324}
 #' @export
 
-GetCrCovYX <- function(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL, Ly2, Lt2 = NULL, Ymu2 = NULL, useGAM = FALSE, rmDiag=FALSE, kern='gauss') {
+GetCrCovYX <- function(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL, Ly2, Lt2 = NULL, Ymu2 = NULL, useGAM = FALSE, rmDiag=FALSE, kern='gauss', gridSearch = TRUE) {
   
   if (kern != 'gauss' && (is.null(bw1) || is.null(bw2))) {
     stop('Cannot select bandwidth for non-Gaussian kernel')
   }
-
+  
   # If only Ly1 and Ly2 are available assume DENSE data
   if( is.matrix(Ly1) && is.null(Lt1) && is.null(Ymu1) && is.matrix(Ly2) && is.null(Lt2) && is.null(Ymu2)){
     rawCC <- GetRawCrCovFuncFunc(Ly1 = Ly1, Ly2 = Ly2)
@@ -56,7 +56,7 @@ GetCrCovYX <- function(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL, Ly2
     rawCC$tpairn <- rawCC$tpairn[!diagInd, , drop=FALSE]
     rawCC$rawCCov <- rawCC$rawCCov[!diagInd]
   }
-
+  
   # Calculate the observation and the working grids
   ulLt1 = unlist(Lt1);             ulLt2 = unlist(Lt2)
   obsGrid1 = sort(unique(ulLt1));  obsGrid2 = sort(unique(ulLt2))
@@ -85,33 +85,51 @@ GetCrCovYX <- function(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL, Ly2
                        bw1 = bw1, bw2 = bw2)                      
     return ( list(smoothedCC = smoothedCC, rawCC = rawCC, bw =  c(bw1, bw2), score = score, smoothGrid = workGrid12 ) )
     
-  # If the bandwidths are unknown use GCV to take find it
+    # If the bandwidths are unknown use GCV to take find it
   } else {
     # Construct candidate bw's
     bwCandidates <- getBWidths(ulLt1, ulLt2)
-    # Find their associated GCV scores 
-    gcvScores = rep(Inf, nrow(bwCandidates)) 
-    for (i in 1:length(bwCandidates)){
-      smoothedCC <- 
-        try(silent=TRUE, smoothRCC2D(rcov=rawCC, bw1 = bwCandidates[i,1], 
-                                     bw2 = bwCandidates[i,2], workGrid1,
-                                     workGrid2, kern=kern) )
-      if( is.numeric(smoothedCC) ){
-        gcvScores[i] = GCVgauss2D( smoothedCC = smoothedCC, smoothGrid = workGrid12, rawCC = rawCC$rawCCov, 
-                       rawGrid = rawCC$tpairn, bw1 = bwCandidates[i,1], bw2 = bwCandidates[i,2])
-      }
-    } 
-    # Pick the one with the smallest score
-    bInd = which(gcvScores == min(gcvScores, na.rm=TRUE));
-    bOpt1 = max(bwCandidates[bInd,1]);
-    bOpt2 = max(bwCandidates[bInd,2]); 
+    
+    if(gridSearch){
+      # Find their associated GCV scores 
+      gcvScores = rep(Inf, nrow(bwCandidates)) 
+      for (i in 1:length(bwCandidates)){
+          gcvScores[i] = theCostFunc(bwCandidates[i,])  
+      } 
+      # Pick the one with the smallest score
+      bInd = which(gcvScores == min(gcvScores, na.rm=TRUE));
+      bOpt1 = max(bwCandidates[bInd,1]);
+      bOpt2 = max(bwCandidates[bInd,2]); 
+    } else {
+      
+      bwRanges = apply(bwCandidates,2, range)
+      upperB = bwRanges[2,]
+      lowerB = bwRanges[1,]
+      theSols = minqa::bobyqa(fn = theCostFunc, par = upperB*0.95, # Starting value that "is safe"
+                              upper = upperB, lower = lowerB, control = list(maxfun = 41)) 
+      bOpt1 = theSols$par[1]
+      bOpt2 = theSols$par[2]
+    }
     smoothedCC <- smoothRCC2D(rcov=rawCC, bw1 =bOpt1, bw2 =bOpt2, workGrid1, workGrid2, kern=kern)
-    return ( list(smoothedCC = smoothedCC, rawCC = rawCC, bw = c(bOpt1, bOpt2), smoothGrid = workGrid12, score = min(gcvScores, na.rm=TRUE)) )
+    return ( list(smoothedCC = smoothedCC, rawCC = rawCC, bw = c(bOpt1, bOpt2), smoothGrid = workGrid12, 
+                  score = min(gcvScores, na.rm=TRUE)) )
   }  
 }
 
-getBWidths <- function(ulLt1, ulLt2){
+theCostFunc <- function(xBW){
+        smoothedCC <- try(silent=TRUE, smoothRCC2D(rcov=rawCC, bw1 = xBW[1], bw2 = xBW[2], 
+                                                   workGrid1, workGrid2, kern=kern) )
+        if( is.numeric(smoothedCC) ){
+          theCost = GCVgauss2D( smoothedCC = smoothedCC, smoothGrid = workGrid12, rawCC = rawCC$rawCCov, 
+                                rawGrid = rawCC$tpairn, bw1 = xBW[1],   bw2 = xBW[2])}
+        else{
+          theCost = Inf
+        }
+        return(theCost)
+}
 
+getBWidths <- function(ulLt1, ulLt2){
+  
   bwCandidates <- matrix(rep(0,72),ncol=2)
   h0 = 2.0 * Minb( sort(ulLt1), 2+1); # 2x the bandwidth needed for at least 3 points in a window
   r = diff(range(ulLt1))    
@@ -126,27 +144,27 @@ getBWidths <- function(ulLt1, ulLt2){
 }
 
 smoothRCC2D <- function(rcov,bw1, bw2, xout1, xout2, kern='gauss'){
-# Calculate the smooth Covariances between two functional variables
-# rcov    : raw cross covariance list object returned by GetRawCrCovFuncFunc
-# bw1     : scalar
-# bw2     : scalar
-# xout1   : vector M-1
-# xout2   : vector L-1
-# returns : matrix M-L
+  # Calculate the smooth Covariances between two functional variables
+  # rcov    : raw cross covariance list object returned by GetRawCrCovFuncFunc
+  # bw1     : scalar
+  # bw2     : scalar
+  # xout1   : vector M-1
+  # xout2   : vector L-1
+  # returns : matrix M-L
   return( Lwls2D( bw = c(bw1, bw2), kern = kern, xin=rcov$tpairn, 
-                           yin=rcov$rawCC, xout1=xout1, xout2=xout2, crosscov=TRUE) )  
+                  yin=rcov$rawCC, xout1=xout1, xout2=xout2, crosscov=TRUE) )  
 }
 
 GCVgauss2D <- function( smoothedCC, smoothGrid, rawCC, rawGrid, bw1, bw2){ 
-# Calculate GCV cost off smoothed sample assuming a Gaussian kernel
-# smoothedY : vector M-1 
-# smoothedX : vector M-1
-# rawX      : vector N-1
-# rawY      : vector N-1
-# bw        : scalar
-# returns   : scalar
+  # Calculate GCV cost off smoothed sample assuming a Gaussian kernel
+  # smoothedY : vector M-1 
+  # smoothedX : vector M-1
+  # rawX      : vector N-1
+  # rawY      : vector N-1
+  # bw        : scalar
+  # returns   : scalar
   obsFit <- interp2lin(smoothGrid[,1], smoothGrid[,2], smoothedCC, as.numeric(rawGrid[, 1]), 
-                              as.numeric(rawGrid[, 2]))    
+                       as.numeric(rawGrid[, 2]))    
   # workaround for degenerate case.
   if (any(is.nan(obsFit))  || any(is.infinite(obsFit))  ){
     return(Inf)

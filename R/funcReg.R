@@ -53,9 +53,9 @@ mvConReg <- function(vars, bw, Tout, kern='gauss', measurementError=TRUE, diag1D
       beta[j, ] * muList[[j]](Tout)
     }
   })
-  alpha <- muList[[Yname]](Tout) - colSums(t(muBeta))
+  beta0 <- muList[[Yname]](Tout) - colSums(t(muBeta))
   
-  res <- list(beta=beta, alpha=alpha, Tout=Tout, cov=allCov, R2=R2, n=n)
+  res <- list(beta=beta, beta0 = beta0, Tout=Tout, cov=allCov, R2=R2, n=n)
   if (!returnCov)
     res[['cov']] <- NULL
   res
