@@ -10,7 +10,10 @@
 #' @param Lt2 List of N vectors with timing information (X)
 #' @param Ymu2 Vector Q-1 Vector of length nObsGrid containing the mean function estimate (You can get that from FPCA) (X)
 #' @param bw2 Scalar bandwidth for smoothing the cross-covariance function (if NULL it will be automatically estimated) (X)
-#' @param useGAM Indicator to use gam smoothing instead of local-linear smoothing (semi-parametric option)
+#' @param useGAM Indicator to use gam smoothing instead of local-linear smoothing (semi-parametric option) (default: FALSE)
+#' @param rmDiag Indicator to remove the diagonal element when smoothing (default: FALSE)
+#' @param kern String specifying the kernel type (default: FALSE;  see ?FPCA for details)
+#' @param quadApprox Indicator to use BOBYQA to specify the candidate bandwidths (default: FALSE)
 #' If the variables Ly1 and Ly2 are in matrix form the data are assumed dense and only the raw cross-covariance is returned.
 #' @return A list containing:
 #' \item{smoothedCC}{The smoothed cross-covariance as a matrix (currently only 51 by 51)}
@@ -31,10 +34,15 @@
 #' \cite{Yang, Wenjing, Hans-Georg Mueller, and Ulrich Stadtmueller. "Functional singular component analysis." Journal of the Royal Statistical Society: Series B (Statistical Methodology) 73.3 (2011): 303-324}
 #' @export
 
-GetCrCovYX <- function(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL, Ly2, Lt2 = NULL, Ymu2 = NULL, useGAM = FALSE, rmDiag=FALSE, kern='gauss', gridSearch = TRUE) {
+GetCrCovYX <- function(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL, Ly2, Lt2 = NULL, Ymu2 = NULL, 
+                       useGAM = FALSE, rmDiag=FALSE, kern='gauss', quadApprox = FALSE) {
   
   if (kern != 'gauss' && (is.null(bw1) || is.null(bw2))) {
     stop('Cannot select bandwidth for non-Gaussian kernel')
+  }
+  
+  if( quadApprox == TRUE && is.element('minqa', installed.packages()[,1]) == FALSE){ 
+    stop("Quadratic approximation solver requires package 'minqa' to be installed.")
   }
   
   # If only Ly1 and Ly2 are available assume DENSE data
@@ -94,7 +102,7 @@ GetCrCovYX <- function(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL, Ly2
       # Find their associated GCV scores 
       gcvScores = rep(Inf, nrow(bwCandidates)) 
       for (i in 1:length(bwCandidates)){
-          gcvScores[i] = theCostFunc(bwCandidates[i,])  
+        gcvScores[i] = theCostFunc(bwCandidates[i,])  
       } 
       # Pick the one with the smallest score
       bInd = which(gcvScores == min(gcvScores, na.rm=TRUE));
@@ -117,15 +125,15 @@ GetCrCovYX <- function(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL, Ly2
 }
 
 theCostFunc <- function(xBW){
-        smoothedCC <- try(silent=TRUE, smoothRCC2D(rcov=rawCC, bw1 = xBW[1], bw2 = xBW[2], 
-                                                   workGrid1, workGrid2, kern=kern) )
-        if( is.numeric(smoothedCC) ){
-          theCost = GCVgauss2D( smoothedCC = smoothedCC, smoothGrid = workGrid12, rawCC = rawCC$rawCCov, 
-                                rawGrid = rawCC$tpairn, bw1 = xBW[1],   bw2 = xBW[2])}
-        else{
-          theCost = Inf
-        }
-        return(theCost)
+  smoothedCC <- try(silent=TRUE, smoothRCC2D(rcov=rawCC, bw1 = xBW[1], bw2 = xBW[2], 
+                                             workGrid1, workGrid2, kern=kern) )
+  if( is.numeric(smoothedCC) ){
+    theCost = GCVgauss2D( smoothedCC = smoothedCC, smoothGrid = workGrid12, 
+                          rawCC = rawCC$rawCCov, rawGrid = rawCC$tpairn, bw1 = xBW[1], bw2 = xBW[2])
+  } else {
+    theCost = Inf
+  }
+  return(theCost)
 }
 
 getBWidths <- function(ulLt1, ulLt2){
