@@ -58,35 +58,27 @@ test_that('Scaler-function cov = Function-scaler cov', {
   expect_equal(uniCov(X_1sp, Z[, 3], bw, Tout), 
     t(uniCov(Z[, 3], X_1sp, bw, Tout)))
 })
-system.time(
+
 cov12 <- uniCov(X_1sp, X_2sp, bw, Tout)
-)
 cov12_rd <- uniCov(X_1sp, X_2sp, bw, Tout, rmDiag=TRUE)
 cov12_1D <- uniCov(X_1sp, X_2sp, bw, Tout, use1D=TRUE)
 cov13 <- uniCov(X_1sp, Z[, 3], bw, Tout)
 cov21 <- uniCov(X_2sp, X_1sp, bw, Tout)
 cov11 <- uniCov(X_1sp, X_1sp, bw, Tout)
 cov11_rd <- uniCov(X_1sp, X_1sp, bw, Tout, rmDiag=TRUE)
-# diag(cov11)
-# diag(cov11_rd)
-# diag(cov11 - cov11_rd)
 cov22 <- uniCov(X_2sp, X_2sp, bw, Tout)
 cov22_rd <- uniCov(X_2sp, X_2sp, bw, Tout, rmDiag=TRUE)
-# diag(cov22)
-# diag(cov22_rd)
-# diag(cov22 - cov22_rd)
 
 test_that('Function-function cov works', {
   expect_equal(cov12, t(cov21))
-  # rgl::persp3d(Tout, Tout, cov12, col='blue', xlab='X(s)', ylab='Y(t)')
-  # rgl::persp3d(Tout, Tout, cov21, col='blue', xlab='X(s)', ylab='Y(t)')
-# x-direction is close to constant.
-  # expect_true(mean(apply(cov12, 2, sd)) < 0.1)
 
-# y-direction is close to 1/4 (1.5 + cos(pi t))
+  # x-direction is close to constant.
+  expect_true(mean(apply(cov12, 2, sd)) < 0.1)
+
+  # y-direction is close to 1/4 (1.5 + cos(pi t))
   expect_true(sqrt(mean(colMeans(cov12) - 1 / 4 * (1.5 + cos(pi * Tout)))^2) < 0.2)
   
-# 1D and 2D smoother is similar
+  # 1D and 2D smoother is similar
   expect_equal(diag(cov12), diag(cov12_1D), tolerance=0.2)
 })
 
@@ -95,7 +87,6 @@ covAllNoError <- MvCov(vars, bw, Tout, kern, measurementError=FALSE)
 
 test_that('Multi-function/scaler cov works', {
 # The cov(x, y) and cov(y, x) is symmetric.
-  expect_equal(diag(3), 2 * diag(3), tolerance=Inf)
   expect_equal(as.numeric(cov12), as.numeric(covAll[, , 1, 2]))
   expect_equal(covAll[, , 3, 1], t(covAll[, , 1, 3]))
   expect_equal(covAll[, , 4, 3], t(covAll[, , 3, 4]))
@@ -149,10 +140,10 @@ noError2DEpan <- mvConReg(vars, bw, Tout, measurementError=FALSE, kern='epan')
 noError1DEpan <- mvConReg(vars, bw, Tout, measurementError=FALSE, diag1D='all', kern='epan')
 
 test_that('Different kernel type works', {
-# expect_equal(withError2DRect[['beta']], withError2D[['beta']], tolerance=0.01)
-# expect_equal(withError1DRect[['beta']], withError1D[['beta']], tolerance=0.01)
-# expect_equal(noError2DRect[['beta']], noError2D[['beta']], tolerance=0.01)
-# expect_equal(noError1DRect[['beta']], noError1D[['beta']], tolerance=0.01)
+  # expect_equal(withError2DRect[['beta']], withError2D[['beta']], tolerance=0.01)  # Why do we check this? It does not work anyway.
+  # expect_equal(withError1DRect[['beta']], withError1D[['beta']], tolerance=0.01)
+  # expect_equal(noError2DRect[['beta']], noError2D[['beta']], tolerance=0.01)
+  # expect_equal(noError1DRect[['beta']], noError1D[['beta']], tolerance=0.01)
   # expect_equal(withError2DRect[['beta']], withError2DEpan[['beta']], tolerance=0.2)
   # expect_equal(withError1DRect[['beta']], withError1DEpan[['beta']], tolerance=0.2)
   expect_equal(noError2DRect[['beta']], noError2DEpan[['beta']], tolerance=0.2)
@@ -178,3 +169,48 @@ test_that('subseting covariates is fine', {
   expect_equal(length(subVars[['X_1']][['tList']]), 1)
   expect_equal(length(subVars[['Z_3']]), 1)
 })
+
+## Test based on previous implementation
+
+set.seed(123);  N = 1001;  M = 101;
+# Define the continuum
+s = seq(0,10,length.out = M)
+# Define the mean and 2 eigencomponents
+meanFunct <- function(s) 0.2*s + 2.0*exp(-(s-5)^2)
+eigFunct1 <- function(s) +cos(2*s*pi/10) / sqrt(5)
+eigFunct2 <- function(s) 1* -sin(2*s*pi/10) / sqrt(5)
+# Create FPC scores
+Ksi = matrix(rnorm(N*2), ncol=2);
+Ksi = apply(Ksi, 2, scale)
+Ksi = Ksi %*% diag(c(5,2))
+# Create X_covariate
+xTrue = Ksi %*% t(matrix(c(eigFunct1(s),eigFunct2(s)), ncol=2))
+# Create beta_Func
+betaFunc1 = c(2,2) %*%  t(matrix(c(eigFunct1(s),eigFunct2(s)), ncol=2))
+z1 <- rnorm(N,sd=1)
+# Create scalar dep. variable a
+y = matrix(rep(0,N*M), ncol = M); 
+yTrue = matrix(rep(0,N*M), ncol = M); 
+for (i in 1:N) { 
+  y[i,] = rnorm(sd=1.99,0, n=M) + z1[i] * 2.5 +  0.2 * s +(xTrue[i,]) * t(betaFunc1); 
+  yTrue[i,] = rnorm(sd=0.0011,0, n=M) + z1[i] * 2.5 +  0.2 * s +(xTrue[i,]) * t(betaFunc1); 
+}
+sparsitySchedule = 1:16;
+set.seed(1)
+Yf <- Sparsify(y, s, sparsitySchedule)
+set.seed(1)
+Xf <- Sparsify(xTrue, s, sparsitySchedule)
+
+Tout <- s
+vars <- list(X = Xf, Z = z1, Y = Yf)
+
+Q <- mvConReg(vars, 0.5, Tout, 'epan', measurementError=FALSE)
+
+test_that('simple concurrent regression works fine', {
+  expect_equal( 2.5, mean(Q$beta[2,]) , tol= 0.01 )
+  expect_more_than( cor( Q$alpha, 0.2*s), 0.95) # this should be change to beta0 at some point.
+  expect_more_than( cor(Q$beta[1,], as.vector(betaFunc1)), 0.99)
+}
+
+
+
