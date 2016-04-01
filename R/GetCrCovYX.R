@@ -98,7 +98,7 @@ GetCrCovYX <- function(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL, Ly2
     # Construct candidate bw's
     bwCandidates <- getBWidths(ulLt1, ulLt2)
     
-    if(gridSearch){
+    if(quadApprox){
       # Find their associated GCV scores 
       gcvScores = rep(Inf, nrow(bwCandidates)) 
       for (i in 1:length(bwCandidates)){
