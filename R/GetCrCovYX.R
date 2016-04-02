@@ -98,7 +98,7 @@ GetCrCovYX <- function(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL, Ly2
     # Construct candidate bw's
     bwCandidates <- getBWidths(ulLt1, ulLt2)
     
-    if(quadApprox){
+    if(!quadApprox){
       # Find their associated GCV scores 
       gcvScores = rep(Inf, nrow(bwCandidates)) 
       for (i in 1:length(bwCandidates)){
@@ -117,6 +117,9 @@ GetCrCovYX <- function(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL, Ly2
                               upper = upperB, lower = lowerB, control = list(maxfun = 41)) 
       bOpt1 = theSols$par[1]
       bOpt2 = theSols$par[2]
+      if( bOpt1 > 0.75 * upperB[1] && bOpt2 > 0.75 * upperB[2] ){
+        warning('It seems that the bandwidth selected by BOBYQA is somewhat large. Maybe you are in local minima.')
+      }
     }
     smoothedCC <- smoothRCC2D(rcov=rawCC, bw1 =bOpt1, bw2 =bOpt2, workGrid1, workGrid2, kern=kern)
     return ( list(smoothedCC = smoothedCC, rawCC = rawCC, bw = c(bOpt1, bOpt2), smoothGrid = workGrid12, 
@@ -137,16 +140,16 @@ theCostFunc <- function(xBW){
 }
 
 getBWidths <- function(ulLt1, ulLt2){
-  
-  bwCandidates <- matrix(rep(0,72),ncol=2)
+  numPoints = 10;
+  bwCandidates <- matrix(rep(0,numPoints * numPoints * 2),ncol=2)
   h0 = 2.0 * Minb( sort(ulLt1), 2+1); # 2x the bandwidth needed for at least 3 points in a window
   r = diff(range(ulLt1))    
   q = (r/(4*h0))^(1/9);  
-  bwCandidates[,1] = rep( sort(q^( seq(0,12,length.out=6) )*h0), times= 6);
+  bwCandidates[,1] = rep( sort(q^( seq(0,12,length.out=numPoints) )*h0), times= numPoints);
   h0 = 2.0 * Minb( sort(ulLt2), 2+1); # 2x the bandwidth needed for at least 3 points in a window
   r1 = diff(range(ulLt2))    
   q = (r/(4*h0))^(1/9);  
-  bwCandidates[,2] =  rep( sort(q^( seq(0,12,length.out=6) )*h0), each= 6); 
+  bwCandidates[,2] = rep( sort(q^( seq(0,12,length.out=numPoints) )*h0), each= numPoints); 
   
   return(bwCandidates)
 }
