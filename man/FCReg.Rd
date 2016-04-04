@@ -2,35 +2,34 @@
 % Please edit documentation in R/FCReg.R
 \name{FCReg}
 \alias{FCReg}
-\title{Functional Principal Component Analysis Concurrent Regression with Functional dependent variable}
+\title{Functional Concurrent Regression by 2D smoothing method.}
 \usage{
-FCReg(depVar, expVarScal = NULL, expVarFunc = NULL, regressionType = NULL,
-  getFitted = TRUE, bwScalar = NULL, bwFunct = NULL,
-  splineSmooth = FALSE, verbose = FALSE)
+FCReg(vars, bw, outGrid, kern = "gauss", measurementError = TRUE,
+  diag1D = "none", useGAM = FALSE, returnCov = TRUE)
 }
 \arguments{
-\item{depVar}{An FPCA object}
+\item{vars}{A list of input functional/scaler covariates. Each field corresponds to a functional (a list) or scaler (a vector) covariate. The last entry is assumed to be the response if no entry is names 'Y'. If a field corresponds to a functional covariate, it should have two fields: 'tList', a list of time points, and 'yList', a list of function values.}
 
-\item{expVarScal}{A data.frame holding scalar explanatory variables; NAs will be omitted internally.}
+\item{bw}{A scalar with bandwidth used}
 
-\item{expVarFunc}{A list holding the FPCA objects for each of the functional explanatory variables.}
+\item{outGrid}{A vector with the output time points}
 
-\item{regressionType}{A string defining the type of regression to perform ('dense' or 'sparse'); (default : automatically determined based on 'depVar')}
+\item{kern}{Smoothing kernel choice, common for mu and covariance; "rect", "gauss", "epan", "gausvar", "quar" (default: "gauss")}
 
-\item{getFitted}{If TRUE append the fitted values to the return object}
+\item{measurementError}{Indicator measurement errors on the functional observations should be assumed. If TRUE the diagonal raw covariance will be removed when smoothing. (default: TRUE)}
 
-\item{bwScalar}{The value of bandwidth to be used for all scalar/functional cross-covariances (default: automatically determined using GCV)}
+\item{diag1D}{A string specifying whether to use 1D smoothing for the diagonal line of the covariance. 
+'none': don't use 1D smoothing; 'cross': use 1D only for cross-covariances; 'all': use 1D for both auto- and cross-covariances. (default : 'none')}
 
-\item{bwFunct}{The values of bandwiths to be used for all function/function cross-covariances (default: automatically determined using GCV)}
+\item{useGAM}{Indicator to use gam smoothing instead of local-linear smoothing (semi-parametric option) (default: FALSE)}
 
-\item{splineSmooth}{Use thin-plate splines during the estimation of the cross-covariance (default: FALSE)}
-
-\item{verbose}{If TRUE print out the bandwidth used during the GCV procedures of selecting them}
+\item{returnCov}{Indicator to return the covariance surfaces, which is a four dimensional array. The first two dimensions correspond to outGrid
+and the last two correspond to the covariates and the response, i.e. (i, j, k, l) entry being Cov(X_k(t_i), X_l(t_j)) (default: FALSE)}
 
 \item{...}{Additional arguments}
 }
 \description{
-Functional concurrent regression for dense or sparse functional data.
+Functional concurrent regression with dense or sparse functional data for scalar or functional dependant variable.
 }
 \references{
 \cite{Yao, F., Mueller, H.G., Wang, J.L. "Functional Linear Regression Analysis for Longitudinal Data." Annals of Statistics 33, (2005): 2873-2903.(Dense data)} 

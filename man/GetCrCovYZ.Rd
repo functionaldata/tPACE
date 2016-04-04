@@ -5,7 +5,7 @@
 \title{Functional Cross Covariance between longitudinal variable Y and scalar variable Z}
 \usage{
 GetCrCovYZ(bw = NULL, Z, Zmu = NULL, Ly, Lt = NULL, Ymu = NULL,
-  support = NULL)
+  support = NULL, kern = "gauss")
 }
 \arguments{
 \item{bw}{Scalar bandwidth for smoothing the cross-covariance function (if NULL it will be automatically estimated)}

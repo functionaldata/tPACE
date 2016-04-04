@@ -15,4 +15,7 @@ A list containing the normalised sample 'y' at times 't'
 \description{
 Normalise sparse functional sample given in an FPCA object
 }
+\references{
+\cite{Chiou, Jeng-Min and Chen, Yu-Ting and Yang, Ya-Fang. "Multivariate Functional Principal Component Analysis: A Normalization Approach" Statistica Sinica 24 (2014): 1571-1596}
+}
 

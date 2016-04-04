@@ -1,25 +1,12 @@
-#' Functional Concurrent Regression by 2D smoothing method.
-#' 
-#' Functional concurrent regression with dense or sparse functional data for scalar or functional dependant variable. 
-#' 
-#' @param vars A list of input functional/scaler covariates. Each field corresponds to a functional (a list) or scaler (a vector) covariate. The last entry is assumed to be the response if no entry is names 'Y'. If a field corresponds to a functional covariate, it should have two fields: 'tList', a list of time points, and 'yList', a list of function values.
-#' @param bw A scalar with bandwidth used 
-#' @param outGrid A vector with the output time points
-#' @param kern Smoothing kernel choice, common for mu and covariance; "rect", "gauss", "epan", "gausvar", "quar" (default: "gauss")
-#' @param measurementError Indicator measurement errors on the functional observations should be assumed. If TRUE the diagonal raw covariance will be removed when smoothing. (default: TRUE)
-#' @param diag1D  A string specifying whether to use 1D smoothing for the diagonal line of the covariance. 
-#' 'none': don't use 1D smoothing; 'cross': use 1D only for cross-covariances; 'all': use 1D for both auto- and cross-covariances. (default : 'none')
-#' @param useGAM Indicator to use gam smoothing instead of local-linear smoothing (semi-parametric option) (default: FALSE)
-#' @param returnCov Indicator to return the covariance surfaces, which is a four dimensional array. The first two dimensions correspond to outGrid
-#'  and the last two correspond to the covariates and the response, i.e. (i, j, k, l) entry being Cov(X_k(t_i), X_l(t_j)) (default: FALSE)
-#' @param ...  Additional arguments 
-#' 
-#' @references
-#' \cite{Yao, F., Mueller, H.G., Wang, J.L. "Functional Linear Regression Analysis for Longitudinal Data." Annals of Statistics 33, (2005): 2873-2903.(Dense data)} 
-#'
-#' \cite{Senturk, D., Nguyen, D.V. "Varying Coefficient Models for Sparse Noise-contaminated Longitudinal Data", Statistica Sinica 21(4), (2011): 1831-1856. (Sparse data)} 
-
-FCReg <- function(vars, bw, outGrid, kern='gauss', measurementError=TRUE, diag1D='none', useGAM = FALSE, returnCov=TRUE) {
+## Concurrent Functional regression by 2D smoothing method.
+# vars: a list of input functional/scaler covariates. Each field corresponds to a functional (a list) or scaler (a vector) covariate. The last entry is assumed to be the response if no entry is names 'Y'. If a field corresponds to a functional covariate, it should have two fields: 'tList', a list of time points, and 'yList', a list of function values.
+# bw: bandwidth used.
+# Tout: output time points.
+# kern: kernel used.
+# measurementError: whether measurement errors on the functional observations should be assumed. If TRUE the diagonal raw covariance will be removed when smoothing.
+# diag1D: A string specifying whether to use 1D smoothing for the diagonal line of the covariance. 'none': don't use 1D smoothing; 'cross': use 1D only for cross-covariances; 'all': use 1D for both auto- and cross-covariances.
+# returnCov: whether to return the covariance surfaces, which is a four dimensional array. The first two dimensions correspond to Tout, and the last two correspond to the covariates and the response, i.e. (i, j, k, l) entry being Cov(X_k(t_i), X_l(t_j))
+mvConReg <- function(vars, bw, Tout, kern='gauss', measurementError=TRUE, diag1D='none', returnCov=TRUE) {
   
   n <- lengthVars(vars)
   p <- length(vars) - 1
@@ -42,7 +29,7 @@ FCReg <- function(vars, bw, outGrid, kern='gauss', measurementError=TRUE, diag1D
   vars <- demeanedRes[['xList']]
   muList <- demeanedRes[['muList']]
   
-  allCov <- MvCov(vars, bw, outGrid, kern, measurementError, center=FALSE, diag1D)
+  allCov <- MvCov(vars, bw, Tout, kern, measurementError, center=FALSE, diag1D)
   beta <- sapply(seq_len(dim(allCov)[1]), function(i) {
     tmpCov <- allCov[i, i, , ]
     beta_ti <- qr.solve(tmpCov[1:p, 1:p], tmpCov[1:p, p + 1])
@@ -61,14 +48,14 @@ FCReg <- function(vars, bw, outGrid, kern='gauss', measurementError=TRUE, diag1D
   
   muBeta <- sapply(seq_len(p), function(j) {
     if (!is.function(muList[[j]])) { # scaler mean
-      beta[j, ] * rep(muList[[j]], length(outGrid))
+      beta[j, ] * rep(muList[[j]], length(Tout))
     } else { # functional mean
-      beta[j, ] * muList[[j]](outGrid)
+      beta[j, ] * muList[[j]](Tout)
     }
   })
-  beta0 <- muList[[Yname]](outGrid) - colSums(t(muBeta))
+  beta0 <- muList[[Yname]](Tout) - colSums(t(muBeta))
   
-  res <- list(beta=beta, beta0 = beta0, outGrid=outGrid, cov=allCov, R2=R2, n=n)
+  res <- list(beta=beta, beta0 = beta0, Tout=Tout, cov=allCov, R2=R2, n=n)
   if (!returnCov)
     res[['cov']] <- NULL
   res
@@ -99,10 +86,10 @@ demean <- function(vars, bw, kern) {
 }
 
 ## Multivariate function/scaler covariance.
-# INPUTS: same as FCReg
+# INPUTS: same as mvConReg
 # Output: a 4-D array containing the covariances. The first two dimensions corresponds to 
 # time s and t, and the last two dimensions correspond to the variables taken covariance upon.
-MvCov <- function(vars, bw, outGrid, kern, measurementError=TRUE, center=TRUE, diag1D='none') {
+MvCov <- function(vars, bw, Tout, kern, measurementError=TRUE, center=TRUE, diag1D='none') {
   if (!is.list(vars) || length(vars) < 1)
     stop('`vars` needs to be a list of length >= 1')
   
@@ -115,30 +102,30 @@ MvCov <- function(vars, bw, outGrid, kern, measurementError=TRUE, center=TRUE, d
     tAll <- do.call(c, lapply(vars[isFuncVars], function(x) unlist(x[['tList']])))
     Tin <- sort(unique(tAll))
     
-    if (missing(outGrid))
-      outGrid <- Tin
-    lenoutGrid <- length(outGrid)
+    if (missing(Tout))
+      Tout <- Tin
+    lenTout <- length(Tout)
     
   } else {
     stop('No functional observation found')
   }
   
   # First two dimensions are for s, t, and the last two dimensions are for matrix of # random variables.
-  res <- array(NA, c(lenoutGrid, lenoutGrid, p, p))
+  res <- array(NA, c(lenTout, lenTout, p, p))
   for (j in seq_len(p)) {
     for (i in seq_len(p)) {
       if (j <= i) {
         use1D <- diag1D == 'all' || ( diag1D == 'cross' && j != i )
-        covRes <- uniCov(vars[[i]], vars[[j]], bw, outGrid, kern, 
+        covRes <- uniCov(vars[[i]], vars[[j]], bw, Tout, kern, 
                          rmDiag = (i == j) && measurementError, 
                          center, use1D)
         if (attr(covRes, 'covType') %in% c('FF', 'SS'))
           res[, , i, j] <- covRes
         else {
           if (nrow(covRes) == 1)   # cov(scaler, function)
-            res[, , i, j] <- matrix(covRes, lenoutGrid, lenoutGrid, byrow=TRUE)
+            res[, , i, j] <- matrix(covRes, lenTout, lenTout, byrow=TRUE)
           else                     # cov(function, scaler)
-            res[, , i, j] <- matrix(covRes, lenoutGrid, lenoutGrid, byrow=FALSE)
+            res[, , i, j] <- matrix(covRes, lenTout, lenTout, byrow=FALSE)
         }
       } else { # fill up the symmetric cov(y, x)
         res[, , i, j] <- t(res[, , j, i])
@@ -153,7 +140,7 @@ MvCov <- function(vars, bw, outGrid, kern, measurementError=TRUE, center=TRUE, d
 # rmDiag: whether to remove the diagonal of the raw covariance. Ignored if 1D smoother is used.
 # center: whether to center the covariates before calcuate covariance.
 # use1D: whether to use 1D smoothing for estimating the diagonal covariance.
-uniCov <- function(X, Y, bw, outGrid, kern='gauss', rmDiag=FALSE, center=TRUE, use1D=FALSE) {
+uniCov <- function(X, Y, bw, Tout, kern='gauss', rmDiag=FALSE, center=TRUE, use1D=FALSE) {
   flagScalerFunc <- FALSE
   # Force X to be a function in the scaler-function case.
   if (!is.list(X) && is.list(Y)) {
@@ -179,7 +166,7 @@ uniCov <- function(X, Y, bw, outGrid, kern='gauss', rmDiag=FALSE, center=TRUE, u
       Ymu <- 0
     }
     res <- GetCrCovYZ(bw, Y, Ymu, X[['yList']], X[['tList']], Xmu, Tin, kern)[['smoothedCC']]
-    res <- as.matrix(ConvertSupport(Tin, outGrid, mu=res))
+    res <- as.matrix(ConvertSupport(Tin, Tout, mu=res))
     if (flagScalerFunc) 
       res <- t(res)
     
@@ -189,10 +176,10 @@ uniCov <- function(X, Y, bw, outGrid, kern='gauss', rmDiag=FALSE, center=TRUE, u
   } else {
     TinX <- sort(unique(unlist(X[['tList']])))
     TinY <- sort(unique(unlist(Y[['tList']])))
-    noutGrid <- length(outGrid)
+    nTout <- length(Tout)
     if (center) {
-      if (min(TinX) > min(outGrid) || min(TinY) > min(outGrid) || 
-          max(TinY) < max(outGrid) || max(TinX) < max(outGrid))
+      if (min(TinX) > min(Tout) || min(TinY) > min(Tout) || 
+          max(TinY) < max(Tout) || max(TinX) < max(Tout))
         stop('Observation time points coverage too low')
       
       Xmu <- GetSmoothedMeanCurve(X[['yList']], X[['tList']], TinX, TinX[1],
@@ -223,14 +210,14 @@ uniCov <- function(X, Y, bw, outGrid, kern='gauss', rmDiag=FALSE, center=TRUE, u
       Ycent <- Yvec - Ymu[as.character(tvecX)]
       covXY <- Lwls1D(bw, kern, npoly=1L, nder=0L, 
                       xin=tvecX, yin=Xcent * Ycent, 
-                      win=rep(1, length(tvecX)), xout=outGrid)
-      res <- matrix(NA, noutGrid, noutGrid)
+                      win=rep(1, length(tvecX)), xout=Tout)
+      res <- matrix(NA, nTout, nTout)
       diag(res) <- covXY
     } else { # use 2D smoothing
       tmp <- GetCrCovYX(bw, bw, X[['yList']], X[['tList']], Xmu, 
-                        Y[['yList']], Y[['tList']], Ymu, rmDiag=rmDiag, kern=kern, useGAM = useGAM)
+                        Y[['yList']], Y[['tList']], Ymu, rmDiag=rmDiag, kern=kern)
       gd <- tmp[['smoothGrid']]
-      res <- matrix(interp2lin(gd[, 1], gd[, 2], tmp[['smoothedCC']], rep(outGrid, times=noutGrid), rep(outGrid, each=noutGrid)), noutGrid, noutGrid)
+      res <- matrix(interp2lin(gd[, 1], gd[, 2], tmp[['smoothedCC']], rep(Tout, times=nTout), rep(Tout, each=nTout)), nTout, nTout)
     }
     attr(res, 'covType') <- 'FF'
   }
@@ -241,7 +228,7 @@ uniCov <- function(X, Y, bw, outGrid, kern='gauss', rmDiag=FALSE, center=TRUE, u
 ## Concurrent functional regression by imputation. This does not provide consistent estimates.
 ## FPCAlist: a list of functional covariates and response. Each field corresponds to a covariate. 
 #            The last entry is assumed to be the response if no entry is names 'Y'.
-imputeConReg <- function(FPCAlist, Z, outGrid) {
+imputeConReg <- function(FPCAlist, Z, Tout) {
   
   if (is.null(names(FPCAlist)))
     names(FPCAlist) <- c(paste0('X', seq_len(length(FPCAlist) - 1)), 'Y')
@@ -254,7 +241,7 @@ imputeConReg <- function(FPCAlist, Z, outGrid) {
   
   imputeCurves <- sapply(FPCAlist, function(x) 
     apply(fitted(x), 1, function(fit) 
-      approx(x[['workGrid']], fit, outGrid)[['y']]),
+      approx(x[['workGrid']], fit, Tout)[['y']]),
     simplify='array')
   alphaBeta <- apply(imputeCurves, 1, function(XYt) {
     Yt <- XYt[, ncol(XYt)]
@@ -265,7 +252,7 @@ imputeConReg <- function(FPCAlist, Z, outGrid) {
   beta0 <- alphaBeta[1, ]
   beta <- alphaBeta[-1, , drop=FALSE]
   
-  return(list(beta0 = beta0, beta = beta, outGrid = outGrid))
+  return(list(beta0 = beta0, beta = beta, Tout = Tout))
 }
 
 ## regObj: an object returned by mvConReg.

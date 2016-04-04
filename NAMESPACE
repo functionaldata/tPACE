@@ -38,12 +38,3 @@ importFrom(pracma,mod)
 importFrom(pracma,ones)
 importFrom(pracma,uniq)
 useDynLib(fdapace)
-
-importFrom("grDevices", "colorRampPalette", "dev.new", "topo.colors")
-importFrom("graphics", "abline", "barplot", "boxplot", "contour",
-           "grid", "legend", "lines", "matlines", "matplot", "par",
-           "plot", "points", "polygon")
-importFrom("stats", "aggregate", "approx", "approxfun", "cov",
-           "fitted", "lm", "median", "na.omit", "predict", "quantile",
-           "rnorm", "runif", "spline", "var")
-importFrom("utils", "installed.packages")

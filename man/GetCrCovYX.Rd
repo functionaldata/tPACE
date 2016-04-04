@@ -5,7 +5,8 @@
 \title{Functional Cross Covariance between longitudinal variable Y and longitudinal variable X}
 \usage{
 GetCrCovYX(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL, Ly2,
-  Lt2 = NULL, Ymu2 = NULL, useGAM = FALSE)
+  Lt2 = NULL, Ymu2 = NULL, useGAM = FALSE, rmDiag = FALSE,
+  kern = "gauss", quadApprox = FALSE)
 }
 \arguments{
 \item{bw1}{Scalar bandwidth for smoothing the cross-covariance function (if NULL it will be automatically estimated) (Y)}
@@ -24,7 +25,13 @@ GetCrCovYX(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL, Ly2,
 
 \item{Ymu2}{Vector Q-1 Vector of length nObsGrid containing the mean function estimate (You can get that from FPCA) (X)}
 
-\item{useGAM}{Indicator to use gam smoothing instead of local-linear smoothing (semi-parametric option)
+\item{useGAM}{Indicator to use gam smoothing instead of local-linear smoothing (semi-parametric option) (default: FALSE)}
+
+\item{rmDiag}{Indicator to remove the diagonal element when smoothing (default: FALSE)}
+
+\item{kern}{String specifying the kernel type (default: FALSE;  see ?FPCA for details)}
+
+\item{quadApprox}{Indicator to use BOBYQA to specify the candidate bandwidths (default: FALSE)
 If the variables Ly1 and Ly2 are in matrix form the data are assumed dense and only the raw cross-covariance is returned.}
 }
 \value{
