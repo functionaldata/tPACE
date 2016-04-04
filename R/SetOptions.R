@@ -103,7 +103,7 @@ SetOptions = function(y, t, optns){
     } else if(dataType == 'Sparse'){
       methodXi = "CE";
     } else if(dataType == 'DenseWithMV'){
-      methodXi = "IN";
+      methodXi = "CE"; # We will see how IN can work here
     } else { # for dataType = p>>n
       methodXi = "IN";
     }
