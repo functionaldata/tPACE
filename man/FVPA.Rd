@@ -2,9 +2,9 @@
 % Please edit documentation in R/FVPA.R
 \name{FVPA}
 \alias{FVPA}
-\title{Functional Variance Process Analysis for sparse or dense functional data}
+\title{Functional Variance Process Analysis for dense functional data}
 \usage{
-FVPA(y, t, q = 0.1, optns = list())
+FVPA(y, t, q = 0.1, optns = list(error = TRUE, FVEthreshold = 0.9))
 }
 \arguments{
 \item{y}{A list of \emph{n} vectors containing the observed values for each individual. Missing values specified by \code{NA}s are supported for dense case (\code{dataType='dense'}).}
@@ -13,7 +13,7 @@ FVPA(y, t, q = 0.1, optns = list())
 
 \item{q}{A scalar defining the percentile of the pooled sample residual sample used for adjustment before taking log (default: 0.1).}
 
-\item{optns}{A list of options control parameters specified by \code{list(name=value)}. See `Details in ?FPCA'.}
+\item{optns}{A list of options control parameters specified by \code{list(name=value)}; by default: 'error' has to be TRUE, 'FVEthreshold' is set to 0.90. See `Details in ?FPCA'.}
 }
 \value{
 A list containing the following fields:
@@ -22,15 +22,15 @@ A list containing the following fields:
 \item{fpcaObjR}{FPCA object for the functional variance process associated with the original data.}
 }
 \description{
-Functional Variance Process Analysis for sparse or dense functional data
+Functional Variance Process Analysis for dense functional data
 }
 \examples{
 set.seed(1)
-n <- 20
-pts <- seq(0, 1, by=0.05)
+n <- 25
+pts <- seq(0, 1, by=0.01)
 sampWiener <- Wiener(n, pts)
-sampWiener <- Sparsify(sampWiener, pts, 10) 
-#fvpaObj <- FVPA(sampWiener$yList, sampWiener$tList)
+sampWiener <- Sparsify(sampWiener, pts, 90) 
+fvpaObj <- FVPA(sampWiener$yList, sampWiener$tList)
 }
 \references{
 \cite{Hans-Georg Mueller, Ulrich Stadtmuller and Fang Yao, "Functional variance processes." Journal of the American Statistical Association 101 (2006): 1007-1018}
