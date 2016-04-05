@@ -3,7 +3,7 @@
 #' @param y A list of \emph{n} vectors containing the observed values for each individual. Missing values specified by \code{NA}s are supported for dense case (\code{dataType='dense'}).
 #' @param t A list of \emph{n} vectors containing the observation time points for each individual corresponding to y.
 #' @param q A scalar defining the percentile of the pooled sample residual sample used for adjustment before taking log (default: 0.1).
-#' @param optns A list of options control parameters specified by \code{list(name=value)}; 'error' has to be TRUE . See `Details in ?FPCA'.
+#' @param optns A list of options control parameters specified by \code{list(name=value)}; by default: 'error' has to be TRUE, 'FVEthreshold' is set to 0.90. See `Details in ?FPCA'.
 #'
 #'
 #' @return A list containing the following fields:
@@ -17,15 +17,24 @@
 #' pts <- seq(0, 1, by=0.01)
 #' sampWiener <- Wiener(n, pts)
 #' sampWiener <- Sparsify(sampWiener, pts, 90) 
-#' #fvpaObj <- FVPA(sampWiener$yList, sampWiener$tList)
+#' fvpaObj <- FVPA(sampWiener$yList, sampWiener$tList)
 #' @references
 #' \cite{Hans-Georg Mueller, Ulrich Stadtmuller and Fang Yao, "Functional variance processes." Journal of the American Statistical Association 101 (2006): 1007-1018}
 #' 
 
-FVPA = function(y, t, q= 0.1, optns = list(error=TRUE)){ 
+FVPA = function(y, t, q= 0.1, optns = list(error=TRUE, FVEthreshold = 0.9)){ 
   
   if( (q <0) || (1 < q) ){
     warning("The value of 'q' is outside [0,1]; reseting to 0.1.")
+  }
+  if(is.null(optns$error)){
+    stop("User provided 'optns' has to provided 'error' information.")
+  }
+  if(is.null(optns$FVEthreshold)){
+    stop("User provided 'optns' has to provided 'FVEthreshold' information.")
+  }
+  if(!optns$error){
+    stop("FVPA is irrelevant if no error is assumed")
   }
   
   fpcaObjY <- FPCA(y, t, optns)
@@ -37,7 +46,8 @@ FVPA = function(y, t, q= 0.1, optns = list(error=TRUE)){
   
   yFitted <- fitted(fpcaObjY);
   rawRes = GetVarianceProcess(y, t, yFitted, workGrid = fpcaObjY$workGrid, delta = 0, logarithm = FALSE )
-  delta = quantile(unlist(rawRes), q)
+  delta = quantile(unlist(rawRes), q);
+  rm(rawRes)
   logRes = GetVarianceProcess(y, t, yFitted, workGrid = fpcaObjY$workGrid, delta = delta, logarithm = TRUE )
   
   fpcaObjR = FPCA(logRes, t, optns);
