@@ -57,12 +57,12 @@ test_that('Missing values work for FPCA Wiener process', {
   samp4$tList[[2]] <-  c(NA, 0.2, 0.5)
   set.seed(1); res4NaN2 <- FPCA(samp4$yList, samp4$tList, pNoTrunc)
 
-  expect_equal(res4[c('sigma2', 'bwMu', 'bwCov')], res4NaN[c('sigma2', 'bwMu', 'bwCov')])
+  expect_equal(res4[c('sigma2', 'bwMu', 'bwCov')], res4NaN[c('sigma2', 'bwMu', 'bwCov')], tol=1e-7)
   expect_equal(nrow(res4$xiEst), nrow(res4NaN$xiEst))
   expect_equal(length(res4$xiVar), length(res4NaN$xiVar))
   expect_equal(res4NaN$inputData$y[[2]], c(0.2,0.5))
   expect_equal(   res4$inputData$y[[2]], c(0.1,0.2,0.5))
-  expect_equal(res4NaN2[c('sigma2', 'bwMu', 'lambda')], res4NaN[c('sigma2', 'bwMu', 'lambda')])
+  expect_equal(res4NaN2[c('sigma2', 'bwMu', 'lambda')], res4NaN[c('sigma2', 'bwMu', 'lambda')], tol=1e-7)
 
 })
 test_that('User provided mu and cov for simple example',{
@@ -259,6 +259,6 @@ test_that('noisy dense data, smooth mu/cov, use IN/CE score', {
   expect_true(max(abs(resErrCE$smoothedCov - trueCov)) < 0.1)
   expect_true(max(abs(resErrCSCE$smoothedCov - trueCov)) < 0.2)
   expect_equal(resErrCE$xiEst[, 1], resErrIN$xiEst[, 1], tolerance=1e-2)
-  expect_equal(resErrCE$xiEst[, 2], resErrIN$xiEst[, 2], tolerance=5e-2)
+  expect_equal(resErrCE$xiEst[, 2], resErrIN$xiEst[, 2], tolerance=6e-2)
   expect_equal(resErrCE$xiEst[, 3], resErrIN$xiEst[, 3], tolerance=1e-1)
 })

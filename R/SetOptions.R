@@ -41,17 +41,25 @@ SetOptions = function(y, t, optns){
   useBinnedCov = optns[['useBinnedCov']]
   lean = optns[['lean']]
 
-  if(is.null(userBwMu)){ # bandwidth choice for mean function is using CV or GCV
-    userBwMu = 0;   
-  }
   if(is.null(methodBwMu)){ # bandwidth choice for mean function is GCV if userBwMu = 0
-    methodBwMu = 'GMeanAndGCV';  
+    #methodBwMu = 'GMeanAndGCV';  
+    methodBwMu = 'Default'
   }
-  if(is.null(userBwCov)){ # bandwidth choice for covariance function is CV or GCV
-    userBwCov = 0; 
+  if(is.null(userBwMu) && methodBwMu == 'Default'){ # bandwidth choice for mean function is using CV or GCV
+    userBwMu = 0.05 * diff(range(unlist(t)));   
+  } 
+  if(is.null(userBwMu) && methodBwMu != 'Default'){
+    userBwMu = 0.0;
   }
   if(is.null(methodBwCov)){  # bandwidth choice for covariance function is GCV if userBwCov = c(0,0)
-    methodBwCov = 'GMeanAndGCV';
+    #methodBwCov = 'GMeanAndGCV';
+    methodBwCov = 'Default';
+  }
+  if(is.null(userBwCov) && methodBwCov == 'Default'){ # bandwidth choice for covariance function is CV or GCV
+    userBwCov = 0.10 * diff(range(unlist(t))); 
+  }
+  if(is.null(userBwCov) && methodBwCov != 'Default'){
+    userBwCov = 0.0;
   }
   #if(is.null(ngrid1)){ # number of support points for the covariance surface 
   #  ngrid1 = 30;

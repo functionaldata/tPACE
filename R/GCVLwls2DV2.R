@@ -39,7 +39,7 @@ GCVLwls2DV2 <- function(obsGrid, regGrid, ngrid=NULL, dataType=rcov$dataType, er
   } else {
     stop('Data is too sparse. The minimal bandwidth is the range of data')
   }
-  bw <- (q ^ seq(0,9,length.out = 7)) * h0 # from h0 to r / 4
+  bw <- (q ^ seq(0,9,length.out = 10)) * h0 # from h0 to r / 4
   
   
   ## Set GCV/CV options
@@ -181,7 +181,6 @@ getGCVscoresV2 <- function(bw, kern, xin, yin, win=NULL, regGrid, RSS=NULL) {
   
   return(GCV)
 }
-
 
 # k-fold CV
 # partition: a list of testset observation indices, returned by caret::createFolds

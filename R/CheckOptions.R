@@ -17,7 +17,7 @@ CheckOptions = function(t,optns,n){
     # bandwidth Bhoice for mean function is using CV or GCV
     stop("FPCA is aborted because the argument: userBwMu is invalid!\n"); 
   }
-  if( !(  any(optns[['methodBwMu']] == c('CV','GCV','GMeanAndGCV')) )){ 
+  if( !(  any(optns[['methodBwMu']] == c('Default','CV','GCV','GMeanAndGCV')) )){ 
     # bandwidth choice for mean function is GCV if userBwMu = 0
     stop("FPCA is aborted because the argument: methodBwMu is invalid!\n"); 
   }
@@ -25,7 +25,7 @@ CheckOptions = function(t,optns,n){
     # bandwidth choice for covariance function is CV or GCV
     stop("FPCA is aborted because the argument: userBwCov is invalid!\n"); 
   }
-  if( !(  any(optns[['methodBwCov']] == c('CV','GCV','GMeanAndGCV') ) )){ 
+  if( !(  any(optns[['methodBwCov']] == c('Default','CV','GCV','GMeanAndGCV') ) )){ 
     # bandwidth choice for covariance function is GCV if userBwCov = c(0,0)
     stop("FPCA is aborted because the argument: methodBwCov is invalid!\n");  
   }

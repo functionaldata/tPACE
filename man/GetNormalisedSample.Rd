@@ -4,10 +4,12 @@
 \alias{GetNormalisedSample}
 \title{Normalise sparse functional sample}
 \usage{
-GetNormalisedSample(fpcaObj)
+GetNormalisedSample(fpcaObj, errorSigma = FALSE)
 }
 \arguments{
 \item{fpcaObj}{An FPCA object.}
+
+\item{errorSigma}{Indicator to use sigma^2 error variance when normalising the data (default: FALSE)}
 }
 \value{
 A list containing the normalised sample 'y' at times 't'
