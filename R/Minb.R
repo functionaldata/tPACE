@@ -7,15 +7,23 @@
 # Output b: the minimum bandwidth choice for vector x
 
 Minb <- function(x, numPoints){ 
-  x = sort(unique(x));     # Unique is added to ensure that we do not have a degenerate design
-  n = length(x);
-  if( (numPoints<1) || (numPoints > n) ){
-   warning("Invalid number of minimum points specified\n")
-   return(NaN)
+  
+  if('legacyCode' == TRUE){
+    x = sort(unique(x));     # Unique is added to ensure that we do not have a degenerate design
+    n = length(x);
+    if( (numPoints<1) || (numPoints > n) ){
+      warning("Invalid number of minimum points specified\n")
+      return(NaN)
+    }
+    if(numPoints > 1){ 
+      return( max(x[numPoints:n]-x[1:(n-numPoints+1)]) )
+    }else{ 
+      return( max(   (x[2:n]-x[1:(n-1)])/2)   )
+    } 
   }
-  if(numPoints > 1){ 
-    return( max(x[numPoints:n]-x[1:(n-numPoints+1)]) )
-  }else{ 
-    return( max(   (x[2:n]-x[1:(n-1)])/2)   )
-  } 
+  
+  gridPts <- sort(unique(x))
+  distNN1 <- max(diff(gridPts, lag=numPoints))
+  
+  return(distNN1)
 }
