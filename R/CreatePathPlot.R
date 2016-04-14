@@ -66,8 +66,9 @@ CreatePathPlot = function(fpcaObj, subset, k=NULL, inputData=fpcaObj[['inputData
   #args2 = list (x = obst, y = obsy, type='p' )
   
   if( showObs ){
-    do.call(matplot, c(list(x=obst, y=obsy, type='p'), args1))
-    do.call(matplot, c(list(x=workGrid, y=t(fit), type='l', add=TRUE)))
+    do.call(plot, c(list(x=rep(workGrid, nrow(fit)), y=t(fit), type='n' ), args1))
+    do.call(points, c(list(x=t(obst), y=t(obsy), type='p'), args1))
+    do.call(matplot, c(list(x=workGrid, y=t(fit), type='l', add=TRUE ), args1))
   } else {
       do.call(matplot, c(list(x=workGrid, y=t(fit), type='l'), args1))
   }

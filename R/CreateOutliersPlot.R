@@ -183,8 +183,8 @@ CreateOutliersPlot <- function(fpcaObj, optns = NULL, ...){
     if ( is.null((ifactor))){
       ifactor = 2
     } 
-    fhat <- ks::kde(x=fpcaObj$xiEst[,1:2], gridsize = c(400,400), compute.cont = TRUE, 
-                    H = ks::Hpi( x=fpcaObj$xiEst[,1:2], binned=TRUE,  pilot="dscalar"  ) *  ifactor) 
+    fhat <- ks::kde(x=fpcaObj$xiEst[ ,1:2], gridsize = c(400,400), compute.cont = TRUE, 
+                    H = ks::Hpi( x=fpcaObj$xiEst[ ,1:2], binned=TRUE,  pilot="dscalar"  ) *  ifactor) 
     zin = fhat$estimate
     
     if( !is.null(unimodal) && unimodal ){
