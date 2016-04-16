@@ -112,10 +112,10 @@ test_that('demean works', {
   expect_equal(covAll, covAllDemean)
 })
 
-withError2D <- FCReg(vars, bw, outGrid)
-withError1D <- FCReg(vars, bw, outGrid, diag1D='cross')
-noError2D <- FCReg(vars, bw, outGrid, measurementError=FALSE)
-noError1D <- FCReg(vars, bw, outGrid, measurementError=FALSE, diag1D='all')
+withError2D <- FCReg(vars, bw,bw, outGrid)
+withError1D <- FCReg(vars, bw,bw, outGrid, diag1D='cross')
+noError2D <- FCReg(vars, bw,bw, outGrid, measurementError=FALSE)
+noError1D <- FCReg(vars, bw, bw,outGrid, measurementError=FALSE, diag1D='all')
 
 # # Minimal eigenvalues sometimes smaller than 0.
 # minLambda <- sapply(seq_along(outGrid), function(i) {
@@ -130,14 +130,14 @@ test_that('1D and 2D covariance estimates are similar', {
   expect_equal(noError2D[['beta']], noError1D[['beta']], tolerance=0.1)
 })
 
-withError2DRect <- FCReg(vars, bw, outGrid, kern='rect')
-withError1DRect <- FCReg(vars, bw, outGrid, diag1D='cross', kern='rect')
-noError2DRect <- FCReg(vars, bw, outGrid, measurementError=FALSE, kern='rect')
-noError1DRect <- FCReg(vars, bw, outGrid, measurementError=FALSE, diag1D='all', kern='rect')
-withError2DEpan <- FCReg(vars, bw, outGrid, kern='epan')
-withError1DEpan <- FCReg(vars, bw, outGrid, diag1D='cross', kern='epan')
-noError2DEpan <- FCReg(vars, bw, outGrid, measurementError=FALSE, kern='epan')
-noError1DEpan <- FCReg(vars, bw, outGrid, measurementError=FALSE, diag1D='all', kern='epan')
+withError2DRect <- FCReg(vars, bw, bw, outGrid, kern='rect')
+withError1DRect <- FCReg(vars,  bw,bw, outGrid, diag1D='cross', kern='rect')
+noError2DRect <- FCReg(vars,  bw,bw, outGrid, measurementError=FALSE, kern='rect')
+noError1DRect <- FCReg(vars,  bw,bw, outGrid, measurementError=FALSE, diag1D='all', kern='rect')
+withError2DEpan <- FCReg(vars,  bw,bw, outGrid, kern='epan')
+withError1DEpan <- FCReg(vars,  bw,bw, outGrid, diag1D='cross', kern='epan')
+noError2DEpan <- FCReg(vars,  bw,bw, outGrid, measurementError=FALSE, kern='epan')
+noError1DEpan <- FCReg(vars,  bw,bw, outGrid, measurementError=FALSE, diag1D='all', kern='epan')
 
 test_that('Different kernel type works', {
   # expect_equal(withError2DRect[['beta']], withError2D[['beta']], tolerance=0.01)  # Why do we check this? It does not work anyway.
@@ -204,7 +204,7 @@ Xf <- Sparsify(xTrue, s, sparsitySchedule)
 outGrid <- s
 vars <- list(X = Xf, Z = z1, Y = Yf)
 
-Q <- FCReg(vars, 0.5, outGrid, 'epan', measurementError=FALSE)
+Q <- FCReg(vars, 0.5,0.5, outGrid, 'epan', measurementError=FALSE)
 
 test_that('simple concurrent regression works fine', {
   expect_equal( 2.5, mean(Q$beta[2,]) , tol= 0.01 )

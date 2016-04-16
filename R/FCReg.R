@@ -3,7 +3,8 @@
 #' Functional concurrent regression with dense or sparse functional data for scalar or functional dependant variable. 
 #' 
 #' @param vars A list of input functional/scaler covariates. Each field corresponds to a functional (a list) or scaler (a vector) covariate. The last entry is assumed to be the response if no entry is names 'Y'. If a field corresponds to a functional covariate, it should have two fields: 'tList', a list of time points, and 'yList', a list of function values.
-#' @param bw A scalar with bandwidth used 
+#' @param userBwMu A scalar with bandwidth used for smoothing the mean
+#' @param userBwCov A scalar with bandwidth used for smoothing the auto- and cross-covariances
 #' @param outGrid A vector with the output time points
 #' @param kern Smoothing kernel choice, common for mu and covariance; "rect", "gauss", "epan", "gausvar", "quar" (default: "gauss")
 #' @param measurementError Indicator measurement errors on the functional observations should be assumed. If TRUE the diagonal raw covariance will be removed when smoothing. (default: TRUE)
@@ -19,7 +20,7 @@
 #'
 #' \cite{Senturk, D., Nguyen, D.V. "Varying Coefficient Models for Sparse Noise-contaminated Longitudinal Data", Statistica Sinica 21(4), (2011): 1831-1856. (Sparse data)} 
 
-FCReg <- function(vars, bw, outGrid, kern='gauss', measurementError=TRUE, diag1D='none', useGAM = FALSE, returnCov=TRUE) {
+FCReg <- function(vars, userBwMu, userBwCov, outGrid, kern='gauss', measurementError=TRUE, diag1D='none', useGAM = FALSE, returnCov=TRUE) {
   
   n <- lengthVars(vars)
   p <- length(vars) - 1
@@ -38,11 +39,11 @@ FCReg <- function(vars, bw, outGrid, kern='gauss', measurementError=TRUE, diag1D
   Yname <- names(vars)[length(vars)]
   
   # De-mean.
-  demeanedRes <- demean(vars, bw, kern)
+  demeanedRes <- demean(vars, userBwMu, kern)
   vars <- demeanedRes[['xList']]
   muList <- demeanedRes[['muList']]
   
-  allCov <- MvCov(vars, bw, outGrid, kern, measurementError, center=FALSE, diag1D)
+  allCov <- MvCov(vars, userBwCov, outGrid, kern, measurementError, center=FALSE, diag1D)
   beta <- sapply(seq_len(dim(allCov)[1]), function(i) {
     tmpCov <- allCov[i, i, , ]
     beta_ti <- qr.solve(tmpCov[1:p, 1:p], tmpCov[1:p, p + 1])
@@ -74,7 +75,7 @@ FCReg <- function(vars, bw, outGrid, kern='gauss', measurementError=TRUE, diag1D
   res
 }
 
-demean <- function(vars, bw, kern) {
+demean <- function(vars, userBwMu, kern) {
   tmp <- lapply(vars, function(x) {
     if (is.numeric(x)) { # scaler
       xmu <- mean(x)
@@ -82,7 +83,7 @@ demean <- function(vars, bw, kern) {
     } else if (is.list(x)) { # functional
       Tin <- sort(unique(unlist(x[['tList']])))
       xmu <- GetSmoothedMeanCurve(x[['yList']], x[['tList']], Tin, Tin[1],
-                                  list(userBwMu=bw, kernel=kern))[['mu']]
+                                  list(userBwMu=userBwMu, kernel=kern))[['mu']]
       muFun <- approxfun(Tin, xmu)
       x[['yList']] <- lapply(1:length(x[['yList']]), function(i)
         x[['yList']][[i]]- muFun(x[['tList']][[i]]))
@@ -102,7 +103,7 @@ demean <- function(vars, bw, kern) {
 # INPUTS: same as FCReg
 # Output: a 4-D array containing the covariances. The first two dimensions corresponds to 
 # time s and t, and the last two dimensions correspond to the variables taken covariance upon.
-MvCov <- function(vars, bw, outGrid, kern, measurementError=TRUE, center=TRUE, diag1D='none') {
+MvCov <- function(vars, userBwCov, outGrid, kern, measurementError=TRUE, center=TRUE, diag1D='none') {
   if (!is.list(vars) || length(vars) < 1)
     stop('`vars` needs to be a list of length >= 1')
   
@@ -129,7 +130,7 @@ MvCov <- function(vars, bw, outGrid, kern, measurementError=TRUE, center=TRUE, d
     for (i in seq_len(p)) {
       if (j <= i) {
         use1D <- diag1D == 'all' || ( diag1D == 'cross' && j != i )
-        covRes <- uniCov(vars[[i]], vars[[j]], bw, outGrid, kern, 
+        covRes <- uniCov(vars[[i]], vars[[j]], userBwCov, outGrid, kern, 
                          rmDiag = (i == j) && measurementError, 
                          center, use1D)
         if (attr(covRes, 'covType') %in% c('FF', 'SS'))
@@ -153,7 +154,7 @@ MvCov <- function(vars, bw, outGrid, kern, measurementError=TRUE, center=TRUE, d
 # rmDiag: whether to remove the diagonal of the raw covariance. Ignored if 1D smoother is used.
 # center: whether to center the covariates before calcuate covariance.
 # use1D: whether to use 1D smoothing for estimating the diagonal covariance.
-uniCov <- function(X, Y, bw, outGrid, kern='gauss', rmDiag=FALSE, center=TRUE, use1D=FALSE) {
+uniCov <- function(X, Y, userBwCov, outGrid, kern='gauss', rmDiag=FALSE, center=TRUE, use1D=FALSE) {
   flagScalerFunc <- FALSE
   # Force X to be a function in the scaler-function case.
   if (!is.list(X) && is.list(Y)) {
@@ -172,13 +173,13 @@ uniCov <- function(X, Y, bw, outGrid, kern='gauss', rmDiag=FALSE, center=TRUE, u
   } else if (is.list(X) && !is.list(Y)) {
     Tin <- sort(unique(unlist(X[['tList']])))
     if (center) {
-      Xmu <- GetSmoothedMeanCurve(X[['yList']], X[['tList']], Tin, Tin[1], list(userBwMu=bw, kernel=kern))[['mu']]
+      Xmu <- GetSmoothedMeanCurve(X[['yList']], X[['tList']], Tin, Tin[1], list(userBwMu=userBwCov, kernel=kern))[['mu']]
       Ymu <- mean(Y)
     } else {
       Xmu <- rep(0, length(Tin))
       Ymu <- 0
     }
-    res <- GetCrCovYZ(bw, Y, Ymu, X[['yList']], X[['tList']], Xmu, Tin, kern)[['smoothedCC']]
+    res <- GetCrCovYZ(userBwCov, Y, Ymu, X[['yList']], X[['tList']], Xmu, Tin, kern)[['smoothedCC']]
     res <- as.matrix(ConvertSupport(Tin, outGrid, mu=res))
     if (flagScalerFunc) 
       res <- t(res)
@@ -196,9 +197,9 @@ uniCov <- function(X, Y, bw, outGrid, kern='gauss', rmDiag=FALSE, center=TRUE, u
         stop('Observation time points coverage too low')
       
       Xmu <- GetSmoothedMeanCurve(X[['yList']], X[['tList']], TinX, TinX[1],
-                                  list(userBwMu=bw, kernel=kern))[['mu']]
+                                  list(userBwMu=userBwCov, kernel=kern))[['mu']]
       Ymu <- GetSmoothedMeanCurve(Y[['yList']], Y[['tList']], TinY, TinY[1],
-                                  list(userBwMu=bw, kernel=kern))[['mu']]
+                                  list(userBwMu=userBwCov, kernel=kern))[['mu']]
     } else {
       Xmu <- rep(0, length(TinX))
       Ymu <- rep(0, length(TinY))
@@ -221,13 +222,13 @@ uniCov <- function(X, Y, bw, outGrid, kern='gauss', rmDiag=FALSE, center=TRUE, u
       Yvec <- Yvec[ord]
       Xcent <- Xvec - Xmu[as.character(tvecX)]
       Ycent <- Yvec - Ymu[as.character(tvecX)]
-      covXY <- Lwls1D(bw, kern, npoly=1L, nder=0L, 
+      covXY <- Lwls1D(userBwCov, kern, npoly=1L, nder=0L, 
                       xin=tvecX, yin=Xcent * Ycent, 
                       win=rep(1, length(tvecX)), xout=outGrid)
       res <- matrix(NA, noutGrid, noutGrid)
       diag(res) <- covXY
     } else { # use 2D smoothing
-      tmp <- GetCrCovYX(bw, bw, X[['yList']], X[['tList']], Xmu, 
+      tmp <- GetCrCovYX(userBwCov, userBwCov, X[['yList']], X[['tList']], Xmu, 
                         Y[['yList']], Y[['tList']], Ymu, rmDiag=rmDiag, kern=kern, useGAM = useGAM)
       gd <- tmp[['smoothGrid']]
       res <- matrix(interp2lin(gd[, 1], gd[, 2], tmp[['smoothedCC']], rep(outGrid, times=noutGrid), rep(outGrid, each=noutGrid)), noutGrid, noutGrid)

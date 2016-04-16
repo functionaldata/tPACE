@@ -4,13 +4,16 @@
 \alias{FCReg}
 \title{Functional Concurrent Regression by 2D smoothing method.}
 \usage{
-FCReg(vars, bw, outGrid, kern = "gauss", measurementError = TRUE,
-  diag1D = "none", useGAM = FALSE, returnCov = TRUE)
+FCReg(vars, userBwMu, userBwCov, outGrid, kern = "gauss",
+  measurementError = TRUE, diag1D = "none", useGAM = FALSE,
+  returnCov = TRUE)
 }
 \arguments{
 \item{vars}{A list of input functional/scaler covariates. Each field corresponds to a functional (a list) or scaler (a vector) covariate. The last entry is assumed to be the response if no entry is names 'Y'. If a field corresponds to a functional covariate, it should have two fields: 'tList', a list of time points, and 'yList', a list of function values.}
 
-\item{bw}{A scalar with bandwidth used}
+\item{userBwMu}{A scalar with bandwidth used for smoothing the mean}
+
+\item{userBwCov}{A scalar with bandwidth used for smoothing the auto- and cross-covariances}
 
 \item{outGrid}{A vector with the output time points}
 
