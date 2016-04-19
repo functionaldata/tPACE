@@ -53,7 +53,8 @@ CreatePathPlot = function(fpcaObj, subset, k=NULL, inputData=fpcaObj[['inputData
   workGrid <- fpcaObj[['workGrid']]
   fit <- fitted(fpcaObj, k=k, derOptns = derOptns)[subset, , drop=FALSE]
   
-  args1 <- list( xlab= 's', ylab= ' ')                    
+  defaultColPalette = rep(palette(), ceiling(nrow(fit)/7))[1:nrow(fit)]
+  args1 <- list( xlab= 's', ylab= ' ',col = defaultColPalette)    
   inargs <- list(...)
   args1[names(inargs)] <- inargs
   
