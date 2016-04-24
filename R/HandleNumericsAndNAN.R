@@ -1,9 +1,9 @@
-#' Check if NaN are present in the data and if yes remove them
-#' 
-#' Check if there are problems cause by missing values with the form and basic structure of the functional data 'y' and the recorded times 't'.
-#' 
-#' @param y is a n-by-1 list of vectors
-#' @param t is a n-by-1 list of vectors
+# #' Check if NaN are present in the data and if yes remove them
+# #' 
+# #' Check if there are problems cause by missing values with the form and basic structure of the functional data 'y' and the recorded times 't'.
+# #' 
+# #' @param y is a n-by-1 list of vectors
+# #' @param t is a n-by-1 list of vectors
 
 HandleNumericsAndNAN <- function(y,t){
  

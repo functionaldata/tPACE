@@ -5,6 +5,7 @@
 #' @param t is a n-by-1 list of vectors 
 #' @param optns is an initialized option list
 #' @param n is a total number of sample curves
+#' @export
 
 CheckOptions = function(t,optns,n){
   

@@ -5,7 +5,7 @@
 #' @param optns A list of options control parameters specified by \code{list(name=value)}. See `Details'.
 #'
 #' See '?FPCAfor more details. Usually users are not supposed to use this function directly.
-#'
+#' @export
 
 
 SetOptions = function(y, t, optns){

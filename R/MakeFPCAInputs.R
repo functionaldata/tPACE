@@ -3,8 +3,8 @@
 #' Turn vector inputs to the list so they can be used in FPCA 
 #' 
 #' @param IDs  n-by-1 vector of subject IDs (Default: NULL)
-#' @param tVec n-by-1 vector of measurement times
-#' @param yVec n-by-1 vector of measurements from the variable of interest
+#' @param tVec Either an n-by-1 vector of measurement times, or a p-by-1 vector corresponding to the common time support
+#' @param yVec n-by-1 vector of measurements from the variable of interest, or a n-by-p matrix with each row corresponding to the dense observations.
 #' @param na.rm logical indicating if NA should be omitted (Default: FALSE)
 #' @return L list containing 3 lists each of length 'm', 'm' being the number of unique subject IDs
 #' @export

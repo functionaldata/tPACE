@@ -4,6 +4,7 @@
 #' 
 #' @param y is a n-by-1 list of vectors
 #' @param t is a n-by-1 list of vectors
+#' @export
 
 
 CheckData = function(y,t){

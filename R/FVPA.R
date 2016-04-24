@@ -20,7 +20,7 @@
 #' fvpaObj <- FVPA(sampWiener$yList, sampWiener$tList)
 #' @references
 #' \cite{Hans-Georg Mueller, Ulrich Stadtmuller and Fang Yao, "Functional variance processes." Journal of the American Statistical Association 101 (2006): 1007-1018}
-#' 
+#' @export
 
 FVPA = function(y, t, q= 0.1, optns = list(error=TRUE, FVEthreshold = 0.9)){ 
   
