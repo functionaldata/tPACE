@@ -39,7 +39,7 @@
     
  # A = FPCA(ySparse16$yNoisy, t= ySparse16$Lt ) # Time consuming test
  # B = FPCA(ySparse08$yNoisy, t= ySparse08$Lt ) # Time consuming test
-  C = FPCA(ySparse04$yNoisy, t= ySparse04$Lt )
+  C = FPCA(ySparse04$yNoisy, Lt= ySparse04$Lt )
   QQ = MakeFPCAInputs(IDs = rep(1:N, each=M),tVec=rep(s,N), t(yTrue) )
   D = FPCA(QQ$Ly, QQ$Lt) 
 

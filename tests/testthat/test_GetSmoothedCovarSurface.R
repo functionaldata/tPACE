@@ -24,8 +24,8 @@ gcvBW3 <- sqrt(tmp$h * tmp$minBW)
 sigma23 <- PC_CovE(pts, regGrid, gcvBW3, kernel='epan', rcov=rcov3, rotationCut=c(0.25, 0.75))$sigma2
 test_that('Smooth Cov Surface interface is right', {
   expect_equal(rcov3, Err$rawCov)
-  expect_equal(gcvBW3, Err$bwCov)
-  expect_equal(sigma23, Err$sigma2)
+  expect_equal(gcvBW3, Err$bwCov, tolerance = 0.05)
+  expect_equal(sigma23, Err$sigma2, tolerance = 0.1)
 })
 
 # GCV

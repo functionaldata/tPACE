@@ -33,7 +33,7 @@ BwNN <- function(Lt, k=3, onlyMean = FALSE, onlyCov = FALSE) {
     distNN2 <- FindNN(uniqTPairs, k)
   }
   
-  if(is.infinite(distNN2)){
+  if( !is.null(distNN2) && is.infinite(distNN2)){
     stop("You are asking an unreasonable ammount of neighbours for the covariace.")
   }
   
@@ -42,7 +42,7 @@ BwNN <- function(Lt, k=3, onlyMean = FALSE, onlyCov = FALSE) {
     distNN1 <- max(diff(gridPts, lag=k))
   }
   
-  if(is.infinite(distNN1)){
+  if( !is.null(distNN1) && is.infinite(distNN1)){
     stop("You are asking an unreasonable ammount of neighbours for the mean.")
   }
   

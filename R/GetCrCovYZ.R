@@ -67,7 +67,7 @@ GetCrCovYZ <- function(bw = NULL, Z, Zmu = NULL, Ly, Lt = NULL, Ymu = NULL, supp
   # If the bandwidth is unknown use GCV to take find it
   } else {
     # Construct candidate bw's
-    h0 = 2.0 * Minb( sort(ulLt), 2+1); # 2x the bandwidth needed for at least 3 points in a window
+    h0 = 1.5 * Minb( sort(ulLt), 2+1); # 1.5x the bandwidth needed for at least 3 points in a window
     r = diff(range(ulLt))    
     q = (r/(4*h0))^(1/9);   
     bwCandidates = sort(q^(0:19)*h0);

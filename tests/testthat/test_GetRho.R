@@ -53,7 +53,7 @@ test_that('Truncation works for GetRho', {
   phiObs <- ConvertSupport(pts, truncPts, phi=eig4$phi)
   CovObs <- ConvertSupport(pts, truncPts, Cov=eig4$fittedCov)
   
-  rho4 <- GetRho(samp4Trunc$y, samp4Trunc$t, pTrunc, mu[1:length(truncPts)], truncPts, CovObs, eig4$lambda, phiObs, smc4$sigma2)
+  rho4 <- GetRho(samp4Trunc$Ly, samp4Trunc$Lt, pTrunc, mu[1:length(truncPts)], truncPts, CovObs, eig4$lambda, phiObs, smc4$sigma2)
   expect_true(rho4 < 0.2)
 })
 

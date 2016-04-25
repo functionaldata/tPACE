@@ -8,13 +8,14 @@
 
 Minb <- function(x, numPoints){ 
   
-  if('legacyCode' == TRUE){
-    x = sort(unique(x));     # Unique is added to ensure that we do not have a degenerate design
     n = length(x);
     if( (numPoints<1) || (numPoints > n) ){
       warning("Invalid number of minimum points specified\n")
       return(NaN)
     }
+  
+  if('legacyCode' == TRUE){
+    x = sort(unique(x));     # Unique is added to ensure that we do not have a degenerate design
     if(numPoints > 1){ 
       return( max(x[numPoints:n]-x[1:(n-numPoints+1)]) )
     }else{ 

@@ -8,7 +8,8 @@ test_that('2D min bandwidth is similar to Matlab', {
   # We break strict compatibility with MATLAB when we used  quantile( diff(b[ids]), 0.95)/2 instead of max(diff(b[ids])/2)
   # expect_equal(GetMinb(t, sort(unique(unlist(t)))), 4.1427, tolerance=diff(range(unlist(t))) / 1000)
   
-  expect_equal(GetMinb(t, sort(unique(unlist(t)))), 4.1427, tolerance= 4.1427 * 0.0625)
+  expect_equal( GetMinb(legacyCode = TRUE,t, sort(unique(unlist(t)))), 4.1427, tolerance= 4.1427 * 0.0175)
+  expect_equal( as.numeric(GetMinb(t, sort(unique(unlist(t))))), 4.1427, tolerance= 4.1427 * 0.0195 )
 })
 
 test_that('2D min bandwidth for binned and unbinned rcov is the same', {

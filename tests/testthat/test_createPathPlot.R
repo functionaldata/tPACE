@@ -12,5 +12,5 @@ res <- FPCA(sampWiener$Ly, sampWiener$Lt,
 
 test_that('CreatePathPlot works', {
   CreatePathPlot(res)
-  CreatePathPlot(res, subset=seq_len(n) %% 5 == 0, k=5, inputData=list(t=sampWiener$Lt, y=sampWiener$Ly), main='123', xlab='T')
+  CreatePathPlot(res, subset=seq_len(n) %% 5 == 0, k=5, inputData=list(Lt=sampWiener$Lt, Ly=sampWiener$Ly), main='123', xlab='T')
 })

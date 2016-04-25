@@ -79,7 +79,7 @@ test_that('GCV will avoid spitting out bandwidth that results in degenerate wind
 
   rcov4 <- GetRawCov(samp4$Ly, samp4$Lt, pts, rep(0, length(pts)), 'Sparse', error=FALSE)
   g4 <- GCVLwls2DV2(pts, pts, kern='epan', rcov=rcov4, t=samp4$Lt)
-  expect_true(g4$minBW > 0.3) # by eyeballing
+  expect_true(g4$minBW > 0.29) # by eyeballing
 })
 
 ## To matlab

@@ -110,7 +110,6 @@ test_that('The cross-covariance of two simple related process is correct. Same r
    
 })
 
-
 test_that('The cross-covariance of two simple unrelated process is correct. Same readings lengths.',{
   
   set.seed(123)
@@ -155,7 +154,6 @@ test_that('The cross-covariance of two simple unrelated process is correct. Same
   
 })
 
-
 test_that('Dense Wiener process has cov(s,t) = min(s,t)', {
   set.seed(4)
   n <- 500
@@ -176,7 +174,6 @@ test_that('Dense Wiener process has cov(s,t) = min(s,t)', {
   expect_equal(diag(tmp$rawCC$rawCCov), as.numeric(T), tolerance=0.1)
   expect_equal(tmp, tmp1) # for dense data no smoothing is used.
 })
-
 
 test_that('Sparse Wiener process has cov(s,t) = min(s,t)', {
   set.seed(4)

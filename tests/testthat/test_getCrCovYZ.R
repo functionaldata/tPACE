@@ -27,7 +27,7 @@ test_that('The cross-covariance in the case of a sparse sample that is steadily 
   Z = c(2.5, 4.0000000000001, 5)
   sccObj = GetCrCovYZ( Z= Z, Ly=Ly, Lt=Lt, Ymu=rep(4.5,7))
   AA<- summary(lm( sccObj$smoothedCC ~  sort(unique(unlist(Lt)))))
-  expect_equal( AA$r.squared, 0.9998, tol=0.0001)
+  expect_equal( AA$r.squared, 0.9998, tol=0.001)
 })
 
 test_that('The cross-covariance in the case of dense sample and a random variable with known variance',{
@@ -84,7 +84,7 @@ test_that('The cross-covariance in the case of sparse sample and a random variab
   # lines(s, 3* eigFunct1(s))
   
   # we know that the covariance between ksi_1 and z is three
-  expect_equal(  mean(abs( 3*eigFunct1(s) - sccObj$smoothedCC)), 0.035, tol=.01, scale=1 )
+  expect_equal(  mean(abs( 3*eigFunct1(s) - sccObj$smoothedCC)), 0.035, tol=.1, scale=1 )
   
   # check that the relevant GCV scores are worse
   sccObjDOUBLE = GetCrCovYZ( bw = sccObj$bw*2,  Z= Ksi[,2],Ly=ySparse$Ly, Lt=ySparse$Lt, Ymu = rep(0,M)  )
@@ -110,7 +110,6 @@ test_that('Dense Wiener process has cov(int X(s) ds, X(t)) = int min(s,t) ds', {
   tmp <- GetCrCovYZ(NULL, Z, NULL, X, NULL, NULL, T)
   expect_equal(as.numeric(tmp$rawCC$rawCCov), covTrue, tolerance=0.1)
 })
-
 
 test_that('Sparse Wiener process has cov(int X(s) ds, X(t)) = int min(s,t) ds', {
   set.seed(4)

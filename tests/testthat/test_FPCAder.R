@@ -26,7 +26,7 @@ test_that('FPCAder correct derivatives of mean for sparse case',{
   phi =  CreateBasis(K=4, type='fourier',  pts= pts)
   samp1 <- t(mu + phi %*% matrix( rnorm(n*4, mean=0, sd=c(1,.4, 0.01, 0.001)), nrow=4))
   samp2 <- Sparsify(samp1, pts, 8)
-  fpcaObj = FPCA(samp2$t, y= samp2$y)
+  fpcaObj = FPCA(samp2$Lt, Ly= samp2$Ly)
   fpcaObjDer <- FPCAder(fpcaObj, list(p=1))
   expect_equal(median(fpcaObjDer$muDer), 2, tolerance=0.1, scale = 1) 
   })

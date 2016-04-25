@@ -8,7 +8,7 @@ test_that("basic  optimal bandwidth choice for the mean function use GCV method 
   expect_equal( A$bOpt, 2.071354057811459 ) 
 
   B <- GCVLwls1D1(y,t,'rect',1,0,'Sparse') 
-  expect_equal( B$bOpt, 2.238990337557121 ) 
+  expect_equal( B$bOpt, 2.238990337557121, 0.04 ) 
 
  } )
 
