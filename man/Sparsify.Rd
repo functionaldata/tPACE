@@ -19,8 +19,8 @@ Sparsify(samp, pts, sparsity, aggressive = FALSE, fragment = FALSE)
 }
 \value{
 A list of length 2, containing the following fields:
-\item{tList}{A list of observation time points for each sample.}
-\item{yList}{A list of values for each sample, corresponding to the time points.}
+\item{Lt}{A list of observation time points for each sample.}
+\item{Ly}{A list of values for each sample, corresponding to the time points.}
 }
 \description{
 Given a matrix of densely observed functional data, make a sparsified sample.
