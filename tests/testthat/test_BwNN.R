@@ -32,7 +32,7 @@ test_that('BWNN works for large sample', {
   pts <- seq(0, 1, length.out=100)
   sparsity <- 2:5
   samp <- Wiener(n, pts, sparsity)
-  bw <- BwNN(samp[[1]]) # Lt or tList
+  bw <- BwNN(samp[[1]]) # Lt or Lt
   expect_true(bw['cov'] >= 0.01 && bw['cov'] < 0.1 && bw['mu'] <= bw['cov'])
 })
 

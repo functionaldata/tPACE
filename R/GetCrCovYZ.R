@@ -17,10 +17,10 @@
 #' \item{bw}{The bandwidth used for smoohting as a scaler}
 #' \item{score}{The GCV score associated with the scalar used}
 #' @examples
-#' yList <- list( runif(5),  c(1:3), c(2:4), c(4))
-#' tList <- list( c(1:5), c(1:3), c(1:3), 4)
+#' Ly <- list( runif(5),  c(1:3), c(2:4), c(4))
+#' Lt <- list( c(1:5), c(1:3), c(1:3), 4)
 #' Z = rep(4,4) # Constant vector so the covariance has to be zero.
-#' sccObj = GetCrCovYZ(bw=1, Z= Z, Ly=yList, Lt=tList, Ymu=rep(4,5))
+#' sccObj = GetCrCovYZ(bw=1, Z= Z, Ly=Ly, Lt=Lt, Ymu=rep(4,5))
 #' @references
 #' \cite{Yang, Wenjing, Hans-Georg Mueller, and Ulrich Stadtmueller. "Functional singular component analysis." Journal of the Royal Statistical Society: Series B (Statistical Methodology) 73.3 (2011): 303-324}
 #' @export

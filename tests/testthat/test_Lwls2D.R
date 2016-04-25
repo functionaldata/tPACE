@@ -59,9 +59,9 @@ if(1==1){
     ySparse = Sparsify(yTrue, s, c(1:5))
     
     # Give your sample a bit of noise
-    ySparse$yNoisy = lapply( ySparse$yList, function(x) x +  0.025*rnorm(length(x)))
+    ySparse$yNoisy = lapply( ySparse$Ly, function(x) x +  0.025*rnorm(length(x)))
     library(doParallel) 
-    BB = GetRawCov(ySparse$yNoisy,ySparse$tList, s, meanFunct(s),'Sparse', TRUE)
+    BB = GetRawCov(ySparse$yNoisy,ySparse$Lt, s, meanFunct(s),'Sparse', TRUE)
     M = 9 
     BB$bw = c(3,4)
     ret  = Lwls2D(c(3,4), kern="epan", xin =  (BB$tPairs), yin= (BB$cxxn), xout1= seq(1,9,length.out=M), xout2= seq(1,9,length.out=M) )

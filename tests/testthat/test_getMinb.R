@@ -19,5 +19,5 @@ test_that('2D min bandwidth for binned and unbinned rcov is the same', {
 set.seed(1)
 pts <- seq(0, 1, length=10)
 samp2 <- Wiener(100, pts, sparsify=2:5)
-rcov2 <- GetRawCov(samp2$yList, samp2$tList, pts, rep(0, length(pts)), 'Sparse', FALSE)
-GetMinb(samp2$tList, pts)
+rcov2 <- GetRawCov(samp2$Ly, samp2$Lt, pts, rep(0, length(pts)), 'Sparse', FALSE)
+GetMinb(samp2$Lt, pts)

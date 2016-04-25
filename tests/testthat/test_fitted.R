@@ -4,7 +4,7 @@
   pts <- seq(0, 1, by=0.015)
   sampWienerD <- Wiener(n, pts)
   sampWiener <- Sparsify(sampWienerD, pts, 10)
-  res <- FPCA(sampWiener$yList, sampWiener$tList )
+  res <- FPCA(sampWiener$Ly, sampWiener$Lt )
   
 test_that("fitted with QUO and EIG give similar results", {  
   

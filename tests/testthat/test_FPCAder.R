@@ -9,7 +9,7 @@ test_that('FPCAder correct derivatives of mean for dense case', {
   samp <- Wiener(n, pts)
   samp <- samp + rnorm(n * p, sd=0.01) + matrix(pts, n, p, byrow=TRUE)
   spSamp <- Sparsify(samp, pts, p) # This just puts the sample in list.
-  fpcaObj <- FPCA(spSamp$yList, spSamp$tList, list(dataType='Dense' ))
+  fpcaObj <- FPCA(spSamp$Ly, spSamp$Lt, list(dataType='Dense' ))
   fpcaObjDer <- FPCAder(fpcaObj, list(p=1))
     
   expect_equal(median(fpcaObjDer$muDer), 1, tolerance=0.1, scale = 1)

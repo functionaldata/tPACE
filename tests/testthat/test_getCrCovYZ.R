@@ -13,20 +13,20 @@ test_that('The cross-covariance in the case of a dense matrix against a constant
 test_that('The cross-covariance in the case of sparse sample and constant vector is zero',{
   set.seed(1)
   # Make sparse sample
-  yList <- list( runif(5),  c(1:3), c(2:4), c(4))
-  tList <- list( c(1:5), c(1:3), c(1:3), 4)
+  Ly <- list( runif(5),  c(1:3), c(2:4), c(4))
+  Lt <- list( c(1:5), c(1:3), c(1:3), 4)
   Z = rep(4,4)
-  sccObj = GetCrCovYZ(bw=1, Z= Z, Ly=yList, Lt=tList, Ymu=rep(4,5))
-  expect_equal( rep(0, sum(unlist(lapply(yList, length)))), sccObj$rawCC$rawCCov )
+  sccObj = GetCrCovYZ(bw=1, Z= Z, Ly=Ly, Lt=Lt, Ymu=rep(4,5))
+  expect_equal( rep(0, sum(unlist(lapply(Ly, length)))), sccObj$rawCC$rawCCov )
 })
 
 test_that('The cross-covariance in the case of a sparse sample that is steadily increasing and a vector that is steadily increasing is almost perfectly linear',{
   # Make sparse sample
-  yList <- list(c(0:5),c(4.0000000000001), 5)
-  tList <- list(c(0:5),c(4.0000000000001), 5)
+  Ly <- list(c(0:5),c(4.0000000000001), 5)
+  Lt <- list(c(0:5),c(4.0000000000001), 5)
   Z = c(2.5, 4.0000000000001, 5)
-  sccObj = GetCrCovYZ( Z= Z, Ly=yList, Lt=tList, Ymu=rep(4.5,7))
-  AA<- summary(lm( sccObj$smoothedCC ~  sort(unique(unlist(tList)))))
+  sccObj = GetCrCovYZ( Z= Z, Ly=Ly, Lt=Lt, Ymu=rep(4.5,7))
+  AA<- summary(lm( sccObj$smoothedCC ~  sort(unique(unlist(Lt)))))
   expect_equal( AA$r.squared, 0.9998, tol=0.0001)
 })
 
@@ -77,7 +77,7 @@ test_that('The cross-covariance in the case of sparse sample and a random variab
   ySparse = Sparsify(yTrue, s, c(3:9))    
   
   # Use GCV to pick the bandwidth
-  sccObj = GetCrCovYZ( Z= Ksi[,2],Ly=ySparse$yList, Lt=ySparse$tList, Ymu = rep(0,M)  )
+  sccObj = GetCrCovYZ( Z= Ksi[,2],Ly=ySparse$Ly, Lt=ySparse$Lt, Ymu = rep(0,M)  )
   
   # Uncomment to visually check coherence.  
   # plot(s, sccObj$smoothedCC)
@@ -87,8 +87,8 @@ test_that('The cross-covariance in the case of sparse sample and a random variab
   expect_equal(  mean(abs( 3*eigFunct1(s) - sccObj$smoothedCC)), 0.035, tol=.01, scale=1 )
   
   # check that the relevant GCV scores are worse
-  sccObjDOUBLE = GetCrCovYZ( bw = sccObj$bw*2,  Z= Ksi[,2],Ly=ySparse$yList, Lt=ySparse$tList, Ymu = rep(0,M)  )
-  sccObjHALF = GetCrCovYZ( bw = sccObj$bw*0.5,  Z= Ksi[,2],Ly=ySparse$yList, Lt=ySparse$tList, Ymu = rep(0,M)  )
+  sccObjDOUBLE = GetCrCovYZ( bw = sccObj$bw*2,  Z= Ksi[,2],Ly=ySparse$Ly, Lt=ySparse$Lt, Ymu = rep(0,M)  )
+  sccObjHALF = GetCrCovYZ( bw = sccObj$bw*0.5,  Z= Ksi[,2],Ly=ySparse$Ly, Lt=ySparse$Lt, Ymu = rep(0,M)  )
 
   expect_equal( min(c( sccObj$score, sccObjDOUBLE$score, sccObjHALF$score) ) , sccObj$score )
 })

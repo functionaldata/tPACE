@@ -63,8 +63,8 @@ oldFCReg <- function(depVar,  expVarScal = NULL, expVarFunc = NULL, regressionTy
       for (j in 1:nX){ # X-variable counter
         for (i in 1:nZ){ # Z-variable counter
           
-          y <- expVarFunc[[j]]$inputData$y 
-          t <- expVarFunc[[j]]$inputData$t  
+          y <- expVarFunc[[j]]$inputData$Ly 
+          t <- expVarFunc[[j]]$inputData$Lt  
           KovXXZZ[nX+i,j,] = approx(x = expVarFunc[[1]]$obsGrid, xout = expVarFunc[[1]]$workGrid, y = 
                                       GetCrCovYZ(Z = expVarScal[,i], Ly = y, Lt=t, Ymu = expVarFunc[[1]]$mu, 
                                                  bw = bwScalar)$smoothedCC)$y
@@ -75,8 +75,8 @@ oldFCReg <- function(depVar,  expVarScal = NULL, expVarFunc = NULL, regressionTy
       KovXXZZ[(nX+1):(nX+nZ), (nX+1):(nX+nZ),] = cov(expVarScal) 
       # Cross-covariance between Y and Z's
       for (j in 1:nZ){ # Z-variable counter
-        y <- depVar$inputData$y 
-        t <- depVar$inputData$t  
+        y <- depVar$inputData$Ly 
+        t <- depVar$inputData$Lt  
         KovXYZ[(nX+j),] = approx(x = expVarFunc[[1]]$obsGrid, xout = expVarFunc[[1]]$workGrid, y = 
                                    GetCrCovYZ(Z = expVarScal[,j], Ly = y, Lt=t, Ymu = depVar$mu, bw = bwScalar)$smoothedCC)$y
       }
@@ -85,16 +85,16 @@ oldFCReg <- function(depVar,  expVarScal = NULL, expVarFunc = NULL, regressionTy
     # Deal with X-variables next
     # Cross-covariance with other X-variables
     for (j in 1:nX){ # Xj-variable counter
-      y1  <- expVarFunc[[j]]$inputData$y 
-      t1  <- expVarFunc[[j]]$inputData$t  
+      y1  <- expVarFunc[[j]]$inputData$Ly 
+      t1  <- expVarFunc[[j]]$inputData$Lt  
       mu1 <- expVarFunc[[j]]$mu
       for (i in j:nX){ # Xi-variable counter
         if (i == j){
           myDiag = diag(expVarFunc[[j]]$fittedCov)
         } else {
           
-          y2 <- expVarFunc[[i]]$inputData$y 
-          t2 <- expVarFunc[[i]]$inputData$t   
+          y2 <- expVarFunc[[i]]$inputData$Ly 
+          t2 <- expVarFunc[[i]]$inputData$Lt   
           mu2 <- expVarFunc[[i]]$mu   
           print('x1-x2')
           myDiag = diag(GetCrCovYX( Ly1 = y1, Lt1 = t1, Ly2 = y2, Lt2 = t2, useGAM = splineSmooth, bw1 = bwFunct, bw2 = bwFunct,
@@ -104,8 +104,8 @@ oldFCReg <- function(depVar,  expVarScal = NULL, expVarFunc = NULL, regressionTy
         KovXXZZ[j,i,] = myDiag 
       }
       
-      yY <- depVar$inputData$y 
-      tY <- depVar$inputData$t   
+      yY <- depVar$inputData$Ly 
+      tY <- depVar$inputData$Lt   
       print('x-y')
       myDiag = diag(GetCrCovYX( Ly1 = y1, Lt1 = t1, Ly2 = yY, Lt2 = tY, useGAM = splineSmooth, bw1 = bwFunct, bw2 = bwFunct,
                                 Ymu1 = mu1, Ymu2 = depVar$mu)$smoothedCC)
@@ -127,16 +127,16 @@ oldFCReg <- function(depVar,  expVarScal = NULL, expVarFunc = NULL, regressionTy
     
     # Get fitted values
     if (getFitted){
-      yhat =  lapply(  depVar$inputData$y , function(x) rep(0, length(x)))
+      yhat =  lapply(  depVar$inputData$Ly , function(x) rep(0, length(x)))
       # For each sample-point
-      for (i in seq(1, length(depVar$inputData$t), 1)){
+      for (i in seq(1, length(depVar$inputData$Lt), 1)){
         
         # Get the time-readings and estimate the associated beta vectors 
-        ti = depVar$inputData$t[[i]]  
+        ti = depVar$inputData$Lt[[i]]  
         
         for (j in seq(1, nX, 1)){
           betaij = approx( x = expVarFunc[[1]]$workGrid, y = betaFuncs[,j], xout = ti)$y
-          yhat[[i]] = yhat[[i]]  + betaij *  expVarFunc[[j]]$inputData$y[[i]];
+          yhat[[i]] = yhat[[i]]  + betaij *  expVarFunc[[j]]$inputData$Ly[[i]];
         }
         
         for (j in seq(1, nZ, 1)){

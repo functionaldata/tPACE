@@ -150,9 +150,9 @@ test_that('Different kernel type works', {
   expect_equal(noError1DRect[['beta']], noError1DEpan[['beta']], tolerance=0.2)
 })
 
-fpcaX1 <- FPCA(X_1sp[['yList']], X_1sp[['tList']], list(userBwMu=bw, userBwCov=bw))
-fpcaX2 <- FPCA(X_2sp[['yList']], X_2sp[['tList']], list(userBwMu=bw, userBwCov=bw))
-fpcaY <- FPCA(Ysp[['yList']], Ysp[['tList']], list(userBwMu=bw, userBwCov=bw))
+fpcaX1 <- FPCA(X_1sp[['Ly']], X_1sp[['Lt']], list(userBwMu=bw, userBwCov=bw))
+fpcaX2 <- FPCA(X_2sp[['Ly']], X_2sp[['Lt']], list(userBwMu=bw, userBwCov=bw))
+fpcaY <- FPCA(Ysp[['Ly']], Ysp[['Lt']], list(userBwMu=bw, userBwCov=bw))
 FPCAlist <- list(Y=fpcaY, X_1=fpcaX1, X_2=fpcaX2)
 imputeRes <- imputeConReg(FPCAlist, Z[, 3:4], outGrid)
 test_that('imputation and 1D beta estimates are similar', {
@@ -165,8 +165,8 @@ test_that('subseting covariates is fine', {
   subVars <- subsetVars(vars, 1)
   subVarsTF <- subsetVars(vars, c(TRUE, rep(FALSE, n - 1)))
   expect_equal(subVars, subVarsTF)
-  expect_equal(subVars[['X_1']][['tList']][[1]], X_1sp[['tList']][[1]])
-  expect_equal(length(subVars[['X_1']][['tList']]), 1)
+  expect_equal(subVars[['X_1']][['Lt']][[1]], X_1sp[['Lt']][[1]])
+  expect_equal(length(subVars[['X_1']][['Lt']]), 1)
   expect_equal(length(subVars[['Z_3']]), 1)
 })
 

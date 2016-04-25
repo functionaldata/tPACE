@@ -96,10 +96,10 @@ test_that('The cross-covariance of two simple related process is correct. Same r
   ySparseA = Sparsify(yTrueA, s, c(3:5))    
   ySparseB = Sparsify(yTrueB, s, c(3:5))     
   
-  BB1 <- GetCrCovYX(Ly1 = ySparseA$yList, Lt1 = ySparseA$tList, Ly2 = ySparseB$yList, Lt2 = ySparseB$tList, 
+  BB1 <- GetCrCovYX(Ly1 = ySparseA$Ly, Lt1 = ySparseA$Lt, Ly2 = ySparseB$Ly, Lt2 = ySparseB$Lt, 
                 Ymu1 = rep(0,M), Ymu2 = rep(0,M), useGAM = TRUE  )
   
-  BB2 <- GetCrCovYX(Ly1 = ySparseA$yList, Lt1 = ySparseA$tList, Ly2 = ySparseB$yList, Lt2 = ySparseB$tList, 
+  BB2 <- GetCrCovYX(Ly1 = ySparseA$Ly, Lt1 = ySparseA$Lt, Ly2 = ySparseB$Ly, Lt2 = ySparseB$Lt, 
                  Ymu1 = rep(0,M), Ymu2 = rep(0,M), bw1=0.4, bw2=0.4  )
   
   sSmall = seq(0,10,length.out = 51)
@@ -136,10 +136,10 @@ test_that('The cross-covariance of two simple unrelated process is correct. Same
   ySparseA = Sparsify(yTrueA, s, c(3:5))    
   ySparseB = Sparsify(yTrueB, s, c(3:5))     
   
-  BB1 <- GetCrCovYX(Ly1 = ySparseA$yList, Lt1 = ySparseA$tList, Ly2 = ySparseB$yList, Lt2 = ySparseB$tList, 
+  BB1 <- GetCrCovYX(Ly1 = ySparseA$Ly, Lt1 = ySparseA$Lt, Ly2 = ySparseB$Ly, Lt2 = ySparseB$Lt, 
                  Ymu1 = rep(0,M), Ymu2 = rep(0,M), useGAM = TRUE  )
   
-  BB2 <- GetCrCovYX(Ly1 = ySparseA$yList, Lt1 = ySparseA$tList, Ly2 = ySparseB$yList, Lt2 = ySparseB$tList, 
+  BB2 <- GetCrCovYX(Ly1 = ySparseA$Ly, Lt1 = ySparseA$Lt, Ly2 = ySparseB$Ly, Lt2 = ySparseB$Lt, 
                  Ymu1 = rep(0,M), Ymu2 = rep(0,M), bw1=0.4, bw2=0.4  )
   
   sSmall = seq(0,10,length.out = 51)

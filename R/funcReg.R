@@ -1,5 +1,5 @@
 ## Concurrent Functional regression by 2D smoothing method.
-# vars: a list of input functional/scaler covariates. Each field corresponds to a functional (a list) or scaler (a vector) covariate. The last entry is assumed to be the response if no entry is names 'Y'. If a field corresponds to a functional covariate, it should have two fields: 'tList', a list of time points, and 'yList', a list of function values.
+# vars: a list of input functional/scaler covariates. Each field corresponds to a functional (a list) or scaler (a vector) covariate. The last entry is assumed to be the response if no entry is names 'Y'. If a field corresponds to a functional covariate, it should have two fields: 'Lt', a list of time points, and 'Ly', a list of function values.
 # bw: bandwidth used.
 # Tout: output time points.
 # kern: kernel used.
@@ -67,12 +67,12 @@ demean <- function(vars, bw, kern) {
       xmu <- mean(x)
       x <- x - xmu
     } else if (is.list(x)) { # functional
-      Tin <- sort(unique(unlist(x[['tList']])))
-      xmu <- GetSmoothedMeanCurve(x[['yList']], x[['tList']], Tin, Tin[1],
+      Tin <- sort(unique(unlist(x[['Lt']])))
+      xmu <- GetSmoothedMeanCurve(x[['Ly']], x[['Lt']], Tin, Tin[1],
                                   list(userBwMu=bw, kernel=kern))[['mu']]
       muFun <- approxfun(Tin, xmu)
-      x[['yList']] <- lapply(1:length(x[['yList']]), function(i)
-        x[['yList']][[i]]- muFun(x[['tList']][[i]]))
+      x[['Ly']] <- lapply(1:length(x[['Ly']]), function(i)
+        x[['Ly']][[i]]- muFun(x[['Lt']][[i]]))
       xmu <- muFun
     }
     
@@ -99,7 +99,7 @@ MvCov <- function(vars, bw, Tout, kern, measurementError=TRUE, center=TRUE, diag
   pScaler <- sum(!isFuncVars)
   
   if (any(isFuncVars)) {
-    tAll <- do.call(c, lapply(vars[isFuncVars], function(x) unlist(x[['tList']])))
+    tAll <- do.call(c, lapply(vars[isFuncVars], function(x) unlist(x[['Lt']])))
     Tin <- sort(unique(tAll))
     
     if (missing(Tout))
@@ -157,15 +157,15 @@ uniCov <- function(X, Y, bw, Tout, kern='gauss', rmDiag=FALSE, center=TRUE, use1
     
     # Scaler-function    
   } else if (is.list(X) && !is.list(Y)) {
-    Tin <- sort(unique(unlist(X[['tList']])))
+    Tin <- sort(unique(unlist(X[['Lt']])))
     if (center) {
-      Xmu <- GetSmoothedMeanCurve(X[['yList']], X[['tList']], Tin, Tin[1], list(userBwMu=bw, kernel=kern))[['mu']]
+      Xmu <- GetSmoothedMeanCurve(X[['Ly']], X[['Lt']], Tin, Tin[1], list(userBwMu=bw, kernel=kern))[['mu']]
       Ymu <- mean(Y)
     } else {
       Xmu <- rep(0, length(Tin))
       Ymu <- 0
     }
-    res <- GetCrCovYZ(bw, Y, Ymu, X[['yList']], X[['tList']], Xmu, Tin, kern)[['smoothedCC']]
+    res <- GetCrCovYZ(bw, Y, Ymu, X[['Ly']], X[['Lt']], Xmu, Tin, kern)[['smoothedCC']]
     res <- as.matrix(ConvertSupport(Tin, Tout, mu=res))
     if (flagScalerFunc) 
       res <- t(res)
@@ -174,17 +174,17 @@ uniCov <- function(X, Y, bw, Tout, kern='gauss', rmDiag=FALSE, center=TRUE, use1
     
     # function-function  
   } else {
-    TinX <- sort(unique(unlist(X[['tList']])))
-    TinY <- sort(unique(unlist(Y[['tList']])))
+    TinX <- sort(unique(unlist(X[['Lt']])))
+    TinY <- sort(unique(unlist(Y[['Lt']])))
     nTout <- length(Tout)
     if (center) {
       if (min(TinX) > min(Tout) || min(TinY) > min(Tout) || 
           max(TinY) < max(Tout) || max(TinX) < max(Tout))
         stop('Observation time points coverage too low')
       
-      Xmu <- GetSmoothedMeanCurve(X[['yList']], X[['tList']], TinX, TinX[1],
+      Xmu <- GetSmoothedMeanCurve(X[['Ly']], X[['Lt']], TinX, TinX[1],
                                   list(userBwMu=bw, kernel=kern))[['mu']]
-      Ymu <- GetSmoothedMeanCurve(Y[['yList']], Y[['tList']], TinY, TinY[1],
+      Ymu <- GetSmoothedMeanCurve(Y[['Ly']], Y[['Lt']], TinY, TinY[1],
                                   list(userBwMu=bw, kernel=kern))[['mu']]
     } else {
       Xmu <- rep(0, length(TinX))
@@ -194,10 +194,10 @@ uniCov <- function(X, Y, bw, Tout, kern='gauss', rmDiag=FALSE, center=TRUE, use1
     names(Ymu) <- TinY
     
     if (use1D) {
-      Xvec <- unlist(X[['yList']])
-      Yvec <- unlist(Y[['yList']])
-      tvecX <- unlist(X[['tList']])
-      tvecY <- unlist(Y[['tList']])
+      Xvec <- unlist(X[['Ly']])
+      Yvec <- unlist(Y[['Ly']])
+      tvecX <- unlist(X[['Lt']])
+      tvecY <- unlist(Y[['Lt']])
       if (!identical(tvecX, tvecY)){
         stop('Cannot use 1D covariance smoothing if the observation time points for X and Y are different')
       }
@@ -214,8 +214,8 @@ uniCov <- function(X, Y, bw, Tout, kern='gauss', rmDiag=FALSE, center=TRUE, use1
       res <- matrix(NA, nTout, nTout)
       diag(res) <- covXY
     } else { # use 2D smoothing
-      tmp <- GetCrCovYX(bw, bw, X[['yList']], X[['tList']], Xmu, 
-                        Y[['yList']], Y[['tList']], Ymu, rmDiag=rmDiag, kern=kern)
+      tmp <- GetCrCovYX(bw, bw, X[['Ly']], X[['Lt']], Xmu, 
+                        Y[['Ly']], Y[['Lt']], Ymu, rmDiag=rmDiag, kern=kern)
       gd <- tmp[['smoothGrid']]
       res <- matrix(interp2lin(gd[, 1], gd[, 2], tmp[['smoothedCC']], rep(Tout, times=nTout), rep(Tout, each=nTout)), nTout, nTout)
     }

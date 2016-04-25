@@ -29,18 +29,18 @@ sigma2 <- 0.4
 samp1 <- Wiener(n, pts) + rnorm(length(pts) * n, sd=sigma2)
 samp1 <- Sparsify(samp1, pts, 2:7)
 mu1 <- rep(0, length(pts))
-pNoTrunc <- SetOptions(samp1$yList, samp1$tList, list(dataType='Sparse', error=TRUE, kernel='epan'))
-smc1 <- GetSmoothedCovarSurface(samp1$yList, samp1$tList, mu1, pts, regGrid, pNoTrunc)
+pNoTrunc <- SetOptions(samp1$Ly, samp1$Lt, list(dataType='Sparse', error=TRUE, kernel='epan'))
+smc1 <- GetSmoothedCovarSurface(samp1$Ly, samp1$Lt, mu1, pts, regGrid, pNoTrunc)
 eig1 <- GetEigenAnalysisResults(smc1$smoothCov, regGrid, pNoTrunc)
 
 # test GetMuPhiSig
 # no truncation
 phiObs <- ConvertSupport(regGrid, pts, phi=eig1$phi)
 CovObs <- ConvertSupport(regGrid, pts, Cov=eig1$fittedCov)
-notruncSamp <- TruncateObs(samp1$yList, samp1$tList, pts)
-expect_equal(sapply(notruncSamp$y, length), sapply(samp1$yList, length))
+notruncSamp <- TruncateObs(samp1$Ly, samp1$Lt, pts)
+expect_equal(sapply(notruncSamp$y, length), sapply(samp1$Ly, length))
 tmp <- GetMuPhiSig(notruncSamp$t, pts, mu1, phiObs, CovObs + diag(smc1$sigma2, length(pts)))
-expect_equal(sapply(tmp, function(x) length(x$muVec)), sapply(samp1$yList, length))
+expect_equal(sapply(tmp, function(x) length(x$muVec)), sapply(samp1$Ly, length))
 
 
 # truncation
@@ -54,12 +54,12 @@ test_that('Observations with length 0 produces NA in the xiEst, xiVar, and fitte
   samp1 <- Wiener(n, pts) + rnorm(length(pts) * n, sd=sigma2)
   samp1 <- Sparsify(samp1, pts, 2:7)
   mu1 <- rep(0, length(pts))
-  pNoTrunc <- SetOptions(samp1$yList, samp1$tList, list(dataType='Sparse', error=TRUE, kernel='epan'))
-  smc1 <- GetSmoothedCovarSurface(samp1$yList, samp1$tList, mu1, pts, regGrid, pNoTrunc)
+  pNoTrunc <- SetOptions(samp1$Ly, samp1$Lt, list(dataType='Sparse', error=TRUE, kernel='epan'))
+  smc1 <- GetSmoothedCovarSurface(samp1$Ly, samp1$Lt, mu1, pts, regGrid, pNoTrunc)
   eig1 <- GetEigenAnalysisResults(smc1$smoothCov, regGrid, pNoTrunc)
   phiObs <- ConvertSupport(regGrid, truncPts, phi=eig1$phi)
   CovObs <- ConvertSupport(regGrid, truncPts, Cov=eig1$fittedCov)
-  truncSamp <- TruncateObs(samp1$yList, samp1$tList, truncPts)
+  truncSamp <- TruncateObs(samp1$Ly, samp1$Lt, truncPts)
   tmp <- GetMuPhiSig(truncSamp$t, truncPts, mu1[1:length(truncPts)], phiObs, CovObs + diag(smc1$sigma2, length(truncPts)))
   expect_equal(sapply(tmp, function(x) length(x$muVec)), sapply(truncSamp$y, length))
   tmp1 <- GetCEScores(truncSamp$y[17:20], truncSamp$t[17:20], list(verbose=TRUE), rep(0, length(truncPts)), truncPts, CovObs, eig1$lambda, phiObs, smc1$sigma2)

@@ -33,13 +33,13 @@
   ySparse04 = Sparsify(yTrue, s, 1:4)
     
   # Give it a bit of noise
-  ySparse16$yNoisy = lapply( ySparse16$yList, function(x) x +  0.5*rnorm(length(x)))
-  ySparse04$yNoisy = lapply( ySparse04$yList, function(x) x +  0.5*rnorm(length(x)))
-  ySparse08$yNoisy = lapply( ySparse08$yList, function(x) x +  0.5*rnorm(length(x)))
+  ySparse16$yNoisy = lapply( ySparse16$Ly, function(x) x +  0.5*rnorm(length(x)))
+  ySparse04$yNoisy = lapply( ySparse04$Ly, function(x) x +  0.5*rnorm(length(x)))
+  ySparse08$yNoisy = lapply( ySparse08$Ly, function(x) x +  0.5*rnorm(length(x)))
     
- # A = FPCA(ySparse16$yNoisy, t= ySparse16$tList ) # Time consuming test
- # B = FPCA(ySparse08$yNoisy, t= ySparse08$tList ) # Time consuming test
-  C = FPCA(ySparse04$yNoisy, t= ySparse04$tList )
+ # A = FPCA(ySparse16$yNoisy, t= ySparse16$Lt ) # Time consuming test
+ # B = FPCA(ySparse08$yNoisy, t= ySparse08$Lt ) # Time consuming test
+  C = FPCA(ySparse04$yNoisy, t= ySparse04$Lt )
   QQ = MakeFPCAInputs(IDs = rep(1:N, each=M),tVec=rep(s,N), t(yTrue) )
   D = FPCA(QQ$Ly, QQ$Lt) 
 
@@ -57,9 +57,9 @@
 
  # x11()
  # par(mfrow=c(2,2))  
- #CreateDesignPlot(t=ySparse16$tList, obsGrid= A$obsGrid, isColorPlot=FALSE, noDiagonal= TRUE,yname= '9 p.') 
- #CreateDesignPlot(t=ySparse08$tList, obsGrid= B$obsGrid, isColorPlot=FALSE, noDiagonal= TRUE,yname= '5 p.') 
- #CreateDesignPlot(t=ySparse04$tList, obsGrid= C$obsGrid, isColorPlot=FALSE, noDiagonal= TRUE,yname= '3 p.') 
+ #CreateDesignPlot(t=ySparse16$Lt, obsGrid= A$obsGrid, isColorPlot=FALSE, noDiagonal= TRUE,yname= '9 p.') 
+ #CreateDesignPlot(t=ySparse08$Lt, obsGrid= B$obsGrid, isColorPlot=FALSE, noDiagonal= TRUE,yname= '5 p.') 
+ #CreateDesignPlot(t=ySparse04$Lt, obsGrid= C$obsGrid, isColorPlot=FALSE, noDiagonal= TRUE,yname= '3 p.') 
  #CreateDesignPlot(t=QQ$Lt, obsGrid= D$obsGrid, isColorPlot=FALSE, noDiagonal= FALSE,yname= 'dense') 
   
   
