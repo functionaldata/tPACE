@@ -134,7 +134,7 @@ test_that('noisy dense data, IN scores and smooth mu/cov', {
   
   tmp <- MakeFPCAInputs(tVec=s, yVec=Xij)
   
-  fvpaResults = FVPA(y= tmp$Ly, t= tmp$Lt, optns = list(error=TRUE, FVEthreshold = 0.9, methodMuCovEst='smooth' ))
+  fvpaResults = FVPA(y= tmp$Ly, t= tmp$Lt, optns = list(error=TRUE, FVEthreshold = 0.9, methodMuCovEst='smooth', userBwCov = 0.600 ))
   
   expect_more_than( abs( cor( eigFunct1(s), fvpaResults$fpcaObjY$phi[,1])), 0.975)
   expect_more_than( abs( cor( eigFunct2(s), fvpaResults$fpcaObjY$phi[,2])), 0.975)
@@ -143,7 +143,7 @@ test_that('noisy dense data, IN scores and smooth mu/cov', {
   
   expect_more_than( abs( cor( Ksi[,1], fvpaResults$fpcaObjY$xiEst[,1])), 0.975)
   expect_more_than( abs( cor( Ksi[,2], fvpaResults$fpcaObjY$xiEst[,2])), 0.975)
-  expect_more_than( abs( cor( Zeta[,1], fvpaResults$fpcaObjR$xiEst[,1])), 0.975)
-  expect_more_than( abs( cor( Zeta[,2], fvpaResults$fpcaObjR$xiEst[,2])), 0.94)
+  expect_more_than( abs( cor( Zeta[,1], fvpaResults$fpcaObjR$xiEst[,1])), 0.97)
+  expect_more_than( abs( cor( Zeta[,2], fvpaResults$fpcaObjR$xiEst[,2])), 0.91)
   
 })

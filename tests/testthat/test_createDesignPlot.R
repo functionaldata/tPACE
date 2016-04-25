@@ -6,16 +6,16 @@ devtools::load_all()
 set.seed(1)
 n <- 1e3
 sparsity <- 1:5
-tList <- replicate(n, runif(sample(sparsity, 1)), simplify=FALSE)
-obsGrid <- sort(unique(unlist(tList)))
+Lt <- replicate(n, runif(sample(sparsity, 1)), simplify=FALSE)
+obsGrid <- sort(unique(unlist(Lt)))
 system.time(
-CreateDesignPlot(tList, obsGrid, isColorPlot=TRUE)
+CreateDesignPlot(Lt, obsGrid, isColorPlot=TRUE)
 )
 
 # ... are passed in 
 set.seed(1)
 n <- 5e2
 sparsity <- 1:5
-tList <- replicate(n, round(runif(sample(sparsity, 1)), 2), simplify=FALSE)
-obsGrid <- sort(unique(unlist(tList)))
-CreateDesignPlot(tList, obsGrid, isColorPlot=TRUE, pch=1, cex=1, xlab='XX', ylab='YY')
+Lt <- replicate(n, round(runif(sample(sparsity, 1)), 2), simplify=FALSE)
+obsGrid <- sort(unique(unlist(Lt)))
+CreateDesignPlot(Lt, obsGrid, isColorPlot=TRUE, pch=1, cex=1, xlab='XX', ylab='YY')

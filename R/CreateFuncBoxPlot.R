@@ -24,7 +24,7 @@
 #' pts <- seq(0, 1, by=0.05)
 #' sampWiener <- Wiener(n, pts)
 #' sampWiener <- Sparsify(sampWiener, pts, 10)
-#' res <- FPCA(sampWiener$yList, sampWiener$tList, 
+#' res <- FPCA(sampWiener$Ly, sampWiener$Lt, 
 #'             list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
 #' CreateFuncBoxPlot(res, list(addIndx=c(1:3)) )
 #' @references
@@ -176,13 +176,13 @@ CreateFuncBoxPlot <- function(fpcaObj, optns = list() , ...){
     lines(x=s, col='green', lwd=2, y = mediansCurve)
   } 
   
-  yList = fpcaObj$inputData$y
-  tList = fpcaObj$inputData$t 
+  Ly = fpcaObj$inputData$Ly
+  Lt = fpcaObj$inputData$Lt 
   
   #add sample lines
-  if (!is.null(addIndx) && !is.null(yList) && !is.null(tList)  ){
+  if (!is.null(addIndx) && !is.null(Ly) && !is.null(Lt)  ){
     for (i in 1:length(addIndx) ) {
-      lines(x = tList[[addIndx[i]]] , y= yList[[addIndx[i]]], lwd = 1.5, type='o', pch=0)
+      lines(x = Lt[[addIndx[i]]] , y= Ly[[addIndx[i]]], lwd = 1.5, type='o', pch=0)
     } 
   }
 }

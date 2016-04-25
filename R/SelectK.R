@@ -4,8 +4,8 @@
 #' @param fpcaObj A list containing FPCA related subjects returned by MakeFPCAResults().
 #' @param criterion A string or positive integer specifying selection criterion for number of functional principal components, available options: 'FVE', 'AIC', 'BIC', or the specified number of components - default: 'AIC'
 #' @param FVEthreshold A threshold percentage specified by user when using "FVE" as selection criterion: (0,1] - default: NULL
-#' @param y A list of \emph{n} vectors containing the observed values for each individual - default: NULL
-#' @param t A list of \emph{n} vectors containing the observation time points for each individual corresponding to y - default: NULL
+#' @param Ly A list of \emph{n} vectors containing the observed values for each individual - default: NULL
+#' @param Lt A list of \emph{n} vectors containing the observation time points for each individual corresponding to Ly - default: NULL
 #'
 #' @return A list including the following two fields:
 #' \item{k}{An integer indicating the selected number of components based on given criterion.}
@@ -13,7 +13,7 @@
 #'
 #' @export
 
-SelectK = function(fpcaObj, criterion = 'AIC', FVEthreshold = NULL, y = NULL, t = NULL){
+SelectK = function(fpcaObj, criterion = 'AIC', FVEthreshold = NULL, Ly = NULL, Lt = NULL){
   if(class(fpcaObj) != 'FPCA'){
     stop('Invalid Input: not a FPCA object!')
   }
@@ -31,19 +31,19 @@ SelectK = function(fpcaObj, criterion = 'AIC', FVEthreshold = NULL, y = NULL, t 
   }
   
   if(criterion %in% c('AIC','BIC')) {
-    if(fpcaObj$optns$lean == TRUE && (is.null(y) || is.null(t))){
-    stop("Option lean is TRUE, need input data y and measurement time list t to calculate log-likelihood.")
+    if(fpcaObj$optns$lean == TRUE && (is.null(Ly) || is.null(Lt))){
+    stop("Option lean is TRUE, need input data Ly and measurement time list Lt to calculate log-likelihood.")
     }
     if(fpcaObj$optns$lean == FALSE){
-      y <- fpcaObj$inputData$y
-      t <- fpcaObj$inputData$t
+      Ly <- fpcaObj$inputData$Ly
+      Lt <- fpcaObj$inputData$Lt
     }
     if(criterion == 'AIC'){C = 2}
-    else {C = log(length(y))}
+    else {C = log(length(Ly))}
     # FVE is not the selection criterion
     IC = rep(Inf, length(fpcaObj$lambda))
     for(i in 1:length(fpcaObj$lambda)){
-      logliktemp = GetLogLik(fpcaObj, i, y = y, t = t)
+      logliktemp = GetLogLik(fpcaObj, i, Ly = Ly, Lt = Lt)
       if(is.null(logliktemp)){
         stop('The covariance matrix of the estimated function is nearly singular! AIC or BIC is not applicable.')
       }

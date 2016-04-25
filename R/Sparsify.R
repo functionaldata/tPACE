@@ -9,8 +9,8 @@
 #' @param fragment Sparsify the observations into fragments, which are (almost) uniformly distributed in the time domain. Default to FALSE as not fragmenting. Otherwise a positive number specifying the approximate length of each fragment.
 #'
 #' @return A list of length 2, containing the following fields:
-#' \item{tList}{A list of observation time points for each sample.}
-#' \item{yList}{A list of values for each sample, corresponding to the time points.}
+#' \item{Lt}{A list of observation time points for each sample.}
+#' \item{Ly}{A list of values for each sample, corresponding to the time points.}
 #' @export
 Sparsify <- function(samp, pts, sparsity, aggressive = FALSE, fragment=FALSE) {
 
@@ -38,14 +38,14 @@ Sparsify <- function(samp, pts, sparsity, aggressive = FALSE, fragment=FALSE) {
         sort(sample(ncol(samp), sample(sparsity, 1))))
     }
     
-    tList <- lapply(indEach, function(x) pts[x])
-    yList <- lapply(1:length(indEach), function(x) {
+    Lt <- lapply(indEach, function(x) pts[x])
+    Ly <- lapply(1:length(indEach), function(x) {
         ind <- indEach[[x]]
         y <- samp[x, ind]
         return(y)
     })
    
-    return(list(tList=tList, yList=yList))
+    return(list(Lt=Lt, Ly=Ly))
 }
 
 

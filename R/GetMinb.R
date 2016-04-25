@@ -1,10 +1,10 @@
 # Approximate the minimum bandwidth choice for% for the covariance function. 
 # In stead of the getMinb.m functionality we can garantee minimal number of neighboring points in here.
 # TODO: distMat is memory inefficient.
-GetMinb <- function(t, obsGrid, dataType='Sparse', npoly=1, minUniqPts=3, minPts=6) {
+GetMinb <- function(t, obsGrid, dataType='Sparse', npoly=1, minUniqPts=3, minPts=6, legacyCode = FALSE) {
   
  
-  if('legacyCode' == TRUE){
+  if( legacyCode ){
     if (dataType == 'Sparse') {
       dstar <- Minb(obsGrid, 2 + npoly) # rough 1D initial value 
       n_obs = length(obsGrid);
@@ -30,6 +30,7 @@ GetMinb <- function(t, obsGrid, dataType='Sparse', npoly=1, minUniqPts=3, minPts
     } else if (dataType == 'Dense') {
       dstar = Minb(obsGrid, 2 + npoly) * 1.5;
     }   
+    return(dstar)
   }
   
   dstar = BwNN(t, k= 2 + npoly, onlyCov = TRUE)['cov']

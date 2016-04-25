@@ -10,8 +10,8 @@ samp3 <- Wiener(50, pts, sparsify=length(pts))
 mu3 <- rep(0, length(pts))
 
 # without error
-p0 <- SetOptions(samp3$yList, samp3$tList, list(maxK=50, FVEthreshold=1, dataType='Sparse', error=FALSE, kernel='epan'))
-noErrBin <- GetSmoothedCovarSurface(samp3$yList, samp3$tList, mu3, pts, regGrid, p0, useBinnedCov=TRUE)
+p0 <- SetOptions(samp3$Ly, samp3$Lt, list(maxK=50, FVEthreshold=1, dataType='Sparse', error=FALSE, kernel='epan'))
+noErrBin <- GetSmoothedCovarSurface(samp3$Ly, samp3$Lt, mu3, pts, regGrid, p0, useBinnedCov=TRUE)
 tmp <- GetEigenAnalysisResults(noErrBin$smoothCov, regGrid, p0)
 
 # consistency test
@@ -30,6 +30,6 @@ test_that('Eigenfunctions are orthonormal', {
 
 
 # # with error
-# p1 <- SetOptions(samp3$yList, samp3$tList, CreateOptions(dataType='Sparse', error=TRUE, kernel='epan'))
-# Err <- GetSmoothedCovarSurface(samp3$yList, samp3$tList, mu3, pts, regGrid, p1, useBinnedCov=FALSE)
+# p1 <- SetOptions(samp3$Ly, samp3$Lt, CreateOptions(dataType='Sparse', error=TRUE, kernel='epan'))
+# Err <- GetSmoothedCovarSurface(samp3$Ly, samp3$Lt, mu3, pts, regGrid, p1, useBinnedCov=FALSE)
 

@@ -41,13 +41,13 @@ Wiener <- function(n=1, pts=seq(0, 1, length=50), sparsify=NULL, K=50) {
 #    
 #    indEach <- lapply(1:nrow(samp), function(x) 
 #        sort(sample(ncol(samp), sample(sparsity, 1))))
-#    tList <- lapply(indEach, function(x) pts[x])
-#    yList <- lapply(1:length(indEach), function(x) {
+#    Lt <- lapply(indEach, function(x) pts[x])
+#    Ly <- lapply(1:length(indEach), function(x) {
 #        ind <- indEach[[x]]
 #        y <- samp[x, ind]
 #        return(y)
 #    })
 #   
-#    return(list(tList=tList, yList=yList))
+#    return(list(Lt=Lt, Ly=Ly))
 #}
 

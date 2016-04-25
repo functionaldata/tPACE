@@ -24,6 +24,6 @@ GetNormalisedSample<- function(fpcaObj, errorSigma = FALSE){
   ynorm = mapply(FUN = function(vy, vt){ 
     return( ( vy - approx(y = fpcaObj$mu, x =fpcaObj$workGrid, xout = vt)$y) /
               approx(y = sqrt(sigmaE + diag(fpcaObj$smoothedCov)), x =fpcaObj$workGrid, xout = vt)$y)
-  }, vy = fpcaObj$inputData$y, vt = fpcaObj$inputData$t, SIMPLIFY = FALSE)
-  return(list(y = ynorm, t = fpcaObj$inputData$t ))
+  }, vy = fpcaObj$inputData$Ly, vt = fpcaObj$inputData$Lt, SIMPLIFY = FALSE)
+  return(list(y = ynorm, t = fpcaObj$inputData$Lt ))
 }

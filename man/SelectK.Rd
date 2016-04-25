@@ -5,8 +5,8 @@
 \title{Selects number of functional principal components for
 given FPCA output and selection criteria}
 \usage{
-SelectK(fpcaObj, criterion = "AIC", FVEthreshold = NULL, y = NULL,
-  t = NULL)
+SelectK(fpcaObj, criterion = "AIC", FVEthreshold = NULL, Ly = NULL,
+  Lt = NULL)
 }
 \arguments{
 \item{fpcaObj}{A list containing FPCA related subjects returned by MakeFPCAResults().}
@@ -15,9 +15,9 @@ SelectK(fpcaObj, criterion = "AIC", FVEthreshold = NULL, y = NULL,
 
 \item{FVEthreshold}{A threshold percentage specified by user when using "FVE" as selection criterion: (0,1] - default: NULL}
 
-\item{y}{A list of \emph{n} vectors containing the observed values for each individual - default: NULL}
+\item{Ly}{A list of \emph{n} vectors containing the observed values for each individual - default: NULL}
 
-\item{t}{A list of \emph{n} vectors containing the observation time points for each individual corresponding to y - default: NULL}
+\item{Lt}{A list of \emph{n} vectors containing the observation time points for each individual corresponding to Ly - default: NULL}
 }
 \value{
 A list including the following two fields:

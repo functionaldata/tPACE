@@ -4,12 +4,12 @@
 \alias{FPCA}
 \title{Functional Principal Component Analysis}
 \usage{
-FPCA(y, t, optns = list())
+FPCA(Ly, Lt, optns = list())
 }
 \arguments{
-\item{y}{A list of \emph{n} vectors containing the observed values for each individual. Missing values specified by \code{NA}s are supported for dense case (\code{dataType='dense'}).}
+\item{Ly}{A list of \emph{n} vectors containing the observed values for each individual. Missing values specified by \code{NA}s are supported for dense case (\code{dataType='dense'}).}
 
-\item{t}{A list of \emph{n} vectors containing the observation time points for each individual corresponding to y.}
+\item{Lt}{A list of \emph{n} vectors containing the observation time points for each individual corresponding to y.}
 
 \item{optns}{A list of options control parameters specified by \code{list(name=value)}. See `Details'.}
 }
@@ -32,7 +32,7 @@ A list containing the following fields:
 \item{cumFVE}{A vector with the percentages of the total variance explained by each FPC. Increase to almost 1.}
 \item{FVE}{A percentage indicating the total variance explained by chosen FPCs with corresponding 'FVEthreshold'.}
 \item{criterionValue}{A scalar specifying the criterion value obtained by the selected number of components with specific methodSelectK: FVE,AIC,BIC values or NULL for fixedK.}
-\item{inputData}{A list containting the original 'y' and 't' lists used as inputs to FPCA. NULL if 'lean' was specified to be TRUE.}
+\item{inputData}{A list containting the original 'Ly' and 'Lt' lists used as inputs to FPCA. NULL if 'lean' was specified to be TRUE.}
 }
 \description{
 FPCA for dense or sparse functional data.
@@ -64,8 +64,8 @@ Available control options are
 \item{rotationCut}{The 2-element vector in [0,1] indicating the percent of data truncated during sigma^2 estimation; default  (0.25, 0.75))}
 \item{useBinnedData}{Should the data be binned? 'FORCE' (Enforce the # of bins), 'AUTO' (Select the # of  bins automatically), 'OFF' (Do not bin) - default: 'AUTO'}
 \item{useBinnedCov}{Whether to use the binned raw covariance for smoothing; logical - default:TRUE}
-\item{userCov}{The user-defined smoothed covariance function; list of two elements: numerical vector 't' and matrix 'cov', 't' must cover the support defined by 'y' - default: NULL}
-\item{userMu}{The user-defined smoothed mean function; list of two numerical vector 't' and 'mu' of equal size, 't' must cover the support defined 'y' - default: NULL}
+\item{userCov}{The user-defined smoothed covariance function; list of two elements: numerical vector 't' and matrix 'cov', 't' must cover the support defined by 'Ly' - default: NULL}
+\item{userMu}{The user-defined smoothed mean function; list of two numerical vector 't' and 'mu' of equal size, 't' must cover the support defined 'Ly' - default: NULL}
 \item{userSigma2}{The user-defined measurement error variance. A positive scaler. If specified then no regularization is used (rho is set to 'no', unless specified otherwise). Default to `NULL`}
 \item{verbose}{Display diagnostic messages; logical - default: FALSE}
 }
@@ -76,7 +76,7 @@ n <- 20
 pts <- seq(0, 1, by=0.05)
 sampWiener <- Wiener(n, pts)
 sampWiener <- Sparsify(sampWiener, pts, 10)
-res <- FPCA(sampWiener$yList, sampWiener$tList, 
+res <- FPCA(sampWiener$Ly, sampWiener$Lt, 
             list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
 CreateCovPlot(res, 'Fitted')
 }

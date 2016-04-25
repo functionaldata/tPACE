@@ -17,10 +17,10 @@
 #' \item{bw}{The bandwidth used for smoohting as a scaler}
 #' \item{score}{The GCV score associated with the scalar used}
 #' @examples
-#' yList <- list( runif(5),  c(1:3), c(2:4), c(4))
-#' tList <- list( c(1:5), c(1:3), c(1:3), 4)
+#' Ly <- list( runif(5),  c(1:3), c(2:4), c(4))
+#' Lt <- list( c(1:5), c(1:3), c(1:3), 4)
 #' Z = rep(4,4) # Constant vector so the covariance has to be zero.
-#' sccObj = GetCrCovYZ(bw=1, Z= Z, Ly=yList, Lt=tList, Ymu=rep(4,5))
+#' sccObj = GetCrCovYZ(bw=1, Z= Z, Ly=Ly, Lt=Lt, Ymu=rep(4,5))
 #' @references
 #' \cite{Yang, Wenjing, Hans-Georg Mueller, and Ulrich Stadtmueller. "Functional singular component analysis." Journal of the Royal Statistical Society: Series B (Statistical Methodology) 73.3 (2011): 303-324}
 #' @export
@@ -67,7 +67,7 @@ GetCrCovYZ <- function(bw = NULL, Z, Zmu = NULL, Ly, Lt = NULL, Ymu = NULL, supp
   # If the bandwidth is unknown use GCV to take find it
   } else {
     # Construct candidate bw's
-    h0 = 2.0 * Minb( sort(ulLt), 2+1); # 2x the bandwidth needed for at least 3 points in a window
+    h0 = 1.5 * Minb( sort(ulLt), 2+1); # 1.5x the bandwidth needed for at least 3 points in a window
     r = diff(range(ulLt))    
     q = (r/(4*h0))^(1/9);   
     bwCandidates = sort(q^(0:19)*h0);

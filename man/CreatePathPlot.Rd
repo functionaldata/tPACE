@@ -18,7 +18,7 @@ observations.}
 
 \item{inputData}{A list of length 2 containing the sparse/dense
 (unsupported yet) observations. \code{inputData} needs to contain two
-fields: \code{t} for a list of time points and \code{y} for a list of
+fields: \code{Lt} for a list of time points and \code{Ly} for a list of
 observations. Default to the `inputData` field within `fpcaObj`.}
 
 \item{showObs}{Whether to plot the original observations for each subject.}
@@ -36,7 +36,7 @@ n <- 20
 pts <- seq(0, 1, by=0.05)
 sampWiener <- Wiener(n, pts)
 sampWiener <- Sparsify(sampWiener, pts, 10)
-res <- FPCA(sampWiener$yList, sampWiener$tList, 
+res <- FPCA(sampWiener$Ly, sampWiener$Lt, 
             list(dataType='Sparse', error=FALSE, kernel='epan',
             verbose=TRUE))
 CreatePathPlot(res, subset=1:5)
