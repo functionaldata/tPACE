@@ -167,7 +167,8 @@ SetOptions = function(y, t, optns){
     diagnosticsPlot = FALSE;
   }
   if(is.null(rho)){ # truncation threshold for the iterative residual that is used
-    if (!is.null(userSigma2)) { # no regularization if sigma2 is specified
+    # no regularization if sigma2 is specified or assume no measurement error.
+    if (!is.null(userSigma2) || error == FALSE) { 
       rho <- 'no'
     } else {
       rho <- 'cv'

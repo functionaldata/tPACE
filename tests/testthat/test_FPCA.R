@@ -15,6 +15,24 @@ trueLam <- 4 / ((2 * (1:50) - 1 ) * pi) ^ 2
 
 # CreateCovPlot(res, 'Smoothed', FALSE)
 
+test_that('error == FALSE works', {
+  set.seed(1)
+  n <- 100
+  M <- 51
+  pts <- seq(0, 1, length.out=M)
+  mu <- rep(0, length(pts))
+  sampDense <- Wiener(n, pts)
+  samp4 <- Sparsify(sampDense, pts, 10)
+  res4NE <- FPCA(samp4$Ly, samp4$Lt, list(error=FALSE, nRegGrid=M, FVEthreshold=1))
+  res4Err <- FPCA(samp4$Ly, samp4$Lt, list(error=TRUE, nRegGrid=M, FVEthreshold=1))
+
+  # CreatePathPlot(res4Err, 11:15)
+  # CreatePathPlot(res4NE, 11:15)
+  expect_equal(res4NE$sigma2, NULL)
+  expect_true(mean((fitted(res4NE) - sampDense)^2) > 
+              mean((fitted(res4Err) - sampDense)^2))
+})
+
 test_that('Truncation works for FPCA Wiener process', {
   set.seed(1)
   n <- 100
