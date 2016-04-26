@@ -124,3 +124,32 @@ test_that('GetCEScores for sparse case matches Matlab', {
 
 # no error case. This observation has a singular Sigma_Yi, which should not work in theory.
 
+
+
+
+# truncation
+test_that('Noiseless example', {
+  set.seed(1)
+  n <- 100
+  M <- 50
+  k <- 5
+  samp <- MakeGPFunctionalData(n, M, k=k, lambda=2^(-seq(1, k)))
+  # matplot(t(samp$Y[1:10, ])) 
+  sampList <- MakeFPCAInputs(tVec=samp$pts, yVec=samp$Y)
+  resIN <- FPCA(sampList$Ly, sampList$Lt, list(methodXi='IN', lean=TRUE, error=FALSE, rho='no'))
+  resCE <- FPCA(sampList$Ly, sampList$Lt, list(methodXi='CE', lean=TRUE, error=FALSE, rho='no'))
+  
+  expect_more_than( abs( cor( samp$xi[,1] , resIN$xiEst[,1])),0.97)
+  expect_more_than( abs(cor( samp$xi[,2] , resIN$xiEst[,2])),0.97)
+  expect_more_than( abs(cor( samp$xi[,3] , resIN$xiEst[,3])),0.97)
+  expect_more_than( abs(cor( samp$xi[,4] , resIN$xiEst[,4])), 0.97)
+  expect_more_than( abs(cor( samp$xi[,5] , resIN$xiEst[,5])), 0.94)
+   
+  expect_more_than( abs( cor( samp$xi[,1] , resCE$xiEst[,1])),0.97)
+  expect_more_than( abs(cor( samp$xi[,2] , resCE$xiEst[,2])),0.97)
+  expect_more_than( abs(cor( samp$xi[,3] , resCE$xiEst[,3])),0.97)
+  expect_more_than( abs(cor( samp$xi[,4] , resCE$xiEst[,4])), 0.97)
+  expect_more_than( abs(cor( samp$xi[,5] , resCE$xiEst[,5])), 0.94)
+ 
+}) 
+

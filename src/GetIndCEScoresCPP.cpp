@@ -17,12 +17,12 @@ Rcpp::List GetIndCEScoresCPP( const Eigen::Map<Eigen::VectorXd> & yVec, const Ei
   Eigen::MatrixXd xiVar = Eigen::MatrixXd::Constant(lenlamVec,lenlamVec,std::numeric_limits<double>::quiet_NaN());
   Eigen::MatrixXd xiEst = Eigen::MatrixXd::Constant(lenlamVec,1,std::numeric_limits<double>::quiet_NaN());
   Eigen::MatrixXd fittedY = Eigen::MatrixXd::Constant(lenlamVec,1,std::numeric_limits<double>::quiet_NaN());
-
-  Eigen::MatrixXd LamPhi = lamVec.asDiagonal() * phiMat.transpose();
-  Eigen::MatrixXd LamPhiSig = LamPhi * SigmaYi.inverse();
+   
+  Eigen::MatrixXd LamPhi = lamVec.asDiagonal() * phiMat.transpose();  
+  Eigen::LDLT<Eigen::MatrixXd> ldlt_SigmaYi(SigmaYi);
+  xiEst = LamPhi * ldlt_SigmaYi.solve(yVec - muVec) ;       // LamPhiSig * (yVec - muVec); 
+  xiVar = -LamPhi * ldlt_SigmaYi.solve(LamPhi.transpose()); // LamPhiSig.transpose(); 
   
-  xiEst = LamPhiSig * (yVec - muVec);
-  xiVar = -LamPhi * LamPhiSig.transpose(); 
   xiVar.diagonal() += lamVec;
   fittedY = muVec + phiMat * xiEst;
 
