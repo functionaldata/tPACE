@@ -23,7 +23,7 @@ This function will create, using the first two FPC scores, a set of convex hulls
 Available control options are 
 \describe{
 \item{ifactor}{inflation ifactor for the bag-plot defining the loop of bag-plot or multiplying ifactor the KDE pilot bandwidth matrix. (see ?aplpack::compute.bagplot; ?ks::Hpi respectively; default: 2.58; 2 respectively).}
-\item{variant}{string defining the outlier method used ('KDE' or 'bagplot') (default: 'KDE')}
+\item{variant}{string defining the outlier method used ('KDE', 'NN' or 'bagplot') (default: 'KDE')}
 \item{unimodal}{logical specifying if the KDE estimate should be unimodal (default: FALSE, relavant only for variant='KDE')}
 \item{nSlices}{integer between 3 and 16, denoting the number of slices to be used (default: 4, relavant only for groupingType='slice') }
 \item{colSpectrum}{character vector to be use as input in the 'colorRampPalette' function defining the outliers colous(default: c("red",  "yellow", 'blue'), relavant only for groupingType='slice') }
