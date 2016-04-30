@@ -63,12 +63,23 @@ Lwls2D <- function(bw, kern='epan', xin, yin, win=NULL, xout1=NULL, xout2=NULL, 
       yin <- yin[ord]
       win <- win[ord]
       # browser()
-      ret <- RmullwlskCCsort2(bw, kern, t(xin), yin, win, xout1, xout2, FALSE)
+      #ret <- RmullwlskCCsort2(bw, kern, t(xin), yin, win, xout1, xout2, FALSE)
+       ret <- RmullwlskUniversal(bw, kern, t(xin), yin, win, xout1, xout2, FALSE, autoCov = FALSE)
     } else if (method == 'plain') {
       ret <- RmullwlskCC(bw, kern, t(xin), yin, win, xout1, xout2, FALSE)
     }
     } else {
-      ret <- Rmullwlsk(bw, kern, t(xin), yin, win, xout1, xout2, FALSE)
+      #browser()
+      if(method == 'plain'){
+        ret <- Rmullwlsk(bw, kern, t(xin), yin, win, xout1, xout2, FALSE)
+      } else if (method == 'sort2'){
+        ord <- order(xin[, 1])
+        xin <- xin[ord, ]
+        yin <- yin[ord]
+        win <- win[ord]
+        # browser()
+        ret <- RmullwlskUniversal(bw, kern, t(xin), yin, win, xout1, xout2, FALSE, autoCov = TRUE)
+      }
   }
 
   if (!is.null(xout)) {

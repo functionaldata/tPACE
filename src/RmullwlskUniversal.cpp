@@ -6,20 +6,21 @@
 // #include <gperftools/profiler.h>
 
 typedef std::pair<double, unsigned int> valIndPair;
-bool compPair(const valIndPair& l, const valIndPair& r) {
+bool comparePair(const valIndPair& l, const valIndPair& r) {
   return(l.first < r.first);
 }
 
 // [[Rcpp::depends(RcppEigen)]]
 // [[Rcpp::export]]
 
-Eigen::MatrixXd RmullwlskCCsort2( const Eigen::Map<Eigen::VectorXd> & bw, const std::string kernel_type, const Eigen::Map<Eigen::MatrixXd> & tPairs, const Eigen::Map<Eigen::MatrixXd> & cxxn, const Eigen::Map<Eigen::VectorXd> & win,  const Eigen::Map<Eigen::VectorXd> & xgrid, const Eigen::Map<Eigen::VectorXd> & ygrid, const bool & bwCheck){ 
+Eigen::MatrixXd RmullwlskUniversal( const Eigen::Map<Eigen::VectorXd> & bw, const std::string kernel_type, const Eigen::Map<Eigen::MatrixXd> & tPairs, const Eigen::Map<Eigen::MatrixXd> & cxxn, const Eigen::Map<Eigen::VectorXd> & win,  const Eigen::Map<Eigen::VectorXd> & xgrid, const Eigen::Map<Eigen::VectorXd> & ygrid, const bool & bwCheck, const bool & autoCov){ 
 // Assumes the first row of tPairs is sorted in increasing order.
   // tPairs : xin (in MATLAB code)
   // cxxn : yin (in MATLAB code)
   // xgrid: out1 (in MATLAB code)
   // ygrid: out2 (in MATLAB code)
-  // bwCheck : boolean/ cause the function to simply run the bandwidth check.
+  // bwCheck : boolean / cause the function to simply run the bandwidth check. //To be depreciated
+  // autoCov : boolean / cause the function to return the autocovariance.
 
   const double invSqrt2pi=  1./(sqrt(2.*M_PI));
 
@@ -76,12 +77,12 @@ Eigen::MatrixXd RmullwlskCCsort2( const Eigen::Map<Eigen::VectorXd> & bw, const 
     for (unsigned int k = 0; k < yval.size(); ++k){
       yval[k] = std::make_pair(tPairs(1, k + indl), k + indl);
     }
-    std::sort<std::vector<valIndPair>::iterator>(yval.begin(), yval.end(), compPair);
+    std::sort<std::vector<valIndPair>::iterator>(yval.begin(), yval.end(), comparePair);
 
     std::vector<valIndPair>::iterator ylIt = yval.begin(), 
                                       yuIt = yval.begin();
 
-    for (unsigned int j = 0; j != ygridN; ++j) { 
+    for (unsigned int j = !autoCov? 0: i; j != ygridN; ++j) { 
       const double yl = ygrid(j) - bw(1) - 1e-6, 
                    yu = ygrid(j) + bw(1) + 1e-6;
 
@@ -91,8 +92,8 @@ Eigen::MatrixXd RmullwlskCCsort2( const Eigen::Map<Eigen::VectorXd> & bw, const 
       //if the kernel is not Gaussian
       if ( KernelName != 3) { 
       // Search the lower and upper bounds increasingly.
-        ylIt = std::lower_bound(ylIt, yval.end(), valIndPair(yl, 0), compPair);
-        yuIt = std::upper_bound(yuIt, yval.end(), valIndPair(yu, 0), compPair);
+        ylIt = std::lower_bound(ylIt, yval.end(), valIndPair(yl, 0), comparePair);
+        yuIt = std::upper_bound(yuIt, yval.end(), valIndPair(yu, 0), comparePair);
 
         // The following works nice for the Gaussian 
         //  but for very small samples it complains  
@@ -110,9 +111,6 @@ Eigen::MatrixXd RmullwlskCCsort2( const Eigen::Map<Eigen::VectorXd> & bw, const 
         }
       }
 
-      // for (unsigned int y = 0; y != indx.size(); ++y){
-      //  Rcpp::Rcout << "indx.at(y):  " << indx.at(y)<< ", ";
-      //  }
       unsigned int indxSize = indx.size();
       Eigen::VectorXd lw(indxSize);  
       Eigen::VectorXd ly(indxSize);
@@ -180,19 +178,19 @@ Eigen::MatrixXd RmullwlskCCsort2( const Eigen::Map<Eigen::VectorXd> & bw, const 
         X.col(2) = lx.row(1).array() - ygrid(j); 
         Eigen::LDLT<Eigen::MatrixXd> ldlt_XTWX(X.transpose() * temp.asDiagonal() *X);
         // The solver should stop if the value is NaN. See the HOLE example in gcvlwls2dV2.
-        Eigen::VectorXd beta = ldlt_XTWX.solve(X.transpose() * temp.asDiagonal() * ly);  
-        mu(i,j)=beta(0); 
+        Eigen::VectorXd beta = ldlt_XTWX.solve(X.transpose() * temp.asDiagonal() * ly);
+        mu(i,j)=beta(0);  
       } 
-      // else if(meter < 3){
+      else if(meter < 3){
         // // Rcpp::Rcout <<"The meter value is:" << meter << std::endl;  
         // if (bwCheck) {
             // Eigen::MatrixXd checker(1,1);
             // checker(0,0) = 0.;
             // return(checker);
         // } else {
-            // Rcpp::stop("No enough points in local window, please increase bandwidth.");
+             Rcpp::stop("No enough points in local window, please increase bandwidth.");
         // }
-      // }
+      }
     }
   }
 
@@ -201,9 +199,12 @@ Eigen::MatrixXd RmullwlskCCsort2( const Eigen::Map<Eigen::VectorXd> & bw, const 
      checker(0,0) = 1.; 
      return(checker);
   } 
-      
-// ProfilerStop();
-  return ( mu ); 
+  if(autoCov){
+       return ( Eigen::MatrixXd(mu.triangularView<Eigen::StrictlyUpper>().transpose()) + Eigen::MatrixXd(mu.triangularView<Eigen::Upper>()));
+  } else {
+    // ProfilerStop();
+    return ( mu ); 
+  }
 }
 
  
