@@ -73,9 +73,9 @@ Eigen::MatrixXd RmullwlskCCsort2( const Eigen::Map<Eigen::VectorXd> & bw, const 
 
     // sort the y index
     std::vector<valIndPair> yval(indu - indl);
-    for (int k = 0; k < yval.size(); ++k)
+    for (unsigned int k = 0; k < yval.size(); ++k){
       yval[k] = std::make_pair(tPairs(1, k + indl), k + indl);
-
+    }
     std::sort<std::vector<valIndPair>::iterator>(yval.begin(), yval.end(), compPair);
 
     std::vector<valIndPair>::iterator ylIt = yval.begin(), 
@@ -87,15 +87,32 @@ Eigen::MatrixXd RmullwlskCCsort2( const Eigen::Map<Eigen::VectorXd> & bw, const 
 
       //locating local window (LOL) (bad joke)
       std::vector <unsigned int> indx; 
-
+      
+      //if the kernel is not Gaussian
+      if ( KernelName != 3) { 
       // Search the lower and upper bounds increasingly.
-      ylIt = std::lower_bound(ylIt, yval.end(), valIndPair(yl, 0), compPair);
-      yuIt = std::upper_bound(yuIt, yval.end(), valIndPair(yu, 0), compPair);
+        ylIt = std::lower_bound(ylIt, yval.end(), valIndPair(yl, 0), compPair);
+        yuIt = std::upper_bound(yuIt, yval.end(), valIndPair(yu, 0), compPair);
 
-      for (std::vector<valIndPair>::iterator y = ylIt; y != yuIt; ++y){ 
+      // The following works nice for the Gaussian 
+      //  but for very small samples it complains  
+      //} else {
+      //  ylIt = yval.begin();
+      //  yuIt = yval.end();
+      //}
+
+        for (std::vector<valIndPair>::iterator y = ylIt; y != yuIt; ++y){ 
           indx.push_back(y->second);
-      }
-  
+        } 
+    } else { //When we finally get c++11 we will use std::iota
+       for( unsigned int y = 0; y != n; ++y){
+                   indx.push_back(y);
+        }
+       }
+
+      // for (unsigned int y = 0; y != indx.size(); ++y){
+      //  Rcpp::Rcout << "indx.at(y):  " << indx.at(y)<< ", ";
+      //  }
       unsigned int indxSize = indx.size();
       Eigen::VectorXd lw(indxSize);  
       Eigen::VectorXd ly(indxSize);
@@ -119,7 +136,7 @@ Eigen::MatrixXd RmullwlskCCsort2( const Eigen::Map<Eigen::VectorXd> & bw, const 
           break; 
         }
       }
-   
+      //Rcpp::Rcout << "meter: " << meter <<  std::endl;                                                                                                                                         
       //computing weight matrix 
       if (meter >=  3 && !bwCheck) { 
         Eigen::VectorXd temp(indxSize);

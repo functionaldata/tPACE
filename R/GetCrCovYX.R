@@ -166,7 +166,8 @@ smoothRCC2D <- function(rcov,bw1, bw2, xout1, xout2, kern='gauss'){
   # bw2     : scalar
   # xout1   : vector M-1
   # xout2   : vector L-1
-  # returns : matrix M-L
+  # returns : matrix M-L 
+  # browser()
   return( Lwls2D( bw = c(bw1, bw2), kern = kern, xin=rcov$tpairn, 
                   yin=rcov$rawCC, xout1=xout1, xout2=xout2, crosscov=TRUE) )  
 }

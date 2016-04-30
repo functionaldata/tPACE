@@ -11,15 +11,12 @@
 #' @param xout alternative to xout1 and xout2. A matrix of p by 2 specifying the output points (may be inefficient if the size of \code{xout} is small).
 #' @param crosscov using function for cross-covariance estimation (Default: FALSE)
 #' @param subset  a vector with the indeces of x-/y-/w-in to be used (Default: NULL)
-#' @param method should one try to sort the values xin and yin before using the lwls smoother? if yes ('sort2' - default), if no ('plain' - fully stable)
 #' @return a p1 by p2 matrix of fitted values if xout is not specified. Otherwise a vector of length p corresponding to the rows of xout. 
-#' @export
 
-Lwls2D2 <- function(bw, kern='epan', xin, yin, win=NULL, xout1=NULL, xout2=NULL, xout=NULL, subset=NULL, method = 'sort2') {
 
-  # only support epan kernel now.
-  stopifnot(kern == 'epan')
-  
+# Uses Pantelis' cpp code.
+Lwls2Dv1 <- function(bw, kern='epan', xin, yin, win=NULL, xout1=NULL, xout2=NULL, xout=NULL, subset=NULL, crosscov = FALSE) {
+  userNumCores = NULL
   if (length(bw) == 1){
     bw <- c(bw, bw)
   }
@@ -57,14 +54,41 @@ Lwls2D2 <- function(bw, kern='epan', xin, yin, win=NULL, xout1=NULL, xout2=NULL,
   if (!is.null(xout))
     storage.mode(xout) <- 'numeric' 
   
-  if (method == 'sort2') {
-    ord <- order(xin[, 1])
-    xin <- xin[ord, ]
-    yin <- yin[ord]
-    win <- win[ord]
-    # browser()
-    ret <- RmullwlskCCsort2(bw, kern, t(xin), yin, win, xout1, xout2, FALSE)
-  } else if (method == 'plain') {
+  if (!crosscov){
+    if( is.null(userNumCores) ){
+      ret <- Rmullwlsk(bw, kern, t(xin), yin, win, xout1, xout2, FALSE)
+    } else {
+      
+      if ( length(xout1) < userNumCores){  
+        warning('You have allocated more cores than grid-points to evaluate. Nice... \n (We will use only as many cores as grid-points)')
+        userNumCores =  length(xout1)
+      }       
+      if ( length(xout1)*0.01 < userNumCores){   
+        warning('Less than 10000 points to be processed per core. Probably you will get no speed-up.')
+      }
+      if ( !all.equal( xout1, xout2)){
+        stop('Both xout1 and xout2 must be the same to use multicore.')
+      }
+      
+      parSmooth2 <- function(bw, xin, yin, kernel_type, win, nc, xout){ 
+        N = length(xout) 
+        breakPoints =   sort( N-  round(sqrt((1:(nc-1))/nc) * N))
+        m2 <- Matrix::Matrix(0, nrow = N, N, sparse = TRUE)
+        i_indx = c( breakPoints,  N ) # 1 3 7
+        j_indx = c( 1, breakPoints+1) # 1 2 4 
+        for (ij in 1:nc){ 
+          q = i_indx[ij]
+          p = j_indx[ij]
+          m2[(p:q) , (p:N)] =  Rmullwlsk(bw, xin, cxxn= yin, xgrid=xout[p:N], ygrid=xout[p:q], 
+                                         kernel_type=kernel_type, win=rep(1,length(yin)), FALSE, FALSE)
+        } 
+        m3 = as.matrix(m2) + t(as.matrix(m2))
+        diag(m3) = 0.5 * diag(m3)
+        return(m3)
+      }
+      ret = parSmooth2(bw = bw, xin = t(xin), yin = yin, kernel_type = 'epan', win = win, nc = 3,  xout = xout1) 
+    } 
+  } else {
     ret <- RmullwlskCC(bw, kern, t(xin), yin, win, xout1, xout2, FALSE)
   }
   
