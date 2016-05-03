@@ -27,16 +27,17 @@ GetLogLik = function(fpcaObj, k, Ly = NULL, Lt = NULL){
   	} else {
       Sigma_y = phi %*% diag(lambda) %*% t(phi) + sigma2*diag(rep(1,nrow(phi)))
     }
-    #detSigma_y = prod(c(lambda,rep(0,nrow(phi)-k))+sigma2)
-    detSigma_y = det(Sigma_y)
+    detSigma_y = prod(c(lambda,rep(0,nrow(phi)-k))[1:length(lambda)]+sigma2)
+    #detSigma_y = det(Sigma_y)
     if(detSigma_y == 0){
       logLik = NULL
       return(logLik)
     }
-    for(i in 1:length(Ly)){ # TODO: imputation for DenseWithMV needed
-      invtempSub = solve(Sigma_y, Ly[[i]] - fpcaObj$mu)
-      logLik = logLik + log(detSigma_y) + invtempSub %*% (Ly[[i]] - fpcaObj$mu)
-    }
+    # calculate loglikelihood via matrix multiplication
+    ymatcenter = matrix(unlist(Ly)-fpcaObj$mu, nrow = length(Ly), byrow = TRUE)
+    svd_Sigma_y = svd(Sigma_y)
+    Sigma_y_inv = svd_Sigma_y$v %*% diag(1/svd_Sigma_y$d) %*% t(svd_Sigma_y$u)
+  	logLik = sum(diag(t(Sigma_y_inv %*% t(ymatcenter)) %*% t(ymatcenter))) + length(Ly)*log(detSigma_y)
     return(logLik)
   } else { # Sparse case
     if(is.null(sigma2)){ sigma2 <- fpcaObj$rho }
