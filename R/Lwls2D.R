@@ -11,11 +11,11 @@
 #' @param xout alternative to xout1 and xout2. A matrix of p by 2 specifying the output points (may be inefficient if the size of \code{xout} is small).
 #' @param crosscov using function for cross-covariance estimation (Default: FALSE)
 #' @param subset  a vector with the indeces of x-/y-/w-in to be used (Default: NULL)
-#' @param method should one try to sort the values xin and yin before using the lwls smoother? if yes ('sort2' - default for non-Gaussian kernels), if no ('plain' - fully stable; default for Gaussian kernels)
+#' @param method should one try to sort the values xin and yin before using the lwls smoother? if yes ('sort2' - default for non-Gaussian kernels), if no ('plain' - fully stable; de)
 #' @return a p1 by p2 matrix of fitted values if xout is not specified. Otherwise a vector of length p corresponding to the rows of xout. 
 #' @export
 
-Lwls2D <- function(bw, kern='epan', xin, yin, win=NULL, xout1=NULL, xout2=NULL, xout=NULL, subset=NULL, crosscov = FALSE, method = ifelse(kernel == 'gauss', 'plain', 'sort2')) {
+Lwls2D <- function(bw, kern='epan', xin, yin, win=NULL, xout1=NULL, xout2=NULL, xout=NULL, subset=NULL, crosscov = FALSE, method = ifelse(kern == 'gauss', 'plain', 'sort2')) {
 
   # only support epan kernel now.
   # stopifnot(kern == 'epan')
