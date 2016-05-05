@@ -1,9 +1,9 @@
-#' Create the sample path plot based on the results from FPCA().
+#' Create the fitted sample path plot based on the results from FPCA().
 #'
 #' @param fpcaObj Returned object from FPCA().
 #' @param subset A vector of indices or a logical vector for subsetting the
 #' observations.
-#' @param k The number of components to reconstruct the sample paths.
+#' @param k The number of components to reconstruct the fitted sample paths.
 #' @param inputData A list of length 2 containing the sparse/dense
 #' (unsupported yet) observations. \code{inputData} needs to contain two
 #' fields: \code{Lt} for a list of time points and \code{Ly} for a list of
@@ -24,7 +24,7 @@
 #' @export
 
 CreatePathPlot = function(fpcaObj, subset, k=NULL, inputData=fpcaObj[['inputData']], 
-                          showObs=fpcaObj$optns$dataType == 'Sparse' && !is.null(inputData),  
+                          showObs=!is.null(inputData),  
                           derOptns = NULL, ...){
   
   n <- dim(fpcaObj[['xiEst']])[1]
