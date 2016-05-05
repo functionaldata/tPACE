@@ -24,7 +24,8 @@
 #' @export
 
 CreatePathPlot = function(fpcaObj, subset, k=NULL, inputData=fpcaObj[['inputData']], 
-                          showObs=!is.null(inputData),  derOptns = NULL, ...){
+                          showObs=fpcaObj$optns$dataType == 'Sparse' && !is.null(inputData),  
+                          derOptns = NULL, ...){
   
   n <- dim(fpcaObj[['xiEst']])[1]
   
