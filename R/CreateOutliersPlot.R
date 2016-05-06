@@ -12,8 +12,9 @@
 #' \item{variant}{string defining the outlier method used ('KDE', 'NN' or 'bagplot') (default: 'KDE')}
 #' \item{unimodal}{logical specifying if the KDE estimate should be unimodal (default: FALSE, relavant only for variant='KDE')}
 #' \item{nSlices}{integer between 3 and 16, denoting the number of slices to be used (default: 4, relavant only for groupingType='slice') }
-#' \item{colSpectrum}{character vector to be use as input in the 'colorRampPalette' function defining the outliers colous(default: c("red",  "yellow", 'blue'), relavant only for groupingType='slice') }
+#' \item{colSpectrum}{character vector to be use as input in the 'colorRampPalette' function defining the outliers colours (default: c("red",  "yellow", 'blue'), relavant only for groupingType='slice') }
 #' \item{groupingType}{string specifying if a slice grouping ('slice') or a standard percentile/bagplot grouping ('standard') should be returned (default: 'standard')} 
+#' \item{fpcIndeces}{a two-component vector with the index of the mode of variation to consider (default: c(1,2))}
 #' }
 #'
 #' @return An (temporarily) invisible copy of a list containing the labels associated with each of sample curves. 
@@ -78,6 +79,15 @@ CreateOutliersPlot <- function(fpcaObj, optns = NULL, ...){
     nSlices = optns$nSlices
   }
   
+  if(is.null(optns$fpcIndeces)){
+    fpcIndeces <- c(1,2)
+  } else {
+    if( 2 < length(optns$fpcIndeces)){
+      warning("fpcIndeces has more than two elements; only the first two will be used.")
+    }
+    fpcIndeces <- sort(optns$fpcIndeces[1:2])
+  }
+  
   if( !any( groupingType == c('standard','slice')) ){
     stop("You request an groupingType method not currenty available.")
   }
@@ -106,12 +116,22 @@ CreateOutliersPlot <- function(fpcaObj, optns = NULL, ...){
     warning("nSlices must be between a natural number betweeb 3 and 16. 'nSlices' set to 4.")
     nSlices = 4;
   }
+  if(fpcIndeces[2] >length(fpcaObj$lambda)){
+    stop("You request a principal mode of variation that is not available.")
+  }
+  if(diff(range(fpcIndeces)) < .Machine$double.eps){
+    stop("You request a scatter over the same component; check the fpcIndeces.")
+  }
   
-  xedge = 1.05 * max( abs(fpcaObj$xiEst[,1]))
-  yedge = 1.05 * max( abs(fpcaObj$xiEst[,2]))  
+  mode1 = fpcIndeces[1]
+  mode2 = fpcIndeces[2]
   
-  args1 <- list(  pch=10,  xlab=paste('FPC1 scores ', round(fpcaObj$cumFVE[1]), '%', sep=''   ),
-                  ylab=paste('FPC2 scores ', round( diff( fpcaObj$cumFVE[1:2])), '%', sep='' ),  
+  xedge = 1.05 * max( abs(fpcaObj$xiEst[,mode1]))
+  yedge = 1.05 * max( abs(fpcaObj$xiEst[,mode2]))  
+  
+  
+  args1 <- list(  pch=10,  xlab=paste('FPC', mode1 ,' scores ', round(fpcaObj$cumFVE[mode1]), '%', sep=''   ),
+                  ylab=paste('FPC', mode2 ,' scores ', round( diff( fpcaObj$cumFVE[c(mode2-1, mode2)])), '%', sep='' ),  
                   xlim = c(-xedge, xedge), ylim =c(-yedge, yedge), lwd= 2)
   inargs <- list(...)
   args1[names(inargs)] <- inargs 
@@ -124,15 +144,15 @@ CreateOutliersPlot <- function(fpcaObj, optns = NULL, ...){
   if ( variant == 'bagplot' ){
     
     if ( is.null((ifactor))){ ifactor = 2.58 } 
-    bgObj = aplpack::compute.bagplot(x= fpcaObj$xiEst[,1], y= fpcaObj$xiEst[,2], 
+    bgObj = aplpack::compute.bagplot(x= fpcaObj$xiEst[,mode1], y= fpcaObj$xiEst[,mode2], 
                                      approx.limit=3333 , factor = ifactor)     
     # I do this because panel.first() does not work with the do.call()
     
     if(groupingType =='standard'){
       
-      args2 = list (x = fpcaObj$xiEst[,1], y = fpcaObj$xiEst[,2], cex= .33,  type='n' )
+      args2 = list (x = fpcaObj$xiEst[,mode1], y = fpcaObj$xiEst[,mode2], cex= .33,  type='n' )
       do.call(plot, c(args2, args1))   
-      points(x = fpcaObj$xiEst[,1], y = fpcaObj$xiEst[,2], cex= .33,  panel.first = grid(),  lwd= 2) 
+      points(x = fpcaObj$xiEst[,mode1], y = fpcaObj$xiEst[,mode2], cex= .33,  panel.first = grid(),  lwd= 2) 
       lines( bgObj$hull.bag[c(1:nrow(bgObj$hull.bag),1),], col=2, lwd=2)
       lines( bgObj$hull.loop[c(1:nrow(bgObj$hull.loop),1),], col=4, lwd=2) 
       legend(legend= c('0.500', 'The fence'), x='topright', col=c(2,4), lwd=2)
@@ -145,24 +165,24 @@ CreateOutliersPlot <- function(fpcaObj, optns = NULL, ...){
       ) ) ) 
     } else { # groupingType : slice
       
-      N <- nrow(fpcaObj$xiEst[,1:2]) 
+      N <- nrow(fpcaObj$xiEst[,fpcIndeces]) 
       kNNindeces95plus <- (1:N %in% match( apply(bgObj$pxy.outlier,1, prod) ,apply( bgObj$xydata,1, prod)))
       return( makeSlicePlot(nSlices, colFunc, p95plusInd = kNNindeces95plus, N, args1, 
-                            xiEsts = fpcaObj$xiEst[,1:2] , lambdas = fpcaObj$lambda[1:2] ) )
+                            xiEsts = fpcaObj$xiEst[,fpcIndeces] , lambdas = fpcaObj$lambda[fpcIndeces] ) )
       
     } 
   } else if (variant == 'KDE') {  # variant 'kde'
     
     if ( is.null((ifactor))){ ifactor = 2 } 
-    fhat <- ks::kde(x=fpcaObj$xiEst[ ,1:2], gridsize = c(400,400), compute.cont = TRUE, 
-                    H = ks::Hpi( x=fpcaObj$xiEst[ ,1:2], binned=TRUE,  pilot="dscalar"  ) *  ifactor) 
+    fhat <- ks::kde(x=fpcaObj$xiEst[ ,fpcIndeces], gridsize = c(400,400), compute.cont = TRUE, 
+                    H = ks::Hpi( x=fpcaObj$xiEst[ ,fpcIndeces], binned=TRUE,  pilot="dscalar"  ) *  ifactor) 
     zin = fhat$estimate
     if( !is.null(unimodal) && unimodal ){
       maxIndex = which( fhat$estimate == max(fhat$estimate), arr.ind = TRUE)
       zin = monotoniseMatrix( fhat$estimate, maxIndex[1], maxIndex[2])
     }
     qq = quickNNeval(xin = fhat$eval.points[[1]], yin = fhat$eval.points[[2]], zin =  zin, 
-                     xout = fpcaObj$xiEst[,1], yout = fpcaObj$xiEst[,2] ) 
+                     xout = fpcaObj$xiEst[,mode1], yout = fpcaObj$xiEst[,mode2] ) 
     
     if(groupingType =='standard'){ 
       args2 = list (x= fhat$eval.points[[1]], y=fhat$eval.points[[2]], z = zin, 
@@ -170,10 +190,10 @@ CreateOutliersPlot <- function(fpcaObj, optns = NULL, ...){
       do.call(contour, c(args2, args1)); 
       grid()
       
-      points(fpcaObj$xiEst[qq <=  fhat$cont[99],1:2],cex=0.5, col='orange', pch=10 , lwd =2 ) 
-      points(fpcaObj$xiEst[qq >  fhat$cont[99] & qq <=  fhat$cont[95],1:2],cex=0.33, col='red', pch=10, lwd =2 ) 
-      points(fpcaObj$xiEst[qq >  fhat$cont[95] & qq <=  fhat$cont[50],1:2],cex=0.33, col='blue', pch=10 , lwd =2 ) 
-      points(fpcaObj$xiEst[qq >=  fhat$cont[50],1:2],cex=0.33, col='black' , pch=10, lwd =2 ) 
+      points(fpcaObj$xiEst[qq <=  fhat$cont[99],fpcIndeces],cex=0.5, col='orange', pch=10 , lwd =2 ) 
+      points(fpcaObj$xiEst[qq >  fhat$cont[99] & qq <=  fhat$cont[95],fpcIndeces],cex=0.33, col='red', pch=10, lwd =2 ) 
+      points(fpcaObj$xiEst[qq >  fhat$cont[95] & qq <=  fhat$cont[50],fpcIndeces],cex=0.33, col='blue', pch=10 , lwd =2 ) 
+      points(fpcaObj$xiEst[qq >=  fhat$cont[50],fpcIndeces],cex=0.33, col='black' , pch=10, lwd =2 ) 
       legend('bottomleft', c('< 50%','50%-95%','95%-99%','> 99%'), pch = 19, 
              col= c('black','blue','red', 'orange'), pt.cex=1.5, bg='white' )
       
@@ -185,18 +205,18 @@ CreateOutliersPlot <- function(fpcaObj, optns = NULL, ...){
       
       kNNindeces95plus <- qq <=  fhat$cont[95]
       return( makeSlicePlot(nSlices, colFunc, p95plusInd = kNNindeces95plus, N, args1, 
-                            xiEsts = fpcaObj$xiEst[,1:2] , lambdas = fpcaObj$lambda[1:2] ) )
+                            xiEsts = fpcaObj$xiEst[,fpcIndeces] , lambdas = fpcaObj$lambda[fpcIndeces] ) )
       
     }
   } else if (variant == 'NN') {
     
     centrePoint = c(0,0);
     distName = 'euclidean';
-    N <- nrow(fpcaObj$xiEst[,1:2])
+    N <- nrow(fpcaObj$xiEst[,fpcIndeces])
     k99 <- floor(0.99*N);
     k95 <- floor(0.95*N);
     k50 <- floor(0.50*N);
-    scaledXi <- apply(fpcaObj$xiEst[,1:2], 2, scale)
+    scaledXi <- apply(fpcaObj$xiEst[,fpcIndeces], 2, scale)
     distances <- apply(scaledXi, 1, function(aRow) dist(x = rbind(aRow, centrePoint), method = distName) ) 
     kNNindeces0to99  <- sort(x = distances, index.return = TRUE)$ix[1:k99] # Partial sort should be better
     kNNindeces0to50  <- kNNindeces0to99[1:k50] 
@@ -206,13 +226,13 @@ CreateOutliersPlot <- function(fpcaObj, optns = NULL, ...){
     
     if(groupingType =='standard'){ 
       
-      args2 = list (x = fpcaObj$xiEst[,1], y = fpcaObj$xiEst[,2], cex= .33,  type='n' )
+      args2 = list (x = fpcaObj$xiEst[,mode1], y = fpcaObj$xiEst[,mode2], cex= .33,  type='n' )
       do.call(plot, c(args2, args1))   
       grid()
-      points(fpcaObj$xiEst[kNNindeces99plus,1:2],cex=0.5, col='orange', pch=10 , lwd =2 ) 
-      points(fpcaObj$xiEst[kNNindeces95to99,1:2],cex=0.33, col='red', pch=10, lwd =2 ) 
-      points(fpcaObj$xiEst[kNNindeces50to95,1:2],cex=0.33, col='blue', pch=10 , lwd =2 ) 
-      points(fpcaObj$xiEst[kNNindeces0to50, 1:2],cex=0.33, col='black' , pch=10, lwd =2 ) 
+      points(fpcaObj$xiEst[kNNindeces99plus,fpcIndeces],cex=0.5, col='orange', pch=10 , lwd =2 ) 
+      points(fpcaObj$xiEst[kNNindeces95to99,fpcIndeces],cex=0.33, col='red', pch=10, lwd =2 ) 
+      points(fpcaObj$xiEst[kNNindeces50to95,fpcIndeces],cex=0.33, col='blue', pch=10 , lwd =2 ) 
+      points(fpcaObj$xiEst[kNNindeces0to50, fpcIndeces],cex=0.33, col='black' , pch=10, lwd =2 ) 
       legend('bottomleft', c('< 50%','50%-95%','95%-99%','> 99%'), pch = 19, 
              col= c('black','blue','red', 'orange'), pt.cex=1.5, bg='white' )
       
@@ -224,23 +244,23 @@ CreateOutliersPlot <- function(fpcaObj, optns = NULL, ...){
       
       kNNindeces95plus <- (1:N %in% setdiff(1:N, kNNindeces0to99[1:k95]))
       return( makeSlicePlot(nSlices, colFunc, p95plusInd = kNNindeces95plus, N, args1, 
-                            xiEsts = fpcaObj$xiEst[,1:2] , lambdas = fpcaObj$lambda[1:2] ) )
+                            xiEsts = fpcaObj$xiEst[,fpcIndeces] , lambdas = fpcaObj$lambda[fpcIndeces] ) )
       
     }
   }
 }
 
-makeSlicePlot <- function( nSlices, colFunc, p95plusInd, N, args1, args2, xiEsts, lambdas ){
+makeSlicePlot <- function( nSlices, colFunc, p95plusInd, N, args1, args2, xiEsts, lambdas, fpcIndeces ){
   
   kNNindeces95plus <- p95plusInd
   
-  args2 = list (x = xiEsts[,1], y = xiEsts[,2], cex= .33,  type='n' )
+  args2 = list (x = xiEsts[,mode1], y = xiEsts[,mode2], cex= .33,  type='n' )
   do.call(plot, c(args2, args1))   
   grid()
   
-  points(xiEsts[!p95plusInd,1:2],cex=0.33, col='black' , pch=10, lwd =2 )
-  Qstr =xiEsts[,1:2]  /  matrix( c( rep( sqrt(lambdas[1:2]), 
-                                         each= length(xiEsts[,1]))), ncol=2); 
+  points(xiEsts[!p95plusInd,fpcIndeces],cex=0.33, col='black' , pch=10, lwd =2 )
+  Qstr =xiEsts[,fpcIndeces]  /  matrix( c( rep( sqrt(lambdas[fpcIndeces]), 
+                                         each= length(xiEsts[,fpcIndeces[1]]))), ncol=2); 
   
   colPal = colFunc( nSlices )
   v = 1:nSlices;
@@ -254,7 +274,7 @@ makeSlicePlot <- function( nSlices, colFunc, p95plusInd, N, args1, args2, xiEsts
     qrtIndx =  multiplier1 * Qstr[,2] > multiplier1 * tan(angle) * Qstr[,1] & 
       multiplier2 * Qstr[,2] < multiplier2 * tan(angle + pi/ (nSlices/2) ) * Qstr[,1] 
     outlierList[[i]] = qrtIndx & kNNindeces95plus
-    points(xiEsts[ outlierList[[i]],1:2], cex=0.93, col= colPal[i], pch=3, lwd =2 )  
+    points(xiEsts[ outlierList[[i]],fpcIndeces], cex=0.93, col= colPal[i], pch=3, lwd =2 )  
   }
   return( invisible( list(  'p0to95'= which(p95plusInd), 
                             'outlier' = sapply(outlierList, which),

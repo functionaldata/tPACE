@@ -8,6 +8,7 @@
 #'                     'Fitted': plot the fitted cov surface
 #' @param isInteractive an option for interactive plot:
 #'                      TRUE: interactive plot; FALSE: printable plot
+#' @param colSpectrum character vector to be use as input in the 'colorRampPalette' function defining the colouring scheme (default: c('blue','red'))
 #' @param ... other arguments passed into persp3d, persp3D, plot3d or points3D for plotting options
 #'
 #' @examples
@@ -21,7 +22,7 @@
 #' CreateCovPlot(res)
 #' @export
 
-CreateCovPlot = function(fpcaObj, covPlotType = 'Fitted', isInteractive = FALSE, ...){
+CreateCovPlot = function(fpcaObj, covPlotType = 'Fitted', isInteractive = FALSE, colSpectrum = NULL, ...){
   
   ## Check if plotting covariance surface for fitted covariance surface is proper
   if(covPlotType == 'Fitted'){
@@ -34,6 +35,12 @@ CreateCovPlot = function(fpcaObj, covPlotType = 'Fitted', isInteractive = FALSE,
       return()
     }
   }
+  
+  if(is.null(colSpectrum)){
+    colFunc = colorRampPalette( c('blue','red') );
+  } else {
+    colFunc = colorRampPalette(colSpectrum)
+  } 
   
   ## Check if rgl is installed
   if(isInteractive == TRUE && is.element('rgl', installed.packages()[,1]) == FALSE){
@@ -54,7 +61,7 @@ CreateCovPlot = function(fpcaObj, covPlotType = 'Fitted', isInteractive = FALSE,
   }
   
   ## Define the plotting arguments
-  args1 <- list( xlab='s', ylab='t', col =  topo.colors(24), zlab = 'C(s,t)', lighting=TRUE)
+  args1 <- list( xlab='s', ylab='t', col =  colFunc(24), zlab = 'C(s,t)', lighting=FALSE)
   if( covPlotType == 'Fitted' ){
     args1$main = 'Fitted covariance surface';
   } else {

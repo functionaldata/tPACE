@@ -32,7 +32,7 @@ CreateScreePlot <-function(fpcaObj, ...){
     warning('The maximum number in the input vector is larger than 100; are sure it is right?');
   }
   if(any(ys < 0) || any(diff(ys) <0) ){
-    stop('This does not appear to be a valid cummulative FVE vector. Please check it carefully.')
+    stop('This does not appear to be a valid cumulative FVE vector. Please check it carefully.')
   }
 
   dfbar <- do.call( barplot, c( args1, list( ylim=c(0,105)), list(axes=FALSE), list(height =  rep(NA,length(ys))) ) )
@@ -41,6 +41,6 @@ CreateScreePlot <-function(fpcaObj, ...){
   barplot(c(ys[1], diff(ys)), add = TRUE )
   lines(dfbar, y= ys, col='red')
   points(dfbar, y= ys, col='red')
-  legend("right", "Cummul. FVE", col='red', lty=1, pch=1, bty='n') 
+  legend("right", "Cumul. FVE", col='red', lty=1, pch=1, bty='n') 
    
 }
