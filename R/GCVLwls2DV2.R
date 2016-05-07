@@ -67,12 +67,12 @@ GCVLwls2DV2 <- function(obsGrid, regGrid, ngrid=NULL, dataType=rcov$dataType, er
       
       if (class(rcov) == 'BinnedRawCov') {
         if (CV == FALSE) # GCV
-          Scores[i] <- getGCVscoresV2(h, kern, rcov$tPairs, rcov$meanVals, win=rcov$count, regGrid=regGrid, RSS=rcov$RSS)
+          Scores[i] <- getGCVscoresV2(h, kern, rcov$tPairs, rcov$meanVals, win=rcov$count, regGrid=regGrid, RSS=rcov$RSS, verbose=verbose)
         else # CV
           Scores[i] <- getCVscoresV2(partition, h, kern, rcov$tPairs, rcov$meanVals, win=rcov$count, regGrid=regGrid, RSS=rcov$RSS)
       } else {
         if (CV == FALSE) # GCV
-          Scores[i] <- getGCVscoresV2(h, kern, rcov$tPairs, rcov$cxxn, regGrid=regGrid)
+          Scores[i] <- getGCVscoresV2(h, kern, rcov$tPairs, rcov$cxxn, regGrid=regGrid, verbose=verbose)
         else # CV
           Scores[i] <- getCVscoresV2(partition, h, kern, rcov$tPairs, rcov$cxxn, regGrid=regGrid)
       }
@@ -145,7 +145,7 @@ GCVLwls2DV2 <- function(obsGrid, regGrid, ngrid=NULL, dataType=rcov$dataType, er
 }
 
 
-getGCVscoresV2 <- function(bw, kern, xin, yin, win=NULL, regGrid, RSS=NULL) {
+getGCVscoresV2 <- function(bw, kern, xin, yin, win=NULL, regGrid, RSS=NULL, verbose=FALSE) {
   # ...: passed on to Lwls2D
   # RSS: for implementing GCV of binned rcov.
   # browser() 
@@ -153,7 +153,9 @@ getGCVscoresV2 <- function(bw, kern, xin, yin, win=NULL, regGrid, RSS=NULL) {
     win <- rep(1, length(yin))
   
   fit <- tryCatch(Lwls2D(bw, kern, xin=xin, yin=yin, win=win, xout1=regGrid, xout2=regGrid), error=function(err) {
-    warning('Invalid bandwidth. Try enlarging the window size.')
+    if (verbose) {
+      cat('Invalid bandwidth. Try enlarging the window size.\n')
+    }
     return(Inf)
   })
   
