@@ -168,7 +168,7 @@ CreateOutliersPlot <- function(fpcaObj, optns = NULL, ...){
       N <- nrow(fpcaObj$xiEst[,fpcIndeces]) 
       kNNindeces95plus <- (1:N %in% match( apply(bgObj$pxy.outlier,1, prod) ,apply( bgObj$xydata,1, prod)))
       return( makeSlicePlot(nSlices, colFunc, p95plusInd = kNNindeces95plus, N, args1, 
-                            xiEsts = fpcaObj$xiEst[,fpcIndeces] , lambdas = fpcaObj$lambda[fpcIndeces], fpcIndeces = fpcIndeces ) )
+                            xiEsts = fpcaObj$xiEst[,fpcIndeces] , lambdas = fpcaObj$lambda[fpcIndeces]) )
       
     } 
   } else if (variant == 'KDE') {  # variant 'kde'
@@ -205,7 +205,7 @@ CreateOutliersPlot <- function(fpcaObj, optns = NULL, ...){
       
       kNNindeces95plus <- qq <=  fhat$cont[95]
       return( makeSlicePlot(nSlices, colFunc, p95plusInd = kNNindeces95plus, N, args1, 
-                            xiEsts = fpcaObj$xiEst[,fpcIndeces] , lambdas = fpcaObj$lambda[fpcIndeces], fpcIndeces = fpcIndeces ) )
+                            xiEsts = fpcaObj$xiEst[,fpcIndeces] , lambdas = fpcaObj$lambda[fpcIndeces]) )
       
     }
   } else if (variant == 'NN') {
@@ -244,27 +244,24 @@ CreateOutliersPlot <- function(fpcaObj, optns = NULL, ...){
       
       kNNindeces95plus <- (1:N %in% setdiff(1:N, kNNindeces0to99[1:k95]))
       return( makeSlicePlot(nSlices, colFunc, p95plusInd = kNNindeces95plus, N, args1, 
-                            xiEsts = fpcaObj$xiEst[,fpcIndeces], lambdas = fpcaObj$lambda[fpcIndeces], fpcIndeces = fpcIndeces ) )
+                            xiEsts = fpcaObj$xiEst[,fpcIndeces], lambdas = fpcaObj$lambda[fpcIndeces]) )
       
     }
   }
 }
 
-makeSlicePlot <- function( nSlices, colFunc, p95plusInd, N, args1, args2, xiEsts, lambdas, fpcIndeces ){
+makeSlicePlot <- function( nSlices, colFunc, p95plusInd, N, args1, args2, xiEsts, lambdas  ){
   
-  
-  mode1 = fpcIndeces[1]
-  mode2 = fpcIndeces[2]
-  
+   
   kNNindeces95plus <- p95plusInd
   
-  args2 = list (x = xiEsts[,mode1], y = xiEsts[,mode2], cex= .33,  type='n' )
+  args2 = list (x = xiEsts[,1], y = xiEsts[,2], cex= .33,  type='n' )
   do.call(plot, c(args2, args1))   
   grid(col = "#e6e6e6")
   
-  points(xiEsts[!p95plusInd,fpcIndeces],cex=0.33, col='black' , pch=10, lwd =2 )
-  Qstr =xiEsts[,fpcIndeces]  /  matrix( c( rep( sqrt(lambdas[fpcIndeces]), 
-                                         each= length(xiEsts[,fpcIndeces[1]]))), ncol=2); 
+  points(xiEsts[!p95plusInd, ],cex=0.33, col='black' , pch=10, lwd =2 )
+  Qstr =xiEsts[, ]  /  matrix( c( rep( sqrt(lambdas ), 
+                                         each= length(xiEsts[,1]))), ncol=2); 
   
   colPal = colFunc( nSlices )
   v = 1:nSlices;
@@ -278,7 +275,7 @@ makeSlicePlot <- function( nSlices, colFunc, p95plusInd, N, args1, args2, xiEsts
     qrtIndx =  multiplier1 * Qstr[,2] > multiplier1 * tan(angle) * Qstr[,1] & 
       multiplier2 * Qstr[,2] < multiplier2 * tan(angle + pi/ (nSlices/2) ) * Qstr[,1] 
     outlierList[[i]] = qrtIndx & kNNindeces95plus
-    points(xiEsts[ outlierList[[i]],fpcIndeces], cex=0.93, col= colPal[i], pch=3, lwd =2 )  
+    points(xiEsts[ outlierList[[i]], ], cex=0.93, col= colPal[i], pch=3, lwd =2 )  
   }
   return( invisible( list(  'p0to95'= which(p95plusInd), 
                             'outlier' = sapply(outlierList, which),
