@@ -2,7 +2,7 @@
 % Please edit documentation in R/CreatePathPlot.R
 \name{CreatePathPlot}
 \alias{CreatePathPlot}
-\title{Create the sample path plot based on the results from FPCA().}
+\title{Create the fitted sample path plot based on the results from FPCA().}
 \usage{
 CreatePathPlot(fpcaObj, subset, k = NULL,
   inputData = fpcaObj[["inputData"]], showObs = !is.null(inputData),
@@ -14,7 +14,7 @@ CreatePathPlot(fpcaObj, subset, k = NULL,
 \item{subset}{A vector of indices or a logical vector for subsetting the
 observations.}
 
-\item{k}{The number of components to reconstruct the sample paths.}
+\item{k}{The number of components to reconstruct the fitted sample paths.}
 
 \item{inputData}{A list of length 2 containing the sparse/dense
 (unsupported yet) observations. \code{inputData} needs to contain two
@@ -28,7 +28,7 @@ observations. Default to the `inputData` field within `fpcaObj`.}
 \item{...}{other arguments passed into matplot for plotting options}
 }
 \description{
-Create the sample path plot based on the results from FPCA().
+Create the fitted sample path plot based on the results from FPCA().
 }
 \examples{
 set.seed(1)

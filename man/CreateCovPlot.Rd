@@ -4,7 +4,8 @@
 \alias{CreateCovPlot}
 \title{Create the covariance surface plot based on the results from FPCA() or FPCder().}
 \usage{
-CreateCovPlot(fpcaObj, covPlotType = "Fitted", isInteractive = FALSE, ...)
+CreateCovPlot(fpcaObj, covPlotType = "Fitted", isInteractive = FALSE,
+  colSpectrum = NULL, ...)
 }
 \arguments{
 \item{fpcaObj}{returned object from FPCA().}
@@ -15,6 +16,8 @@ CreateCovPlot(fpcaObj, covPlotType = "Fitted", isInteractive = FALSE, ...)
 
 \item{isInteractive}{an option for interactive plot:
 TRUE: interactive plot; FALSE: printable plot}
+
+\item{colSpectrum}{character vector to be use as input in the 'colorRampPalette' function defining the colouring scheme (default: c('blue','red'))}
 
 \item{...}{other arguments passed into persp3d, persp3D, plot3d or points3D for plotting options}
 }

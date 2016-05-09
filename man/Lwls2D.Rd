@@ -6,7 +6,7 @@
 \usage{
 Lwls2D(bw, kern = "epan", xin, yin, win = NULL, xout1 = NULL,
   xout2 = NULL, xout = NULL, subset = NULL, crosscov = FALSE,
-  method = "sort2")
+  method = ifelse(kern == "gauss", "plain", "sort2"))
 }
 \arguments{
 \item{bw}{A scalar or a vector of length 2 specifying the bandwidth.}
@@ -29,7 +29,7 @@ Lwls2D(bw, kern = "epan", xin, yin, win = NULL, xout1 = NULL,
 
 \item{crosscov}{using function for cross-covariance estimation (Default: FALSE)}
 
-\item{method}{should one try to sort the values xin and yin before using the lwls smoother? if yes ('sort2' - default), if no ('plain' - fully stable)}
+\item{method}{should one try to sort the values xin and yin before using the lwls smoother? if yes ('sort2' - default for non-Gaussian kernels), if no ('plain' - fully stable; de)}
 }
 \value{
 a p1 by p2 matrix of fitted values if xout is not specified. Otherwise a vector of length p corresponding to the rows of xout.

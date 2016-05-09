@@ -5,7 +5,7 @@
 \title{Create the design plot of the functional data.}
 \usage{
 CreateDesignPlot(t, obsGrid = NULL, isColorPlot = TRUE, noDiagonal = TRUE,
-  ...)
+  addLegend = TRUE, ...)
 }
 \arguments{
 \item{t}{a list of observed time points for functional data}
@@ -19,6 +19,8 @@ FALSE: create black and white plot with dots indicating observed time pairs}
 \item{noDiagonal}{an option specifying plotting the diagonal design points:
 TRUE:  remove diagonal time pairs
 FALSE:  do not remove diagonal time pairs}
+
+\item{addLegend}{Logical, default TRUE}
 
 \item{...}{Other arguments passed into \code{plot()}.}
 }

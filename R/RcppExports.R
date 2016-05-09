@@ -29,16 +29,16 @@ RCPPvar <- function(X) {
     .Call('fdapace_RCPPvar', PACKAGE = 'fdapace', X)
 }
 
+Rmullwlsk <- function(bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck, transp = TRUE) {
+    .Call('fdapace_Rmullwlsk', PACKAGE = 'fdapace', bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck, transp)
+}
+
 RmullwlskCC <- function(bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck) {
     .Call('fdapace_RmullwlskCC', PACKAGE = 'fdapace', bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck)
 }
 
 RmullwlskCCsort2 <- function(bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck) {
     .Call('fdapace_RmullwlskCCsort2', PACKAGE = 'fdapace', bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck)
-}
-
-Rmullwlsk <- function(bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck, transp = TRUE) {
-    .Call('fdapace_Rmullwlsk', PACKAGE = 'fdapace', bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck, transp)
 }
 
 RmullwlskUniversal <- function(bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck, autoCov) {

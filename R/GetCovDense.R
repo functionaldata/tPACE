@@ -50,6 +50,8 @@ GetCovDense <- function(ymat, mu, optns) {
         ord <- 2 
         sigma2 <- mean(diff(t(ymat), differences=ord)^2, na.rm=TRUE) / 
                   choose(2 * ord, ord)
+        lambda <- eigen(K)[['values']]
+        sigma2 <- min(min(lambda), sigma2) # ensure the covariance is positive
         diag(K) <- diag(K) - sigma2
       }
     } else {

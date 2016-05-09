@@ -26,8 +26,9 @@ Available control options are
 \item{variant}{string defining the outlier method used ('KDE', 'NN' or 'bagplot') (default: 'KDE')}
 \item{unimodal}{logical specifying if the KDE estimate should be unimodal (default: FALSE, relavant only for variant='KDE')}
 \item{nSlices}{integer between 3 and 16, denoting the number of slices to be used (default: 4, relavant only for groupingType='slice') }
-\item{colSpectrum}{character vector to be use as input in the 'colorRampPalette' function defining the outliers colous(default: c("red",  "yellow", 'blue'), relavant only for groupingType='slice') }
+\item{colSpectrum}{character vector to be use as input in the 'colorRampPalette' function defining the outliers colours (default: c("red",  "yellow", 'blue'), relavant only for groupingType='slice') }
 \item{groupingType}{string specifying if a slice grouping ('slice') or a standard percentile/bagplot grouping ('standard') should be returned (default: 'standard')} 
+\item{fpcIndeces}{a two-component vector with the index of the mode of variation to consider (default: c(1,2))}
 }
 }
 \examples{

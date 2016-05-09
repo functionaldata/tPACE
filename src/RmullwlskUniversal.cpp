@@ -188,7 +188,7 @@ Eigen::MatrixXd RmullwlskUniversal( const Eigen::Map<Eigen::VectorXd> & bw, cons
             // checker(0,0) = 0.;
             // return(checker);
         // } else {
-             Rcpp::stop("No enough points in local window, please increase bandwidth.");
+             Rcpp::stop("No enough points in local window, please increase bandwidth using userBwCov.");
         // }
       }
     }
