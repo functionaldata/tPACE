@@ -3,7 +3,7 @@
 #' FPCA for dense or sparse functional data. 
 #' 
 #' @param Ly A list of \emph{n} vectors containing the observed values for each individual. Missing values specified by \code{NA}s are supported for dense case (\code{dataType='dense'}).
-#' @param Lt A list of \emph{n} vectors containing the observation time points for each individual corresponding to y.
+#' @param Lt A list of \emph{n} vectors containing the observation time points for each individual corresponding to y. Each vector should be sorted in ascending order.
 #' @param optns A list of options control parameters specified by \code{list(name=value)}. See `Details'.
 #'
 #' @details Available control options are 

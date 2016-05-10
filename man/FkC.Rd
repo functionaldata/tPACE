@@ -19,9 +19,9 @@ FkC(y, t, k = 3, maxIter = 20, optns = list(maxK = 3, lean = TRUE))
 }
 \value{
 A list containing the following fields:
-\item{sigma2}{Variance estimator of the functional variance process.} 
-\item{fpcaObjY}{FPCA object for the original data.} 
-\item{fpcaObjR}{FPCA object for the functional variance process associated with the original data.}
+\item{cluster}{A vector of levels 1:k, indicating the cluster to which each curve is allocated.} 
+\item{fpcaList}{A list with the fpcaObj for each separate cluster.} 
+\item{iterToConv}{A number indicating how many iterations where required until convergence.}
 }
 \description{
 Functional clustering and identifying substructures of longitudinal data
@@ -32,7 +32,7 @@ n <- 251
 pts <- seq(0, 1, by=0.01)
 sampWiener <- Wiener(n, pts)
 sampWiener <- Sparsify(sampWiener, pts, 101) 
-fvpaObj <- FkC(sampWiener$Ly, sampWiener$Lt)
+fkcObj <- FkC(sampWiener$Ly, sampWiener$Lt)
 }
 \references{
 \cite{Jeng-Min Chiou, Pai-Ling Li, "Functional clustering and identifying substructures of longitudinal data." Journal of the Royal Statistical Society 69 (2007): 679-699}

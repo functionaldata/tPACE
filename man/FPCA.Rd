@@ -9,7 +9,7 @@ FPCA(Ly, Lt, optns = list())
 \arguments{
 \item{Ly}{A list of \emph{n} vectors containing the observed values for each individual. Missing values specified by \code{NA}s are supported for dense case (\code{dataType='dense'}).}
 
-\item{Lt}{A list of \emph{n} vectors containing the observation time points for each individual corresponding to y.}
+\item{Lt}{A list of \emph{n} vectors containing the observation time points for each individual corresponding to y. Each vector should be sorted in ascending order.}
 
 \item{optns}{A list of options control parameters specified by \code{list(name=value)}. See `Details'.}
 }
