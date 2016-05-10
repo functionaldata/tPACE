@@ -53,6 +53,7 @@ kCFC = function(y, t, k = 3, maxIter = 20, optns = list(maxK = 3, lean = TRUE)){
   convInfo <- "None"
   clustConf <- list()
   clustConf[[1]] <- clusterIds
+  # par(mfrow=c(3,3))
   
   for(j in 2:maxIter){ 
     
@@ -64,8 +65,8 @@ kCFC = function(y, t, k = 3, maxIter = 20, optns = list(maxK = 3, lean = TRUE)){
     # plot( fpcaObj1$xiEst,col=  as.numeric(clustConf[[j]]), main= paste0(curvesThatChanged, ' curves changed.'))
     
     if( any(sapply(clustConf[1:(j-1)], function(u) all(u == clustConf[[j]]))) || # if this state was revisited
-        min(summary(clustConf[[j-1]])) < 0.01 * N){
-      convInfo <- ifelse(min(summary(clustConf[[j-1]])) < 0.01 * N, "Some", "True")
+        min(summary(clustConf[[j]])) < 0.01 * N){
+      convInfo <- ifelse(min(summary(clustConf[[j]])) < 0.01 * N, "Some", "True")
       break;
     } 
   }
