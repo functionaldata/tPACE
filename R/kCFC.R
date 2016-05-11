@@ -31,7 +31,7 @@ kCFC = function(y, t, k = 3, maxIter = 20, optns = list(maxK = 3, lean = TRUE)){
     stop("User provided 'optns' has to provided 'maxK' information.")
   }
   
-  # First FPCA
+  ## First FPCA
   fpcaObjY <- FPCA(y, t, optns)
   N <- length(y)
   if( fpcaObjY$optns$dataType != 'Dense' ){
@@ -41,7 +41,7 @@ kCFC = function(y, t, k = 3, maxIter = 20, optns = list(maxK = 3, lean = TRUE)){
   ## Initial clustering and cluster-associated FPCAs
   ## Cluster initialisation is NOT random, for each k cluster we use the medoid of the k-th dozen of points.
   myMiniCenters <- fpcaObjY$xiEst[sapply(1:k, function(u) 
-    which.min(rowSums(as.matrix(dist(fpcaObj1$xiEst[(1:12)+(u-1)*12,]))))) + seq(0, (k-1)*12,12),];
+    which.min(rowSums(as.matrix(dist(fpcaObjY$xiEst[(1:12)+(u-1)*12,]))))) + seq(0, (k-1)*12,12),];
   
   initialClustering <- kmeans( fpcaObjY$xiEst, centers = myMiniCenters, algorithm = "Lloyd", iter.max = maxIter)
   clusterIds <- as.factor(initialClustering$cluster)
@@ -52,40 +52,50 @@ kCFC = function(y, t, k = 3, maxIter = 20, optns = list(maxK = 3, lean = TRUE)){
   ymat <- List2Mat(y,t); 
   convInfo <- "None"
   clustConf <- list()
-  clustConf[[1]] <- clusterIds
-  # par(mfrow=c(3,3))
+  clustConf[[1]] <- clusterIds 
   
   for(j in 2:maxIter){ 
     
-    iseCosts          <- sapply(listOfFPCAobjs, function(u) GetISEfromFPCA(u, ymat))
-    clustConf[[j]]    <- as.factor(apply(iseCosts, 1, which.min))
-    curvesThatChanged <- sum(!(clustConf[[j]]  == clustConf[[j-1]] ))
-    indClustIds       <- lapply(levels(clustConf[[j]]), function(u) which(clustConf[[j]] == u) )
-    listOfFPCAobjs    <- lapply(indClustIds, function(u) FPCA(y[u], t[u], optns) )
-    # plot( fpcaObj1$xiEst,col=  as.numeric(clustConf[[j]]), main= paste0(curvesThatChanged, ' curves changed.'))
+    # Get new costs and relevant cluster configuration
+    iseCosts       <- sapply(listOfFPCAobjs, function(u) GetISEfromFPCA(u, ymat))
+    clustConf[[j]] <- as.factor(apply(iseCosts, 1, which.min))
     
-    if( any(sapply(clustConf[1:(j-1)], function(u) all(u == clustConf[[j]]))) || # if this state was revisited
-        min(summary(clustConf[[j]])) < 0.01 * N){
-      convInfo <- ifelse(min(summary(clustConf[[j]])) < 0.01 * N, "Some", "True")
+    # Check that clustering progressed reasonably
+    if( (length(unique(clustConf[[j]])) < k) ||       # Still have k clusters
+        min(summary(clustConf[[j]])) < 0.01 * N){     # Minimum cluster size is reasonable
+      convInfo <- ifelse( length(unique(clustConf[[j]])) < k , "LostCluster", "TinyCluster")
+      break;
+    }
+    # Check if algorithm converged
+    if( any(sapply(clustConf[1:(j-1)], function(u) all(u == clustConf[[j]]))) ){
+      convInfo <- "WeMadeIt!"
       break;
     } 
-  }
+    
+    indClustIds       <- lapply(levels(clustConf[[j]]), function(u) which(clustConf[[j]] == u) )
+    listOfFPCAobjs    <- lapply(indClustIds, function(u) FPCA(y[u], t[u], optns) )
+    curvesThatChanged <- sum(!( as.numeric(clustConf[[j]])  == as.numeric(clustConf[[j-1]] ))) 
+  } 
   
   if(convInfo == 'None'){
     warning(paste0( 'FkC did not converge after maxIter = ', maxIter, ' iterations. ', curvesThatChanged, ' curve(s) are undecided.'))
   }
-  if(convInfo == 'Some'){
+  if(convInfo == 'TinyCluster'){
     warning(paste0("kCFC did not fully converge. It stopped because the smallest cluster has ",
                    "less than 1% of the samples' curves. Consider using a smaller number of clusters."))
   } 
+  if(convInfo == 'LostCluster'){
+    warning(paste0("kCFC did not fully converge. It stopped because it 'lost a cluster'. Consider using a smaller number of clusters."))
+  }
   
-  return( list(cluster = clustConf[[j]], fpcaList = listOfFPCAobjs, iterToConv = j-1) )
+  return( list(cluster = clustConf[[j]], fpcaList = listOfFPCAobjs, iterToConv = j-1, prevConf = clustConf) )
 }  
 
 GetISEfromFPCA = function(fpcaObj,ymat){
   # First get the fitted curves for all the sample based on the mu/phi/lambda/sigma2
   # of 'fpcaObj' and then calculate their associated ISE; 'iseCost' is a n-dim vector.
-  numIntResults <- GetINScores(ymat, fpcaObj$obsGrid, fpcaObj$optns, fpcaObj$mu, fpcaObj$lambda, fpcaObj$phi, fpcaObj$sigma2) 
+  numIntResults <- GetINScores(ymat = ymat, t = fpcaObj$obsGrid, optns = fpcaObj$optns, mu = fpcaObj$mu, 
+                               lambda = fpcaObj$lambda, phi = fpcaObj$phi, sigma2 = fpcaObj$sigma2) 
   iseCost <- apply((numIntResults[['fittedY']] - ymat)^2, 1, function(y) trapzRcpp(X = fpcaObj$obsGrid, Y = y)) 
   return( iseCost )
 }
