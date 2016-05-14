@@ -38,6 +38,13 @@ FCReg <- function(vars, userBwMu, userBwCov, outGrid, kern='gauss', measurementE
   }
   
   Yname <- names(vars)[length(vars)]
+
+  # Handle NaN, int to double
+  vars[sapply(vars, is.list)] <- lapply(
+    vars[sapply(vars, is.list)], 
+    function(v) HandleNumericsAndNAN(v[['Ly']], v[['Lt']])
+  )
+  # outGrid <- as.numeric(outGrid)
   
   # De-mean.
   demeanedRes <- demean(vars, userBwMu, kern)
@@ -230,9 +237,17 @@ uniCov <- function(X, Y, userBwCov, outGrid, kern='gauss', rmDiag=FALSE, center=
       diag(res) <- covXY
     } else { # use 2D smoothing
       tmp <- GetCrCovYX(userBwCov, userBwCov, X[['Ly']], X[['Lt']], Xmu, 
-                        Y[['Ly']], Y[['Lt']], Ymu, rmDiag=rmDiag, kern=kern, useGAM = useGAM)
+                        Y[['Ly']], Y[['Lt']], Ymu, rmDiag=rmDiag, kern=kern)
       gd <- tmp[['smoothGrid']]
-      res <- matrix(interp2lin(gd[, 1], gd[, 2], tmp[['smoothedCC']], rep(outGrid, times=noutGrid), rep(outGrid, each=noutGrid)), noutGrid, noutGrid)
+      res <- matrix(
+              interp2lin(as.numeric(gd[, 1]), 
+                         as.numeric(gd[, 2]), 
+                         matrix(as.numeric(tmp[['smoothedCC']]),
+                                nrow(tmp[['smoothedCC']]),
+                                ncol(tmp[['smoothedCC']])), 
+                         rep(as.numeric(outGrid), times=noutGrid), 
+                         rep(as.numeric(outGrid), each=noutGrid)), 
+              noutGrid, noutGrid)
     }
     attr(res, 'covType') <- 'FF'
   }
