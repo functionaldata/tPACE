@@ -32,7 +32,5 @@ GetMeanDense <- function(ymat, obsGrid, optns){
 
   ret = list('mu' = mu, 'muDense' = NULL, 'mu_bw' = NULL)
   class(ret) = "SMC"
-  # Garbage Collection
-  gc()
   return(ret)
 }

@@ -275,7 +275,7 @@ test_that('noisy dense data, smooth mu/cov, use IN/CE score', {
 
   trueCov <- outer(pts, pts, pmin)
   expect_true(max(abs(resErrCE$smoothedCov - trueCov)) < 0.1)
-  expect_true(max(abs(resErrCSCE$smoothedCov - trueCov)) < 0.2)
+  expect_true(max(abs(resErrCSCE$smoothedCov - trueCov)) < 0.25)
   expect_equal(resErrCE$xiEst[, 1], resErrIN$xiEst[, 1], tolerance=1e-2)
   expect_equal(resErrCE$xiEst[, 2], resErrIN$xiEst[, 2], tolerance=6e-2)
   expect_equal(resErrCE$xiEst[, 3], resErrIN$xiEst[, 3], tolerance=1e-1)

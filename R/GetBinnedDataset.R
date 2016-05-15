@@ -47,10 +47,9 @@ GetBinnedDataset <- function (y, t, optns){
     # BinDataOutput$newt[[i]] = res$midpoint;   
     # BinDataOutput$newy[[i]] = res$newy;      
   # }
-     
-  result <- list( 'newt' = BinDataOutput$newt, 'newy' = BinDataOutput$newy);
-  # Garbage Collection
-  gc()
+
+  result <- list( 'newt' = BinDataOutput$newt, 'newy' = BinDataOutput$newy,
+                 numBins = numBins)
   return(result)
 }
 

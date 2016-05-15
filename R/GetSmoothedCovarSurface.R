@@ -116,7 +116,5 @@ GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, optns, useBinned
               sigma2 = sigma2, 
               outGrid = cutRegGrid)
   class(res) <- "SmoothCov"  
-  # Garbage Collection
-  gc()
   return(res)
 }

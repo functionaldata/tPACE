@@ -103,6 +103,8 @@ FPCA = function(Ly, Lt, optns = list()){
       BinnedDataset <- GetBinnedDataset(Ly,Lt,optns)
       Ly = BinnedDataset$newy;
       Lt = BinnedDataset$newt; 
+      optns[['nRegGrid']] <- min(optns[['nRegGrid']],
+                                 BinnedDataset[['numBins']])
   }
 
   # Generate basic grids:
@@ -148,8 +150,10 @@ FPCA = function(Ly, Lt, optns = list()){
                                      optns$useBinnedCov) 
   } else if (optns$methodMuCovEst == 'cross-sectional') {
     scsObj = GetCovDense(ymat, mu, optns)
-    scsObj$smoothCov = ConvertSupport(obsGrid, cutRegGrid, Cov =
-                                      scsObj$smoothCov)
+    if (length(obsGrid) != cutRegGrid || !all.equal(obsGrid, cutRegGrid)) {
+      scsObj$smoothCov = ConvertSupport(obsGrid, cutRegGrid, Cov =
+                                        scsObj$smoothCov)
+    }
     scsObj$outGrid <- cutRegGrid
   }
   sigma2 <- scsObj[['sigma2']]
