@@ -27,6 +27,9 @@ Suggests:
     mgcv,
     ks,
     MASS,
-    gtools
+    gtools,
+    knitr
 NeedsCompilation: yes
 RoxygenNote: 5.0.1
+VignetteBuilder: knitr
+

@@ -1,5 +1,6 @@
 \documentclass[11pt,english]{article}
-%%\VignetteIndexEntry{fdapaceVignette}
+%\VignetteIndexEntry{fdapaceVignette}
+%\VignetteEngine{knitr::knitr}
 \graphicspath{{figure/}}
 
 \usepackage{palatino,avant,graphicx,color,amsmath,verbatim,url, wrapfig}
@@ -30,7 +31,6 @@
 
 \title{Functional PCA in R \\ \textit{A software primer using fdapace}}
 \author{Hadjipantelis, Dai, Ji, M\"uller \& Wang - UC Davis, USA}
-\date{March 11, 2016}
 \maketitle
 \vspace{-.61cm}
 <<include=FALSE>>=
@@ -99,7 +99,7 @@ The generated \texttt{FPCAobj} will contain all the basic information regarding 
 
 \subsection{Generating a toy dense functional dataset from scratch}
 
-<<,message=FALSE>>=
+<<message=FALSE>>=
   #library(fdapace)
   devtools::load_all('.') # So we use the new interfaces
 
