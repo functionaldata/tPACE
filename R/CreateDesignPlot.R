@@ -80,7 +80,7 @@ createBlackPlot = function(res, obsGrid, args1){
 createColorPlot = function(res, obsGrid, args1){
   
   res[res > 4] = 4;
-  notZero <- res != 0
+  notZero <- which(res != 0, arr.ind=TRUE)
   nnres <- res[notZero]
   
   addLegend <- args1$addLegend;
@@ -107,9 +107,7 @@ createColorPlot = function(res, obsGrid, args1){
     cexVec <- args1$cex;
   }
  
-  t1 = rep(obsGrid, times = length(obsGrid))
-  t2 = rep(obsGrid, each = length(obsGrid)) 
-  do.call( plot, c(args1, list( x = t1[notZero], y = t2[notZero]) ))
+  do.call( plot, c(args1, list( x = obsGrid[notZero[, 1]], y = obsGrid[notZero[, 2]]) ))
 
   if(addLegend){
     if (!identical(unique(nnres), 1)){

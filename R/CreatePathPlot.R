@@ -68,7 +68,8 @@ CreatePathPlot = function(fpcaObj, subset, k=NULL, inputData=fpcaObj[['inputData
     obst <- sapply(inputData[['Lt']][subset], function(x) c(x, rep(NA, maxN_i - length(x))))
     obsy <- sapply(inputData[['Ly']][subset], function(x) c(x, rep(NA, maxN_i - length(x))))
   
-    do.call(plot, c(list(x=rep(workGrid, nrow(fit)), y=t(fit), type='n' ), args1))
+    do.call(plot, c(list(x=c(rep(workGrid, nrow(fit)), t(obst)), 
+                         y=c(t(fit), t(obsy)), type='n' ), args1))
     do.call(points, c(list(x=t(obst), y=t(obsy), type='p'), args1))
     do.call(matplot, c(list(x=workGrid, y=t(fit), type='l', add=TRUE ), args1))
   } else {

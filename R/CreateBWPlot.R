@@ -44,7 +44,7 @@ CreateBWPlot <-function(fpcaObj, derOptns = NULL, bwMultipliers = NULL){
     newFPCA <- function(mlt){
       optnsNew = fpcaObj$optns; 
       optnsNew[c('userBwMu', 'userBwCov')] = mlt * unlist(fpcaObj[c('bwMu', 'bwCov')])
-      return( FPCA(y= fpcaObj$input$y, t= fpcaObj$input$t, optnsNew) )
+      return( FPCA(fpcaObj[['inputData']][['Ly']], fpcaObj[['inputData']][['Lt']], optnsNew) )
     }
 
     yy = lapply( bwMultipliers, function(x)  tryCatch( newFPCA(x), error = function(err) {                                                
