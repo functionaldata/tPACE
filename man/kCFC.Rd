@@ -4,7 +4,8 @@
 \alias{kCFC}
 \title{Functional clustering and identifying substructures of longitudinal data}
 \usage{
-kCFC(y, t, k = 3, maxIter = 20, optns = list(maxK = 3, lean = TRUE))
+kCFC(y, t, k = 3, maxIter = 20, optns = list(methodMuCovEst = "smooth",
+  FVEthreshold = 0.9), kSeed = 123)
 }
 \arguments{
 \item{y}{A list of \emph{n} vectors containing the observed values for each individual. Missing values specified by \code{NA}s are supported for dense case (\code{dataType='dense'}).}
@@ -15,7 +16,9 @@ kCFC(y, t, k = 3, maxIter = 20, optns = list(maxK = 3, lean = TRUE))
 
 \item{maxIter}{A scalar defining the maximum number of iterations allowed; default 20, common for both the simple kmeans initially and the subsequent k-centres}
 
-\item{optns}{A list of options control parameters specified by \code{list(name=value)} to be passed to FPCA; by default: 'maxK' is set to 3. See `Details in ?FPCA'.}
+\item{optns}{A list of options control parameters specified by \code{list(name=value)} to be passed to FPCA; by default: "methodMuCovEst = 'smooth'" and "FVEthreshold = 0.90". See `Details in ?FPCA'.}
+
+\item{kSeed}{A scalar valid seed number to ensure replication; default: 123}
 }
 \value{
 A list containing the following fields:

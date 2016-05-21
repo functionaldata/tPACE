@@ -1,6 +1,7 @@
 #' Fitted functional sample from FPCA object
 #' 
 #' Combine the zero-meaned fitted values and the interpolated mean to get the fitted values for the trajectories or the derivatives of these trajectories.
+#' Estimates are given on the work-grid, not on the observation grid.
 #' 
 #' @param object A object of class FPCA returned by the function FPCA().   
 #' @param k The integer number of the first k components used for the representation. (default: length(fpcaObj$lambda ))
