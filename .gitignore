@@ -59,7 +59,7 @@ notesXiongtao.txt
 #
 # Vignette files
 vignettes/Sweave.sty
-vignettes/cache/
+cache/
 vignettes/fdapaceVignette-concordance.tex
 vignettes/fdapaceVignette.bbl
 vignettes/fdapaceVignette.tex
