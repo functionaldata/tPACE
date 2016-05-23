@@ -1,4 +1,4 @@
-#' Two dimensional local linear kernel smoother.
+#' Two dimensional local linear kernel smoother with derivatives.
 #'
 #' Two dimensional local weighted least squares smoother. Only local linear smoother for estimating the original curve is available (no higher order, no derivative). 
 #' @param bw A scalar or a vector of length 2 specifying the bandwidth.
@@ -9,19 +9,26 @@
 #' @param xout1 a p1-vector of first output coordinate grid. Defaults to the input gridpoints if left unspecified.
 #' @param xout2 a p2-vector of second output coordinate grid. Defaults to the input gridpoints if left unspecified.
 #' @param xout alternative to xout1 and xout2. A matrix of p by 2 specifying the output points (may be inefficient if the size of \code{xout} is small).
-#' @param crosscov using function for cross-covariance estimation (Default: FALSE)
+#' @param crosscov using function for cross-covariance estimation (Default: TRUE)
 #' @param subset  a vector with the indices of x-/y-/w-in to be used (Default: NULL)
 #' @param method should one try to sort the values xin and yin before using the lwls smoother? if yes ('sort2' - default for non-Gaussian kernels), if no ('plain' - fully stable; de)
 #' @return a p1 by p2 matrix of fitted values if xout is not specified. Otherwise a vector of length p corresponding to the rows of xout. 
 #' @export
 
-Lwls2D <- function(bw, kern='epan', xin, yin, win=NULL, xout1=NULL, xout2=NULL, xout=NULL, subset=NULL, crosscov = FALSE, method = ifelse(kern == 'gauss', 'plain', 'sort2')) {
+Lwls2DDeriv <- function(
+  bw, kern='epan', xin, yin, win=NULL, xout1=NULL, xout2=NULL, xout=NULL, 
+  npoly=1L, nder1=0L, nder2=0L, subset=NULL, 
+  crosscov = TRUE, method = 'sort2'
+) {
 
   # only support epan kernel now.
   # stopifnot(kern == 'epan')
   
   if (length(bw) == 1){
     bw <- c(bw, bw)
+  }
+  if (is.data.frame(xin)) {
+    xin <- as.matrix(xin)
   }
   if (!is.matrix(xin) ||  (dim(xin)[2] != 2) ){
     stop('xin needs to be a n by 2 matrix')
@@ -56,30 +63,20 @@ Lwls2D <- function(bw, kern='epan', xin, yin, win=NULL, xout1=NULL, xout2=NULL, 
   storage.mode(xout2) <- 'numeric'
   if (!is.null(xout))
     storage.mode(xout) <- 'numeric' 
-  if (crosscov == TRUE){ 
-    if (method == 'sort2') {
-      ord <- order(xin[, 1])
-      xin <- xin[ord, ]
-      yin <- yin[ord]
-      win <- win[ord]
-      # browser()
-      #ret <- RmullwlskCCsort2(bw, kern, t(xin), yin, win, xout1, xout2, FALSE)
-       ret <- RmullwlskUniversal(bw, kern, t(xin), yin, win, xout1, xout2, FALSE, autoCov = FALSE)
-    } else if (method == 'plain') {
-      ret <- RmullwlskCC(bw, kern, t(xin), yin, win, xout1, xout2, FALSE)
-    }
-    } else {
-      #browser()
-      if(method == 'plain'){
-        ret <- Rmullwlsk(bw, kern, t(xin), yin, win, xout1, xout2, FALSE)
-      } else if (method == 'sort2'){
-        ord <- order(xin[, 1])
-        xin <- xin[ord, ]
-        yin <- yin[ord]
-        win <- win[ord]
-        # browser()
-        ret <- RmullwlskUniversal(bw, kern, t(xin), yin, win, xout1, xout2, FALSE, autoCov = TRUE)
-      }
+  storage.mode(npoly) <- 'integer'
+  storage.mode(nder1) <- 'integer'
+  storage.mode(nder2) <- 'integer'
+  
+  if (method == 'sort2') {
+    ord <- order(xin[, 1])
+    xin <- xin[ord, ]
+    yin <- yin[ord]
+    win <- win[ord]
+    # browser()
+    ret <- RmullwlskUniversalDeriv(bw, kern, t(xin), yin, win, 
+      xout1, xout2, npoly, nder1, nder2, FALSE, !crosscov)
+  } else if (method == 'plain') { # MAYBE IMPROVE THIS
+    ret <- RmullwlskCC(bw, kern, t(xin), yin, win, xout1, xout2, FALSE)
   }
 
   if (!is.null(xout)) {
