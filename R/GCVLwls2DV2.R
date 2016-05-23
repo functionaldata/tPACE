@@ -154,7 +154,7 @@ getGCVscoresV2 <- function(bw, kern, xin, yin, win=NULL, regGrid, RSS=NULL, verb
   
   fit <- tryCatch(Lwls2D(bw, kern, xin=xin, yin=yin, win=win, xout1=regGrid, xout2=regGrid), error=function(err) {
     if (verbose) {
-      cat('Invalid bandwidth. Try enlarging the window size.\n')
+      warning('Invalid bandwidth. Try enlarging the window size.')
     }
     return(Inf)
   })
