@@ -12,7 +12,7 @@ getGCVscoresV2(tmp$minBW, 'epan', rcov$tPairs, rcov$cxxn, regGrid=regGrid)
 
 test_that('getGCVscoresV2 spits out Inf if bandwidth is too small', {
   expect_equal(suppressWarnings(getGCVscoresV2(2, 'epan', rcov$tPairs, rcov$cxxn, regGrid=regGrid)), Inf)
-  expect_warning(getGCVscoresV2(2, 'epan', rcov$tPairs, rcov$cxxn, regGrid=regGrid, verbose=TRUE), 'Invalid bandwidth. Try enlarging the window size.')
+  expect_message(getGCVscoresV2(2, 'epan', rcov$tPairs, rcov$cxxn, regGrid=regGrid, verbose=TRUE), 'Invalid bandwidth. Try enlarging the window size.\n')
 })
 
 

@@ -13,6 +13,9 @@ GetEigenAnalysisResults <- function(smoothCov, regGrid, optns, muWork = NULL) {
   eig <- eigen(smoothCov)
 
   positiveInd <- eig[['values']] >= 0
+  if (sum(positiveInd) == 0) {
+    stop('All eigenvalues are negative. The covariance estimate is incorrect.')
+  }
   d <- eig[['values']][positiveInd]
   eigenV <- eig[['vectors']][, positiveInd, drop=FALSE]
 

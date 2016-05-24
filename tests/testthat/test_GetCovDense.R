@@ -6,7 +6,7 @@ trueLam <- 4 / ((2 * (1:50) - 1 ) * pi) ^ 2
 
 test_that('GetCovDense with noise, get sigma2', {
   set.seed(1)
-  n <- 754
+  n <- 200
   p <- 101
   pts <- seq(0, 1, length.out=p)
   sigma2 <- 0.1
