@@ -21,7 +21,7 @@ A list containing the following fields:
 \item{xiEst}{A \emph{n} by \emph{K} matrix containing the FPC estimates.} 
 \item{xiVar}{A list of length \emph{n}, each entry containing the variance estimates for the FPC estimates.}
 \item{obsGrid}{The (sorted) grid points where all observation points are pooled.}
-\item{mu}{A vector of length nObsGrid containing the mean function estimate.}
+\item{mu}{A vector of length nWorkGrid containing the mean function estimate.}
 \item{workGrid}{A vector of length nWorkGrid. The internal regular grid on which the eigen analysis is carried on.}
 \item{smoothedCov}{A nWorkGrid by nWorkGrid matrix of the smoothed covariance surface.}
 \item{fittedCov}{A nWorkGrid by nWorkGrid matrix of the fitted covariance surface, which is guaranteed to be non-negative definite.}
