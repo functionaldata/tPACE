@@ -7,7 +7,7 @@ IsRegular = function(t){
   f = length(tt)/length(unique(tt))/length(t);
   if (f == 1){
     return('Dense'); # for either regular and irregular data
-  } else if(f > 0.75){
+  } else if(f > 0.80){
     return('DenseWithMV');
   } else {
     return('Sparse');
