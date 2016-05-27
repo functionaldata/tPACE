@@ -268,10 +268,14 @@ test_that('noisy dense data, smooth mu/cov, use IN/CE score', {
   sampTrue <- Wiener(n, pts) + matrix(pts, n, p, byrow=TRUE)
   samp <- sampTrue + rnorm(n * length(pts), sd=sqrt(sigma2))
   tmp <- MakeFPCAInputs(tVec=pts, yVec=samp)
+  tmpMV <- tmp
+  tmpMV$Ly[[1]][1] <- NA
 
   resErrCSCE <- FPCA(tmp$Ly, tmp$Lt, list(error=TRUE, dataType='Dense', lean=TRUE, methodMuCovEst='cross-sectional', methodXi='CE'))
   resErrCE <- FPCA(tmp$Ly, tmp$Lt, list(error=TRUE, dataType='Dense', lean=TRUE, methodMuCovEst='smooth', methodXi='CE'))
   resErrIN <- FPCA(tmp$Ly, tmp$Lt, list(error=TRUE, dataType='Dense', lean=TRUE, methodMuCovEst='smooth', methodXi='IN'))
+  resErrCEMV <- FPCA(tmpMV$Ly, tmpMV$Lt, list(error=TRUE, dataType='DenseWithMV', lean=TRUE, methodMuCovEst='smooth', methodXi='CE'))
+  resErrINMV <- FPCA(tmpMV$Ly, tmpMV$Lt, list(error=TRUE, dataType='DenseWithMV', lean=TRUE, methodMuCovEst='smooth', methodXi='IN'))
 
   trueCov <- outer(pts, pts, pmin)
   expect_true(max(abs(resErrCE$smoothedCov - trueCov)) < 0.1)
@@ -279,4 +283,6 @@ test_that('noisy dense data, smooth mu/cov, use IN/CE score', {
   expect_equal(resErrCE$xiEst[, 1], resErrIN$xiEst[, 1], tolerance=1e-2)
   expect_equal(resErrCE$xiEst[, 2], resErrIN$xiEst[, 2], tolerance=6e-2)
   expect_equal(resErrCE$xiEst[, 3], resErrIN$xiEst[, 3], tolerance=1e-1)
+  expect_equal(resErrCE$fittedCov, resErrCEMV$fittedCov, tolerance=1e-1)
+  expect_equal(resErrIN$xiEst[, 1:4], resErrINMV$xiEst[, 1:4], tolerance=1e-1)
 })

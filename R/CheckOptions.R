@@ -79,9 +79,9 @@ CheckOptions = function(t,optns,n){
     #method to estimate the PC scores
     stop("FPCA is aborted because the argument: methodXi is invalid!\n");   
   }
-  if (optns[['methodXi']] == 'IN' && optns[['dataType']] != 'Dense') {
-    stop("integration method can only be applied on dense data now!")
-  }
+  # if (optns[['methodXi']] == 'IN' && optns[['dataType']] != 'Dense') {
+    # stop("integration method can only be applied on dense data now!")
+  # }
   if(!(any(optns[['kernel']] == c('epan','gauss','rect','quar','gausvar')))){ 
     #method to estimate the PC scores
     stop("FPCA is aborted because the argument: kernel is invalid!\n");   
