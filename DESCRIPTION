@@ -28,7 +28,8 @@ Suggests:
     ks,
     MASS,
     gtools,
-    knitr
+    knitr,
+    Rmixmod
 NeedsCompilation: yes
 RoxygenNote: 5.0.1
 VignetteBuilder: knitr
