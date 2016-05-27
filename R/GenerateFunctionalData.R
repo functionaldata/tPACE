@@ -23,7 +23,7 @@ GenerateFunctionalData <-function(N, M, mu=NULL, lambda=NULL, k = 2,  basisType=
     stop("Make sure you provide a valid parametric basis.")
   } 
   
-  Ksi <- apply(matrix(rnorm(N*k), ncol=k), 2, scale) %*% diag(lambda)
+  Ksi <- apply(matrix(rnorm(N*k), ncol=k), 2, scale) %*% diag(lambda, k)
   Phi <- CreateBasis(pts= s, type= basisType, K = k)
   
   yTrue <- t(matrix(rep(mu,N), nrow=M)) + Ksi %*% t(Phi) 

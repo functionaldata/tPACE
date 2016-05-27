@@ -1,4 +1,4 @@
-#' Makke Gaussian Process Dense Functional Data sample                                                             
+#' Make Gaussian Process Dense Functional Data sample                                                             
 #' 
 #' Make a Gaussian process dense functional data sample of size N over a [0,1] support.
 #' 
@@ -33,7 +33,7 @@ MakeGPFunctionalData <-function(N, M = 100, mu=rep(0,M), k = 2, lambda = rep(1,k
       stop("Make sure you provide a valid parametric basis.")
   } 
    
-  Ksi <- apply(matrix(rnorm(N*k), ncol=k), 2, scale) %*% diag(sqrt(lambda))
+  Ksi <- apply(matrix(rnorm(N*k), ncol=k), 2, scale) %*% diag(sqrt(lambda), k)
   Phi <- CreateBasis(pts= s, type= basisType, K = k)
    
   yTrue <- t(matrix(rep(mu,N), nrow=M)) + Ksi %*% t(Phi) 

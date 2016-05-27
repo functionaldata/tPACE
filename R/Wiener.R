@@ -21,7 +21,7 @@ Wiener <- function(n=1, pts=seq(0, 1, length=50), sparsify=NULL, K=50) {
         pts <- t(pts)
         
     basis <- sqrt(2) * sin( pts %*% matrix(1:K - 1/2, 1, K) * pi )
-    samp <- t(basis %*% diag(1 / (1:K - 1/2) / pi) %*% matrix(rnorm(K * n), K, n))
+    samp <- t(basis %*% diag(1 / (1:K - 1/2) / pi, K) %*% matrix(rnorm(K * n), K, n))
     
     if (!is.null(sparsify)) {
         samp <- Sparsify(samp, pts, sparsify)

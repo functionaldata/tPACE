@@ -39,15 +39,16 @@ fitted.FPCA <-  function (object, k = NULL, derOptns = list(), ...) {
   kernelType <- derOptns[['kernelType']]
 
   fpcaObj <- object
-  if (class(fpcaObj) != 'FPCA'){
-    stop("fitted.FPCA() requires an FPCA class object as basic input")
-  }
+  # if (class(fpcaObj) != 'FPCA'){
+    # stop("fitted.FPCA() requires an FPCA class object as basic input")
+  # }
 
   if( is.null(k) ){
     k = length( fpcaObj$lambda )
   } else {
     if( ( round(k)>=1) && ( round(k) <= length( fpcaObj$lambda ) ) ){
-      k = round(k);
+      k = round(k)
+    } else if (p > 0) { # OK
     } else {
       stop("'fitted.FPCA()' is requested to use more components than it currently has available. (or 'k' is smaller than 1)")
     }
@@ -83,17 +84,21 @@ fitted.FPCA <-  function (object, k = NULL, derOptns = list(), ...) {
       ZMFV = fpcaObj$xiEst[,1:k, drop = FALSE] %*% t(phi[,1:k, drop = FALSE]);
       IM = mu 
       return( t(apply( ZMFV, 1, function(x) x + IM) ))
-    }
-
-    if( method == 'QUO'){
+    } else if( method == 'QUO'){
       impSample <- fitted(fpcaObj, k = k); # Look ma! I do recursion!
       return( t(apply(impSample, 1, function(curve) Lwls1D(bw = bw, kernelType, win = rep(1, length(workGrid)), 
                                                          xin = workGrid, yin = curve, xout = workGrid, npoly = p, nder = p))))
+    } else if (method == 'DPC') {
+      if (k > ncol(fpcaObj[['xiDer']])) {
+        stop('fpcaObj does not contain k columns!')
+      }
+      return(tcrossprod(fpcaObj[['xiDer']][, seq_len(k), drop=FALSE], 
+                        fpcaObj[['phiDer']][, seq_len(k), drop=FALSE]))
+    }else {
+      stop('You asked for a derivation scheme that is not implemented.')
     }
   }
 
-  stop('You asked for a derivation scheme that is not implemented.')
-  return(NULL)
 }
 
 getEnlargedGrid <- function(x){

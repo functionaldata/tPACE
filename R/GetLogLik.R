@@ -25,7 +25,7 @@ GetLogLik = function(fpcaObj, k, Ly = NULL, Lt = NULL){
   	if(k == 1){
   	  Sigma_y = phi %*% (lambda*diag(k)) %*% t(phi) + sigma2*diag(rep(1,nrow(phi)))
   	} else {
-      Sigma_y = phi %*% diag(lambda) %*% t(phi) + sigma2*diag(rep(1,nrow(phi)))
+      Sigma_y = phi %*% diag(lambda, length(lambda)) %*% t(phi) + sigma2*diag(rep(1,nrow(phi)))
     }
     detSigma_y = prod(c(lambda,rep(0,nrow(phi)-k))[1:length(lambda)]+sigma2)
     #detSigma_y = det(Sigma_y)
@@ -36,7 +36,7 @@ GetLogLik = function(fpcaObj, k, Ly = NULL, Lt = NULL){
     # calculate loglikelihood via matrix multiplication
     ymatcenter = matrix(unlist(Ly)-fpcaObj$mu, nrow = length(Ly), byrow = TRUE)
     svd_Sigma_y = svd(Sigma_y)
-    Sigma_y_inv = svd_Sigma_y$v %*% diag(1/svd_Sigma_y$d) %*% t(svd_Sigma_y$u)
+    Sigma_y_inv = svd_Sigma_y$v %*% diag(1/svd_Sigma_y$d, length(svd_Sigma_y$d)) %*% t(svd_Sigma_y$u)
   	logLik = sum(diag(t(Sigma_y_inv %*% t(ymatcenter)) %*% t(ymatcenter))) + length(Ly)*log(detSigma_y)
     return(logLik)
   } else { # Sparse case
@@ -58,7 +58,7 @@ GetLogLik = function(fpcaObj, k, Ly = NULL, Lt = NULL){
       if(k == 1){
         Sigma_yi = phi_i %*% (lambda*diag(k)) %*% t(phi_i) + sigma2 * diag(rep(1,length(mu_i)))
       } else{
-        Sigma_yi = phi_i %*% diag(lambda) %*% t(phi_i) + sigma2 * diag(rep(1,length(mu_i)))
+        Sigma_yi = phi_i %*% diag(lambda, length(lambda)) %*% t(phi_i) + sigma2 * diag(rep(1,length(mu_i)))
       }
       detSigma_yi = det(Sigma_yi)
       if(detSigma_yi == 0){

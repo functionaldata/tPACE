@@ -14,7 +14,7 @@
 #' @export
 
 SelectK = function(fpcaObj, criterion = 'AIC', FVEthreshold = NULL, Ly = NULL, Lt = NULL){
-  if(class(fpcaObj) != 'FPCA'){
+  if(!'FPCA' %in% class(fpcaObj)) {
     stop('Invalid Input: not a FPCA object!')
   }
   if(is.null(criterion)){

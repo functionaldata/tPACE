@@ -23,7 +23,8 @@
 #' CreatePathPlot(res, subset=1:5)
 #' @export
 
-CreatePathPlot = function(fpcaObj, subset, k=NULL, inputData=fpcaObj[['inputData']], 
+CreatePathPlot = function(fpcaObj, subset, k=NULL,
+                          inputData=fpcaObj[['inputData']], 
                           showObs=!is.null(inputData),  
                           derOptns = NULL, ...){
   
