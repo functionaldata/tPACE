@@ -59,7 +59,7 @@ CreateDiagnosticsPlot <-function(fpcaObj, openNewDev = FALSE){
             main=paste(collapse='', c("First ", as.character(k), " Eigenfunctions"))  , xlab='s', ylab='') 
     grid()
     matlines(workGrid, fpcaObj$phi[,1:k] ) 
-    
+    legend("topright", col=1:k, lty=1:k, legend = do.call(expression, sapply(1:k, function(u) return(bquote(phi[ .(u) ])))), border = FALSE, fill=FALSE)
     # } else {
     #   
     #   derOptns <- SetDerOptions(fpcaObj,derOptns = derOptns) 
