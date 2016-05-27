@@ -78,7 +78,7 @@ test_that('noisy dense data, CE scores and cross-sectional mu/cov', {
   evR <- c(0.5, 0.3)^2 
   Zeta = apply(matrix(rnorm(N*2), ncol=2), 2, scale) %*% diag(sqrt(evR))
   Vij = Zeta %*% t(Psi)
-   
+  
   Rij = epsilonSign * ( exp(Vij + Wij)^(0.5) )
   
   Xij = Sij +  Rij;
