@@ -1,6 +1,6 @@
 # The output outGrid of this function is the (potentially) truncated greid.
 GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, optns, useBinnedCov=FALSE) {
-
+  
   dataType <- optns$dataType
   error <- optns$error
   kern <- optns$kernel
@@ -8,22 +8,22 @@ GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, optns, useBinned
   methodBwCov <- optns$methodBwCov
   verbose <- optns$verbose
   rotationCut <- optns$rotationCut
-
-# get the truncation of the output grids.
+  
+  # get the truncation of the output grids.
   outPercent <- optns$outPercent
   buff <- .Machine$double.eps * max(abs(obsGrid)) * 10
   rangeGrid <- range(regGrid)
   minGrid <- rangeGrid[1]
   maxGrid <- rangeGrid[2]
   cutRegGrid <- regGrid[regGrid > minGrid + diff(rangeGrid) * outPercent[1] -
-                        buff & 
-                        regGrid < minGrid + diff(rangeGrid) * outPercent[2] +
-                        buff]
-
+                          buff & 
+                          regGrid < minGrid + diff(rangeGrid) * outPercent[2] +
+                          buff]
+  
   # Get raw covariance, unless user covariance/sigma2 are specified.
   if (is.null(optns[['userCov']]) || 
-       (is.null(optns[['userSigma2']]) && error)) {
-       
+      (is.null(optns[['userSigma2']]) && error)) {
+    
     rcov <- GetRawCov(y, t, obsGrid, mu, dataType, error)
     if (useBinnedCov && methodBwCov == 'CV') {
       stop('If methodBwCov == \'CV\' then we must use the unbinned rcov.')
@@ -35,7 +35,7 @@ GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, optns, useBinned
   } else {
     rcov <- NULL
   }
-
+  
   # Obtain smoothed covariance.
   if( !is.null(optns$userCov)) { # If covariance function is provided
     rangeUser <- range(optns$userCov$t)
@@ -47,7 +47,7 @@ GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, optns, useBinned
     
     bwCov  = NULL
     smoothCov = ConvertSupport(fromGrid = optns$userCov$t, cutRegGrid, Cov =  optns$userCov$cov)
-  
+    
   } else { # estimate the smoothed covariance
     
     if (userBwCov == 0) { # bandwidth selection
@@ -59,14 +59,14 @@ GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, optns, useBinned
         }  
       } else if (methodBwCov == 'CV') { # CV 10 fold
         gcvObj <- GCVLwls2DV2(obsGrid, regGrid, kern=kern, rcov=rcov, t=t,
-                            verbose=optns$verbose, 
-                            CV=optns[['kFoldMuCov']])
+                              verbose=optns$verbose, 
+                              CV=optns[['kFoldMuCov']])
         bwCov <- gcvObj$h
       }
     } else if (userBwCov != 0) {
       bwCov <- userBwCov
     }
-
+    
     if (!useBinnedCov) {
       smoothCov <- Lwls2D(bwCov, kern, xin=rcov$tPairs, yin=rcov$cxxn,
                           xout1=cutRegGrid, xout2=cutRegGrid)
@@ -85,7 +85,7 @@ GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, optns, useBinned
       b0 = max(regGrid)
       lint = b0 - a0
       middleCutRegGrid <- cutRegGrid > a0 + lint * rotationCut[1] - buff & 
-                          cutRegGrid < a0 + lint * rotationCut[2] + buff
+        cutRegGrid < a0 + lint * rotationCut[2] + buff
       if (useBinnedCov) {
         diagT <- rcov[['tDiag']]
         diagVal <- rcov[['diagMeans']]
@@ -100,9 +100,11 @@ GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, optns, useBinned
     } else { # has to estimate sigma2 from scratch
       sigma2 <- PC_CovE(obsGrid, regGrid, bwCov, rotationCut=rotationCut, kernel=kern, rcov=rcov)$sigma2
     }
-  
+    
     if(sigma2 < 0) {
-      warning("Estimated sigma2 is negative and thus is reset to 1e-6.")
+      if(verbose){
+        warning("Estimated sigma2 is negative and thus is reset to 1e-6.")
+      }
       sigma2 <- 1e-6
     }
     

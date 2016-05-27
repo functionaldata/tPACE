@@ -1,4 +1,4 @@
-#' Functional clustering and identifying substructures of longitudinal data
+#' Functional clustering and identifying substructures of longitudinal data using kCFC.
 #' 
 #' @param y A list of \emph{n} vectors containing the observed values for each individual. Missing values specified by \code{NA}s are supported for dense case (\code{dataType='dense'}).
 #' @param t A list of \emph{n} vectors containing the observation time points for each individual corresponding to y.
@@ -24,7 +24,7 @@
 #' \cite{Jeng-Min Chiou, Pai-Ling Li, "Functional clustering and identifying substructures of longitudinal data." Journal of the Royal Statistical Society 69 (2007): 679-699}
 #' @export
 
-kCFC = function(y, t, k = 3, kSeed = 123, maxIter = 25, 
+kCFC = function(y, t, k = 3, kSeed = 123, maxIter = 125, 
                 optnsSW = list( methodMuCovEst = 'smooth', FVEthreshold = 0.90, methodBwCov = 'GCV', methodBwMu = 'GCV'), 
                 optnsCS = list( methodMuCovEst = 'smooth', FVEthreshold = 0.70, methodBwCov = 'GCV', methodBwMu = 'GCV')){ 
   
@@ -91,7 +91,9 @@ kCFC = function(y, t, k = 3, kSeed = 123, maxIter = 25,
     warning(paste0("kCFC did not fully converge. It stopped because it 'lost a cluster'. Consider using a smaller number of clusters."))
   }
   
-  return( list(cluster = clustConf[[j]], fpcaList = listOfFPCAobjs, iterToConv = j-1, prevConf = clustConf, clustConf0 = clustConf0) )
+  kCFCobj <-  list(cluster = clustConf[[j]], fpcaList = listOfFPCAobjs, iterToConv = j-1, prevConf = clustConf, clustConf0 = clustConf0)
+  class(kCFCobj) <- 'kCFCobj'
+  return( kCFCobj )
 }  
 
 GetISEfromFPCA = function(fpcaObj,ymat){

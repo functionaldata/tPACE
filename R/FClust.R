@@ -1,0 +1,66 @@
+#' Functional clustering and identifying substructures of longitudinal data
+#' 
+#' By default the function will cluster the data using the functional principal component (FPC) scores from the data's 
+#' FPC analysis using Rmixmod (Biernacki etl al., 2006) or directly clustering the functional data using kCFC (Chiou and Li, 2007).
+#' 
+#' Within Rmixmod we examine the models under the configuration: "Rmixmod::mixmodGaussianModel( equal.proportions = FALSE, free.proportions = TRUE, family = 'general')"
+#' and return the optimal model based on 'NEC'. See ?Rmixmod::mixmodGaussianModel for details.
+#' 
+#' @param y A list of \emph{n} vectors containing the observed values for each individual. Missing values specified by \code{NA}s are supported for dense case (\code{dataType='dense'}).
+#' @param t A list of \emph{n} vectors containing the observation time points for each individual corresponding to y.
+#' @param k A scalar defining the number of clusters to define; default 3.
+#' @param cmethod A string specifying the clusterig method to use ('Rmixmod' or 'kCFC'); default: 'Rmixmod'.
+#' @param optnsFPCA A list of options control parameters specified by \code{list(name=value)} to be used for by FPCA on the sample y; by default: 
+#' "list( methodMuCovEst ='smooth', FVEthreshold= 0.90, methodBwCov = 'GCV', methodBwMu = 'GCV' )". See `Details in ?FPCA'.
+#' @param optnsCS A list of options control parameters specified by \code{list(name=value)} to be used for cluster-specific FPCA from kCFC; by default:  
+#' "list( methodMuCovEst ='smooth', FVEthreshold= 0.70, methodBwCov = 'GCV', methodBwMu = 'GCV' )". See `Details in ?FPCA' and '?kCFC'. This is not used by Rmixmod!
+#'
+#' @return A list containing the following fields:
+#' \item{cluster}{A vector of levels 1:k, indicating the cluster to which each curve is allocated.} 
+#' \item{fpca}{An FPCA object derived from the sample used by Rmixmod, otherwise NULL.} 
+#' \item{clusterObj}{Either a MixmodCluster object or kCFC object.} 
+#' 
+#' @examples
+#' A <- read.table('~/git_projects/tPACE/data/growth.dat')
+#' B <- MakeFPCAInputs( IDs = A[,1], tVec = A$V3, yVec = A$V4) 
+#' C <- FClust(B$Ly, B$Lt, k = 2, cmethod = 'Rmixmod')
+#' D <- FClust(B$Ly, B$Lt, k = 2, cmethod = 'kCFC')
+#' trueClusters <-  A$V2[!duplicated(A$V1)]
+#' N = length(trueClusters)
+#' cRates <- c( sum(trueClusters != C$cluster), sum(trueClusters != ifelse(D$cluster==1, 2, 1)))/N # 0.9677 & 0.9355
+#' @references
+#' \cite{Christophe Biernacki, Gilles Celeux, Gerard Govaert and Florent Langrognet, "Model-Based Cluster and Discriminant Analysis with the MIXMOD Software". Computational Statistics and Data Analysis 51 (2007): 587-600}
+#' 
+#' \cite{Jeng-Min Chiou and Pai-Ling Li, "Functional clustering and identifying substructures of longitudinal data." Journal of the Royal Statistical Society 69 (2007): 679-699}
+#' @export
+
+FClust = function(y, t, k = 3, cmethod = 'Rmixmod', optnsFPCA = NULL, optnsCS = NULL){ 
+  
+  if(is.null(optnsFPCA)){
+     optnsFPCA = list( methodMuCovEst = 'smooth', FVEthreshold = 0.90, methodBwCov = 'GCV', methodBwMu = 'GCV')
+  }
+  if(is.null(optnsCS)){
+    optnsCS = list( methodMuCovEst = 'smooth', FVEthreshold = 0.70, methodBwCov = 'GCV', methodBwMu = 'GCV')
+  }
+  
+  if( (k <2) || (floor(length(y)*0.5) < k) ){
+    warning("The value of 'k' is outside [2, 0.5*N]; reseting to 3.")
+  } 
+  if( !(cmethod %in% c("Rmixmod", "kCFC")) ){
+    stop("The clustering method specified in neither 'Rmixmod' or 'kCFC'.")
+  }
+  
+  if( cmethod == 'Rmixmod'){ 
+  fpcaObjY <- FPCA(y, t, optnsFPCA)
+    xiData <- as.data.frame(fpcaObjY$xiEst)
+    clusterObj <- Rmixmod::mixmodCluster( data = xiData, nbCluster = k, criterion = 'NEC', 
+                          models = Rmixmod::mixmodGaussianModel( equal.proportions = FALSE, free.proportions = TRUE, family = 'general')) 
+    clustConf = apply(Rmixmod::mixmodPredict(data = xiData, classificationRule = clusterObj@bestResult)@proba, 1, which.max)
+  } else {
+    fpcaObjY <- NULL
+    clusterObj <- kCFC(y, t, k = k, optnsSW = optnsFPCA, optnsCS = optnsCS)
+    clustConf <- clusterObj$cluster
+  }
+  
+  return( list(cluster = clustConf, fpca = fpcaObjY, clusterObj =  clusterObj) )
+}  
