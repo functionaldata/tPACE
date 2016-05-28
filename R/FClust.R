@@ -6,8 +6,8 @@
 #' Within Rmixmod we examine the models under the configuration: "Rmixmod::mixmodGaussianModel( equal.proportions = FALSE, free.proportions = TRUE, family = 'general')"
 #' and return the optimal model based on 'NEC'. See ?Rmixmod::mixmodGaussianModel for details.
 #' 
-#' @param y A list of \emph{n} vectors containing the observed values for each individual. Missing values specified by \code{NA}s are supported for dense case (\code{dataType='dense'}).
-#' @param t A list of \emph{n} vectors containing the observation time points for each individual corresponding to y.
+#' @param Ly A list of \emph{n} vectors containing the observed values for each individual. Missing values specified by \code{NA}s are supported for dense case (\code{dataType='dense'}).
+#' @param Lt A list of \emph{n} vectors containing the observation time points for each individual corresponding to y.
 #' @param k A scalar defining the number of clusters to define; default 3.
 #' @param cmethod A string specifying the clusterig method to use ('Rmixmod' or 'kCFC'); default: 'Rmixmod'.
 #' @param optnsFPCA A list of options control parameters specified by \code{list(name=value)} to be used for by FPCA on the sample y; by default: 
@@ -34,7 +34,7 @@
 #' \cite{Jeng-Min Chiou and Pai-Ling Li, "Functional clustering and identifying substructures of longitudinal data." Journal of the Royal Statistical Society 69 (2007): 679-699}
 #' @export
 
-FClust = function(y, t, k = 3, cmethod = 'Rmixmod', optnsFPCA = NULL, optnsCS = NULL){ 
+FClust = function(Ly, Lt, k = 3, cmethod = 'Rmixmod', optnsFPCA = NULL, optnsCS = NULL){ 
   
   if(is.null(optnsFPCA)){
      optnsFPCA = list( methodMuCovEst = 'smooth', FVEthreshold = 0.90, methodBwCov = 'GCV', methodBwMu = 'GCV')
@@ -43,7 +43,7 @@ FClust = function(y, t, k = 3, cmethod = 'Rmixmod', optnsFPCA = NULL, optnsCS = 
     optnsCS = list( methodMuCovEst = 'smooth', FVEthreshold = 0.70, methodBwCov = 'GCV', methodBwMu = 'GCV')
   }
   
-  if( (k <2) || (floor(length(y)*0.5) < k) ){
+  if( (k <2) || (floor(length(Ly)*0.5) < k) ){
     warning("The value of 'k' is outside [2, 0.5*N]; reseting to 3.")
   } 
   if( !(cmethod %in% c("Rmixmod", "kCFC")) ){
@@ -51,14 +51,15 @@ FClust = function(y, t, k = 3, cmethod = 'Rmixmod', optnsFPCA = NULL, optnsCS = 
   }
   
   if( cmethod == 'Rmixmod'){ 
-  fpcaObjY <- FPCA(y, t, optnsFPCA)
-    xiData <- as.data.frame(fpcaObjY$xiEst)
+  fpcaObjY <- FPCA(Ly = Ly, Lt = Lt, optnsFPCA)
+    xiData <- as.data.frame(fpcaObjY$xiEst) 
     clusterObj <- Rmixmod::mixmodCluster( data = xiData, nbCluster = k, criterion = 'NEC', 
+                          strategy = Rmixmod::mixmodStrategy(algo = c("EM","SEM"), seed = 123),
                           models = Rmixmod::mixmodGaussianModel( equal.proportions = FALSE, free.proportions = TRUE, family = 'general')) 
     clustConf = apply(Rmixmod::mixmodPredict(data = xiData, classificationRule = clusterObj@bestResult)@proba, 1, which.max)
   } else {
     fpcaObjY <- NULL
-    clusterObj <- kCFC(y, t, k = k, optnsSW = optnsFPCA, optnsCS = optnsCS)
+    clusterObj <- kCFC(y= Ly, t= Lt, k = k, optnsSW = optnsFPCA, optnsCS = optnsCS)
     clustConf <- clusterObj$cluster
   }
   
