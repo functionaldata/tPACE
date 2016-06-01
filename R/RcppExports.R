@@ -5,6 +5,10 @@ CPPlwls1d <- function(bw, kernel_type, win, xin, yin, xout, npoly = 1L, nder = 0
     .Call('fdapace_CPPlwls1d', PACKAGE = 'fdapace', bw, kernel_type, win, xin, yin, xout, npoly, nder)
 }
 
+cumtrapzRcpp <- function(X, Y) {
+    .Call('fdapace_cumtrapzRcpp', PACKAGE = 'fdapace', X, Y)
+}
+
 dropZeroElementsXYWin <- function(win, xin, yin) {
     .Call('fdapace_dropZeroElementsXYWin', PACKAGE = 'fdapace', win, xin, yin)
 }
