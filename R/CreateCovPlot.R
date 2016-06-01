@@ -43,9 +43,11 @@ CreateCovPlot = function(fpcaObj, covPlotType = 'Fitted', isInteractive = FALSE,
   } 
   
   ## Check if rgl is installed
+  if (isInteractive == FALSE && (!'plot3D' %in% installed.packages()[, ])) {
+    stop("CreateCovPlot requires package 'plot3D'")
+  }
   if(isInteractive == TRUE && is.element('rgl', installed.packages()[,1]) == FALSE){
-    isInteractive = FALSE
-    warning("Interactive plot requires package 'rgl', isInteractive set to be FALSE!")
+    stop("Interactive plot requires package 'rgl'")
   }
   
   ## Define the variables to plot

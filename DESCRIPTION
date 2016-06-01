@@ -16,12 +16,12 @@ LazyData: false
 Imports:
     Rcpp (>= 0.11.5), 
     Hmisc,
-    plot3D,
     Matrix,
     pracma, 
     numDeriv
 LinkingTo: Rcpp, RcppEigen 
 Suggests:
+    plot3D,
     rgl,
     aplpack,
     mgcv,
