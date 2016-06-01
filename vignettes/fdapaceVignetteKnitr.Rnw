@@ -267,6 +267,17 @@ CreateBWPlot(fpcaObjFlies79 , derOptns = list(p = 1, bw = 2.0 , kernelType = 're
 %' \includegraphics[width=0.9\textwidth]{bwPlot-2.pdf}
 
 
+
+As the \texttt{medfly} sample is dense we can immediately use standard multivaritte clustering functionality to identify potential subgroups within it; the function  \texttt{FClust} is the wrapper around the clustering functionality provided by \texttt{fdapace}.  By default \texttt{FClust} utilises a Gaussian Mixture Model approach based on the package \texttt{Rmixmod} \cite{Biernacki2006}, as a general rule clustering optimality is based on negative entropy criterion. In the \texttt{medfly} dataset clustering the data allows to immediately recognise a particular subgroup of flies that lay no or very few eggs during the period examined.
+ 
+<<clustPlot, fig.width=7, fig.height=3>>= 
+A <- FClust(Flies$Ly, Flies$Lt, optnsFPCA = list(methodMuCovEst = 'smooth', userBwCov = 2, FVEthreshold = 0.90))
+B <- FClust(Flies$Ly, Flies$Lt, optnsFPCA = list(methodMuCovEst = 'smooth', userBwCov = 2, FVEthreshold = 0.90), k = 2)
+#  A$clusterObj@bestResult@criterionValue is greater than B$clusterObj@bestResult@criterionValue
+CreatePathPlot( fpcaObjFlies, k=2, showObs=FALSE, lty=1, col= B$cluster, xlab = 'Days', ylab = '# of eggs laid')
+grid()
+@
+
 \bibliographystyle{plain}
 \bibliography{roxygen}%
 
