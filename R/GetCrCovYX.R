@@ -117,9 +117,18 @@ GetCrCovYX <- function(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL, Ly2
       bwRanges = apply(bwCandidates,2, range)
       upperB = bwRanges[2,]
       lowerB = bwRanges[1,]
-      theSols = minqa::bobyqa(fn = theCostFunc, par = upperB*0.95, # Starting value that "is safe"
-                              upper = upperB, lower = lowerB, control = list(maxfun = 41),
-                              rawCC, workGrid1, workGrid2, kern, workGrid12) 
+      
+      if( !is.element('minqa', installed.packages()[,1]) ){
+        warning("Cannot use 'minqa::bobyqa' to find the optimal bandwidths. 'minqa' is not installed. We will do an 'L-BFGS-B' search.")
+        theSols = optim(fn = theCostFunc, par = upperB*0.95, # Starting value that "is safe"
+                         upper = upperB, lower = lowerB, method ='L-BFGS-B', control = list(maxit = 51),
+                         rawCC, workGrid1, workGrid2, kern, workGrid12) 
+      } else { # when BOBYQA is available
+        theSols = minqa::bobyqa(fn = theCostFunc, par = upperB*0.95, # Starting value that "is safe"
+                               upper = upperB, lower = lowerB, control = list(maxfun = 41),
+                               rawCC, workGrid1, workGrid2, kern, workGrid12) 
+      }
+
       bOpt1 = theSols$par[1]
       bOpt2 = theSols$par[2]
       if( bOpt1 > 0.75 * upperB[1] && bOpt2 > 0.75 * upperB[2] ){
