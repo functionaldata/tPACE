@@ -50,8 +50,11 @@ FClust = function(Ly, Lt, k = 3, cmethod = 'Rmixmod', optnsFPCA = NULL, optnsCS 
     stop("The clustering method specified in neither 'Rmixmod' or 'kCFC'.")
   }
   
-  if( cmethod == 'Rmixmod'){ 
-  fpcaObjY <- FPCA(Ly = Ly, Lt = Lt, optnsFPCA)
+  if( cmethod == 'Rmixmod'){
+    if( !is.element('Rmixmod', installed.packages()[,1]) ) {
+      stop("Cannot the use the Rmixmod method; the package 'Rmixmod' is unavailable.")
+    }
+    fpcaObjY <- FPCA(Ly = Ly, Lt = Lt, optnsFPCA)
     xiData <- as.data.frame(fpcaObjY$xiEst) 
     clusterObj <- Rmixmod::mixmodCluster( data = xiData, nbCluster = k, criterion = 'NEC', 
                           strategy = Rmixmod::mixmodStrategy(algo = c("EM","SEM"), seed = 123),
