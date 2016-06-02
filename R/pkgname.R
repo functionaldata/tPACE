@@ -29,7 +29,5 @@
 #' @docType package
 #' @name fdapace
 #' @useDynLib fdapace
-#' @import Hmisc plot3D Rcpp
-#' @importFrom numDeriv grad
-#' @importFrom pracma meshgrid midpoint mod ones uniq
+#' @import Hmisc Rcpp Matrix pracma numDeriv
 NULL

@@ -187,7 +187,7 @@ CreateOutliersPlot <- function(fpcaObj, optns = NULL, ...){
     if(groupingType =='standard'){ 
       args2 = list (x= fhat$eval.points[[1]], y=fhat$eval.points[[2]], z = zin, 
                     labcex=1.66, col= c('black','blue','red'), levels = fhat$cont[c(50, 95, 99)], labels = c('50%', '95%', '99%')) 
-      do.call(contour, c(args2, args1)); 
+      do.call(graphics::contour, c(args2, args1)); 
       grid(col = "#e6e6e6")
       
       points(fpcaObj$xiEst[qq <=  fhat$cont[99],fpcIndeces],cex=0.5, col='orange', pch=10 , lwd =2 ) 
