@@ -4,13 +4,13 @@
 \alias{FClust}
 \title{Functional clustering and identifying substructures of longitudinal data}
 \usage{
-FClust(y, t, k = 3, cmethod = "Rmixmod", optnsFPCA = NULL,
+FClust(Ly, Lt, k = 3, cmethod = "Rmixmod", optnsFPCA = NULL,
   optnsCS = NULL)
 }
 \arguments{
-\item{y}{A list of \emph{n} vectors containing the observed values for each individual. Missing values specified by \code{NA}s are supported for dense case (\code{dataType='dense'}).}
+\item{Ly}{A list of \emph{n} vectors containing the observed values for each individual. Missing values specified by \code{NA}s are supported for dense case (\code{dataType='dense'}).}
 
-\item{t}{A list of \emph{n} vectors containing the observation time points for each individual corresponding to y.}
+\item{Lt}{A list of \emph{n} vectors containing the observation time points for each individual corresponding to y.}
 
 \item{k}{A scalar defining the number of clusters to define; default 3.}
 

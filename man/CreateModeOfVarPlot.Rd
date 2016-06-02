@@ -4,12 +4,14 @@
 \alias{CreateModeOfVarPlot}
 \title{Functional Principal Component Analysis mode of variation plot}
 \usage{
-CreateModeOfVarPlot(fpcaObj, k = 1, ...)
+CreateModeOfVarPlot(fpcaObj, k = 1, rainbowPlot = FALSE, ...)
 }
 \arguments{
 \item{fpcaObj}{An FPCA class object returned by FPCA().}
 
 \item{k}{The k-th mode of variation to plot (default k = 1)}
+
+\item{rainbowPlot}{Indicator to create a rainbow-plot instead of a shaded plot (default: FALSE)}
 
 \item{...}{Additional arguments for the 'plot' function.}
 }
@@ -17,7 +19,8 @@ CreateModeOfVarPlot(fpcaObj, k = 1, ...)
 Create the k-th mode of variation plot around the mean. The red-line is
 the functional mean, the grey shaded areas show the range of variations
 around the mean: \eqn{ \pm Q \sqrt{\lambda_k} \phi_k}{+/- Q sqrt{lambda_k} phi_k}
-for the dark grey area Q = 1, and for the light grey are Q = 2.
+for the dark grey area Q = 1, and for the light grey are Q = 2. In the case of 'rainbowPlot'
+the blue edge corresponds to Q = -3, the green edge to Q = +3 and the red-line to Q = 0 (the mean).
 }
 \examples{
 set.seed(1)
