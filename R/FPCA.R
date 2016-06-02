@@ -105,6 +105,8 @@ FPCA = function(Ly, Lt, optns = list()){
       Lt = BinnedDataset$newt; 
       optns[['nRegGrid']] <- min(optns[['nRegGrid']],
                                  BinnedDataset[['numBins']])
+      inputData$Ly <- Ly
+      inputData$Lt <- Lt
   }
 
   # Generate basic grids:

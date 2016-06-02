@@ -221,6 +221,26 @@ test_that('GetCovDense with noise, get sigma2', {
               mean((fitted(resErr) - sampTrue) ^ 2))
 })
 
+test_that('Dense data that requires binning', {
+  set.seed(1)
+  n <- 100
+  p <- 1001
+  pts <- seq(0, 1, length.out=p)
+  sigma2 <- 0.1
+  mu <- pts
+  sampTrue <- Wiener(n, pts) + matrix(pts, n, p, byrow=TRUE)
+  samp <- sampTrue + rnorm(n * length(pts), sd=sqrt(sigma2))
+  tmp <- MakeFPCAInputs(tVec=pts, yVec=samp)
+
+  resErr <- FPCA(tmp$Ly, tmp$Lt, list(error=TRUE, dataType='Dense'))
+
+  expect_equal(resErr$sigma2, sigma2, tolerance=1e-1)
+  expect_equal(length(resErr$obsGrid), 400)
+  expect_equal(length(resErr$workGrid), 400)
+  plot(resErr)
+})
+
+
 test_that('GetCovDense with noise, known cov, get sigma2', {
   set.seed(1)
   n <- 200
