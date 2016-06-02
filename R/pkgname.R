@@ -29,5 +29,11 @@
 #' @docType package
 #' @name fdapace
 #' @useDynLib fdapace
-#' @import Hmisc Rcpp Matrix pracma numDeriv
+#' @import Hmisc Rcpp Matrix 
+#' @importFrom pracma meshgrid midpoint mod ones uniq
+#' @importFrom numDeriv grad
+#' @importFrom grDevices colorRampPalette dev.new palette
+#' @importFrom graphics abline barplot boxplot grid legend lines matlines matplot par plot points polygon 
+#' @importFrom stats aggregate approx approxfun cov dist fitted kmeans lm median na.omit optim predict quantile rnorm runif spline var
+#' @importFrom utils installed.packages
 NULL
