@@ -32,7 +32,7 @@
 #' veryLowCount = ifelse( sapply( unique(medfly25$ID), function(u) 
 #'                    sum( medfly25$nEggs[medfly25$ID == u] )) < 25, 1, 0)
 #' N <- length(unique(medfly25$ID))
-#' (correctRate <- sum( (1 + veryLowCount) ==  newClust$cluster) / N) # 99.62%; “It’s super effective!” 
+#' (correctRate <- sum( (1 + veryLowCount) ==  newClust$cluster) / N) # 99.62%; "It’s super effective!"
 #' @references
 #' \cite{Christophe Biernacki, Gilles Celeux, Gerard Govaert and Florent Langrognet, "Model-Based Cluster and Discriminant Analysis with the MIXMOD Software". Computational Statistics and Data Analysis 51 (2007): 587-600}
 #' 

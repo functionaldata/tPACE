@@ -37,13 +37,18 @@ Within Rmixmod we examine the models under the configuration: "Rmixmod::mixmodGa
 and return the optimal model based on 'NEC'. See ?Rmixmod::mixmodGaussianModel for details.
 }
 \examples{
-A <- read.table('~/git_projects/tPACE/data/growth.dat')
-B <- MakeFPCAInputs( IDs = A[,1], tVec = A$V3, yVec = A$V4) 
-C <- FClust(B$Ly, B$Lt, k = 2, cmethod = 'Rmixmod')
-D <- FClust(B$Ly, B$Lt, k = 2, cmethod = 'kCFC')
-trueClusters <-  A$V2[!duplicated(A$V1)]
-N = length(trueClusters)
-cRates <- c( sum(trueClusters != C$cluster), sum(trueClusters != ifelse(D$cluster==1, 2, 1)))/N # 0.9677 & 0.9355
+data(medfly25)
+Flies <- MakeFPCAInputs(medfly25$ID, medfly25$Days, medfly25$nEggs) 
+newClust <- FClust(Flies$Ly, Flies$Lt, k = 2, optnsFPCA = 
+                    list(methodMuCovEst = 'smooth', userBwCov = 2, FVEthreshold = 0.90))
+                    
+# We denote as 'veryLowCount' the group of flies that lay less
+# than twenty-five eggs during the 25-day period examined.
+
+veryLowCount = ifelse( sapply( unique(medfly25$ID), function(u) 
+                   sum( medfly25$nEggs[medfly25$ID == u] )) < 25, 1, 0)
+N <- length(unique(medfly25$ID))
+(correctRate <- sum( (1 + veryLowCount) ==  newClust$cluster) / N) # 99.62\%; "It’s super effective!"
 }
 \references{
 \cite{Christophe Biernacki, Gilles Celeux, Gerard Govaert and Florent Langrognet, "Model-Based Cluster and Discriminant Analysis with the MIXMOD Software". Computational Statistics and Data Analysis 51 (2007): 587-600}

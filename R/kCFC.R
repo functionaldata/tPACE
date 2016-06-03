@@ -14,12 +14,11 @@
 #' \item{iterToConv}{A number indicating how many iterations where required until convergence.} 
 #' 
 #' @examples
-#' set.seed(1)
-#' n <- 2511
-#' pts <- seq(0, 1, by=0.01)
-#' sampWiener <- Wiener(n, pts)
-#' sampWiener <- Sparsify(sampWiener, pts, 101) 
-#' kcfcObj <- kCFC(sampWiener$Ly, sampWiener$Lt)
+#' data(medfly25) 
+#' Flies <- MakeFPCAInputs(medfly25$ID, medfly25$Days, medfly25$nEggs)
+#' kcfcObj <- kCFC(Flies$Ly, Flies$Lt, 
+#'                  optnsSW = list(methodMuCovEst = 'smooth', userBwCov = 2, FVEthreshold = 0.90),
+#'                  optnsCS = list(methodMuCovEst = 'smooth', userBwCov = 2, FVEthreshold = 0.70))
 #' @references
 #' \cite{Jeng-Min Chiou, Pai-Ling Li, "Functional clustering and identifying substructures of longitudinal data." Journal of the Royal Statistical Society 69 (2007): 679-699}
 #' @export

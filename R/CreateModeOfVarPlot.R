@@ -26,7 +26,6 @@ CreateModeOfVarPlot <-function(fpcaObj,  k = 1, rainbowPlot = FALSE, ...){
   
   args1 <- list( main="Default Title", xlab='s', ylab='')  
   inargs <- list(...)
-  args1[names(inargs)] <- inargs
   
   if(k> length(fpcaObj$lambda) ){
     stop("You are asking to plot a mode of variation that is incomputable.")
@@ -41,9 +40,14 @@ CreateModeOfVarPlot <-function(fpcaObj,  k = 1, rainbowPlot = FALSE, ...){
   phi = fpcaObj$phi[,k]
   phi1 = fpcaObj$phi[,1]
   
+  if( is.null(inargs$ylim)){
+    inargs$ylim=range(c( 3* sigma1 * phi1 + mu , -3* sigma1 * phi1 + mu ))
+  }
+  
+  args1[names(inargs)] <- inargs
+  
   if(!rainbowPlot){
-    do.call(plot, c(list(type='n'), list(x=s), list(y=s), 
-                    list(ylim=range(c( 3* sigma1 * phi1 + mu , -3* sigma1 * phi1 + mu ))), args1))
+    do.call(plot, c(list(type='n'), list(x=s), list(y=s), args1))
     grid()    
     polygon(x=c(s, rev(s)), y = c( -2* sigma * phi + mu, 
                                    rev(2* sigma * phi + mu)), col= 'lightgrey',border=NA)
@@ -56,8 +60,7 @@ CreateModeOfVarPlot <-function(fpcaObj,  k = 1, rainbowPlot = FALSE, ...){
     
     Qmatrix = (seq(-2 ,2 ,length.out = numOfModes) %*% t(fpcaObj$phi[,k] * sqrt(fpcaObj$lambda[k]))) + 
       matrix(rep(mu,numOfModes), nrow=numOfModes, byrow = TRUE)  
-    do.call(matplot, c(list(type='l'), list(x=s), list(y=t(Qmatrix)), list(col= thisColPalette), list(lty=1), list(lwd=2),
-                       list(ylim=range(c( 3* sigma1 * phi1 + mu , -3* sigma1 * phi1 + mu ))), args1))
+    do.call(matplot, c(list(type='l'), list(x=s), list(y=t(Qmatrix)), list(col= thisColPalette), list(lty=1), list(lwd=2), args1))
     grid()    
   }
     lines(x=s, y=mu , col='red')
