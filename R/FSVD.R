@@ -1,13 +1,41 @@
-# Functional Singular Component Analysis of two functions
-# Procedures
-# 1) Apply the functional singular value decomposition to the kernel
-#    estimator of cross-covariance surface between X and Y.
-#
-# 2) Computation of the singular values and the singular functions.
-#
-# 3) Computation of the functional correlation. # wrapper or included with options
+#' Functional Singular Value Decomposition
+#' 
+#' FSVD for a pair of dense or sparse functional data. 
+#' 
+#' @param Ly1 A list of \emph{n} vectors containing the observed values for each individual. Missing values specified by \code{NA}s are supported for dense case (\code{dataType='dense'}).
+#' @param Lt1 A list of \emph{n} vectors containing the observation time points for each individual corresponding to y. Each vector should be sorted in ascending order.
+#' @param Ly2 A list of \emph{n} vectors containing the observed values for each individual. Missing values specified by \code{NA}s are supported for dense case (\code{dataType='dense'}).
+#' @param Lt2 A list of \emph{n} vectors containing the observation time points for each individual corresponding to y. Each vector should be sorted in ascending order.
+#' @param FPCAoptns1 A list of options control parameters specified by \code{list(name=value)} for the FPC analysis of sample 1. See `?FPCA'.
+#' @param FPCAoptns2 A list of options control parameters specified by \code{list(name=value)} for the FPC analysis of sample 2. See `?FPCA'.
+#' @param SVDoptns A list of options control parameters specified by \code{list(name=value)} for the FSVD analysis of samples 1 & 2. See `Details`.
+#'
+#' @details Available control options for SVDoptns are: 
+#' \describe{
+#' \item{userBwCov}{The bandwidth value for the smoothed covariance function; positive numeric - default: determine automatically based on 'methodBwCov'}
+#' \item{methodBwCov}{The bandwidth choice method for the smoothed covariance function; 'GMeanAndGCV' (the geometric mean of the GCV bandwidth and the minimum bandwidth),'CV','GCV' - default: 10\% of the support}
+#' \item{userBwMu}{The bandwidth value for the smoothed mean function (using 'CV' or 'GCV'); positive numeric - default: determine automatically based on 'methodBwMu'}
+#' \item{blahblah}{More to follow.}
+#' }
+#' 
+#' @return A list containing the following fields:
+#' \item{bw1}{The selected (or user specified) bandwidth for smoothing the cross-covariance function across the support of sample 1.}
+#' \item{bw2}{The selected (or user specified) bandwidth for smoothing the cross-covariance function across the support of sample 2.}
+#' \item{CrCov}{The cross-covariance between samples 1 & 2.}
+#' \item{svalues}{A list of length \emph{nsvd}, each entry containing the singuar value estimates for the FSC estimates.}
+#' \item{nsvd}{The number of singular componentes used.}
+#' \item{canCorr}{The (sorted) grid points where all observation points are pooled.}
+#' \item{FVE}{A percentage indicating the total variance explained by chosen FSCs with corresponding 'FVEthreshold'.}
+#' \item{leftSFn}{An nWorkGrid by \emph{K} matrix containing the estimated left singular functions.}
+#' \item{rightSFn}{An nWorkGrid by \emph{K} matrix containing the estimated  right singular functions.}
+#' \item{grid1}{A vector of length nWorkGrid1. The internal regular grid on which the singular analysis is carried on the support of sample 1.}
+#' \item{grid2}{A vector of length nWorkGrid2. The internal regular grid on which the singular analysis is carried on the support of sample 2.}
+#' \item{leftSc}{A \emph{n} by \emph{K} matrix containing the left singular scores.}
+#' \item{rightSc}{A \emph{n} by \emph{K} matrix containing the right singular scores.}
+#' \item{optns}{A list of actually used options.}
+#' 
 
-FSVD <- function(Ly1, Lt1, Ly2, Lt2, #FPCAoptns1 = list(), FPCAoptns2 = list(),
+FSVD <- function(Ly1, Lt1, Ly2, Lt2, FPCAoptns1 = NULL, FPCAoptns2 = NULL,
                  SVDoptns = list()){
   # Check and refine data
   CheckData(Ly1, Lt1)
@@ -23,12 +51,17 @@ FSVD <- function(Ly1, Lt1, Ly2, Lt2, #FPCAoptns1 = list(), FPCAoptns2 = list(),
   numOfCurves = length(ly1)
   SVDoptns = SetSVDOptions(Ly1=ly1, Lt1=lt1, Ly2=ly2, Lt2=lt2, SVDoptns=SVDoptns)
   #CheckSVDOptions(Ly1=y1, Lt1=t1, Ly2=y2, Lt2=t2, SVDoptns=SVDoptns)
-  FPCAoptns1 = SetOptions(ly1, lt1, optns = list(dataType = SVDoptns$dataType1, 
-                                                 nRegGrid = SVDoptns$nRegGrid1))
-  CheckOptions(lt1, FPCAoptns1, numOfCurves)
-  FPCAoptns2 = SetOptions(ly2, lt2, optns = list(dataType = SVDoptns$dataType2, 
-                                                 nRegGrid = SVDoptns$nRegGrid2))
-  CheckOptions(lt2, FPCAoptns2, numOfCurves)
+  
+  if(is.null(FPCAoptns1)){
+    FPCAoptns1 = SetOptions(ly1, lt1, optns = list(dataType = SVDoptns$dataType1, nRegGrid = SVDoptns$nRegGrid1))
+    CheckOptions(lt1, FPCAoptns1, numOfCurves)
+  }
+  
+  if(is.null(FPCAoptns2)){
+    FPCAoptns2 = SetOptions(ly2, lt2, optns = list(dataType = SVDoptns$dataType2, 
+                                                   nRegGrid = SVDoptns$nRegGrid2))
+    CheckOptions(lt2, FPCAoptns2, numOfCurves)
+  }
   
   # Obtain regular grid for both samples
   obsGrid1 = sort(unique( c(unlist(lt1))))
@@ -105,7 +138,7 @@ FSVD <- function(Ly1, Lt1, Ly2, Lt2, #FPCAoptns1 = list(), FPCAoptns2 = list(),
   # normalizing singular functions
   sf1 <- apply(sfun1, 2, function(x) {
     x <- x / sqrt(trapzRcpp(grid1, x^2)) 
-      return(x)
+    return(x)
   })
   sf2 <- apply(sfun2, 2, function(x) {
     x <- x / sqrt(trapzRcpp(grid2, x^2)) 
@@ -170,9 +203,9 @@ FSVD <- function(Ly1, Lt1, Ly2, Lt2, #FPCAoptns1 = list(), FPCAoptns2 = list(),
       Sigmai1[[i]] = rbind(Pim[[i]], t(sv * t(sfObs2))[Tind2, ])
       Sigmai2[[i]] = rbind(t(sv * t(sfObs1))[Tind1, ], Qik[[i]])
       sc1[i,] = c( t(Sigmai1[[i]]) %*% solve(StackRegCovObs[Tind12, Tind12]) %*% 
-        c(ly1[[i]] - Ymu1[Tind1], ly2[[i]] - Ymu2[Tind2]) )
+                     c(ly1[[i]] - Ymu1[Tind1], ly2[[i]] - Ymu2[Tind2]) )
       sc2[i,] = c( t(Sigmai2[[i]]) %*% solve(StackRegCovObs[Tind12, Tind12]) %*% 
-        c(ly1[[i]] - Ymu1[Tind1], ly2[[i]] - Ymu2[Tind2]) )     
+                     c(ly1[[i]] - Ymu1[Tind1], ly2[[i]] - Ymu2[Tind2]) )     
     }
     
   } else { # both are dense, utilize GetINscores as it does the same job
