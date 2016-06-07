@@ -149,9 +149,9 @@ FSVD <- function(Ly1, Lt1, Ly2, Lt2, FPCAoptns1 = NULL, FPCAoptns2 = NULL,
   sValues<- sqrt(gridSize1 * gridSize2) * sValues
   
   ### calculate canonical correlations
-  rho = rep(0, nsvd)
+  canCorr = rep(0, nsvd)
   for(i in 1:nsvd){
-    rho[i] = sValues[i] * (gridSize1^2 * t(sFun1[,i]) %*% FPCAObj1$fittedCov %*% (sFun1[,i]))^(-0.5) * 
+    canCorr[i] = sValues[i] * (gridSize1^2 * t(sFun1[,i]) %*% FPCAObj1$fittedCov %*% (sFun1[,i]))^(-0.5) * 
       (gridSize2^2 * t(sFun2[,i]) %*% FPCAObj2$fittedCov %*% (sFun2[,i]))^(-0.5)
   }
   
@@ -225,7 +225,7 @@ FSVD <- function(Ly1, Lt1, Ly2, Lt2, FPCAoptns1 = NULL, FPCAoptns2 = NULL,
   }
   
   res <- list(bw1 = bw1, bw2 = bw2, CrCov = CrCov, sValues= sValues, nsvd = nsvd,
-              rho = rho, FVE = FVE, sFun1 = sFun1, grid1 = grid1, sScores1 = sScores1,
+              canCorr = canCorr, FVE = FVE, sFun1 = sFun1, grid1 = grid1, sScores1 = sScores1,
               sFun2 = sFun2, grid2 = grid2, sScores2 = sScores2, 
               optns = list(SVDopts = SVDoptns, FPCA1opts = FPCAObj1$optns,  FPCA2opts = FPCAObj2$optns))
   class(res) <- 'FSVD'
