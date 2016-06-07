@@ -16,23 +16,24 @@
 #' \item{methodBwCov}{The bandwidth choice method for the smoothed covariance function; 'GMeanAndGCV' (the geometric mean of the GCV bandwidth and the minimum bandwidth),'CV','GCV' - default: 10\% of the support}
 #' \item{userBwMu}{The bandwidth value for the smoothed mean function (using 'CV' or 'GCV'); positive numeric - default: determine automatically based on 'methodBwMu'}
 #' \item{blahblah}{More to follow.}
+#' \item{noScores}{Logical describing...}
 #' }
 #' 
 #' @return A list containing the following fields:
 #' \item{bw1}{The selected (or user specified) bandwidth for smoothing the cross-covariance function across the support of sample 1.}
 #' \item{bw2}{The selected (or user specified) bandwidth for smoothing the cross-covariance function across the support of sample 2.}
-#' \item{CrCov}{The cross-covariance between samples 1 & 2.}
-#' \item{svalues}{A list of length \emph{nsvd}, each entry containing the singuar value estimates for the FSC estimates.}
+#' \item{CrCov}{The smoothed cross-covariance between samples 1 & 2.}
+#' \item{sValues}{A list of length \emph{nsvd}, each entry containing the singuar value estimates for the FSC estimates.}
 #' \item{nsvd}{The number of singular componentes used.}
-#' \item{canCorr}{The (sorted) grid points where all observation points are pooled.}
+#' \item{canCorr}{The canonical correlations for each dimension.}
 #' \item{FVE}{A percentage indicating the total variance explained by chosen FSCs with corresponding 'FVEthreshold'.}
-#' \item{leftSFn}{An nWorkGrid by \emph{K} matrix containing the estimated left singular functions.}
-#' \item{rightSFn}{An nWorkGrid by \emph{K} matrix containing the estimated  right singular functions.}
+#' \item{sFun1}{An nWorkGrid by \emph{K} matrix containing the estimated singular functions for sample 1.}
+#' \item{sFun2}{An nWorkGrid by \emph{K} matrix containing the estimated singular functions for sample 2.}
 #' \item{grid1}{A vector of length nWorkGrid1. The internal regular grid on which the singular analysis is carried on the support of sample 1.}
 #' \item{grid2}{A vector of length nWorkGrid2. The internal regular grid on which the singular analysis is carried on the support of sample 2.}
-#' \item{leftSc}{A \emph{n} by \emph{K} matrix containing the left singular scores.}
-#' \item{rightSc}{A \emph{n} by \emph{K} matrix containing the right singular scores.}
-#' \item{optns}{A list of actually used options.}
+#' \item{sScores1}{A \emph{n} by \emph{K} matrix containing the singular scores for sample 1.}
+#' \item{sScores2}{A \emph{n} by \emph{K} matrix containing the singular scores for sample 2.}
+#' \item{optns}{A list of options used by the SVD and the FPCA's procedures.}
 #' 
 
 FSVD <- function(Ly1, Lt1, Ly2, Lt2, FPCAoptns1 = NULL, FPCAoptns2 = NULL,
@@ -113,112 +114,120 @@ FSVD <- function(Ly1, Lt1, Ly2, Lt2, FPCAoptns1 = NULL, FPCAoptns2 = NULL,
   
   # SVD on smoothed cross covariance
   SVDObj <- svd(CrCov)
-  sv <- SVDObj$d
-  sv <- sv[sv>0] # pick only positive singular values
-  if(length(sv) > SVDoptns$maxK){ # reset number of singular component as maxK
-    sv <- sv[1:SVDoptns$maxK]
+  sValues<- SVDObj$d
+  sValues<- sValues[sValues>0] # pick only positive singular values
+  if(length(sValues) > SVDoptns$maxK){ # reset number of singular component as maxK
+    sValues<- sValues[1:SVDoptns$maxK]
   }
   # determine number of singular component retained
   if(is.numeric(SVDoptns$methodSelectK)){ # user specified number of singular components
     nsvd = SVDoptns$methodSelectK
-    if(length(sv) < nsvd){
-      nsvd <- length(sv)
+    if(length(sValues) < nsvd){
+      nsvd <- length(sValues)
       warning(sprintf("Only %d Singular Components are available, pre-specified nsvd set to %d. \n", 
-                      length(sv), length(sv)))
+                      length(sValues), length(sValues)))
     }
   } else { # select nsvd using FVEthreshold
-    nsvd <- min(which(cumsum(sv^2)/sum(sv^2) >= SVDoptns$FVEthreshold), SVDoptns$maxK)
+    nsvd <- min(which(cumsum(sValues^2)/sum(sValues^2) >= SVDoptns$FVEthreshold), SVDoptns$maxK)
   }
   
-  FVE <- sum(sv[1:nsvd]^2)/sum(sv^2) # fraction of variation explained
-  sv <- sv[1:nsvd]
+  FVE <- sum(sValues[1:nsvd]^2)/sum(sValues^2) # fraction of variation explained
+  sValues<- sValues[1:nsvd]
   # singular functions
   sfun1 <- SVDObj$u[,1:nsvd]
   sfun2 <- SVDObj$v[,1:nsvd]
   # normalizing singular functions
-  sf1 <- apply(sfun1, 2, function(x) {
+  sFun1 <- apply(sfun1, 2, function(x) {
     x <- x / sqrt(trapzRcpp(grid1, x^2)) 
     return(x)
   })
-  sf2 <- apply(sfun2, 2, function(x) {
+  sFun2 <- apply(sfun2, 2, function(x) {
     x <- x / sqrt(trapzRcpp(grid2, x^2)) 
     return(x)
   })
   # Grid size correction
-  sv <- sqrt(gridSize1 * gridSize2) * sv
+  sValues<- sqrt(gridSize1 * gridSize2) * sValues
   
   ### calculate canonical correlations
   rho = rep(0, nsvd)
   for(i in 1:nsvd){
-    rho[i] = sv[i] * (gridSize1^2 * t(sf1[,i]) %*% FPCAObj1$fittedCov %*% (sf1[,i]))^(-0.5) * 
-      (gridSize2^2 * t(sf2[,i]) %*% FPCAObj2$fittedCov %*% (sf2[,i]))^(-0.5)
+    rho[i] = sValues[i] * (gridSize1^2 * t(sFun1[,i]) %*% FPCAObj1$fittedCov %*% (sFun1[,i]))^(-0.5) * 
+      (gridSize2^2 * t(sFun2[,i]) %*% FPCAObj2$fittedCov %*% (sFun2[,i]))^(-0.5)
   }
   
-  ### calculate the singular scores
-  if(SVDoptns$dataType1 != 'Dense' || SVDoptns$dataType2 != 'Dense'){ 
-    # sparse data (not both dense): conditional expectation
-    # patch the covariance matrix for stacked processes
-    StackSmoothCov = rbind(cbind(FPCAObj1$smoothedCov, CrCov),
-                           cbind(t(CrCov), FPCAObj2$smoothedCov))
-    eig = eigen(StackSmoothCov)
-    positiveInd <- eig[['values']] >= 0
-    if (sum(positiveInd) == 0) {
-      stop('All eigenvalues are negative. The covariance estimate is incorrect.')
-    }
-    d <- eig[['values']][positiveInd]
-    eigenV <- eig[['vectors']][, positiveInd, drop=FALSE]
-    StackFittedCov <- eigenV %*% diag(x=d, nrow = length(d)) %*% t(eigenV)
-    # regularize with rho/sigma2 in FPCA objects
-    StackRegCov <- StackFittedCov + diag(x = c(rep(FPCAObj1$sigma2,length(FPCAObj1$workGrid)),
-                                               rep(FPCAObj2$sigma2,length(FPCAObj2$workGrid))), 
-                                         nrow = length(FPCAObj1$workGrid)+length(FPCAObj2$workGrid) )
-    StackworkGrid12 = c(FPCAObj1$workGrid, FPCAObj2$workGrid + max(FPCAObj1$workGrid) + gridSize1)
-    StackobsGrid12 = c(FPCAObj1$obsGrid, FPCAObj2$obsGrid + max(FPCAObj1$obsGrid) + gridSize1)
-    StackRegCovObs = ConvertSupport(fromGrid = StackworkGrid12, toGrid = StackobsGrid12,
-                                    Cov = StackRegCov)
-    Pim = list(); Qik = list()
-    Sigmai1 = list(); Sigmai2 = list()
-    fittedCovObs1 = ConvertSupport(fromGrid = FPCAObj1$workGrid, toGrid = FPCAObj1$obsGrid, Cov = FPCAObj1$fittedCov)
-    sfObs1 = ConvertSupport(fromGrid = grid1, toGrid = FPCAObj1$obsGrid, phi = sf1)
-    fittedCovObs2 = ConvertSupport(fromGrid = FPCAObj2$workGrid, toGrid = FPCAObj2$obsGrid, Cov = FPCAObj2$fittedCov)
-    sfObs2 = ConvertSupport(fromGrid = grid2, toGrid = FPCAObj2$obsGrid, phi = sf2)
+  if(!SVDoptns$noScores){
     
-    # declare singular components
-    sc1 = matrix(0, nrow = numOfCurves, ncol = nsvd)
-    sc2 = matrix(0, nrow = numOfCurves, ncol = nsvd)
-    for(i in 1:numOfCurves){ # calculate singular component for each obs pair
-      Pim[[i]] = matrix(0, nrow=length(lt1[[i]]), ncol=nsvd)
-      Qik[[i]] = matrix(0, nrow=length(lt2[[i]]), ncol=nsvd)
-      Tind1 = which(FPCAObj1$obsGrid %in% lt1[[i]])
-      Tind2 = which(FPCAObj2$obsGrid %in% lt2[[i]])
-      Tind12 = c(Tind1, length(FPCAObj1$obsGrid) + Tind2)
-      for(j in 1:nsvd){
-        Pim[[i]][,j] = apply(fittedCovObs1[,Tind1], 2, function(x){
-          pij = trapzRcpp(X = FPCAObj1$obsGrid, Y = x*sfObs1[,j])
-        })
-        Qik[[i]][,j] = apply(fittedCovObs2[,Tind2], 2, function(x){
-          qij = trapzRcpp(X = FPCAObj2$obsGrid, Y = x*sfObs2[,j])
-        }) 
+    ### calculate the singular scores
+    if(SVDoptns$dataType1 != 'Dense' || SVDoptns$dataType2 != 'Dense'){ 
+      # sparse data (not both dense): conditional expectation
+      # patch the covariance matrix for stacked processes
+      StackSmoothCov = rbind(cbind(FPCAObj1$smoothedCov, CrCov),
+                             cbind(t(CrCov), FPCAObj2$smoothedCov))
+      eig = eigen(StackSmoothCov)
+      positiveInd <- eig[['values']] >= 0
+      if (sum(positiveInd) == 0) {
+        stop('All eigenvalues are negative. The covariance estimate is incorrect.')
       }
-      Sigmai1[[i]] = rbind(Pim[[i]], t(sv * t(sfObs2))[Tind2, ])
-      Sigmai2[[i]] = rbind(t(sv * t(sfObs1))[Tind1, ], Qik[[i]])
-      sc1[i,] = c( t(Sigmai1[[i]]) %*% solve(StackRegCovObs[Tind12, Tind12]) %*% 
-                     c(ly1[[i]] - Ymu1[Tind1], ly2[[i]] - Ymu2[Tind2]) )
-      sc2[i,] = c( t(Sigmai2[[i]]) %*% solve(StackRegCovObs[Tind12, Tind12]) %*% 
-                     c(ly1[[i]] - Ymu1[Tind1], ly2[[i]] - Ymu2[Tind2]) )     
+      d <- eig[['values']][positiveInd]
+      eigenV <- eig[['vectors']][, positiveInd, drop=FALSE]
+      StackFittedCov <- eigenV %*% diag(x=d, nrow = length(d)) %*% t(eigenV)
+      # regularize with rho/sigma2 in FPCA objects
+      StackRegCov <- StackFittedCov + diag(x = c(rep(FPCAObj1$sigma2,length(FPCAObj1$workGrid)),
+                                                 rep(FPCAObj2$sigma2,length(FPCAObj2$workGrid))), 
+                                           nrow = length(FPCAObj1$workGrid)+length(FPCAObj2$workGrid) )
+      StackworkGrid12 = c(FPCAObj1$workGrid, FPCAObj2$workGrid + max(FPCAObj1$workGrid) + gridSize1)
+      StackobsGrid12 = c(FPCAObj1$obsGrid, FPCAObj2$obsGrid + max(FPCAObj1$obsGrid) + gridSize1)
+      StackRegCovObs = ConvertSupport(fromGrid = StackworkGrid12, toGrid = StackobsGrid12,
+                                      Cov = StackRegCov)
+      Pim = list(); Qik = list()
+      Sigmai1 = list(); Sigmai2 = list()
+      fittedCovObs1 = ConvertSupport(fromGrid = FPCAObj1$workGrid, toGrid = FPCAObj1$obsGrid, Cov = FPCAObj1$fittedCov)
+      sfObs1 = ConvertSupport(fromGrid = grid1, toGrid = FPCAObj1$obsGrid, phi = sFun1)
+      fittedCovObs2 = ConvertSupport(fromGrid = FPCAObj2$workGrid, toGrid = FPCAObj2$obsGrid, Cov = FPCAObj2$fittedCov)
+      sfObs2 = ConvertSupport(fromGrid = grid2, toGrid = FPCAObj2$obsGrid, phi = sFun2)
+      
+      # declare singular components
+      sScores1 = matrix(0, nrow = numOfCurves, ncol = nsvd)
+      sScores2 = matrix(0, nrow = numOfCurves, ncol = nsvd)
+      for(i in 1:numOfCurves){ # calculate singular component for each obs pair
+        Pim[[i]] = matrix(0, nrow=length(lt1[[i]]), ncol=nsvd)
+        Qik[[i]] = matrix(0, nrow=length(lt2[[i]]), ncol=nsvd)
+        Tind1 = which(FPCAObj1$obsGrid %in% lt1[[i]])
+        Tind2 = which(FPCAObj2$obsGrid %in% lt2[[i]])
+        Tind12 = c(Tind1, length(FPCAObj1$obsGrid) + Tind2)
+        for(j in 1:nsvd){
+          Pim[[i]][,j] = apply(fittedCovObs1[,Tind1], 2, function(x){
+            pij = trapzRcpp(X = FPCAObj1$obsGrid, Y = x*sfObs1[,j])
+          })
+          Qik[[i]][,j] = apply(fittedCovObs2[,Tind2], 2, function(x){
+            qij = trapzRcpp(X = FPCAObj2$obsGrid, Y = x*sfObs2[,j])
+          }) 
+        }
+        Sigmai1[[i]] = rbind(Pim[[i]], t(sValues* t(sfObs2))[Tind2, ])
+        Sigmai2[[i]] = rbind(t(sValues* t(sfObs1))[Tind1, ], Qik[[i]])
+        sScores1[i,] = c( t(Sigmai1[[i]]) %*% solve(StackRegCovObs[Tind12, Tind12]) %*% 
+                            c(ly1[[i]] - Ymu1[Tind1], ly2[[i]] - Ymu2[Tind2]) )
+        sScores2[i,] = c( t(Sigmai2[[i]]) %*% solve(StackRegCovObs[Tind12, Tind12]) %*% 
+                            c(ly1[[i]] - Ymu1[Tind1], ly2[[i]] - Ymu2[Tind2]) )     
+      }
+      
+    } else { # both are dense, utilize GetINscores as it does the same job
+      # sFun1/sFun2 are already in obsGrid1/obsGrid2 in dense case
+      sScores1 = GetINScores(ymat = y1mat, t = lt1, optns = FPCAoptns1,
+                             mu = Ymu1, lambda = sValues, phi = sFun1, sigma2 = FPCAObj1$sigma2)$xiEst    
+      sScores2 = GetINScores(ymat = y2mat, t = lt2, optns = FPCAoptns2,
+                             mu = Ymu2, lambda = sValues, phi = sFun2, sigma2 = FPCAObj2$sigma2)$xiEst
     }
     
-  } else { # both are dense, utilize GetINscores as it does the same job
-    # sf1/sf2 are already in obsGrid1/obsGrid2 in dense case
-    sc1 = GetINScores(ymat = y1mat, t = lt1, optns = FPCAoptns1,
-                      mu = Ymu1, lambda = sv, phi = sf1, sigma2 = FPCAObj1$sigma2)$xiEst    
-    sc2 = GetINScores(ymat = y2mat, t = lt2, optns = FPCAoptns2,
-                      mu = Ymu2, lambda = sv, phi = sf2, sigma2 = FPCAObj2$sigma2)$xiEst
+  } else {
+    sScores1 <- NULL
+    sScores2 <- NULL
   }
   
-  res <- list(bw1 = bw1, bw2 = bw2, CrCov = CrCov, sv = sv, nsvd = nsvd,
-              rho = rho, FVE = FVE, sf1 = sf1, grid1 = grid1, sc1 = sc1,
-              sf2 = sf2, grid2 = grid2, sc2 = sc2, optns = SVDoptns)
+  res <- list(bw1 = bw1, bw2 = bw2, CrCov = CrCov, sValues= sValues, nsvd = nsvd,
+              rho = rho, FVE = FVE, sFun1 = sFun1, grid1 = grid1, sScores1 = sScores1,
+              sFun2 = sFun2, grid2 = grid2, sScores2 = sScores2, 
+              optns = list(SVDopts = SVDoptns, FPCA1opts = FPCAObj1$optns,  FPCA2opts = FPCAObj2$optns))
   class(res) <- 'FSVD'
   return(res)
 }

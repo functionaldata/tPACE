@@ -16,6 +16,7 @@ SetSVDOptions <- function(Ly1, Lt1, Ly2, Lt2, SVDoptns){
   nRegGrid2 = SVDoptns[['nRegGrid2']]
   quadApprox = SVDoptns[['quadApprox']]
   rmDiag = SVDoptns[['rmDiag']]
+  noScores = SVDoptns[['noScores']]
   
   if(is.null(dataType1)){# do we have dataType or sparse functional data for the first sample
     dataType1 = IsRegular(Lt1);
@@ -66,12 +67,18 @@ SetSVDOptions <- function(Ly1, Lt1, Ly2, Lt2, SVDoptns){
       FVEthreshold = 0.95;
     }
   }
+  
+  if(is.null(noScores)){ # the method of choosing the number of singular components K
+    noScores = FALSE;
+  }
+  
+  
   retSVDOptns <- list(dataType1 = dataType1, dataType2 = dataType2,
                       bw1 = bw1, bw2 = bw2, userMu1 = userMu1, userMu2 = userMu2,
                       useGAM = useGAM, methodSelectK = methodSelectK,
                       FVEthreshold = FVEthreshold, maxK = maxK,
                       kernel = kernel, nRegGrid1 = nRegGrid1, nRegGrid2 = nRegGrid2,
-                      quadApprox = quadApprox, rmDiag = rmDiag)
+                      quadApprox = quadApprox, rmDiag = rmDiag, noScores = noScores)
   
   invalidNames <- !names(SVDoptns) %in% names(retSVDOptns)
   if (any(invalidNames)) {
