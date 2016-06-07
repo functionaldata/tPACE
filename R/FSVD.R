@@ -185,6 +185,7 @@ FSVD <- function(Ly1, Lt1, Ly2, Lt2, #FPCAoptns1 = list(), FPCAoptns2 = list(),
   
   res <- list(bw1 = bw1, bw2 = bw2, CrCov = CrCov, sv = sv, nsvd = nsvd,
               rho = rho, FVE = FVE, sf1 = sf1, grid1 = grid1, sc1 = sc1,
-              sf2 = sf2, grid2 = grid2, sc2 = sc2)
+              sf2 = sf2, grid2 = grid2, sc2 = sc2, optns = SVDoptns)
+  class(res) <- 'FSVD'
   return(res)
 }
