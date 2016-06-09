@@ -1,6 +1,5 @@
 language: r
+os:
+  - osx
 cache: packages
 sudo: false
-before_install:
-  - sudo apt-get -qq update
-  - sudo apt-get install -y tk tcl
