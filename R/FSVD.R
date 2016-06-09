@@ -154,6 +154,7 @@ FSVD <- function(Ly1, Lt1, Ly2, Lt2, FPCAoptns1 = NULL, FPCAoptns2 = NULL,
     canCorr[i] = sValues[i] * (gridSize1^2 * t(sFun1[,i]) %*% FPCAObj1$fittedCov %*% (sFun1[,i]))^(-0.5) * 
       (gridSize2^2 * t(sFun2[,i]) %*% FPCAObj2$fittedCov %*% (sFun2[,i]))^(-0.5)
   }
+  canCorr <- ifelse(abs(canCorr)>1,1,abs(canCorr)) * sign(canCorr) # confine this to [-1,1]
   
   if(!SVDoptns$noScores){
     

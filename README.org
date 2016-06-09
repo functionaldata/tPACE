@@ -1,4 +1,8 @@
-* PACE package for Functional Data Analysis and Empirical Dynamics
+
+
+
+* PACE package for Functional Data Analysis and Empirical Dynamics 
+# [![](https://api.travis-ci.org/hadjipantelis/tPACE.svg?branch=master)](https://travis-ci.org/hadjipantelis/tPACE)
 
 ** Installation
 You can install the package in R using:
