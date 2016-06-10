@@ -19,21 +19,21 @@
 print.FSVD <- function(x, ...){
   obj = x;
   thisDataType <- NULL
-  if(obj$optns$dataType1 == 'Dense' && obj$optns$dataType2 == 'Dense'){
+  if(obj$optns$SVDopts$dataType1 == 'Dense' && obj$optns$SVDopts$dataType2 == 'Dense'){
     thisDataType <- 'Dense'
   } else {
     thisDataType <- 'Sparse'
   }
-  if(obj$optns$dataType1 == 'DenseWithMV' && obj$optns$dataType2 == 'DenseWithMV'){
+  if(obj$optns$SVDopts$dataType1 == 'DenseWithMV' && obj$optns$SVDopts$dataType2 == 'DenseWithMV'){
     thisDataType <- 'DenseWithMV'
   }
     
   cat("Functional Singular Value Decomposition object for", tolower(thisDataType), "data.\n\n")
-  cat("The optimal number of components selected is:", length(obj$sv),"and \nthe first k (<=3) singular values are: ");
-  if ( length(obj$sv) < 4) { 
-    cat( round(obj$sv,3) ,"\n");
+  cat("The optimal number of components selected is:", length(obj$sValues),"and \nthe first k (<=3) singular values are: ");
+  if ( length(obj$sValues) < 4) { 
+    cat( round(obj$sValues,3) ,"\n");
   } else {
-    cat( round(obj$sv[1:3],3) ,"\n")
+    cat( round(obj$sValues[1:3],3) ,"\n")
   }
 }
 

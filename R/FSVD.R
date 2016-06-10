@@ -87,7 +87,7 @@ FSVD <- function(Ly1, Lt1, Ly2, Lt2, FPCAoptns1 = NULL, FPCAoptns2 = NULL,
     CrCovObj = GetCrCovYX(bw1 = SVDoptns$bw1, bw2 = SVDoptns$bw2, Ly1 = ly1, Lt1 = lt1,
                           Ymu1 = Ymu1, Ly2 = ly2, Lt2 = lt2, Ymu2 = Ymu2, 
                           useGAM = SVDoptns$useGAM, rmDiag=SVDoptns$rmDiag, kern=SVDoptns$kernel,
-                          quadApprox = SVDoptns$quadApprox)
+                          bwRoutine = SVDoptns$bwRoutine)
     CrCov = CrCovObj$smoothedCC
     grid1 = CrCovObj$smoothGrid[,1]
     grid2 = CrCovObj$smoothGrid[,2]
@@ -173,8 +173,10 @@ FSVD <- function(Ly1, Lt1, Ly2, Lt2, FPCAoptns1 = NULL, FPCAoptns2 = NULL,
       eigenV <- eig[['vectors']][, positiveInd, drop=FALSE]
       StackFittedCov <- eigenV %*% diag(x=d, nrow = length(d)) %*% t(eigenV)
       # regularize with rho/sigma2 in FPCA objects
-      StackRegCov <- StackFittedCov + diag(x = c(rep(FPCAObj1$sigma2,length(FPCAObj1$workGrid)),
-                                                 rep(FPCAObj2$sigma2,length(FPCAObj2$workGrid))), 
+      samp1minRS2 <-  FPCAObj1$sigma2; #ifelse( FPCAObj1$sigma2 > FPCAObj1$rho, FPCAObj1$rho, FPCAObj1$sigma2 )
+      samp2minRS2 <-  FPCAObj1$sigma2; #ifelse( FPCAObj2$sigma2 > FPCAObj2$rho, FPCAObj2$rho, FPCAObj2$sigma2 )
+      StackRegCov <- StackFittedCov + diag(x = c(rep(samp1minRS2,length(FPCAObj1$workGrid)),
+                                                 rep(samp2minRS2,length(FPCAObj2$workGrid))), 
                                            nrow = length(FPCAObj1$workGrid)+length(FPCAObj2$workGrid) )
       StackworkGrid12 = c(FPCAObj1$workGrid, FPCAObj2$workGrid + max(FPCAObj1$workGrid) + gridSize1)
       StackobsGrid12 = c(FPCAObj1$obsGrid, FPCAObj2$obsGrid + max(FPCAObj1$obsGrid) + gridSize1)
@@ -206,10 +208,8 @@ FSVD <- function(Ly1, Lt1, Ly2, Lt2, FPCAoptns1 = NULL, FPCAoptns2 = NULL,
         }
         Sigmai1[[i]] = rbind(Pim[[i]], t(sValues* t(sfObs2))[Tind2, ])
         Sigmai2[[i]] = rbind(t(sValues* t(sfObs1))[Tind1, ], Qik[[i]])
-        sScores1[i,] = c( t(Sigmai1[[i]]) %*% solve(StackRegCovObs[Tind12, Tind12]) %*% 
-                            c(ly1[[i]] - Ymu1[Tind1], ly2[[i]] - Ymu2[Tind2]) )
-        sScores2[i,] = c( t(Sigmai2[[i]]) %*% solve(StackRegCovObs[Tind12, Tind12]) %*% 
-                            c(ly1[[i]] - Ymu1[Tind1], ly2[[i]] - Ymu2[Tind2]) )     
+        sScores1[i,] = c( t(Sigmai1[[i]]) %*% solve(StackRegCovObs[Tind12, Tind12], c(ly1[[i]] - Ymu1[Tind1], ly2[[i]] - Ymu2[Tind2])) )
+        sScores2[i,] = c( t(Sigmai2[[i]]) %*% solve(StackRegCovObs[Tind12, Tind12], c(ly1[[i]] - Ymu1[Tind1], ly2[[i]] - Ymu2[Tind2])) )
       }
       
     } else { # both are dense, utilize GetINscores as it does the same job

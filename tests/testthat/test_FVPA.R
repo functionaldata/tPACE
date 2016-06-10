@@ -38,15 +38,15 @@ test_that('noisy dense data, default arguments: ie. cross-sectional mu/cov, use 
   
   fvpaResults = FVPA(y= tmp$Ly, t= tmp$Lt)
   
-  expect_more_than( abs( cor( eigFunct1(s), fvpaResults$fpcaObjY$phi[,1])), 0.975)
-  expect_more_than( abs( cor( eigFunct2(s), fvpaResults$fpcaObjY$phi[,2])), 0.975)
-  expect_more_than( abs( cor( eigFunctA(s), fvpaResults$fpcaObjR$phi[,1])), 0.975)
-  expect_more_than( abs( cor( eigFunctB(s), fvpaResults$fpcaObjR$phi[,2])), 0.975)
+  expect_gt( abs( cor( eigFunct1(s), fvpaResults$fpcaObjY$phi[,1])), 0.975)
+  expect_gt( abs( cor( eigFunct2(s), fvpaResults$fpcaObjY$phi[,2])), 0.975)
+  expect_gt( abs( cor( eigFunctA(s), fvpaResults$fpcaObjR$phi[,1])), 0.975)
+  expect_gt( abs( cor( eigFunctB(s), fvpaResults$fpcaObjR$phi[,2])), 0.975)
   
-  expect_more_than( abs( cor( Ksi[,1], fvpaResults$fpcaObjY$xiEst[,1])), 0.975)
-  expect_more_than( abs( cor( Ksi[,2], fvpaResults$fpcaObjY$xiEst[,2])), 0.975)
-  expect_more_than( abs( cor( Zeta[,1], fvpaResults$fpcaObjR$xiEst[,1])), 0.975)
-  expect_more_than( abs( cor( Zeta[,2], fvpaResults$fpcaObjR$xiEst[,2])), 0.94)
+  expect_gt( abs( cor( Ksi[,1], fvpaResults$fpcaObjY$xiEst[,1])), 0.975)
+  expect_gt( abs( cor( Ksi[,2], fvpaResults$fpcaObjY$xiEst[,2])), 0.975)
+  expect_gt( abs( cor( Zeta[,1], fvpaResults$fpcaObjR$xiEst[,1])), 0.975)
+  expect_gt( abs( cor( Zeta[,2], fvpaResults$fpcaObjR$xiEst[,2])), 0.94)
   
 })
 
@@ -87,15 +87,15 @@ test_that('noisy dense data, CE scores and cross-sectional mu/cov', {
   
   fvpaResults = FVPA(y= tmp$Ly, t= tmp$Lt, optns = list(error=TRUE, FVEthreshold = 0.9, methodXi='CE' ))
   
-  expect_more_than( abs( cor( eigFunct1(s), fvpaResults$fpcaObjY$phi[,1])), 0.975)
-  expect_more_than( abs( cor( eigFunct2(s), fvpaResults$fpcaObjY$phi[,2])), 0.975)
-  expect_more_than( abs( cor( eigFunctA(s), fvpaResults$fpcaObjR$phi[,1])), 0.975)
-  expect_more_than( abs( cor( eigFunctB(s), fvpaResults$fpcaObjR$phi[,2])), 0.975)
+  expect_gt( abs( cor( eigFunct1(s), fvpaResults$fpcaObjY$phi[,1])), 0.975)
+  expect_gt( abs( cor( eigFunct2(s), fvpaResults$fpcaObjY$phi[,2])), 0.975)
+  expect_gt( abs( cor( eigFunctA(s), fvpaResults$fpcaObjR$phi[,1])), 0.975)
+  expect_gt( abs( cor( eigFunctB(s), fvpaResults$fpcaObjR$phi[,2])), 0.975)
   
-  expect_more_than( abs( cor( Ksi[,1], fvpaResults$fpcaObjY$xiEst[,1])), 0.975)
-  expect_more_than( abs( cor( Ksi[,2], fvpaResults$fpcaObjY$xiEst[,2])), 0.975)
-  expect_more_than( abs( cor( Zeta[,1], fvpaResults$fpcaObjR$xiEst[,1])), 0.975)
-  expect_more_than( abs( cor( Zeta[,2], fvpaResults$fpcaObjR$xiEst[,2])), 0.94)
+  expect_gt( abs( cor( Ksi[,1], fvpaResults$fpcaObjY$xiEst[,1])), 0.975)
+  expect_gt( abs( cor( Ksi[,2], fvpaResults$fpcaObjY$xiEst[,2])), 0.975)
+  expect_gt( abs( cor( Zeta[,1], fvpaResults$fpcaObjR$xiEst[,1])), 0.975)
+  expect_gt( abs( cor( Zeta[,2], fvpaResults$fpcaObjR$xiEst[,2])), 0.94)
   
 })
 
@@ -136,14 +136,14 @@ test_that('noisy dense data, IN scores and smooth mu/cov', {
   
   fvpaResults = FVPA(y= tmp$Ly, t= tmp$Lt, optns = list(error=TRUE, FVEthreshold = 0.9, methodMuCovEst='smooth', userBwCov = 0.600 ))
   
-  expect_more_than( abs( cor( eigFunct1(s), fvpaResults$fpcaObjY$phi[,1])), 0.975)
-  expect_more_than( abs( cor( eigFunct2(s), fvpaResults$fpcaObjY$phi[,2])), 0.975)
-  expect_more_than( abs( cor( eigFunctA(s), fvpaResults$fpcaObjR$phi[,1])), 0.975)
-  expect_more_than( abs( cor( eigFunctB(s), fvpaResults$fpcaObjR$phi[,2])), 0.975)
+  expect_gt( abs( cor( eigFunct1(s), fvpaResults$fpcaObjY$phi[,1])), 0.975)
+  expect_gt( abs( cor( eigFunct2(s), fvpaResults$fpcaObjY$phi[,2])), 0.975)
+  expect_gt( abs( cor( eigFunctA(s), fvpaResults$fpcaObjR$phi[,1])), 0.975)
+  expect_gt( abs( cor( eigFunctB(s), fvpaResults$fpcaObjR$phi[,2])), 0.975)
   
-  expect_more_than( abs( cor( Ksi[,1], fvpaResults$fpcaObjY$xiEst[,1])), 0.975)
-  expect_more_than( abs( cor( Ksi[,2], fvpaResults$fpcaObjY$xiEst[,2])), 0.975)
-  expect_more_than( abs( cor( Zeta[,1], fvpaResults$fpcaObjR$xiEst[,1])), 0.97)
-  expect_more_than( abs( cor( Zeta[,2], fvpaResults$fpcaObjR$xiEst[,2])), 0.91)
+  expect_gt( abs( cor( Ksi[,1], fvpaResults$fpcaObjY$xiEst[,1])), 0.975)
+  expect_gt( abs( cor( Ksi[,2], fvpaResults$fpcaObjY$xiEst[,2])), 0.975)
+  expect_gt( abs( cor( Zeta[,1], fvpaResults$fpcaObjR$xiEst[,1])), 0.97)
+  expect_gt( abs( cor( Zeta[,2], fvpaResults$fpcaObjR$xiEst[,2])), 0.91)
   
 })

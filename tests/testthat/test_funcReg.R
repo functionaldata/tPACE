@@ -208,8 +208,8 @@ Q <- FCReg(vars, 0.5,0.5, outGrid, 'epan', measurementError=FALSE)
 
 test_that('simple concurrent regression works fine', {
   expect_equal( 2.5, mean(Q$beta[2,]) , tol= 0.01 )
-  expect_more_than( cor( Q$beta0, 0.2*s), 0.95) # this should be change to beta0 at some point.
-  expect_more_than( cor(Q$beta[1,], as.vector(betaFunc1)), 0.99)
+  expect_gt( cor( Q$beta0, 0.2*s), 0.95) # this should be change to beta0 at some point.
+  expect_gt( cor(Q$beta[1,], as.vector(betaFunc1)), 0.99)
 })
 
 

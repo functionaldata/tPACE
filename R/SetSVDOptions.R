@@ -14,7 +14,7 @@ SetSVDOptions <- function(Ly1, Lt1, Ly2, Lt2, SVDoptns){
   kernel = SVDoptns[['kernel']]
   nRegGrid1 = SVDoptns[['nRegGrid1']]
   nRegGrid2 = SVDoptns[['nRegGrid2']]
-  quadApprox = SVDoptns[['quadApprox']]
+  bwRoutine = SVDoptns[['bwRoutine']]
   rmDiag = SVDoptns[['rmDiag']]
   noScores = SVDoptns[['noScores']]
   
@@ -42,8 +42,8 @@ SetSVDOptions <- function(Ly1, Lt1, Ly2, Lt2, SVDoptns){
   if(is.null(userMu2)){
     userMu2 = NULL
   }
-  if(is.null(quadApprox)){
-    quadApprox = FALSE
+  if(is.null(bwRoutine)){
+    bwRoutine = 'l-bfgs-b'
   }
   if(is.null(useGAM)){
     useGAM = FALSE
@@ -78,7 +78,7 @@ SetSVDOptions <- function(Ly1, Lt1, Ly2, Lt2, SVDoptns){
                       useGAM = useGAM, methodSelectK = methodSelectK,
                       FVEthreshold = FVEthreshold, maxK = maxK,
                       kernel = kernel, nRegGrid1 = nRegGrid1, nRegGrid2 = nRegGrid2,
-                      quadApprox = quadApprox, rmDiag = rmDiag, noScores = noScores)
+                      bwRoutine = bwRoutine, rmDiag = rmDiag, noScores = noScores)
   
   invalidNames <- !names(SVDoptns) %in% names(retSVDOptns)
   if (any(invalidNames)) {

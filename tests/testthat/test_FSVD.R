@@ -53,12 +53,12 @@ test_that('consistent estimates for dense case', {
   expect_equal(fsvdobj$sValues, diag(CovscXY), tolerance = 0.01*diag(CovscXY))
   expect_equal(fsvdobj$canCorr, c(rho1, rho2, rho3), tolerance = 0.18*c(rho1, rho2, rho3))
   # test for high correlation between true and observed singular scores
-  expect_more_than(abs(cor(fsvdobj$sScores1[,1], singscore[,1])), 0.99)
-  expect_more_than(abs(cor(fsvdobj$sScores1[,2], singscore[,2])), 0.99)
-  expect_more_than(abs(cor(fsvdobj$sScores1[,3], singscore[,3])), 0.99)
-  expect_more_than(abs(cor(fsvdobj$sScores2[,1], singscore[,4])), 0.99)
-  expect_more_than(abs(cor(fsvdobj$sScores2[,2], singscore[,5])), 0.99)
-  expect_more_than(abs(cor(fsvdobj$sScores2[,3], singscore[,6])), 0.99)  
+  expect_gt(abs(cor(fsvdobj$sScores1[,1], singscore[,1])), 0.99)
+  expect_gt(abs(cor(fsvdobj$sScores1[,2], singscore[,2])), 0.99)
+  expect_gt(abs(cor(fsvdobj$sScores1[,3], singscore[,3])), 0.99)
+  expect_gt(abs(cor(fsvdobj$sScores2[,1], singscore[,4])), 0.99)
+  expect_gt(abs(cor(fsvdobj$sScores2[,2], singscore[,5])), 0.99)
+  expect_gt(abs(cor(fsvdobj$sScores2[,3], singscore[,6])), 0.99)  
 })
 
 ### test for consistency in dense case
@@ -83,13 +83,13 @@ test_that('consistent estimates for sparse case', {
   Ly2 = YinSparse$Ly
   Lt2 = YinSparse$Lt
   fsvdobj1 = FSVD(Ly1, Lt1, Ly2, Lt2, SVDoptns = list(methodSelectK=3,bw1=1.2,bw2=1.2))
-  expect_equal(fsvdobj1$sValues, diag(CovscXY), tolerance = 0.13*diag(CovscXY))
-  expect_equal(fsvdobj1$canCorr[1], rho1, tolerance = 0.15*rho1)
+  expect_equal(fsvdobj1$sValues, diag(CovscXY), tolerance = 0.61, scale = 1)
+  expect_equal(fsvdobj1$canCorr, c(rho1,rho2,rho3), tolerance = 0.07, scale=1)
   # test for high correlation between true and observed singular scores
-  expect_more_than(abs(cor(fsvdobj1$sScores1[,1], singscore[,1])), 0.975)
-  expect_more_than(abs(cor(fsvdobj1$sScores1[,2], singscore[,2])), 0.91)
-  expect_more_than(abs(cor(fsvdobj1$sScores1[,3], singscore[,3])), 0.95)
-  expect_more_than(abs(cor(fsvdobj1$sScores2[,1], singscore[,4])), 0.975)
-  expect_more_than(abs(cor(fsvdobj1$sScores2[,2], singscore[,5])), 0.97)
-  expect_more_than(abs(cor(fsvdobj1$sScores2[,3], singscore[,6])), 0.92)
+  expect_gt(abs(cor(fsvdobj1$sScores1[,1], singscore[,1])), 0.985)
+  expect_gt(abs(cor(fsvdobj1$sScores1[,2], singscore[,2])), 0.91)
+  expect_gt(abs(cor(fsvdobj1$sScores1[,3], singscore[,3])), 0.95)
+  expect_gt(abs(cor(fsvdobj1$sScores2[,1], singscore[,4])), 0.98)
+  expect_gt(abs(cor(fsvdobj1$sScores2[,2], singscore[,5])), 0.965)
+  expect_gt(abs(cor(fsvdobj1$sScores2[,3], singscore[,6])), 0.92)
 })

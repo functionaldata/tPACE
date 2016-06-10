@@ -13,7 +13,7 @@
 #' @param useGAM Indicator to use gam smoothing instead of local-linear smoothing (semi-parametric option) (default: FALSE)
 #' @param rmDiag Indicator to remove the diagonal element when smoothing (default: FALSE)
 #' @param kern String specifying the kernel type (default: FALSE;  see ?FPCA for details)
-#' @param quadApprox Indicator to use BOBYQA to specify the candidate bandwidths (default: FALSE)
+#' @param bwRoutine String specifying the routine used to find the optimal bandwidth 'grid-search', 'bobyqa', 'l-bfgs-b' (default: 'l-bfgs-b')
 #' If the variables Ly1 and Ly2 are in matrix form the data are assumed dense and only the raw cross-covariance is returned.
 #' @return A list containing:
 #' \item{smoothedCC}{The smoothed cross-covariance as a matrix (currently only 51 by 51)}
@@ -35,14 +35,14 @@
 #' @export
 
 GetCrCovYX <- function(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL, Ly2, Lt2 = NULL, Ymu2 = NULL, 
-                       useGAM = FALSE, rmDiag=FALSE, kern='gauss', quadApprox = FALSE) {
+                       useGAM = FALSE, rmDiag=FALSE, kern='gauss', bwRoutine = 'l-bfgs-b') {
   
   if (kern != 'gauss' && (is.null(bw1) || is.null(bw2))) {
     stop('Cannot select bandwidth for non-Gaussian kernel')
   }
   
-  if( quadApprox == TRUE && is.element('minqa', installed.packages()[,1]) == FALSE){ 
-    stop("Quadratic approximation solver requires package 'minqa' to be installed.")
+  if( !(bwRoutine %in% c('grid-search', 'bobyqa', 'l-bfgs-b') ) ){ 
+    stop("'bwRoutine' argument is invalid.")
   }
   
   # If only Ly1 and Ly2 are available assume DENSE data
@@ -97,8 +97,9 @@ GetCrCovYX <- function(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL, Ly2
   } else {
     # Construct candidate bw's
     bwCandidates <- getBWidths(ulLt1, ulLt2)
+    minGcvScores = Inf
     
-    if(!quadApprox){
+    if(bwRoutine == 'grid-search'){
       # Find their associated GCV scores 
       gcvScores = rep(Inf, nrow(bwCandidates)) 
       for (i in 1:length(bwCandidates)){
@@ -112,32 +113,40 @@ GetCrCovYX <- function(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL, Ly2
       bInd = which(gcvScores == minimumScore);
       bOpt1 = max(bwCandidates[bInd,1]);
       bOpt2 = max(bwCandidates[bInd,2]); 
+      minGcvScores = minimumScore
     } else {
       
       bwRanges = apply(bwCandidates,2, range)
       upperB = bwRanges[2,]
       lowerB = bwRanges[1,]
       
-      if( !is.element('minqa', installed.packages()[,1]) ){
+      if( !is.element('minqa', installed.packages()[,1]) && bwRoutine == 'bobyqa'){
         warning("Cannot use 'minqa::bobyqa' to find the optimal bandwidths. 'minqa' is not installed. We will do an 'L-BFGS-B' search.")
+        bwRoutine == 'l-bfgs-b'
+      }
+      
+      if( bwRoutine == 'l-bfgs-b' ){
         theSols = optim(fn = theCostFunc, par = upperB*0.95, # Starting value that "is safe"
-                         upper = upperB, lower = lowerB, method ='L-BFGS-B', control = list(maxit = 51),
-                         rawCC, workGrid1, workGrid2, kern, workGrid12) 
+                        upper = upperB, lower = lowerB, method ='L-BFGS-B', control = list(maxit = 51),
+                        rawCC = rawCC, workGrid1 = workGrid1, workGrid2 = workGrid2, kern = kern, workGrid12 = workGrid12) 
+        minGcvScores = theSols$value
       } else { # when BOBYQA is available
         theSols = minqa::bobyqa(fn = theCostFunc, par = upperB*0.95, # Starting value that "is safe"
-                               upper = upperB, lower = lowerB, control = list(maxfun = 41),
-                               rawCC, workGrid1, workGrid2, kern, workGrid12) 
+                                upper = upperB, lower = lowerB, control = list(maxfun = 41),
+                                rawCC, workGrid1, workGrid2, kern, workGrid12) 
+        minGcvScores = theSols$fval
       }
-
+      
       bOpt1 = theSols$par[1]
       bOpt2 = theSols$par[2]
+      
       if( bOpt1 > 0.75 * upperB[1] && bOpt2 > 0.75 * upperB[2] ){
-        warning('It seems that the bandwidth selected by BOBYQA is somewhat large. Maybe you are in local minima.')
+        warning('It seems that the bandwidth selected by the solvers is somewhat large. Maybe you are in local minima.')
       }
     }
     smoothedCC <- smoothRCC2D(rcov=rawCC, bw1 =bOpt1, bw2 =bOpt2, workGrid1, workGrid2, kern=kern)
     return ( list(smoothedCC = smoothedCC, rawCC = rawCC, bw = c(bOpt1, bOpt2), smoothGrid = workGrid12, 
-                  score = min(gcvScores, na.rm=TRUE)) )
+                  score = minGcvScores) )
   }  
 }
 
