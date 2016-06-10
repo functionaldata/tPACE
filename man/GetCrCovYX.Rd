@@ -6,7 +6,7 @@
 \usage{
 GetCrCovYX(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL, Ly2,
   Lt2 = NULL, Ymu2 = NULL, useGAM = FALSE, rmDiag = FALSE,
-  kern = "gauss", quadApprox = FALSE)
+  kern = "gauss", bwRoutine = "l-bfgs-b")
 }
 \arguments{
 \item{bw1}{Scalar bandwidth for smoothing the cross-covariance function (if NULL it will be automatically estimated) (Y)}
@@ -31,7 +31,7 @@ GetCrCovYX(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL, Ly2,
 
 \item{kern}{String specifying the kernel type (default: FALSE;  see ?FPCA for details)}
 
-\item{quadApprox}{Indicator to use BOBYQA to specify the candidate bandwidths (default: FALSE)
+\item{bwRoutine}{String specifying the routine used to find the optimal bandwidth 'grid-search', 'bobyqa', 'l-bfgs-b' (default: 'l-bfgs-b')
 If the variables Ly1 and Ly2 are in matrix form the data are assumed dense and only the raw cross-covariance is returned.}
 }
 \value{
