@@ -82,9 +82,9 @@ test_that('consistent estimates for dense case', {
   Lt1 = XinSparse$Lt
   Ly2 = YinSparse$Ly
   Lt2 = YinSparse$Lt
-  fsvdobj1 = FSVD(Ly1, Lt1, Ly2, Lt2, SVDoptns = list(methodSelectK=3))
-  expect_equal(fsvdobj1$sValues, diag(CovscXY), tolerance = 0.11*diag(CovscXY))
-  expect_equal(fsvdobj1$canCorr, c(rho1, rho2, rho3), tolerance = 0.4*c(rho1, rho2, rho3))
+  fsvdobj1 = FSVD(Ly1, Lt1, Ly2, Lt2, SVDoptns = list(methodSelectK=3,bw1=1.2,bw2=1.2))
+  expect_equal(fsvdobj1$sValues, diag(CovscXY), tolerance = 0.13*diag(CovscXY))
+  expect_equal(fsvdobj1$canCorr[1], rho1, tolerance = 0.15*rho1)
   # test for high correlation between true and observed singular scores
   expect_more_than(abs(cor(fsvdobj1$sScores1[,1], singscore[,1])), 0.975)
   expect_more_than(abs(cor(fsvdobj1$sScores1[,2], singscore[,2])), 0.91)
