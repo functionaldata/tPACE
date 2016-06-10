@@ -62,7 +62,7 @@ test_that('consistent estimates for dense case', {
 })
 
 ### test for consistency in dense case
-test_that('consistent estimates for dense case', {
+test_that('consistent estimates for sparse case', {
   n = 2000 # sample size
   set.seed(123)
   singscore = rmvnorm(n=n, mean = rep(0,6), sigma = cbind(rbind(CovscX,CovscXY),rbind(CovscXY, CovscY)))
