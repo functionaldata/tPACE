@@ -173,8 +173,20 @@ FSVD <- function(Ly1, Lt1, Ly2, Lt2, FPCAoptns1 = NULL, FPCAoptns2 = NULL,
       eigenV <- eig[['vectors']][, positiveInd, drop=FALSE]
       StackFittedCov <- eigenV %*% diag(x=d, nrow = length(d)) %*% t(eigenV)
       # regularize with rho/sigma2 in FPCA objects
-      samp1minRS2 <-  FPCAObj1$sigma2; #ifelse( FPCAObj1$sigma2 > FPCAObj1$rho, FPCAObj1$rho, FPCAObj1$sigma2 )
-      samp2minRS2 <-  FPCAObj1$sigma2; #ifelse( FPCAObj2$sigma2 > FPCAObj2$rho, FPCAObj2$rho, FPCAObj2$sigma2 )
+      if( SVDoptns$regulRS == 'sigma2'){
+        samp1minRS2 <- FPCAObj1$sigma2;
+        samp2minRS2 <- FPCAObj2$sigma2;       
+        if(is.null(samp1minRS2) ||is.null(samp2minRS2)){
+          stop("Check the FPCA arguments used. At least one of the FPCA objects created does not have 'sigma2'!")
+        }
+      } else { #( SVDoptns$regulRS == 'rho' )
+        samp1minRS2 <- FPCAObj1$rho;
+        samp2minRS2 <- FPCAObj2$rho;
+        if(is.null(samp1minRS2) ||is.null(samp2minRS2)){
+          stop("Check the FPCA arguments used. At least one of the FPCA objects created does not have 'rho'!")
+        }
+      }
+      
       StackRegCov <- StackFittedCov + diag(x = c(rep(samp1minRS2,length(FPCAObj1$workGrid)),
                                                  rep(samp2minRS2,length(FPCAObj2$workGrid))), 
                                            nrow = length(FPCAObj1$workGrid)+length(FPCAObj2$workGrid) )

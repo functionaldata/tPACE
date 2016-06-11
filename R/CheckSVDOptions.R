@@ -9,8 +9,10 @@ CheckSVDOptions <- function(Ly1, Lt1, Ly2, Lt2, SVDoptns){
   if(is.numeric(SVDoptns$methodSelectK)){
     if(SVDoptns$methodSelectK != round(SVDoptns$methodSelectK) || 
          SVDoptns$methodSelectK <= 0){
-      stop('FSVD is aborted because the argument: methodSelectK is invalid!\n')
+      stop("FSVD is aborted: 'methodSelectK' is invalid!\n")
     }
   }
-
+  if( !(SVDoptns$regulRS %in% c('sigma2','rho') ) ){
+    stop("FSVD is aborted: Unknown regularization option. The argument 'regulRS' should be 'rho' or 'sigma2'!")
+  }
 }

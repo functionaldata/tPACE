@@ -17,6 +17,7 @@ SetSVDOptions <- function(Ly1, Lt1, Ly2, Lt2, SVDoptns){
   bwRoutine = SVDoptns[['bwRoutine']]
   rmDiag = SVDoptns[['rmDiag']]
   noScores = SVDoptns[['noScores']]
+  regulRS = SVDoptns[['regulRS']]
   
   if(is.null(dataType1)){# do we have dataType or sparse functional data for the first sample
     dataType1 = IsRegular(Lt1);
@@ -71,6 +72,9 @@ SetSVDOptions <- function(Ly1, Lt1, Ly2, Lt2, SVDoptns){
   if(is.null(noScores)){ # the method of choosing the number of singular components K
     noScores = FALSE;
   }
+  if(is.null(regulRS)){ # the method of choosing the number of singular components K
+    regulRS = 'sigma2';
+  }
   
   
   retSVDOptns <- list(dataType1 = dataType1, dataType2 = dataType2,
@@ -78,7 +82,7 @@ SetSVDOptions <- function(Ly1, Lt1, Ly2, Lt2, SVDoptns){
                       useGAM = useGAM, methodSelectK = methodSelectK,
                       FVEthreshold = FVEthreshold, maxK = maxK,
                       kernel = kernel, nRegGrid1 = nRegGrid1, nRegGrid2 = nRegGrid2,
-                      bwRoutine = bwRoutine, rmDiag = rmDiag, noScores = noScores)
+                      bwRoutine = bwRoutine, rmDiag = rmDiag, noScores = noScores, regulRS = regulRS)
   
   invalidNames <- !names(SVDoptns) %in% names(retSVDOptns)
   if (any(invalidNames)) {
