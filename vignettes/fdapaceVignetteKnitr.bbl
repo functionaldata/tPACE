@@ -1,5 +1,12 @@
 \begin{thebibliography}{1}
 
+\bibitem{Biernacki2006}
+C~Biernacki, G~Celeux, G~Govaert, and F~Langrognet.
+\newblock Model-based cluster and discriminant analysis with the mixmod
+  software.
+\newblock {\em Computational Statistics \& Data Analysis}, 51(2):587--600,
+  2006.
+
 \bibitem{Carey98}
 JR~Carey, P~Liedo, H-G M{\"u}ller, J-L Wang, and J-M Chiou.
 \newblock Relationship of age patterns of fecundity to mortality, longevity,

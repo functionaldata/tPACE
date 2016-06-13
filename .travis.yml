@@ -1,5 +1,16 @@
 language: r
-os:
-  - osx
+#os:
+  #- osx
 cache: packages
 sudo: false
+
+before_install:
+  - tlmgr update --self --all
+  - tlmgr install listings
+
+addons:
+  apt:
+    packages:
+      - tcl-dev
+      - tk-dev
+      - texlive-latex-extra
