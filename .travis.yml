@@ -7,7 +7,6 @@ sudo: false
 before_install:
   - tlmgr update --self --all
   - tlmgr install listings
-  - tlmgr install latex-extra
 
 addons:
   apt:
