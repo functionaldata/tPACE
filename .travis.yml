@@ -1,8 +1,15 @@
 language: r
-os:
-  - osx
+#os:
+  #- osx
 cache: packages
-sudo: required
+sudo: false
 
-before_install:
-  - sudo tlmgr install latex-extra
+#before_install:
+  #- sudo tlmgr install latex-extra
+
+addons:
+  apt:
+    packages:
+      - tcl-dev
+      - tk-dev
+      - texlive-latex-extra
