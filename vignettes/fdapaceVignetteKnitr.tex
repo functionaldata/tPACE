@@ -16,7 +16,6 @@
 
 %\VignetteIndexEntry{fdapaceVignette}
 %\VignetteEngine{knitr::knitr}
-%\usepackage[pdftex]{graphicx}
 \graphicspath{{figure/}}
 
 \usepackage{palatino,avant,graphicx,color,amsmath,verbatim,url, wrapfig}
@@ -25,8 +24,8 @@
 \usepackage{amsmath, amssymb} % To use mathematics sybmols
 \usepackage{verbatim}	       % To use comments
 \usepackage[makeroom]{cancel} % To cross out an equation
-\usepackage{tikz}
-\usetikzlibrary{arrows,matrix,positioning}
+% \usepackage{tikz}
+% \usetikzlibrary{arrows,matrix,positioning}
 \usepackage{listings}         % To use code listings
 
 
@@ -114,8 +113,8 @@ The generated \texttt{FPCAobj} will contain all the basic information regarding 
 
 \begin{Schunk}
 \begin{Sinput}
-  #library(fdapace)
-  devtools::load_all('.') # So we use the new interfaces
+  library(fdapace)
+  #devtools::load_all('.') # So we use the new interfaces
 
   # Set the number of subjects (N) and the
   # number of measurements per subjects (M) 
@@ -338,6 +337,37 @@ CreateBWPlot(fpcaObjFlies79 , derOptns = list(p = 1, bw = 2.0 , kernelType = 're
 %' \end{minipage}
 %' \includegraphics[width=0.9\textwidth]{bwPlot-2.pdf}
 
+
+
+As the \texttt{medfly} sample is dense we can immediately use standard multivaritte clustering functionality to identify potential subgroups within it; the function  \texttt{FClust} is the wrapper around the clustering functionality provided by \texttt{fdapace}.  By default \texttt{FClust} utilises a Gaussian Mixture Model approach based on the package \texttt{Rmixmod} \cite{Biernacki2006}, as a general rule clustering optimality is based on negative entropy criterion. In the \texttt{medfly} dataset clustering the data allows to immediately recognise a particular subgroup of flies that lay no or very few eggs during the period examined.
+ 
+\begin{Schunk}
+\begin{Sinput}
+A <- FClust(Flies$Ly, Flies$Lt, optnsFPCA = list(methodMuCovEst = 'smooth', userBwCov = 2, FVEthreshold = 0.90))
+\end{Sinput}
+\begin{Soutput}
+Error in eval(expr, envir, enclos): could not find function "FClust"
+\end{Soutput}
+\begin{Sinput}
+B <- FClust(Flies$Ly, Flies$Lt, optnsFPCA = list(methodMuCovEst = 'smooth', userBwCov = 2, FVEthreshold = 0.90), k = 2)
+\end{Sinput}
+\begin{Soutput}
+Error in eval(expr, envir, enclos): could not find function "FClust"
+\end{Soutput}
+\begin{Sinput}
+#  A$clusterObj@bestResult@criterionValue is greater than B$clusterObj@bestResult@criterionValue
+CreatePathPlot( fpcaObjFlies, k=2, showObs=FALSE, lty=1, col= B$cluster, xlab = 'Days', ylab = '# of eggs laid')
+\end{Sinput}
+\begin{Soutput}
+Error in CreatePathPlot(fpcaObjFlies, k = 2, showObs = FALSE, lty = 1, : object 'B' not found
+\end{Soutput}
+\begin{Sinput}
+grid()
+\end{Sinput}
+\begin{Soutput}
+Error in int_abline(a = a, b = b, h = h, v = v, untf = untf, ...): plot.new has not been called yet
+\end{Soutput}
+\end{Schunk}
 
 \bibliographystyle{plain}
 \bibliography{roxygen}%
