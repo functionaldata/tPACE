@@ -3,3 +3,6 @@ os:
   - osx
 cache: packages
 sudo: false
+
+before_install:
+  - tlmgr install latex-extra
