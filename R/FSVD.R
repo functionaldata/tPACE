@@ -148,11 +148,11 @@ FSVD <- function(Ly1, Lt1, Ly2, Lt2, FPCAoptns1 = NULL, FPCAoptns2 = NULL, SVDop
   # normalizing singular functions
   sFun1 <- apply(sfun1, 2, function(x) {
     x <- x / sqrt(trapzRcpp(grid1, x^2))   
-      return(x* ifelse(flip, -1, 1))
+      return(x* ifelse(SVDoptns$flip, -1, 1))
   })
   sFun2 <- apply(sfun2, 2, function(x) {
     x <- x / sqrt(trapzRcpp(grid2, x^2))  
-    return(x * ifelse(flip, -1, 1))
+    return(x * ifelse(SVDoptns$flip, -1, 1))
   })
   # Grid size correction
   sValues<- sqrt(gridSize1 * gridSize2) * sValues
