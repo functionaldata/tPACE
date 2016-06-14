@@ -84,7 +84,7 @@ SetSVDOptions <- function(Ly1, Lt1, Ly2, Lt2, SVDoptns){
   retSVDOptns <- list(dataType1 = dataType1, dataType2 = dataType2,
                       bw1 = bw1, bw2 = bw2, userMu1 = userMu1, userMu2 = userMu2,
                       useGAM = useGAM, methodSelectK = methodSelectK,
-                      FVEthreshold = FVEthreshold, maxK = maxK, flip = flip.
+                      FVEthreshold = FVEthreshold, maxK = maxK, flip = flip, 
                       kernel = kernel, nRegGrid1 = nRegGrid1, nRegGrid2 = nRegGrid2,
                       bwRoutine = bwRoutine, rmDiag = rmDiag, noScores = noScores, regulRS = regulRS)
   

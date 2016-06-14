@@ -45,6 +45,7 @@
 #' \item{sScores2}{A \emph{n} by \emph{K} matrix containing the singular scores for sample 2.}
 #' \item{optns}{A list of options used by the SVD and the FPCA's procedures.}
 #' 
+#' @export
 
 FSVD <- function(Ly1, Lt1, Ly2, Lt2, FPCAoptns1 = NULL, FPCAoptns2 = NULL, SVDoptns = list()){
   # Check and refine data

@@ -2,12 +2,12 @@
 % Please edit documentation in R/CreateOutliersPlot.R
 \name{CreateOutliersPlot}
 \alias{CreateOutliersPlot}
-\title{Functional Principal Component Scores Plot using 'bagplot' or 'KDE' methodology}
+\title{Functional Principal Component or Functional Singular Value Decomposition Scores Plot using 'bagplot' or 'KDE' methodology}
 \usage{
-CreateOutliersPlot(fpcaObj, optns = NULL, ...)
+CreateOutliersPlot(fObj, optns = NULL, ...)
 }
 \arguments{
-\item{fpcaObj}{An FPCA class object returned by FPCA().}
+\item{fObj}{A class object returned by FPCA() or FSVD().}
 
 \item{optns}{A list of options control parameters specified by \code{list(name=value)}. See `Details'.}
 
@@ -17,7 +17,7 @@ CreateOutliersPlot(fpcaObj, optns = NULL, ...)
 An (temporarily) invisible copy of a list containing the labels associated with each of sample curves.
 }
 \description{
-This function will create, using the first two FPC scores, a set of convex hulls of the scores based on 'bagplot' or 'KDE' methodology.
+This function will create, using the first components scores, a set of convex hulls of the scores based on 'bagplot' or 'KDE' methodology.
 }
 \details{
 Available control options are 
@@ -25,15 +25,16 @@ Available control options are
 \item{ifactor}{inflation ifactor for the bag-plot defining the loop of bag-plot or multiplying ifactor the KDE pilot bandwidth matrix. (see ?aplpack::compute.bagplot; ?ks::Hpi respectively; default: 2.58; 2 respectively).}
 \item{variant}{string defining the outlier method used ('KDE', 'NN' or 'bagplot') (default: 'KDE')}
 \item{unimodal}{logical specifying if the KDE estimate should be unimodal (default: FALSE, relavant only for variant='KDE')}
+\item{maxVar}{logical specifying during slicing we should used the directions of maximum variance (default: FALSE for FPCA, TRUE for FSVD)}
 \item{nSlices}{integer between 3 and 16, denoting the number of slices to be used (default: 4, relavant only for groupingType='slice') }
 \item{colSpectrum}{character vector to be use as input in the 'colorRampPalette' function defining the outliers colours (default: c("red",  "yellow", 'blue'), relavant only for groupingType='slice') }
 \item{groupingType}{string specifying if a slice grouping ('slice') or a standard percentile/bagplot grouping ('standard') should be returned (default: 'standard')} 
-\item{fpcIndeces}{a two-component vector with the index of the mode of variation to consider (default: c(1,2))}
+\item{fIndeces}{a two-component vector with the index of the mode of variation to consider (default: c(1,2) for FPCA and c(1,1) for FSVD)}
 }
 }
 \examples{
 set.seed(1)
-n <- 20
+n <- 420
 pts <- seq(0, 1, by=0.05)
 sampWiener <- Wiener(n, pts)
 sampWiener <- Sparsify(sampWiener, pts, 10)
