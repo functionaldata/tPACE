@@ -30,7 +30,8 @@ Suggests:
     gtools,
     knitr,
     Rmixmod,
-    minqa
+    minqa,
+    testthat
 NeedsCompilation: yes
 RoxygenNote: 5.0.1
 VignetteBuilder: knitr
