@@ -12,11 +12,21 @@
 #'
 #' @details Available control options for SVDoptns are: 
 #' \describe{
-#' \item{userBwCov}{The bandwidth value for the smoothed covariance function; positive numeric - default: determine automatically based on 'methodBwCov'}
+#' \item{bw1}{The bandwidth value for the smoothed cross-covariance function across the direction of sample 1; positive numeric - default: determine automatically based on 'methodBwCov'}
+#' \item{bw2}{The bandwidth value for the smoothed cross-covariance function across the direction of sample 2; positive numeric - default: determine automatically based on 'methodBwCov'}
 #' \item{methodBwCov}{The bandwidth choice method for the smoothed covariance function; 'GMeanAndGCV' (the geometric mean of the GCV bandwidth and the minimum bandwidth),'CV','GCV' - default: 10\% of the support}
-#' \item{userBwMu}{The bandwidth value for the smoothed mean function (using 'CV' or 'GCV'); positive numeric - default: determine automatically based on 'methodBwMu'}
-#' \item{blahblah}{More to follow.}
-#' \item{noScores}{Logical describing...}
+#' \item{userMu1}{The user defined mean of sample 1 used to centre it prior to the cross-covariance estimation. - default: determine automatically based by the FPCA of sample 1}
+#' \item{userMu2}{The user defined mean of sample 2 used to centre it prior to the cross-covariance estimation. - default: determine automatically based by the FPCA of sample 2}
+#' \item{maxK}{The maximum number of singular components to consider; default: min(20, N-1), N:# of curves.}
+#' \item{kernel}{Smoothing kernel choice, common for mu and covariance; "rect", "gauss", "epan", "gausvar", "quar" - default: "gauss"; dense data are assumed noise-less so no smoothing is performed.}
+#' \item{rmDiag}{Logical describing if the routine should remove diagonal raw cov for cross cov estimation (default: FALSE) }
+#' \item{noScores}{Logical describing if the routine should return functional singular scores or not (default: TRUE) }
+#' \item{regulRS}{String describing if the regularisation of the compositie cross-covariance matrix should be done using 'sigma1' or 'rho' (see ?FPCA for details) (default: 'sigma2') }
+#' \item{bwRoutine}{String specifying the routine used to find the optimal bandwidth 'grid-search', 'bobyqa', 'l-bfgs-b' (default: 'l-bfgs-b')}
+#' \item{flip}{Logical describing if the routine should flip the sign of the singular components functions or not after the SVD of the cross-covariance matrix. (default: FALSE)}
+#' \item{useGAM}{Indicator to use gam smoothing instead of local-linear smoothing (semi-parametric option) (default: FALSE)}
+#' \item{dataType1}{The type of design we have for sample 1 (usually distinguishing between sparse or dense functional data); 'Sparse', 'Dense', 'DenseWithMV' - default:  determine automatically based on 'IsRegular'}
+#' \item{dataType2}{The type of design we have for sample 2 (usually distinguishing between sparse or dense functional data); 'Sparse', 'Dense', 'DenseWithMV' - default:  determine automatically based on 'IsRegular'}
 #' }
 #' 
 #' @return A list containing the following fields:
@@ -36,8 +46,7 @@
 #' \item{optns}{A list of options used by the SVD and the FPCA's procedures.}
 #' 
 
-FSVD <- function(Ly1, Lt1, Ly2, Lt2, FPCAoptns1 = NULL, FPCAoptns2 = NULL,
-                 SVDoptns = list()){
+FSVD <- function(Ly1, Lt1, Ly2, Lt2, FPCAoptns1 = NULL, FPCAoptns2 = NULL, SVDoptns = list()){
   # Check and refine data
   CheckData(Ly1, Lt1)
   CheckData(Ly2, Lt2)
@@ -138,12 +147,12 @@ FSVD <- function(Ly1, Lt1, Ly2, Lt2, FPCAoptns1 = NULL, FPCAoptns2 = NULL,
   sfun2 <- SVDObj$v[,1:nsvd]
   # normalizing singular functions
   sFun1 <- apply(sfun1, 2, function(x) {
-    x <- x / sqrt(trapzRcpp(grid1, x^2)) 
-    return(x)
+    x <- x / sqrt(trapzRcpp(grid1, x^2))   
+      return(x* ifelse(flip, -1, 1))
   })
   sFun2 <- apply(sfun2, 2, function(x) {
-    x <- x / sqrt(trapzRcpp(grid2, x^2)) 
-    return(x)
+    x <- x / sqrt(trapzRcpp(grid2, x^2))  
+    return(x * ifelse(flip, -1, 1))
   })
   # Grid size correction
   sValues<- sqrt(gridSize1 * gridSize2) * sValues
