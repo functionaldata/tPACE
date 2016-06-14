@@ -221,16 +221,17 @@ makeSlicePlot <- function( nSlices, colFunc, p95plusInd, N, args1, args2, scoreE
   dirOfMaxVar <- c(1,0);
   if(useDirOfMaxVar){
     dirOfMaxVar <- svd(scoreEsts, nv = 1)$v
-    abline(0,  dirOfMaxVar[2]/dirOfMaxVar[1])
+    abline(0,  dirOfMaxVar[2]/dirOfMaxVar[1]) # Uncomment if you want to see the direction of max variance
   }
     
   colPal = colFunc( nSlices )
   v = 1:nSlices;
   colPal = colPal[v] # this just gives a smooth change and maximized the diffference between oppositve slices
   outlierList <- list()
-  steps =  seq(-1, (nSlices-1) *2 -1 , by =2 ) 
+  # steps =  seq(-1, (nSlices-1) *2 -1 , by =2 ) 
+  angles <- seq(0,2*pi, length.out = nSlices + 1) - pi/nSlices + atan2(dirOfMaxVar[2],dirOfMaxVar[1])
   for( i in 1:nSlices){
-    angle = atan2(dirOfMaxVar[2],dirOfMaxVar[1]) + steps[i] * pi/nSlices
+    angle = angles[i] # atan2(dirOfMaxVar[2],dirOfMaxVar[1]) + steps[i] * pi/nSlices
     multiplier1 = sign( sin( angle + pi/2) )
     multiplier2 = sign( cos( angle + pi/ (nSlices/2)))
     qrtIndx =  multiplier1 * Qstr[,2] > multiplier1 * tan(angle) * Qstr[,1] & 
@@ -240,9 +241,11 @@ makeSlicePlot <- function( nSlices, colFunc, p95plusInd, N, args1, args2, scoreE
     #abline(0, multiplier1 * tan(angle) * sd(scoreEsts[,2]) / sd(scoreEsts[,1]), col= colPal[i])
   }
   
-  if( (nSlices == 4) ){
-    abline(0, multiplier1 * tan(atan2(dirOfMaxVar[2],dirOfMaxVar[1]) + steps[1] * pi/nSlices) * sd(scoreEsts[,2]) / sd(scoreEsts[,1]), col= colPal[i])
-    abline(0, multiplier1 * tan(atan2(dirOfMaxVar[2],dirOfMaxVar[1]) + steps[2] * pi/nSlices) * sd(scoreEsts[,2]) / sd(scoreEsts[,1]), col= colPal[i])
+  if( (nSlices == 4) ){ # Draw the pizza slices automatically
+    abline(0, multiplier1 * tan( angles[1]) * sd(scoreEsts[,2]) / sd(scoreEsts[,1]), 
+           col= 'black')
+    abline(0, multiplier1 * tan( angles[2]) * sd(scoreEsts[,2]) / sd(scoreEsts[,1]), 
+           col= 'black')
   }  
   
   return( invisible( list(  'p0to95'= which(p95plusInd), 
