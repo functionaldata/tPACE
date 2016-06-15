@@ -11,8 +11,9 @@
 #' \item{ifactor}{inflation ifactor for the bag-plot defining the loop of bag-plot or multiplying ifactor the KDE pilot bandwidth matrix. (see ?aplpack::compute.bagplot; ?ks::Hpi respectively; default: 2.58; 2 respectively).}
 #' \item{variant}{string defining the outlier method used ('KDE', 'NN' or 'bagplot') (default: 'KDE')}
 #' \item{unimodal}{logical specifying if the KDE estimate should be unimodal (default: FALSE, relavant only for variant='KDE')}
-#' \item{maxVar}{logical specifying during slicing we should used the directions of maximum variance (default: FALSE for FPCA, TRUE for FSVD)}
+#' \item{maxVar}{logical specifying if during slicing we should used the directions of maximum variance (default: FALSE for FPCA, TRUE for FSVD)}
 #' \item{nSlices}{integer between 3 and 16, denoting the number of slices to be used (default: 4, relavant only for groupingType='slice') }
+#' \item{showSlices}{logical specifying if during slicing we should show the outline of the slice (default: FALSE)}
 #' \item{colSpectrum}{character vector to be use as input in the 'colorRampPalette' function defining the outliers colours (default: c("red",  "yellow", 'blue'), relavant only for groupingType='slice') }
 #' \item{groupingType}{string specifying if a slice grouping ('slice') or a standard percentile/bagplot grouping ('standard') should be returned (default: 'standard')} 
 #' \item{fIndeces}{a two-component vector with the index of the mode of variation to consider (default: c(1,2) for FPCA and c(1,1) for FSVD)}
@@ -48,7 +49,7 @@ CreateOutliersPlot <- function(fObj, optns = NULL, ...){
   colFunc = newOptns$colFunc;    fIndeces = newOptns$fIndeces; 
   variant = newOptns$variant;    groupingType = newOptns$groupingType; 
   unimodal = newOptns$unimodal;  outlierList = newOptns$outlierList;
-  maxVar = newOptns$maxVar;
+  maxVar = newOptns$maxVar;      showSlices = newOptns$showSlices
   
   fVarAlls <- c();
   if(fObjClass == 'FPCA'){
@@ -121,7 +122,7 @@ CreateOutliersPlot <- function(fObj, optns = NULL, ...){
       kNNindeces95plus <- (1:N %in% match( apply(bgObj$pxy.outlier,1, prod) ,apply( bgObj$xydata,1, prod)))
       return( makeSlicePlot(nSlices, colFunc, p95plusInd = kNNindeces95plus, N, args1, 
                             scoreEsts = fScoresAll , varEsts = fVarAlls[fIndeces], 
-                            useDirOfMaxVar = maxVar) )
+                            useDirOfMaxVar = maxVar, showSlices = showSlices) )
       
     } 
   } else if (variant == 'KDE') {  # variant 'kde'
@@ -159,7 +160,7 @@ CreateOutliersPlot <- function(fObj, optns = NULL, ...){
       kNNindeces95plus <- qq <=  fhat$cont[95]
       return( makeSlicePlot(nSlices, colFunc, p95plusInd = kNNindeces95plus, N, args1, 
                             scoreEsts = fScoresAll , varEsts = fVarAlls[fIndeces], 
-                            useDirOfMaxVar = maxVar) )
+                            useDirOfMaxVar = maxVar, showSlices = showSlices) )
       
     }
   } else if (variant == 'NN') {
@@ -199,13 +200,13 @@ CreateOutliersPlot <- function(fObj, optns = NULL, ...){
       kNNindeces95plus <- (1:N %in% setdiff(1:N, kNNindeces0to99[1:k95]))
       return( makeSlicePlot(nSlices, colFunc, p95plusInd = kNNindeces95plus, N, args1, 
                             scoreEsts = fScoresAll, varEsts = fVarAlls[fIndeces],
-                            useDirOfMaxVar = maxVar) )
+                            useDirOfMaxVar = maxVar, showSlices = showSlices) )
       
     }
   }
 }
 
-makeSlicePlot <- function( nSlices, colFunc, p95plusInd, N, args1, args2, scoreEsts, varEsts, useDirOfMaxVar){
+makeSlicePlot <- function( nSlices, colFunc, p95plusInd, N, args1, args2, scoreEsts, varEsts, useDirOfMaxVar, showSlices){
   
   
   kNNindeces95plus <- p95plusInd
@@ -220,16 +221,21 @@ makeSlicePlot <- function( nSlices, colFunc, p95plusInd, N, args1, args2, scoreE
   
   dirOfMaxVar <- c(1,0);
   if(useDirOfMaxVar){
-    dirOfMaxVar <- svd(scoreEsts, nv = 1)$v
-    abline(0,  dirOfMaxVar[2]/dirOfMaxVar[1]) # Uncomment if you want to see the direction of max variance
+    dirOfMaxVar <- svd(scoreEsts, nv = 1)$v;
+    if(all(dirOfMaxVar <0) ){
+      dirOfMaxVar = -dirOfMaxVar
+    }
+    abline(0,  dirOfMaxVar[2]/dirOfMaxVar[1], col='magenta', lty=2) # Uncomment if you want to see the direction of max variance
   }
-    
+  
   colPal = colFunc( nSlices )
   v = 1:nSlices;
   colPal = colPal[v] # this just gives a smooth change and maximized the diffference between oppositve slices
   outlierList <- list()
   # steps =  seq(-1, (nSlices-1) *2 -1 , by =2 ) 
-  angles <- seq(0,2*pi, length.out = nSlices + 1) - pi/nSlices + atan2(dirOfMaxVar[2],dirOfMaxVar[1])
+  angles <- seq(0,2*pi, length.out = nSlices + 1) -  1*pi/nSlices + atan2(dirOfMaxVar[2],dirOfMaxVar[1])
+  sd1 = sd(scoreEsts[,1]); 
+  sd2 = sd(scoreEsts[,2]); 
   for( i in 1:nSlices){
     angle = angles[i] # atan2(dirOfMaxVar[2],dirOfMaxVar[1]) + steps[i] * pi/nSlices
     multiplier1 = sign( sin( angle + pi/2) )
@@ -237,17 +243,15 @@ makeSlicePlot <- function( nSlices, colFunc, p95plusInd, N, args1, args2, scoreE
     qrtIndx =  multiplier1 * Qstr[,2] > multiplier1 * tan(angle) * Qstr[,1] & 
       multiplier2 * Qstr[,2] < multiplier2 * tan(angle + pi/ (nSlices/2) ) * Qstr[,1] 
     outlierList[[i]] = qrtIndx & kNNindeces95plus
-    points(scoreEsts[ outlierList[[i]], ], cex=0.93, col= colPal[i], pch=3, lwd =2 )
-    #abline(0, multiplier1 * tan(angle) * sd(scoreEsts[,2]) / sd(scoreEsts[,1]), col= colPal[i])
-  }
-  
-  if( (nSlices == 4) ){ # Draw the pizza slices automatically
-    abline(0, multiplier1 * tan( angles[1]) * sd(scoreEsts[,2]) / sd(scoreEsts[,1]), 
-           col= 'black')
-    abline(0, multiplier1 * tan( angles[2]) * sd(scoreEsts[,2]) / sd(scoreEsts[,1]), 
-           col= 'black')
-  }  
-  
+    points(scoreEsts[ outlierList[[i]], c(1,2), drop=FALSE], cex=0.93, col= colPal[i], pch=3, lwd =2 )
+    if(showSlices){
+      bigNumber = 10 * max(abs(as.vector(scoreEsts)))
+      lines(x = c(0, bigNumber * multiplier1), col=colPal[i],  
+            y = c(0, bigNumber * multiplier1 * tan(angle) * sd2 / sd1))
+      #lines(x = c(0, bigNumber * multiplier2), col=colPal[i],  
+      #      y = c(0, bigNumber * multiplier2 * tan(angle + pi/ (nSlices/2) ) * sd2 / sd1))
+    }
+  } 
   return( invisible( list(  'p0to95'= which(p95plusInd), 
                             'outlier' = sapply(outlierList, which),
                             'outlierColours' = colPal)) ) 

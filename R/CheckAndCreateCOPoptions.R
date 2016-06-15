@@ -44,6 +44,13 @@ CheckAndCreateCOPoptions <- function(optns,fObjClass){
     nSlices = optns$nSlices
   }
   
+  
+  if(is.null(optns$showSlices)){
+    showSlices = FALSE
+  } else {
+    showSlices = optns$showSlices
+  }
+  
   if(is.null(optns$fIndeces)){
     if(fObjClass == 'FPCA'){
       fIndeces <- c(1,2)
@@ -81,8 +88,8 @@ CheckAndCreateCOPoptions <- function(optns,fObjClass){
     warning("It is nonsensical for an inflation factor to be <= 1. 'ifactor' set to 1.1.")
     ifactor = 1.1;
   }
-  if ( !(3 <= nSlices) || !(16 >= nSlices) || !(nSlices %% 1 == 0) ){
-    warning("nSlices must be between a natural number betweeb 3 and 16. 'nSlices' set to 4.")
+  if ( !(2 <= nSlices) || !(16 >= nSlices) || !(nSlices %% 1 == 0) ){
+    warning("nSlices must be between a natural number between 2 and 16. 'nSlices' set to 4.")
     nSlices = 4;
   }
   if(diff(range(fIndeces)) < .Machine$double.eps){
@@ -98,6 +105,7 @@ CheckAndCreateCOPoptions <- function(optns,fObjClass){
   
   
   perfOptns <- list(nSlices = nSlices, ifactor = ifactor, colFunc = colFunc, fIndeces = fIndeces, maxVar = maxVar,
+                    showSlices = showSlices,
                     variant = variant, groupingType = groupingType, unimodal = unimodal,  outlierList = outlierList)
   return(perfOptns)
   
