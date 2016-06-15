@@ -1,4 +1,4 @@
-devtools::load_all()
+# devtools::load_all()
 set.seed(1)
 n <- 100
 pts <- seq(0, 1, by=0.05)

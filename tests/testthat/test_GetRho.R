@@ -1,4 +1,4 @@
-devtools::load_all()
+# devtools::load_all()
 #options(error=recover)
 library(testthat)
 

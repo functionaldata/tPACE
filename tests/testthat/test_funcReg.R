@@ -1,7 +1,6 @@
 library(MASS)
-library(devtools)
 library(testthat)
-load_all()
+# devtools::load_all()
 
 
 # Y(t) = \beta_0(t) + \beta_1(t) X_1(t) + \beta_2(t) X_2(t) + \beta_3 Z_3 + \beta_4 Z_4 + \epsilon

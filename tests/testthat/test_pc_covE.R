@@ -1,4 +1,4 @@
-devtools::load_all()
+# devtools::load_all()
 
 p0 <- list(dataType='Sparse', error=TRUE, kernel='epan')
 p1 <- list(dataType='Dense', error=TRUE, kernel='epan')

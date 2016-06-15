@@ -1,6 +1,6 @@
 library(testthat)
 library(mvtnorm)
-devtools::load_all()
+# devtools::load_all()
 
 test_that("SelectK works for dense FPCA Wiener process with measurement error",{
   n = 100; K = 10; pts = seq(0, 1, length=50)

@@ -1,4 +1,4 @@
-devtools::load_all()
+# devtools::load_all()
 library(testthat)
 load('data/dataForGcvLwlsTest.RData')
 # rcov <- GetRawCov(y,t, sort(unlist(t)), mu,'Sparse',FALSE) #Matches ML output

@@ -1,5 +1,5 @@
 library(testthat)
-devtools::load_all()
+# devtools::load_all()
 
 set.seed(1)
 n <- 300

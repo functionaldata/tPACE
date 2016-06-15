@@ -1,4 +1,4 @@
-devtools::load_all()
+# devtools::load_all()
 library(testthat)
 
 fromGrid <- seq(0, pi / 2, 0.1)

@@ -1,4 +1,4 @@
-devtools::load_all(); library(testthat)
+# devtools::load_all(); library(testthat)
 
 test_that('noisy dense data, default arguments: ie. cross-sectional mu/cov, use IN score', {
   

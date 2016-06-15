@@ -1,4 +1,4 @@
-devtools::load_all()
+# devtools::load_all()
 library(testthat)
 
 test_that('The cross-covariance of two constant processes is zero.',{
