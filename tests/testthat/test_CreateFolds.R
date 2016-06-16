@@ -1,6 +1,5 @@
 #options(error=recover)
 library(testthat)
-library(caret)
 
 test_that('SimpleFolds works', {
   samp <- 1:10

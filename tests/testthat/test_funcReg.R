@@ -7,7 +7,7 @@ library(testthat)
 # X_1(t) = \mu_{X_1}(t) + Z_1 \phi_1(t); X_2(t) = \mu_{X_2}(t) + Z_2 \phi_2(t);
 # \mu_{X_1}(t) = 2t, \mu_{X_2}(t) = -2t 
 # (Z_1, \dots, Z_4) \sim N(0, \Sigma). \Sigma = 1/4 + diag(3/4)
-# \phi_1(t) = 1, \phi_2(t) = 2.5 + cos(\pi t), t \in [0, 1]. So $cov(X_1(s), X_2(t)) = 1/4 \cos(\pi t).$
+# \phi_1(t) = 1, \phi_2(t) = sqrt(2) * cos(\pi t), t \in [0, 1]. So $cov(X_1(s), X_2(t)) = sqrt(2)/4 \cos(\pi t).$
 # \epsilon \sim N(0, \sigma^2).
 # \beta_1 = \beta_2 = \beta_3 = \beta_4 = 1.
 
@@ -15,9 +15,9 @@ set.seed(1)
 n <- 100
 nGridIn <- 200
 sparsity <- 5:10 # must have length > 1
-bw <- 0.1
+bw <- 0.2
 kern <- 'gauss'
-T <- round(seq(0, 1, length.out=nGridIn), 4)
+T <- seq(0, 1, length.out=nGridIn)
 
 Sigma <- 1 / 4 + diag(3 / 4, 4)
 mu <- T * 2
@@ -31,7 +31,8 @@ beta_4 <- 1
 
 Z <- mvrnorm(n, rep(0, 4), Sigma)
 X_1 <- Z[, 1, drop=FALSE] %*% matrix(1, 1, nGridIn) + matrix(mu, n, nGridIn, byrow=TRUE)
-X_2 <- Z[, 2, drop=FALSE] %*% matrix(2.5 + cos(pi * T), 1, nGridIn) - matrix(mu, n, nGridIn, byrow=TRUE)
+X_2 <- Z[, 2, drop=FALSE] %*% matrix(sqrt(2) * cos(pi * T), 1, nGridIn) - matrix(mu, n, nGridIn, byrow=TRUE)
+# tmp <- cov(X_1, X_2); colMeans(tmp)
 epsilon <- rnorm(n, sd=sigma)
 Y <- matrix(NA, n, nGridIn)
 for (i in seq_len(n)) {
@@ -58,27 +59,27 @@ test_that('Scaler-function cov = Function-scaler cov', {
     t(uniCov(Z[, 3], X_1sp, bw, outGrid)))
 })
 
-cov12 <- uniCov(X_1sp, X_2sp, bw, outGrid)
-cov12_rd <- uniCov(X_1sp, X_2sp, bw, outGrid, rmDiag=TRUE)
-cov12_1D <- uniCov(X_1sp, X_2sp, bw, outGrid, use1D=TRUE)
-cov13 <- uniCov(X_1sp, Z[, 3], bw, outGrid)
-cov21 <- uniCov(X_2sp, X_1sp, bw, outGrid)
-cov11 <- uniCov(X_1sp, X_1sp, bw, outGrid)
-cov11_rd <- uniCov(X_1sp, X_1sp, bw, outGrid, rmDiag=TRUE)
-cov22 <- uniCov(X_2sp, X_2sp, bw, outGrid)
-cov22_rd <- uniCov(X_2sp, X_2sp, bw, outGrid, rmDiag=TRUE)
-
+cov12 <- uniCov(X_1sp, X_2sp, bw, outGrid, kern)
+# cov12_rd <- uniCov(X_1sp, X_2sp, bw, outGrid, kern, rmDiag=TRUE)
+cov12_1D <- uniCov(X_1sp, X_2sp, bw, outGrid, kern, use1D=TRUE)
+cov13 <- uniCov(X_1sp, Z[, 3], bw, outGrid, kern)
+cov21 <- uniCov(X_2sp, X_1sp, bw, outGrid, kern)
+# cov11 <- uniCov(X_1sp, X_1sp, bw, outGrid, kern)
+# cov11_rd <- uniCov(X_1sp, X_1sp, bw, outGrid, kern, rmDiag=TRUE)
+# cov22 <- uniCov(X_2sp, X_2sp, bw, outGrid, kern)
+# cov22_rd <- uniCov(X_2sp, X_2sp, bw, outGrid, kern, rmDiag=TRUE)
+# rgl::persp3d(outGrid, outGrid, cov12)
 test_that('Function-function cov works', {
   expect_equal(cov12, t(cov21))
 
   # x-direction is close to constant.
-  expect_true(mean(apply(cov12, 2, sd)) < 0.12) # Check why this had to change from 0.10 to 0.12
+  expect_true(mean(apply(cov12, 2, sd), trim=0.1) < 0.08)
 
-  # y-direction is close to 1/4 (1.5 + cos(pi t))
-  expect_true(sqrt(mean(colMeans(cov12) - 1 / 4 * (1.5 + cos(pi * outGrid)))^2) < 0.2)
+  # y-direction is close to 1/4 * (1.5 + cos(pi t))
+  expect_true(sqrt(mean((colMeans(cov12) - sqrt(2) / 4 * cos(pi * outGrid))^2, trim=0.1)) < 0.1)
   
   # 1D and 2D smoother is similar
-  expect_equal(diag(cov12), diag(cov12_1D), tolerance=0.2)
+  expect_equal(diag(cov12), diag(cov12_1D), tolerance=0.1)
 })
 
 covAll <- MvCov(vars, bw, outGrid, kern)
@@ -125,7 +126,9 @@ noError1D <- FCReg(vars, bw, bw,outGrid, measurementError=FALSE, diag1D='all')
 # })
 
 test_that('1D and 2D covariance estimates are similar', {
-  expect_equal(withError2D[['beta']], withError1D[['beta']], tolerance=0.2)
+  expect_true(sqrt(mean(
+    (withError2D[['beta']] - withError1D[['beta']])^2, 
+  trim=0.2)) < 0.2)
   expect_equal(noError2D[['beta']], noError1D[['beta']], tolerance=0.1)
 })
 
@@ -139,10 +142,11 @@ noError2DEpan <- FCReg(vars,  bw,bw, outGrid, measurementError=FALSE, kern='epan
 noError1DEpan <- FCReg(vars,  bw,bw, outGrid, measurementError=FALSE, diag1D='all', kern='epan')
 
 test_that('Different kernel type works', {
-  # expect_equal(withError2DRect[['beta']], withError2D[['beta']], tolerance=0.01)  # Why do we check this? It does not work anyway.
-  # expect_equal(withError1DRect[['beta']], withError1D[['beta']], tolerance=0.01)
-  # expect_equal(noError2DRect[['beta']], noError2D[['beta']], tolerance=0.01)
-  # expect_equal(noError1DRect[['beta']], noError1D[['beta']], tolerance=0.01)
+  expect_true(sqrt(mean(
+    (withError2DRect[['beta']] - withError1DRect[['beta']])^2, 
+  trim=0.2)) < 0.2)
+  expect_equal(noError2DRect[['beta']], noError2D[['beta']], tolerance=0.2)
+  expect_equal(noError1DRect[['beta']], noError1D[['beta']], tolerance=0.2)
   # expect_equal(withError2DRect[['beta']], withError2DEpan[['beta']], tolerance=0.2)
   # expect_equal(withError1DRect[['beta']], withError1DEpan[['beta']], tolerance=0.2)
   expect_equal(noError2DRect[['beta']], noError2DEpan[['beta']], tolerance=0.2)
