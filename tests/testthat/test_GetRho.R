@@ -31,8 +31,8 @@ test_that('GetRho matches cv_rho.m',
           )
 
 # test_that('cvRho for example.m are almost the same', {
-#   load('../../data/200curvesByExampleSeed123.RData')
-#   load('../../data/exampleResultsFromMatlab.RData')
+#   system.file('testdata', '200curvesByExampleSeed123.RData', package='fdapace')
+#   system.file('testdata', 'exampleResultsFromMatlab.RData', package='fdapace')
 #   tmpCov <- ConvertSupport(res$out21, res$out1, Cov=res$xcovfit)
 #   expect_equal(GetRho(y, t, list(), res$mu, res$out1, tmpCov, as.numeric(res$lambda), res$phi, as.numeric(res$sigma)), 0.939907526613129, tolerance=1e-2)
 # })

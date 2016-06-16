@@ -3,7 +3,7 @@ library(testthat)
 
 # as in test_Rmullwlsk.R
 try(silent=TRUE, load('data/InputFormMllwlskInCpp.RData'))
-#try(silent=TRUE, load('tPACE/data/InputFormMllwlskInCpp.RData'))
+#try(silent=TRUE, system.file('testdata', 'InputFormMllwlskInCpp.RData', package='fdapace'))
 
 IN = InputFormMllwlskInCpp
 if(1==1){

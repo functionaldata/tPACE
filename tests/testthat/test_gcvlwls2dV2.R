@@ -3,7 +3,7 @@
 library(testthat)
 
 try(silent = TRUE, load('data/dataForGetRawCov.RData'))
-# try(silent = TRUE, load('tPACE/data/dataForGetRawCov.RData'))
+# try(silent = TRUE, system.file('testdata', 'dataForGetRawCov.RData', package='fdapace'))
 rcov <- GetRawCov(y,t, sort(unlist(t)), mu,'Sparse',FALSE) 
 r <- range(sort(unlist(t)))
 regGrid <- seq(r[1], r[2], length.out=101)
