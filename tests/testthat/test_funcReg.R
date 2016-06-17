@@ -79,7 +79,7 @@ test_that('Function-function cov works', {
   expect_true(sqrt(mean((colMeans(cov12) - sqrt(2) / 4 * cos(pi * outGrid))^2, trim=0.1)) < 0.1)
   
   # 1D and 2D smoother is similar
-  expect_equal(diag(cov12), diag(cov12_1D), tolerance=0.1)
+  expect_equal(diag(cov12), diag(cov12_1D), tolerance=0.2)
 })
 
 covAll <- MvCov(vars, bw, outGrid, kern)
