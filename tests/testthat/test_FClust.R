@@ -3,7 +3,8 @@
 test_that('the growth example works.', {
 
 
-         A <- read.table('data/growth.dat')
+         A <- read.table(system.file('testdata', 'growth.dat',
+                                     package='fdapace'))
          B <- MakeFPCAInputs( IDs = A[,1], tVec = A$V3, yVec = A$V4) 
          C <- FClust(B$Ly, B$Lt, k = 2, cmethod = 'Rmixmod')
          D <- FClust(B$Ly, B$Lt, k = 2, cmethod = 'kCFC')

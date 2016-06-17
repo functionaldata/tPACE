@@ -4,8 +4,8 @@ library(Rcpp)
 
 library(testthat)
 
-try( silent=TRUE, load('data/InputForRotatedMllwlskInCpp.RData'))
-try( silent=TRUE, system.file('testdata', 'InputForRotatedMllwlskInCpp.RData', package='fdapace'))
+try( silent=TRUE, load(system.file('testdata', 'InputForRotatedMllwlskInCpp.RData', package='fdapace')))
+try( silent=TRUE, load(system.file('testdata', 'InputForRotatedMllwlskInCpp.RData', package='fdapace')))
 
 # tolerance is relatively large because we cannot control of 2500 * 1e-16 anyway 
 # I have already tried using .inverse instead of LLT for the solution and that

@@ -1,6 +1,6 @@
  cat("\nTests for 'GCVLwls1D1.R'")
 
-system.file('testdata', 'dataForGcvLwlsTest.RData', package='fdapace')
+load(system.file('testdata', 'dataForGcvLwlsTest.RData', package='fdapace'))
 
 test_that("basic  optimal bandwidth choice for the mean function use GCV method matches MATLAB for Sparse data", {
 

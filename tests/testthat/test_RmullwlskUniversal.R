@@ -1,5 +1,5 @@
 library(testthat)
-load('data/InputFormMllwlskInCpp.RData')
+load(system.file('testdata', 'InputFormMllwlskInCpp.RData', package='fdapace'))
 IN = InputFormMllwlskInCpp
  
 ord <- order(IN$tPairs[, 1])
