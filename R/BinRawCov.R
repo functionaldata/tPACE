@@ -3,6 +3,10 @@
 # returns: A list of class `BinnedRawCov`. 
 BinRawCov <- function(rcov) {
   
+  if ('RawCC' %in% class(rcov)) {
+    rcov$cxxn <- rcov$rawCCov
+    rcov$tPairs <- rcov$tpairn
+  }
   # Get the count, mean raw cov, and residual sum of squares at each pair of observed time points.
   tmp <- aggregate(rcov$cxxn, list(rcov$tPairs[, 1], rcov$tPairs[, 2]), 
     function(yy) c(RCPPmean(yy), length(yy), RCPPvar(yy) * (length(yy) - 1)))
@@ -32,7 +36,11 @@ BinRawCov <- function(rcov) {
               count=count, 
               diagCount=diagCount, 
               error=rcov$error, dataType=rcov$dataType)
-  class(res) <- 'BinnedRawCov'
+  if ('RawCC' %in% class(rcov)) {
+    class(res) <- 'BinnedRawCC'
+  } else {
+    class(res) <- 'BinnedRawCov'
+  }
   
   return(res)
 }

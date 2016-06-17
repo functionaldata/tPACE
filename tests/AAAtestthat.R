@@ -4,5 +4,5 @@
 
 library(testthat)
 library(fdapace)
-test_check("fdapace", filter='_(?!FPCA)(?!funcReg)(?!FClust)(?!FSVD)(?!FVPA)', perl=TRUE)
+test_check("fdapace", filter='_(?!FPCA)(?!funcReg)(?!FClust)(?!FSVD)(?!FVPA)(?!GetCrCovYX)', perl=TRUE)
 # test_check("fdapace")
