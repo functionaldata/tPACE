@@ -4,7 +4,6 @@
 # which is the limit on travis CI.
 # This file contains the slow running tests.
 
-# library(testthat)
-# library(fdapace)
-# # FSVD is not tested because it is too slow!
-# test_check("fdapace", filter='FPCA|funcReg|FClust', perl=TRUE)
+library(testthat)
+library(fdapace)
+test_check("fdapace", filter='FClust|FSVD|FPCA|FVPA|funcReg', perl=TRUE)
