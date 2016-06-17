@@ -1,4 +1,4 @@
-if (FALSE) {
+if (Sys.getenv('TRAVIS') != 'true') {# Do not run on travis since this is slow
 # devtools::load_all()
 library(testthat)
 library(mvtnorm)

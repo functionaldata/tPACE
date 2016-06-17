@@ -1,4 +1,5 @@
-# devtools::load_all(); library(testthat)
+# devtools::load_all()
+library(testthat)
 
 test_that('the growth example works.', {
 
