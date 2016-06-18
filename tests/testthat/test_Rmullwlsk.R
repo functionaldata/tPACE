@@ -1,6 +1,6 @@
 # devtools::load_all()
 # setwd('misc/') 
-load('data/InputFormMllwlskInCpp.RData')
+load(system.file('testdata', 'InputFormMllwlskInCpp.RData', package='fdapace'))
 if( !exists('Rmullwlsk') ) {
   library(Rcpp)
   sourceCpp('src/Rmullwlsk.cpp')

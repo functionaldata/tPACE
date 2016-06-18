@@ -1,3 +1,4 @@
+if (Sys.getenv('TRAVIS') != 'true') {# Do not run on travis since this is slow
 # devtools::load_all()
 library(testthat)
 library(mvtnorm)
@@ -129,3 +130,4 @@ test_that('Check flipping the components in the sparse case results into perfect
   expect_lt( (cor(fsvdObj1$sScores1[,1], fsvdObj2$sScores1[,1])), -0.99)
   
 })
+}
