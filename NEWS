@@ -1,0 +1,13 @@
+fdapace v0.2.0 (Release date: 17-Jun-2016)
+==============
+
+Changes:
+* Minor changes to the interface of functions FPCA.R and FCReg.R.
+* New internal C++ smoother used. 
+* Minor bugs fixes and function optimisation. 
+* Addition of Functional Variance Process Analysis (FVPA.R), Functional Clustering (FClust.R) and Functional Singular Value Decomposition (FSVD.R) functionality.
+
+fdapace v0.1.1 (Release data: 15-Mar-2016)
+==============
+
+* Initial release
