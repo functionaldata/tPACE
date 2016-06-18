@@ -96,7 +96,7 @@ GetCrCovYX <- function(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL, Ly2
     # If the bandwidths are unknown use GCV to take find it
   } else {
     # Construct candidate bw's
-    bwCandidates <- getBWidths(ulLt1, ulLt2)
+    bwCandidates <- getBWidths(Lt1, Lt2)
     minGcvScores = Inf
     
     if(bwRoutine == 'grid-search'){
@@ -162,17 +162,31 @@ theCostFunc <- function(xBW, rawCC, workGrid1, workGrid2, kern, workGrid12){
   return(theCost)
 }
 
-getBWidths <- function(ulLt1, ulLt2){
+getBWidths <- function(Lt1, Lt2){
+  
   numPoints = 10;
-  bwCandidates <- matrix(rep(0,numPoints * numPoints * 2),ncol=2)
-  h0 = 2.0 * Minb( sort(ulLt1), 2+1); # 2x the bandwidth needed for at least 3 points in a window
-  r = diff(range(ulLt1))    
-  q = (r/(4*h0))^(1/9);  
-  bwCandidates[,1] = rep( sort(q^( seq(0,12,length.out=numPoints) )*h0), times= numPoints);
-  h0 = 2.0 * Minb( sort(ulLt2), 2+1); # 2x the bandwidth needed for at least 3 points in a window
-  r1 = diff(range(ulLt2))    
-  q = (r/(4*h0))^(1/9);  
-  bwCandidates[,2] = rep( sort(q^( seq(0,12,length.out=numPoints) )*h0), each= numPoints); 
+  oldVersion = FALSE
+  if(oldVersion == TRUE){
+    
+    bwCandidates <- matrix(rep(0,numPoints * numPoints * 2),ncol=2)
+    h0 = 2.0 * Minb( sort(ulLt1), 2+1); # 2x the bandwidth needed for at least 3 points in a window
+    r = diff(range(ulLt1))    
+    q = (r/(4*h0))^(1/9);  
+    bwCandidates[,1] = rep( sort(q^( seq(0,12,length.out=numPoints) )*h0), times= numPoints);
+    h0 = 2.0 * Minb( sort(ulLt2), 2+1); # 2x the bandwidth needed for at least 3 points in a window
+    r1 = diff(range(ulLt2))    
+    q = (r/(4*h0))^(1/9);  
+    bwCandidates[,2] = rep( sort(q^( seq(0,12,length.out=numPoints) )*h0), each= numPoints); 
+    
+  } else { 
+    
+    bwCandidates <- matrix(rep(0,numPoints * numPoints * 2),ncol=2) 
+    bwCandidates[,1] = rep( seq( BwNN(Lt1, onlyCov = TRUE, k = 4), BwNN(Lt1, onlyCov = TRUE, k = 44), 
+                                 length.out=numPoints), times= numPoints); 
+    bwCandidates[,2] = rep( seq( BwNN(Lt2, onlyCov = TRUE, k = 4), BwNN(Lt2, onlyCov = TRUE, k = 44), 
+                                 length.out=numPoints), each= numPoints); 
+    
+  } 
   
   return(bwCandidates)
 }
