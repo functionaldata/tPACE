@@ -98,7 +98,7 @@ test_that('consistent estimates for sparse case', {
 
 ### test for consistency in sparse case
 test_that('Check flipping the components in the sparse case results into perfectly anti-correlated scores', {
-  n = 2000 # sample size
+  n = 200 # sample size
   set.seed(123)
   singscore = rmvnorm(n=n, mean = rep(0,6), sigma = cbind(rbind(CovscX,CovscXY),rbind(CovscXY, CovscY)))
   zeta1 = singscore[,1] # X

@@ -75,7 +75,7 @@ test_that('The cross-covariance of two simple related process is correct. Same r
 test_that('The cross-covariance of two simple related process is correct. Same readings lengths.',{
   
   set.seed(123)
-  N = 611;   
+  N = 311;   
   M = 101;
   
   # Define the continuum
@@ -105,17 +105,17 @@ test_that('The cross-covariance of two simple related process is correct. Same r
                                     Ymu1 = rep(0,M), Ymu2 = rep(0,M),   )
   BB4 <- GetCrCovYX(Ly1 = ySparseA$Ly, Lt1 = ySparseA$Lt, Ly2 = ySparseB$Ly, Lt2 = ySparseB$Lt, bwRoutine = 'bobyqa',
                                     Ymu1 = rep(0,M), Ymu2 = rep(0,M))
-  BB5 <- GetCrCovYX(Ly1 = ySparseA$Ly, Lt1 = ySparseA$Lt, Ly2 = ySparseB$Ly, Lt2 = ySparseB$Lt, 
-                                    Ymu1 = rep(0,M), Ymu2 = rep(0,M), bwRoutine = 'grid-search'  )
+  # BB5 <- GetCrCovYX(Ly1 = ySparseA$Ly, Lt1 = ySparseA$Lt, Ly2 = ySparseB$Ly, Lt2 = ySparseB$Lt, # Too expensive / 
+  #                                  Ymu1 = rep(0,M), Ymu2 = rep(0,M), bwRoutine = 'grid-search'  )
 
   sSmall = seq(0,10,length.out = 51)
   
   # we know that the covariance between ksi_1 and ksi_2 is three
-  expect_equal( median(abs( eigFunct1(sSmall)%*%t(eigFunct1(sSmall))*3 - BB1$smoothedCC )),  0.02, tol=.01, scale=1 )
-  expect_equal( median(abs( eigFunct1(sSmall)%*%t(eigFunct1(sSmall))*3 - BB2$smoothedCC )),  0.02, tol=.01, scale=1 )
-  expect_equal( median(abs( eigFunct1(sSmall)%*%t(eigFunct1(sSmall))*3 - BB3$smoothedCC )),  0.02, tol=.01, scale=1 )
-  expect_equal( median(abs( eigFunct1(sSmall)%*%t(eigFunct1(sSmall))*3 - BB4$smoothedCC )),  0.02, tol=.01, scale=1 )
-  expect_equal( median(abs( eigFunct1(sSmall)%*%t(eigFunct1(sSmall))*3 - BB5$smoothedCC )),  0.02, tol=.01, scale=1 )
+  expect_equal( median(abs( eigFunct1(sSmall)%*%t(eigFunct1(sSmall))*3 - BB1$smoothedCC )),  0.02, tol=.02, scale=1 )
+  expect_equal( median(abs( eigFunct1(sSmall)%*%t(eigFunct1(sSmall))*3 - BB2$smoothedCC )),  0.02, tol=.02, scale=1 )
+  expect_equal( median(abs( eigFunct1(sSmall)%*%t(eigFunct1(sSmall))*3 - BB3$smoothedCC )),  0.02, tol=.02, scale=1 )
+  expect_equal( median(abs( eigFunct1(sSmall)%*%t(eigFunct1(sSmall))*3 - BB4$smoothedCC )),  0.02, tol=.02, scale=1 )
+  # expect_equal( median(abs( eigFunct1(sSmall)%*%t(eigFunct1(sSmall))*3 - BB5$smoothedCC )),  0.02, tol=.02, scale=1 )
 
 })
 
@@ -186,7 +186,7 @@ test_that('Dense Wiener process has cov(s,t) = min(s,t)', {
 
 test_that('Sparse Wiener process has cov(s,t) = min(s,t)', {
   set.seed(4)
-  n <- 200
+  n <- 500
   nGridIn <- 51
   sparsity <- 1:5 # must have length > 1
   bw <- 0.2
@@ -205,7 +205,7 @@ test_that('Sparse Wiener process has cov(s,t) = min(s,t)', {
   Ysp <- lapply(1:n, function(i) Y[i, indEach[[i]]])
 
   tmp <- GetCrCovYX(bw, bw, Xsp, tAll, rep(0, nGridIn), Ysp, tAll, rep(0, nGridIn))
-  tmpGCV <- GetCrCovYX(NULL, NULL, Xsp, tAll, rep(0, nGridIn), Ysp, tAll, rep(0, nGridIn))
-  expect_equal(diag(tmp$smoothedCC), as.numeric(T), tolerance=0.37)
-  expect_equal(diag(tmpGCV$smoothedCC), as.numeric(T), tolerance=0.37)
+  #tmpGCV <- GetCrCovYX(NULL, NULL, Xsp, tAll, rep(0, nGridIn), Ysp, tAll, rep(0, nGridIn)) # Too costly test
+  expect_equal(diag(tmp$smoothedCC), as.numeric(T), tolerance=0.15)
+  #expect_equal(diag(tmpGCV$smoothedCC), as.numeric(T), tolerance=0.15)
 })

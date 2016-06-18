@@ -181,9 +181,9 @@ getBWidths <- function(Lt1, Lt2){
   } else { 
     
     bwCandidates <- matrix(rep(0,numPoints * numPoints * 2),ncol=2) 
-    bwCandidates[,1] = rep( seq( BwNN(Lt1, onlyCov = TRUE, k = 4), BwNN(Lt1, onlyCov = TRUE, k = 44), 
+    bwCandidates[,1] = rep( seq( BwNN(Lt1, onlyCov = TRUE, k = 5), BwNN(Lt1, onlyCov = TRUE, k = 45), 
                                  length.out=numPoints), times= numPoints); 
-    bwCandidates[,2] = rep( seq( BwNN(Lt2, onlyCov = TRUE, k = 4), BwNN(Lt2, onlyCov = TRUE, k = 44), 
+    bwCandidates[,2] = rep( seq( BwNN(Lt2, onlyCov = TRUE, k = 5), BwNN(Lt2, onlyCov = TRUE, k = 45), 
                                  length.out=numPoints), each= numPoints); 
     
   } 

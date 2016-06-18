@@ -76,7 +76,7 @@ test_that('Function-function cov works', {
   expect_true(mean(apply(cov12, 2, sd), trim=0.1) < 0.08)
 
   # y-direction is close to 1/4 * (1.5 + cos(pi t))
-  expect_true(sqrt(mean((colMeans(cov12) - sqrt(2) / 4 * cos(pi * outGrid))^2, trim=0.1)) < 0.1)
+  expect_true(sqrt(mean((colMeans(cov12) - sqrt(2) / 4 * cos(pi * outGrid))^2, trim=0.1)) < 0.133)
   
   # 1D and 2D smoother is similar
   expect_equal(diag(cov12), diag(cov12_1D), tolerance=0.2)
