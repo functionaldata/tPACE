@@ -252,7 +252,7 @@ makeSlicePlot <- function( nSlices, colFunc, p95plusInd, N, args1, args2, scoreE
       #      y = c(0, bigNumber * multiplier2 * tan(angle + pi/ (nSlices/2) ) * sd2 / sd1))
     }
   } 
-  return( invisible( list(  'p0to95'= which(p95plusInd), 
+  return( invisible( list(  'p0to95'= which(!p95plusInd), 
                             'outlier' = sapply(outlierList, which),
                             'outlierColours' = colPal)) ) 
 }
