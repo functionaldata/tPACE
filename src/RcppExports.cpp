@@ -118,25 +118,6 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
-// Rmullwlsk_old
-Eigen::MatrixXd Rmullwlsk_old(const Eigen::Map<Eigen::VectorXd>& bw, const std::string kernel_type, const Eigen::Map<Eigen::MatrixXd>& tPairs, const Eigen::Map<Eigen::MatrixXd>& cxxn, const Eigen::Map<Eigen::VectorXd>& win, const Eigen::Map<Eigen::VectorXd>& xgrid, const Eigen::Map<Eigen::VectorXd>& ygrid, const bool& bwCheck, const bool& transp);
-RcppExport SEXP fdapace_Rmullwlsk_old(SEXP bwSEXP, SEXP kernel_typeSEXP, SEXP tPairsSEXP, SEXP cxxnSEXP, SEXP winSEXP, SEXP xgridSEXP, SEXP ygridSEXP, SEXP bwCheckSEXP, SEXP transpSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type bw(bwSEXP);
-    Rcpp::traits::input_parameter< const std::string >::type kernel_type(kernel_typeSEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd>& >::type tPairs(tPairsSEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd>& >::type cxxn(cxxnSEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type win(winSEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type xgrid(xgridSEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type ygrid(ygridSEXP);
-    Rcpp::traits::input_parameter< const bool& >::type bwCheck(bwCheckSEXP);
-    Rcpp::traits::input_parameter< const bool& >::type transp(transpSEXP);
-    __result = Rcpp::wrap(Rmullwlsk_old(bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck, transp));
-    return __result;
-END_RCPP
-}
 // Rmullwlsk
 Eigen::MatrixXd Rmullwlsk(const Eigen::Map<Eigen::VectorXd>& bw, const std::string kernel_type, const Eigen::Map<Eigen::MatrixXd>& tPairs, const Eigen::Map<Eigen::MatrixXd>& cxxn, const Eigen::Map<Eigen::VectorXd>& win, const Eigen::Map<Eigen::VectorXd>& xgrid, const Eigen::Map<Eigen::VectorXd>& ygrid, const bool& bwCheck, const bool& transp);
 RcppExport SEXP fdapace_Rmullwlsk(SEXP bwSEXP, SEXP kernel_typeSEXP, SEXP tPairsSEXP, SEXP cxxnSEXP, SEXP winSEXP, SEXP xgridSEXP, SEXP ygridSEXP, SEXP bwCheckSEXP, SEXP transpSEXP) {

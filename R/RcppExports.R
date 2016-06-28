@@ -33,10 +33,6 @@ RCPPvar <- function(X) {
     .Call('fdapace_RCPPvar', PACKAGE = 'fdapace', X)
 }
 
-Rmullwlsk_old <- function(bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck, transp = TRUE) {
-    .Call('fdapace_Rmullwlsk_old', PACKAGE = 'fdapace', bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck, transp)
-}
-
 Rmullwlsk <- function(bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck, transp = TRUE) {
     .Call('fdapace_Rmullwlsk', PACKAGE = 'fdapace', bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck, transp)
 }
