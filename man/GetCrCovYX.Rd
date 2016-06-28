@@ -17,13 +17,13 @@ GetCrCovYX(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL, Ly2,
 
 \item{Lt1}{List of N vectors with timing information (Y)}
 
-\item{Ymu1}{Vector Q-1 Vector of length nObsGrid containing the mean function estimate (You can get that from FPCA) (Y)}
+\item{Ymu1}{Vector Q-1 Vector of length nObsGrid containing the mean function estimate (Y)}
 
 \item{Ly2}{List of N vectors with amplitude information (X)}
 
 \item{Lt2}{List of N vectors with timing information (X)}
 
-\item{Ymu2}{Vector Q-1 Vector of length nObsGrid containing the mean function estimate (You can get that from FPCA) (X)}
+\item{Ymu2}{Vector Q-1 Vector of length nObsGrid containing the mean function estimate (X)}
 
 \item{useGAM}{Indicator to use gam smoothing instead of local-linear smoothing (semi-parametric option) (default: FALSE)}
 
@@ -32,7 +32,9 @@ GetCrCovYX(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL, Ly2,
 \item{kern}{String specifying the kernel type (default: FALSE;  see ?FPCA for details)}
 
 \item{bwRoutine}{String specifying the routine used to find the optimal bandwidth 'grid-search', 'bobyqa', 'l-bfgs-b' (default: 'l-bfgs-b')
-If the variables Ly1 and Ly2 are in matrix form the data are assumed dense and only the raw cross-covariance is returned.}
+If the variables Ly1 and Ly2 are in matrix form the data are assumed dense
+and only the raw cross-covariance is returned. One can obtain Ymu1 and Ymu2
+from \code{FPCA} and \code{ConvertSupport}.}
 }
 \value{
 A list containing:

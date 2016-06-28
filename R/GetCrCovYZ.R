@@ -5,13 +5,16 @@
 #' 
 #' @param Ly List of N vectors with amplitude information
 #' @param Lt List of N vectors with timing information
-#' @param Ymu Vector Q-1 Vector of length nObsGrid containing the mean function estimate (You can get that from FPCA)
+#' @param Ymu Vector Q-1 Vector of length nObsGrid containing the mean function estimate
 #' @param bw Scalar bandwidth for smoothing the cross-covariance function (if NULL it will be automatically estimated)
 #' @param Z Vector N-1 Vector of length N with the scalar function values
 #' @param Zmu Scalar with the mean of Z (if NULL it will be automaticall estimated)
 #' @param support Vector of unique and sorted values for the support of the smoothed cross-covariance function (if NULL it will be automatically estimated)
 #' @param kern Kernel type to be used. See ?FPCA for more details. (defult: 'gauss')
-#' If the variables Ly1 is in matrix form the data are assumed dense and only the raw cross-covariance is returned.
+#' If the variables Ly1 is in matrix form the data are assumed dense and only
+#' the raw cross-covariance is returned. One can obtain Ymu1 
+#' from \code{FPCA} and \code{ConvertSupport}.
+
 #' @return A list containing:
 #' \item{smoothedCC}{The smoothed cross-covariance as a vector}
 #' \item{rawCC}{The raw cross-covariance as a vector }

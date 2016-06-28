@@ -18,12 +18,14 @@ GetCrCovYZ(bw = NULL, Z, Zmu = NULL, Ly, Lt = NULL, Ymu = NULL,
 
 \item{Lt}{List of N vectors with timing information}
 
-\item{Ymu}{Vector Q-1 Vector of length nObsGrid containing the mean function estimate (You can get that from FPCA)}
+\item{Ymu}{Vector Q-1 Vector of length nObsGrid containing the mean function estimate}
 
 \item{support}{Vector of unique and sorted values for the support of the smoothed cross-covariance function (if NULL it will be automatically estimated)}
 
 \item{kern}{Kernel type to be used. See ?FPCA for more details. (defult: 'gauss')
-If the variables Ly1 is in matrix form the data are assumed dense and only the raw cross-covariance is returned.}
+If the variables Ly1 is in matrix form the data are assumed dense and only
+the raw cross-covariance is returned. One can obtain Ymu1 
+from \code{FPCA} and \code{ConvertSupport}.}
 }
 \value{
 A list containing:

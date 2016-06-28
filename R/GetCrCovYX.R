@@ -4,17 +4,19 @@
 #' 
 #' @param Ly1 List of N vectors with amplitude information (Y)
 #' @param Lt1 List of N vectors with timing information (Y)
-#' @param Ymu1 Vector Q-1 Vector of length nObsGrid containing the mean function estimate (You can get that from FPCA) (Y)
+#' @param Ymu1 Vector Q-1 Vector of length nObsGrid containing the mean function estimate (Y)
 #' @param bw1 Scalar bandwidth for smoothing the cross-covariance function (if NULL it will be automatically estimated) (Y)
 #' @param Ly2 List of N vectors with amplitude information (X)
 #' @param Lt2 List of N vectors with timing information (X)
-#' @param Ymu2 Vector Q-1 Vector of length nObsGrid containing the mean function estimate (You can get that from FPCA) (X)
+#' @param Ymu2 Vector Q-1 Vector of length nObsGrid containing the mean function estimate (X)
 #' @param bw2 Scalar bandwidth for smoothing the cross-covariance function (if NULL it will be automatically estimated) (X)
 #' @param useGAM Indicator to use gam smoothing instead of local-linear smoothing (semi-parametric option) (default: FALSE)
 #' @param rmDiag Indicator to remove the diagonal element when smoothing (default: FALSE)
 #' @param kern String specifying the kernel type (default: FALSE;  see ?FPCA for details)
 #' @param bwRoutine String specifying the routine used to find the optimal bandwidth 'grid-search', 'bobyqa', 'l-bfgs-b' (default: 'l-bfgs-b')
-#' If the variables Ly1 and Ly2 are in matrix form the data are assumed dense and only the raw cross-covariance is returned.
+#' If the variables Ly1 and Ly2 are in matrix form the data are assumed dense
+#' and only the raw cross-covariance is returned. One can obtain Ymu1 and Ymu2
+#' from \code{FPCA} and \code{ConvertSupport}.
 #' @return A list containing:
 #' \item{smoothedCC}{The smoothed cross-covariance as a matrix (currently only 51 by 51)}
 #' \item{rawCC}{The raw cross-covariance as a list}
