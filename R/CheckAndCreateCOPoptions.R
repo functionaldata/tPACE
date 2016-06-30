@@ -61,7 +61,7 @@ CheckAndCreateCOPoptions <- function(optns,fObjClass){
     if( 2 < length(optns$fIndeces)){
       warning("fIndeces has more than two elements; only the first two will be used.")
     }
-    fIndeces <- sort(optns$fIndeces[1:2])
+    fIndeces <-  (optns$fIndeces[1:2])
   }
   
   if( !any( groupingType == c('standard','slice')) ){
