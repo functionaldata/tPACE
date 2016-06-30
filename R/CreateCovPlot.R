@@ -24,11 +24,22 @@
 
 CreateCovPlot = function(fpcaObj, covPlotType = 'Fitted', isInteractive = FALSE, colSpectrum = NULL, ...){
   
+  if(!(class(fpcaObj) %in% c('FPCA','FSVD','FPCAder'))){
+    stop("Input object must be class: 'FPCA','FSVD' or 'FPCAder'.")
+  }
+  
+  if('FSVD' == class(fpcaObj)){
+    if('Fitted' != covPlotType){
+      stop("Only 'Fitted' cross-covariance is available when using FSVD objects.")
+    }
+    covPlotType == 'Fitted';
+  }
+  
   ## Check if plotting covariance surface for fitted covariance surface is proper
   if(covPlotType == 'Fitted'){
-    no_opt = length(fpcaObj$lambda)
+    no_opt = ifelse('FSVD' == class(fpcaObj), length(fpcaObj$sValues), length(fpcaObj$lambda))
     if(length(no_opt) == 0){
-      warning('Warning: Input is not a valid FPCA or FPCder output.')
+      warning('Warning: Input is not a valid FPCA, FSVD or FPCder output.')
       return()
     } else if(no_opt == 1){
       warning('Warning: Covariance surface is not available when only one principal component is used.')
@@ -51,11 +62,14 @@ CreateCovPlot = function(fpcaObj, covPlotType = 'Fitted', isInteractive = FALSE,
   }
   
   ## Define the variables to plot
-  workGrid = fpcaObj$workGrid
   if(covPlotType == 'Smoothed'){
     covSurf = fpcaObj$smoothedCov # smoothed covariance matrix
   } else if(covPlotType == 'Fitted'){
-    covSurf = fpcaObj$fittedCov # fitted covariance matrix
+    if('FSVD' == class(fpcaObj)){
+      covSurf = fpcaObj$CrCov # fitted cross-covariance matrix
+    } else {
+      covSurf = fpcaObj$fittedCov # fitted covariance matrix
+    }
   } else {
     warning("Covariance plot type no recognised; using default ('Fitted').")
     covSurf = fpcaObj$fittedCov 
@@ -65,7 +79,11 @@ CreateCovPlot = function(fpcaObj, covPlotType = 'Fitted', isInteractive = FALSE,
   ## Define the plotting arguments
   args1 <- list( xlab='s', ylab='t', col =  colFunc(24), zlab = 'C(s,t)', lighting=FALSE)
   if( covPlotType == 'Fitted' ){
-    args1$main = 'Fitted covariance surface';
+    if('FSVD' == class(fpcaObj)){
+      args1$main = 'Fitted cross-covariance surface';
+    } else {
+      args1$main = 'Fitted covariance surface';
+    }
   } else {
     args1$main = 'Smoothed covariance surface';
   }
@@ -74,7 +92,12 @@ CreateCovPlot = function(fpcaObj, covPlotType = 'Fitted', isInteractive = FALSE,
   }
   inargs <- list(...)
   args1[names(inargs)] <- inargs 
-  args2 = list (x = workGrid, y = workGrid, z = covSurf)
+  if('FSVD' == class(fpcaObj)){
+    args2 = list (x = fpcaObj$grid1, y = fpcaObj$grid2, z = covSurf)
+  } else {
+    workGrid = fpcaObj$workGrid
+    args2 = list (x = workGrid, y = workGrid, z = covSurf)
+  }
   
   ## Plot the thing
   if(isInteractive){ # Interactive Plot 

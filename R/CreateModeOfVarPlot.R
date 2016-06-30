@@ -9,6 +9,8 @@
 #' @param fpcaObj An FPCA class object returned by FPCA(). 
 #' @param k The k-th mode of variation to plot (default k = 1) 
 #' @param rainbowPlot Indicator to create a rainbow-plot instead of a shaded plot (default: FALSE)
+#' @param colSpectrum Character vector to be use as input in the 'colorRampPalette' function defining the outliers colours (default: c("blue","red", "green"), relavant only for rainbowPlot=TRUE) }
+
 #' @param ... Additional arguments for the 'plot' function.
 #'
 #' @examples
@@ -22,7 +24,7 @@
 #' CreateModeOfVarPlot(res)
 #' @export
 
-CreateModeOfVarPlot <-function(fpcaObj,  k = 1, rainbowPlot = FALSE, ...){ 
+CreateModeOfVarPlot <-function(fpcaObj,  k = 1, rainbowPlot = FALSE, colSpectrum = NULL, ...){ 
   
   args1 <- list( main="Default Title", xlab='s', ylab='')  
   inargs <- list(...)
@@ -30,6 +32,12 @@ CreateModeOfVarPlot <-function(fpcaObj,  k = 1, rainbowPlot = FALSE, ...){
   if(k> length(fpcaObj$lambda) ){
     stop("You are asking to plot a mode of variation that is incomputable.")
   }  
+  
+  if( is.null(colSpectrum) ){
+    colSpectrum = c("blue","red", "green")
+  } 
+  
+  
   
   obsGrid = fpcaObj$obsGrid      
   s = fpcaObj$workGrid
@@ -52,16 +60,17 @@ CreateModeOfVarPlot <-function(fpcaObj,  k = 1, rainbowPlot = FALSE, ...){
     polygon(x=c(s, rev(s)), y = c( -2* sigma * phi + mu, 
                                    rev(2* sigma * phi + mu)), col= 'lightgrey',border=NA)
     polygon(x=c(s, rev(s)), y = c( -1* sigma * phi + mu, 
-                                   rev(1* sigma * phi + mu)), col= 'darkgrey',border=NA)   
+                                   rev(1* sigma * phi + mu)), col= 'darkgrey',border=NA)  
+    lines(x=s, y=mu , col='red') 
   } else {
     # The numver of modes as well as the colour palette could/shoud be possibly user-defined
     numOfModes = 257 # Just a large number of make things look "somewhat solid".
-    thisColPalette = colorRampPalette(c("blue","red", "green"))(numOfModes)
+    thisColPalette = colorRampPalette(colSpectrum)(numOfModes)
     
     Qmatrix = (seq(-2 ,2 ,length.out = numOfModes) %*% t(fpcaObj$phi[,k] * sqrt(fpcaObj$lambda[k]))) + 
       matrix(rep(mu,numOfModes), nrow=numOfModes, byrow = TRUE)  
     do.call(matplot, c(list(type='l'), list(x=s), list(y=t(Qmatrix)), list(col= thisColPalette), list(lty=1), list(lwd=2), args1))
     grid()    
+    lines(x=s, y=mu , col= median(thisColPalette)) 
   }
-    lines(x=s, y=mu , col='red')
 }
