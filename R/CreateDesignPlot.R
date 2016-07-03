@@ -2,7 +2,7 @@
 #'
 #' This function will open a new device if not instructed otherwise.
 #'
-#' @param t a list of observed time points for functional data
+#' @param Lt a list of observed time points for functional data
 #' @param obsGrid a vector of sorted observed time points
 #' @param isColorPlot an option for colorful plot: 
 #'                    TRUE: create color plot with color indicating counts
@@ -22,13 +22,13 @@
 #' CreateDesignPlot(sampWiener$Lt, sort(unique(unlist(sampWiener$Lt))))
 #' @export
 
-CreateDesignPlot = function(t, obsGrid = NULL, isColorPlot=TRUE, noDiagonal=TRUE, addLegend= TRUE, ...){
+CreateDesignPlot = function(Lt, obsGrid = NULL, isColorPlot=TRUE, noDiagonal=TRUE, addLegend= TRUE, ...){
   
-  if( class(t) != 'list'){
+  if( class(Lt) != 'list'){
     stop("You do need to pass a list argument to 'CreateDesignPlot'!");
   }
   if( is.null(obsGrid)){
-    obsGrid = sort(unique(unlist(t)))
+    obsGrid = sort(unique(unlist(Lt)))
   }
   
   args1 <- list( main="Design Plot", xlab= 'Observed time grid', ylab= 'Observed time grid', addLegend = addLegend)
@@ -37,22 +37,22 @@ CreateDesignPlot = function(t, obsGrid = NULL, isColorPlot=TRUE, noDiagonal=TRUE
   
   
   # Check if we have very dense data (for visualization) on a regular grid
-  if( (length(obsGrid) > 101) & all(sapply(t, function(u) identical(obsGrid, u)))){
+  if( (length(obsGrid) > 101) & all(sapply(Lt, function(u) identical(obsGrid, u)))){
     res = matrix(5, nrow = 101, ncol = 101)
     obsGrid = approx(x = seq(0,1,length.out = length(obsGrid)), y = obsGrid, 
                      xout = seq(0,1,length.out = 101))$y
   } else {
-    res = DesignPlotCount(t, obsGrid, noDiagonal, isColorPlot)
+    res = DesignPlotCount(Lt, obsGrid, noDiagonal, isColorPlot)
   }
   
   oldpty <- par()[['pty']]
+  on.exit(par(pty=oldpty))
   par(pty="s")
   if(isColorPlot == TRUE){
     createColorPlot(res, obsGrid, args1)
   } else {
     createBlackPlot(res, obsGrid, args1)
   }
-  par(pty=oldpty)
   
 }
 
@@ -109,9 +109,12 @@ createColorPlot = function(res, obsGrid, args1){
  
   do.call( plot, c(args1, list( x = obsGrid[notZero[, 1]], y = obsGrid[notZero[, 2]]) ))
 
+  pars <- par()
+  # plotWidth <- (pars[['fin']][1] - sum(pars[['mai']][c(2, 4)]))
   if(addLegend){
     if (!identical(unique(nnres), 1)){
-          legend('right', c('1','2','3','4+'), pch = pchVec, col=colVec, pt.cex=1.5, title = 'Count',bg='white' )
+          legend('right', c('1','2','3','4+'), pch = pchVec, col=colVec, pt.cex=1.5, title = 'Count',bg='white', 
+                 inset=-pars[['mai']][4] / pars[['pin']][1]  * 1.5, xpd=TRUE)
     }
   }
 }

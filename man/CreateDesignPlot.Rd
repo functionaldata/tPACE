@@ -4,11 +4,11 @@
 \alias{CreateDesignPlot}
 \title{Create the design plot of the functional data.}
 \usage{
-CreateDesignPlot(t, obsGrid = NULL, isColorPlot = TRUE, noDiagonal = TRUE,
-  addLegend = TRUE, ...)
+CreateDesignPlot(Lt, obsGrid = NULL, isColorPlot = TRUE,
+  noDiagonal = TRUE, addLegend = TRUE, ...)
 }
 \arguments{
-\item{t}{a list of observed time points for functional data}
+\item{Lt}{a list of observed time points for functional data}
 
 \item{obsGrid}{a vector of sorted observed time points}
 

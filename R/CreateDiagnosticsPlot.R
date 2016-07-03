@@ -2,10 +2,13 @@
 #' 
 #' This function by default creates standard diagnostics for a functional sample. It prints the design plot, mean function, scree-plot
 #' and first three eigenfunctions of a sample. If provided with a derivative options object (?FPCAder) it will return the 
-#' differentiated mean and first two principal modes of variations for 50%, 75%, 100%, 125% and 150% of the defined bandwidth choice.
+#' differentiated mean and first two principal modes of variations for 50\%, 75\%, 100\%, 125\% and 150\% of the defined bandwidth choice.
 #'
 #' @param fpcaObj An FPCA class object returned by FPCA().
 #' @param openNewDev A logical specifying if a new device should be opened - default: FALSE
+#' @param addLegend A logical specifying whether to add legend.
+#'
+#' @details The black, red, and green curves stand for the first, second, and third eigenfunctions, respectively.
 #'
 #' @examples
 #' set.seed(1)
@@ -18,9 +21,14 @@
 #' CreateDiagnosticsPlot(res1)
 #' @export
 
-CreateDiagnosticsPlot <-function(fpcaObj, openNewDev = FALSE){ 
+CreateDiagnosticsPlot <-function(fpcaObj, openNewDev = FALSE, addLegend=TRUE){ 
   
-  oldPar <- par()
+  oldPar <- par(no.readonly=TRUE)
+  if (any(oldPar[['pin']] < 0)) {
+    stop('Figure margin too large')
+  } else {
+    on.exit(par(oldPar))
+  }
   
   if(class(fpcaObj) != 'FPCA'){
     stop("Input class is incorrect; CreateDiagnosticsPlot() is only usable from FPCA objects.")
@@ -39,7 +47,7 @@ CreateDiagnosticsPlot <-function(fpcaObj, openNewDev = FALSE){
     par(mfrow=c(2,2))
     
     ## Make Design plot
-    CreateDesignPlot(t)
+    CreateDesignPlot(t, addLegend=addLegend)
     
     ## Make Mean trajectory plot
     plot( workGrid, mu, type='l', xlab='s',ylab='', main='Mean Function', panel.first = grid())   
@@ -55,11 +63,23 @@ CreateDiagnosticsPlot <-function(fpcaObj, openNewDev = FALSE){
     } else {
       k = K;
     } # paste(c("First ", as.character(3), " eigenfunctions"),collapse= '')
+    if (addLegend) {
+      ## pin does not work for Rstudio
+      # newpin <- par()[['pin']]
+      # newpin[1] <- newpin[1] * 0.8
+      # par(pin = newpin)
+      newplt <- par()[['plt']]
+      newplt[2] <- newplt[1] + 0.85 * (newplt[2] - newplt[1])
+      par(plt=newplt)
+    }
     matplot(workGrid, fpcaObj$phi[,1:k], type='n', 
             main=paste(collapse='', c("First ", as.character(k), " Eigenfunctions"))  , xlab='s', ylab='') 
     grid()
     matlines(workGrid, fpcaObj$phi[,1:k] ) 
-    legend("topright", col=1:k, lty=1:k, legend = do.call(expression, sapply(1:k, function(u) return(bquote(phi[ .(u) ])))), border = FALSE, fill=FALSE)
+    pars <- par()
+    if (addLegend) {
+      legend("right", col=1:k, lty=1:k, legend = do.call(expression, sapply(1:k, function(u) return(bquote(phi[ .(u) ])))), border = FALSE,  xpd=TRUE, inset=-pars[['mai']][4] / pars[['pin']][1] * 1.8, seg.len=1.2)
+    }
     # } else {
     #   
     #   derOptns <- SetDerOptions(fpcaObj,derOptns = derOptns) 
@@ -93,6 +113,5 @@ CreateDiagnosticsPlot <-function(fpcaObj, openNewDev = FALSE){
     #   grid(); legend('topleft', lty = 1, col=1:5, legend = apply( rbind( rep('bw: ',5), bwMultipliers * bw), 2, paste, collapse = ''))
     
   }
-  suppressWarnings(par(oldPar))
 }
 

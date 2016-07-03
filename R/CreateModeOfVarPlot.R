@@ -9,9 +9,8 @@
 #' @param fpcaObj An FPCA class object returned by FPCA(). 
 #' @param k The k-th mode of variation to plot (default k = 1) 
 #' @param rainbowPlot Indicator to create a rainbow-plot instead of a shaded plot (default: FALSE)
-#' @param colSpectrum Character vector to be use as input in the 'colorRampPalette' function defining the outliers colours (default: c("blue","red", "green"), relavant only for rainbowPlot=TRUE) }
-
-#' @param ... Additional arguments for the 'plot' function.
+#' @param colSpectrum Character vector to be use as input in the 'colorRampPalette' function defining the outliers colours (default: c("blue","red", "green"), relavant only for rainbowPlot=TRUE)
+#' @param ... Additional arguments for the \code{plot} function.
 #'
 #' @examples
 #' set.seed(1)

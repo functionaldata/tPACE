@@ -4,7 +4,8 @@
 \alias{CreateModeOfVarPlot}
 \title{Functional Principal Component Analysis mode of variation plot}
 \usage{
-CreateModeOfVarPlot(fpcaObj, k = 1, rainbowPlot = FALSE, ...)
+CreateModeOfVarPlot(fpcaObj, k = 1, rainbowPlot = FALSE,
+  colSpectrum = NULL, ...)
 }
 \arguments{
 \item{fpcaObj}{An FPCA class object returned by FPCA().}
@@ -13,7 +14,9 @@ CreateModeOfVarPlot(fpcaObj, k = 1, rainbowPlot = FALSE, ...)
 
 \item{rainbowPlot}{Indicator to create a rainbow-plot instead of a shaded plot (default: FALSE)}
 
-\item{...}{Additional arguments for the 'plot' function.}
+\item{colSpectrum}{Character vector to be use as input in the 'colorRampPalette' function defining the outliers colours (default: c("blue","red", "green"), relavant only for rainbowPlot=TRUE)}
+
+\item{...}{Additional arguments for the \code{plot} function.}
 }
 \description{
 Create the k-th mode of variation plot around the mean. The red-line is

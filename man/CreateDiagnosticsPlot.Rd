@@ -4,17 +4,22 @@
 \alias{CreateDiagnosticsPlot}
 \title{Functional Principal Component Analysis Diagnostics plot}
 \usage{
-CreateDiagnosticsPlot(fpcaObj, openNewDev = FALSE)
+CreateDiagnosticsPlot(fpcaObj, openNewDev = FALSE, addLegend = TRUE)
 }
 \arguments{
 \item{fpcaObj}{An FPCA class object returned by FPCA().}
 
 \item{openNewDev}{A logical specifying if a new device should be opened - default: FALSE}
+
+\item{addLegend}{A logical specifying whether to add legend.}
 }
 \description{
 This function by default creates standard diagnostics for a functional sample. It prints the design plot, mean function, scree-plot
 and first three eigenfunctions of a sample. If provided with a derivative options object (?FPCAder) it will return the 
-differentiated mean and first two principal modes of variations for 50%, 75%, 100%, 125% and 150% of the defined bandwidth choice.
+differentiated mean and first two principal modes of variations for 50\%, 75\%, 100\%, 125\% and 150\% of the defined bandwidth choice.
+}
+\details{
+The black, red, and green curves stand for the first, second, and third eigenfunctions, respectively.
 }
 \examples{
 set.seed(1)
