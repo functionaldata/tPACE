@@ -8,7 +8,7 @@
 #' @param Lt A list of \emph{n} vectors containing the observation time points for each individual corresponding to Ly - default: NULL
 #'
 #' @return A list including the following two fields:
-#' \item{k}{An integer indicating the selected number of components based on given criterion.}
+#' \item{K}{An integer indicating the selected number of components based on given criterion.}
 #' \item{criterion}{The calculated criterion value for the selected number of components, i.e. FVE, AIC or BIC value, NULL for fixedK criterion.}
 #'
 #' @export
@@ -50,25 +50,25 @@ SelectK = function(fpcaObj, criterion = 'AIC', FVEthreshold = NULL, Ly = NULL, L
       IC[i] = logliktemp + C * i
       if(i > 1 && IC[i] > IC[i-1]){
         # cease whenever AIC/BIC stops decreasing
-        return(list(k = i-1, criterion = IC[i-1]))
+        return(list(K = i-1, criterion = IC[i-1]))
       }
       if(i == length(fpcaObj$lambda)){
-        return(list(k = i, criterion = IC[i]))
+        return(list(K = i, criterion = IC[i]))
       }
     }
     #if(criterion != 'FVE'){
-    #  return(k = length(fpcaObj$lambda))
+    #  return(K = length(fpcaObj$lambda))
     #}
   } else if(criterion == 'FVE'){
     # select FVE based on cumFVE in fpcaObj and specified FVEthreshold
     if(is.null(FVEthreshold)){stop('Need to specify FVEthreshold to choose number of components via FVE.')}
     cumFVE = fpcaObj$cumFVE
     buff <- .Machine[['double.eps']] * 100
-    return( list(k = min( which(cumFVE > FVEthreshold * 100 - buff) ), criterion = cumFVE[min(which(cumFVE > FVEthreshold * 100 - buff))]))
+    return( list(K = min( which(cumFVE > FVEthreshold * 100 - buff) ), criterion = cumFVE[min(which(cumFVE > FVEthreshold * 100 - buff))]))
   } else { # fixed K is specified.
     if(criterion > length(fpcaObj$lambda)){
       stop("Specified number of components is more than available components.")
     }
-    return(list(k = criterion, criterion = NULL))
+    return(list(K = criterion, criterion = NULL))
   }
 }

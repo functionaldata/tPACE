@@ -1,6 +1,6 @@
-# k: input denoting number of components used
+# K: input denoting number of components used
 # returns -2 times log-likelihood
-GetLogLik = function(fpcaObj, k, Ly = NULL, Lt = NULL){
+GetLogLik = function(fpcaObj, K, Ly = NULL, Lt = NULL){
   if(fpcaObj$optns$lean == TRUE && (is.null(Ly) || is.null(Lt))){
     stop("Option lean is TRUE, need input data Ly and measurement time list Lt to calculate log-likelihood.")
   }
@@ -8,7 +8,7 @@ GetLogLik = function(fpcaObj, k, Ly = NULL, Lt = NULL){
     Ly <- fpcaObj$inputData$Ly
     Lt <- fpcaObj$inputData$Lt
   }
-  lambda = fpcaObj$lambda[1:k]
+  lambda = fpcaObj$lambda[1:K]
   sigma2 = fpcaObj$sigma2
   if(is.null(sigma2) && fpcaObj$optns$dataType == "Dense"){
     ymat = matrix(unlist(Ly),nrow=length(Ly), byrow=TRUE)
@@ -17,17 +17,17 @@ GetLogLik = function(fpcaObj, k, Ly = NULL, Lt = NULL){
     sigma2 = ConvertSupport(fromGrid = fpcaObj$obsGrid, toGrid = fpcaObj$workGrid, mu = sigma2)
   }
   logLik = 0
-  phi = fpcaObj$phi[,1:k, drop=FALSE]
+  phi = fpcaObj$phi[,1:K, drop=FALSE]
 
   if(fpcaObj$optns$dataType %in% c('Dense'
     #, 'DenseWithMV' # need extra imputation step
     )){
-  	if(k == 1){
-  	  Sigma_y = phi %*% (lambda*diag(k)) %*% t(phi) + sigma2*diag(rep(1,nrow(phi)))
+  	if(K == 1){
+  	  Sigma_y = phi %*% (lambda*diag(K)) %*% t(phi) + sigma2*diag(rep(1,nrow(phi)))
   	} else {
       Sigma_y = phi %*% diag(lambda) %*% t(phi) + sigma2*diag(rep(1,nrow(phi)))
     }
-    detSigma_y = prod(c(lambda,rep(0,nrow(phi)-k))[1:length(lambda)]+sigma2)
+    detSigma_y = prod(c(lambda,rep(0,nrow(phi)-K))[1:length(lambda)]+sigma2)
     #detSigma_y = det(Sigma_y)
     if(detSigma_y == 0){
       logLik = NULL
@@ -55,8 +55,8 @@ GetLogLik = function(fpcaObj, k, Ly = NULL, Lt = NULL){
       }
       mu_i = ConvertSupport(fromGrid = fpcaObj$workGrid, toGrid = Lt[[i]],
         mu = fpcaObj$mu)
-      if(k == 1){
-        Sigma_yi = phi_i %*% (lambda*diag(k)) %*% t(phi_i) + sigma2 * diag(rep(1,length(mu_i)))
+      if(K == 1){
+        Sigma_yi = phi_i %*% (lambda*diag(K)) %*% t(phi_i) + sigma2 * diag(rep(1,length(mu_i)))
       } else{
         Sigma_yi = phi_i %*% diag(lambda) %*% t(phi_i) + sigma2 * diag(rep(1,length(mu_i)))
       }

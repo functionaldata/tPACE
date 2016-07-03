@@ -1,16 +1,16 @@
-
-  set.seed(222)
-  n <- 201
-  pts <- seq(0, 1, by=0.015)
-  sampWienerD <- Wiener(n, pts)
-  sampWiener <- Sparsify(sampWienerD, pts, 10)
-  res <- FPCA(sampWiener$Ly, sampWiener$Lt )
+# devtools::load_all()
+set.seed(222)
+n <- 201
+pts <- seq(0, 1, by=0.015)
+sampWienerD <- Wiener(n, pts)
+sampWiener <- Sparsify(sampWienerD, pts, 10)
+res <- FPCA(sampWiener$Ly, sampWiener$Lt )
   
 test_that("fitted with QUO and EIG give similar results", {  
   
   fittedY <- fitted(res)
-  fittedYe <- fitted(res, k=4, derOptns = list(p=1, method='EIG'))
-  fittedYq <- fitted(res, k=4, derOptns = list(p=1, method='QUO'))
+  fittedYe <- fitted(res, K=4, derOptns = list(p=1, method='EIG'))
+  fittedYq <- fitted(res, K=4, derOptns = list(p=1, method='QUO'))
   
   if(1==3){
     par(mfrow=c(1,3))
@@ -19,6 +19,7 @@ test_that("fitted with QUO and EIG give similar results", {
     matplot(t(fittedYq[1:3,]),t='l')
   }
   
+  expect_warning(fitted(res, k=4, derOptns = list(p=1, method='EIG')), "specifying 'k' is deprecated. Use 'K' instead!")
   expect_equal( fittedYe, fittedYq, tolerance =0.01, scale= 1 ) #absolute difference
   
 })

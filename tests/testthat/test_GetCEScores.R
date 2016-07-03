@@ -132,8 +132,8 @@ test_that('Noiseless example', {
   set.seed(1)
   n <- 100
   M <- 50
-  k <- 5
-  samp <- MakeGPFunctionalData(n, M, k=k, lambda=2^(-seq(1, k)))
+  K <- 5
+  samp <- MakeGPFunctionalData(n, M, K=K, lambda=2^(-seq(1, K)))
   # matplot(t(samp$Y[1:10, ])) 
   sampList <- MakeFPCAInputs(tVec=samp$pts, yVec=samp$Y)
   resIN <- FPCA(sampList$Ly, sampList$Lt, list(methodXi='IN', lean=TRUE, error=FALSE, rho='no'))

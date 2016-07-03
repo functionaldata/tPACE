@@ -3,7 +3,7 @@
 #' @param fpcaObj Returned object from FPCA().
 #' @param subset A vector of indices or a logical vector for subsetting the
 #' observations.
-#' @param k The number of components to reconstruct the fitted sample paths.
+#' @param K The number of components to reconstruct the fitted sample paths.
 #' @param inputData A list of length 2 containing the sparse/dense
 #' (unsupported yet) observations. \code{inputData} needs to contain two
 #' fields: \code{Lt} for a list of time points and \code{Ly} for a list of
@@ -23,11 +23,17 @@
 #' CreatePathPlot(res, subset=1:5)
 #' @export
 
-CreatePathPlot = function(fpcaObj, subset, k=NULL, inputData=fpcaObj[['inputData']], 
+CreatePathPlot = function(fpcaObj, subset, K=NULL, inputData=fpcaObj[['inputData']], 
                           showObs=!is.null(inputData),  
                           derOptns = NULL, ...){
   
   n <- dim(fpcaObj[['xiEst']])[1]
+  inargs <- list(...)
+  if (!is.null(inargs[['k']])) {
+    K <- inargs[['k']]
+    inargs[['k']] <- NULL
+    warning("specifying 'k' is deprecated. Use 'K' instead!")
+  }
   
   if (!is.null(derOptns[['p']]) && derOptns[['p']] >= 1 && missing(showObs)) {
   # makes no sense to show original observations with derivatives.
@@ -52,11 +58,10 @@ CreatePathPlot = function(fpcaObj, subset, k=NULL, inputData=fpcaObj[['inputData
   }
   # browser()
   workGrid <- fpcaObj[['workGrid']]
-  fit <- fitted(fpcaObj, k=k, derOptns = derOptns)[subset, , drop=FALSE]
+  fit <- fitted(fpcaObj, K=K, derOptns = derOptns)[subset, , drop=FALSE]
   
   defaultColPalette = rep(palette(), ceiling(nrow(fit)/7))[1:nrow(fit)]
   args1 <- list( xlab= 's', ylab= ' ',col = defaultColPalette)    
-  inargs <- list(...)
   args1[names(inargs)] <- inargs
   
   #matplot(obst, obsy, type='p',...)

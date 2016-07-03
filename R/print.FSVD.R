@@ -20,7 +20,7 @@ print.FSVD <- function(x, ...){
   }
     
   cat("Functional Singular Value Decomposition object for", tolower(thisDataType), "data.\n\n")
-  cat("The optimal number of components selected is:", length(obj$sValues),"and \nthe first k (<=3) singular values are: ");
+  cat("The optimal number of components selected is:", length(obj$sValues),"and \nthe first K (<=3) singular values are: ");
   if ( length(obj$sValues) < 4) { 
     cat( round(obj$sValues,3) ,"\n");
   } else {
