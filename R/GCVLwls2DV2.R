@@ -129,7 +129,7 @@ GCVLwls2DV2 <- function(obsGrid, regGrid, ngrid=NULL, dataType=rcov$dataType, er
       q <- (newr[ind] / h0) ^ (1/9)
       bw <- q ^ (0:9) * h0
       if (verbose) {
-        cat('New bwuserCov candidates:\n')
+        message('New bwuserCov candidates:\n')
         print(bw)
       }
       iter <- iter + 1

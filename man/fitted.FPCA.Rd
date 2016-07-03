@@ -4,12 +4,12 @@
 \alias{fitted.FPCA}
 \title{Fitted functional sample from FPCA object}
 \usage{
-\method{fitted}{FPCA}(object, k = NULL, derOptns = list(), ...)
+\method{fitted}{FPCA}(object, K = NULL, derOptns = list(), ...)
 }
 \arguments{
 \item{object}{A object of class FPCA returned by the function FPCA().}
 
-\item{k}{The integer number of the first k components used for the representation. (default: length(fpcaObj$lambda ))}
+\item{K}{The integer number of the first K components used for the representation. (default: length(fpcaObj$lambda ))}
 
 \item{derOptns}{A list of options to control the derivation parameters specified by \code{list(name=value)}. See `Details'. (default = NULL)}
 

@@ -15,7 +15,7 @@ GetBinNum = function(n, m, dataType, verbose ){
       str = 'Maximum of ni';
     }
     if (verbose){
-      cat(str, 'is no more than 20! No binning is performed!\n');    
+      message(paste0(str, 'is no more than 20! No binning is performed!\n')) 
     }
     return(NULL)
   }
@@ -31,14 +31,14 @@ GetBinNum = function(n, m, dataType, verbose ){
       numBin = ceiling(mstar);
     } else {
       if (verbose){
-        cat('No binning is needed!\n');    
+        message('No binning is needed!\n');    
       }
       return(NULL)
     }
   }
   
   if( verbose && is.null(numBin) ) {   
-    cat('No binning is needed!\n');
+    message('No binning is needed!\n');
   }
 
   return(numBin)

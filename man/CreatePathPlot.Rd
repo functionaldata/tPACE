@@ -4,7 +4,7 @@
 \alias{CreatePathPlot}
 \title{Create the fitted sample path plot based on the results from FPCA().}
 \usage{
-CreatePathPlot(fpcaObj, subset, k = NULL,
+CreatePathPlot(fpcaObj, subset, K = NULL,
   inputData = fpcaObj[["inputData"]], showObs = !is.null(inputData),
   derOptns = NULL, ...)
 }
@@ -14,7 +14,7 @@ CreatePathPlot(fpcaObj, subset, k = NULL,
 \item{subset}{A vector of indices or a logical vector for subsetting the
 observations.}
 
-\item{k}{The number of components to reconstruct the fitted sample paths.}
+\item{K}{The number of components to reconstruct the fitted sample paths.}
 
 \item{inputData}{A list of length 2 containing the sparse/dense
 (unsupported yet) observations. \code{inputData} needs to contain two

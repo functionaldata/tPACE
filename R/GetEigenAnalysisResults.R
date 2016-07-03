@@ -21,7 +21,7 @@ GetEigenAnalysisResults <- function(smoothCov, regGrid, optns, muWork = NULL) {
 
   if (maxK < length(d)) {
     if (optns[['verbose']]) {
-      cat(sprintf("At most %d number of PC can be selected, thresholded by `maxK` = %d. \n", length(d), maxK)) 
+      message(sprintf("At most %d number of PC can be selected, thresholded by `maxK` = %d. \n", length(d), maxK)) 
     }
     
     d <- d[1:maxK]

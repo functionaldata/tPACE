@@ -112,7 +112,7 @@ SetOptions = function(y, t, optns){
   }
   methodNames = c("IN", "CE");
   if(!is.null(methodXi) && !(methodXi %in% methodNames)){
-    cat(paste('methodXi', methodXi, 'is unrecognizable! Reset to automatic selection now!\n')); 
+    message(paste('methodXi', methodXi, 'is unrecognizable! Reset to automatic selection now!\n')); 
     methodXi = NULL; 
   }   
   if(is.null(methodXi)){ # method to estimate the PC scores
@@ -133,7 +133,7 @@ SetOptions = function(y, t, optns){
    }
    if(shrink == TRUE && (error != TRUE || methodXi != "IN")){ 
      # Check for valid shrinkage choice
-     cat('shrinkage method only has effects when methodXi = "IN" and error = TRUE! Reset to shrink = FALSE now!\n');
+     message('shrinkage method only has effects when methodXi = "IN" and error = TRUE! Reset to shrink = FALSE now!\n');
      shrink = FALSE      
    }
   if(is.null(kernel)){ # smoothing kernel choice
@@ -145,7 +145,7 @@ SetOptions = function(y, t, optns){
   }
   kernNames = c("rect", "gauss", "epan", "gausvar", "quar");
   if(!(kernel %in% kernNames)){ # Check suitability of kernel
-    cat(paste('kernel', kernel, 'is unrecognizable! Reset to automatic selection now!\n')); 
+    message(paste('kernel', kernel, 'is unrecognizable! Reset to automatic selection now!\n')); 
     kernel = NULL; 
   }  
   if(is.null(kernel)){ # smoothing kernel choice
@@ -159,16 +159,16 @@ SetOptions = function(y, t, optns){
     yname = as.character(substitute(y))      
   }
   if(maxK > (nRegGrid-2)){ # check if a reasonable number of eigenfunctions is requested
-    cat(paste("maxK can only be less than or equal to", nRegGrid-2,"! Reset to be", nRegGrid-2, "now!\n"));
+    message(paste("maxK can only be less than or equal to", nRegGrid-2,"! Reset to be", nRegGrid-2, "now!\n"));
     maxK = nRegGrid -2;
   }
   if(is.numeric(methodSelectK)){
     FVEthreshold <- 1 # disable FVE selection.
     if(methodSelectK > (nRegGrid-2)){ # check if a reasonable number of eigenfunctions is requested
-      cat(paste("maxK can only be less than or equal to", nRegGrid-2,"! Reset to be", nRegGrid-2, "now!\n"));
+      message(paste("maxK can only be less than or equal to", nRegGrid-2,"! Reset to be", nRegGrid-2, "now!\n"));
       maxK = nRegGrid -2;
     }else if(methodSelectK <= 0){ # check if a positive number of eigenfunctions is requested
-      cat("methodSelectK must be a positive integer! Reset to BIC now!\n");
+      message("methodSelectK must be a positive integer! Reset to BIC now!\n");
       methodSelectK = "BIC"
       FVEthreshold = 0.95;
     }
@@ -200,12 +200,12 @@ SetOptions = function(y, t, optns){
     rotationCut <- c(0.25,.75)
   } 
   # if(error == FALSE && (methodSelectK == "AIC" || methodSelectK == "BIC")){ # Check suitability of information criterion
-  #  cat('When assume no measurement error, cannot use "AIC" or "BIC". Reset to "BIC" now!\n')
+  #  message(paste0('When assume no measurement error, cannot use "AIC" or "BIC". Reset to "BIC" now!\n'))
   #  methodSelectK = "BIC" 
   #}
   if(!is.null(numBins)){ 
     if(numBins < 10){   # Check suitability of number of bins
-      cat("Number of bins must be at least +10!!\n");
+      message("Number of bins must be at least +10!!\n");
       numBins = NULL;
     }
   }

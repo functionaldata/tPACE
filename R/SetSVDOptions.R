@@ -62,9 +62,9 @@ SetSVDOptions <- function(Ly1, Lt1, Ly2, Lt2, SVDoptns){
   if(is.numeric(methodSelectK)){
     FVEthreshold <- 1 # disable FVE selection.
     if(methodSelectK > maxK){ # check if a reasonable number of singular functions is requested
-      cat(paste("maxK can only be less than or equal to", maxK,"! Reset to be", maxK, "now!\n"));
+      message(paste("maxK can only be less than or equal to", maxK,"! Reset to be", maxK, "now!\n"));
     }else if(methodSelectK <= 0 || as.integer(methodSelectK)!=methodSelectK){ # check if a positive number of eigenfunctions is requested
-      cat("methodSelectK must be a positive integer! Reset to FVE now!\n");
+      message("methodSelectK must be a positive integer! Reset to FVE now!\n");
       methodSelectK = "FVE"
       FVEthreshold = 0.95;
     }

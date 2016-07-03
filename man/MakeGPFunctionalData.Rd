@@ -4,8 +4,8 @@
 \alias{MakeGPFunctionalData}
 \title{Makke Gaussian Process Dense Functional Data sample}
 \usage{
-MakeGPFunctionalData(N, M = 100, mu = rep(0, M), k = 2, lambda = rep(1,
-  k), basisType = "cos")
+MakeGPFunctionalData(N, M = 100, mu = rep(0, M), K = 2, lambda = rep(1,
+  K), basisType = "cos")
 }
 \arguments{
 \item{N}{number of samples to generate}
@@ -14,9 +14,9 @@ MakeGPFunctionalData(N, M = 100, mu = rep(0, M), k = 2, lambda = rep(1,
 
 \item{mu}{vector of size M specifying the mean (default: rep(0,M))}
 
-\item{k}{scalar specifying the number of basis to be used (default: 2)}
+\item{K}{scalar specifying the number of basis to be used (default: 2)}
 
-\item{lambda}{vector of size K specifying the variance of each components (default: rep(1,k))}
+\item{lambda}{vector of size K specifying the variance of each components (default: rep(1,K))}
 
 \item{basisType}{string specifiying the basis type used; possible options are: 'sin', 'cos' and 'fourier' (default: 'cos') (See code of 'CreateBasis' for implementation details.)}
 }
