@@ -14,5 +14,11 @@ addons:
       - tcl-dev
       - tk-dev
       - texlive-latex-extra
+
+r_github_packages:
+  - jimhester/covr
       
 warnings_are_errors: false
+
+after_success:
+  - Rscript -e 'covr::coveralls()'

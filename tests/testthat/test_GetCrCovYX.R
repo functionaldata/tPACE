@@ -223,6 +223,6 @@ test_that('Sparse Wiener process has cov(s,t) = min(s,t)', {
 
   tmp <- GetCrCovYX(bw, bw, Xsp, tAll, rep(0, nGridIn), Ysp, tAll, rep(0, nGridIn))
   #tmpGCV <- GetCrCovYX(NULL, NULL, Xsp, tAll, rep(0, nGridIn), Ysp, tAll, rep(0, nGridIn)) # Too costly test
-  expect_equal(diag(tmp$smoothedCC), as.numeric(T), tolerance=0.15)
+  expect_equal(diag(tmp$smoothedCC), as.numeric(T), tolerance=0.1, scale=1)
   #expect_equal(diag(tmpGCV$smoothedCC), as.numeric(T), tolerance=0.15)
 })

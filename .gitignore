@@ -50,6 +50,8 @@ symbols.rds
 *.bak
 *.o
 *.so
+*.gcda
+*.gcno
 #RcppExports.R 
 #RcppExports.cpp
 tmp.R 
