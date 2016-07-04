@@ -63,3 +63,10 @@ vignettes/fdapaceVignette-concordance.tex
 vignettes/fdapaceVignette.bbl
 vignettes/fdapaceVignette.tex
 vignettes/framed.sty
+vignettes/fdapaceVignetteKnitr-concordance.tex
+vignettes/fdapaceVignetteKnitr.tex
+vignettes/fdapaceVignetteKnitr.R
+vignettes/fdapaceVignetteKnitr.bbl
+
+# inst folder
+inst/doc
