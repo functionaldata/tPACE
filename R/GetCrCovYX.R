@@ -59,12 +59,13 @@ GetCrCovYX <- function(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL, Ly2
   # Get the Raw Cross-covariance    
   rawCC = GetRawCrCovFuncFunc(Ly1 = Ly1, Lt1 = Lt1, Ymu1 = Ymu1, Ly2 = Ly2, Lt2 = Lt2, Ymu2 = Ymu2)
   # Use a heuristic to decide when to bin
-  if (sum(duplicated(rawCC$tpairn)) >= 0.2 * length(rawCC$rawCCov)) {
+  if (!useGAM && sum(duplicated(rawCC$tpairn)) >= 0.2 * length(rawCC$rawCCov)) {
     # message('Binning rawCC')
     rawCC <- BinRawCov(rawCC)
   } else {
     # rename the fields to be the same as the binned rawCC
-    names(rawCC) <- c(rawCCov='meanVals', tpairn='tPairs')[names(rawCC)]
+    names(rawCC)[names(rawCC) == 'rawCCov'] <- 'meanVals'
+    names(rawCC)[names(rawCC) == 'tpairn'] <- 'tPairs'
     rawCC$count <- rep(1, length(rawCC$meanVals))
   }
   
@@ -83,7 +84,7 @@ GetCrCovYX <- function(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL, Ly2
   workGrid12 = matrix(c(workGrid1, workGrid2),ncol= 2)
   
   if (useGAM == TRUE){ 
-    stop('Cannot be used on binned rawCC')
+    # stop('Cannot be used on binned rawCC') # we cannot use binning for useGAM
     Qdata = data.frame(x =  rawCC$tPairs[,1], y = rawCC$tPairs[,2], z = rawCC$meanVals, group = rawCC$IDs  )
     # I comparsed with 're', ds' and 'gp' too, and 'tp' seems to have a slight edge for what we want
     # myGAM = mgcv::gamm( z ~ s(x,y, bs =c('tp','tp')), random=list(group=~1) , data= Qdata)$gam
