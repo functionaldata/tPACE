@@ -1,3 +1,4 @@
+# devtools::load_all()
 library(testthat)
 #source('GetRawCrCovFuncFunc.R')
 
@@ -53,3 +54,17 @@ test_that("basic R output matche MATLAB output for different means", {
   expect_equal( FF$rawCCov, c( -20, -40, 20, 40, 60, 120, 0, 0, 0, 0, 0, 154, -22, -33, -44, -55, 112, -16, -24, -32, -40, 0, 0, -10, -32))
 })
 
+test_that('Binned rawCC is the same as unbinned', {
+  Ly1 <- list(c(5,0,3),c(1,4,8), c(1,2))
+  Lt1 <- list(c(1,2,3),c(1,3,8), c(1,2))
+  Ymu1 <- c(1,4,15,16)
+  Ly2 <- list(c(1,5),c(1:5), c(11, 31))
+  Lt2 <- list(c(1,2),c(16:20), c(1,2))
+  Ymu2 <- c(6,15,15,0,0,0,0)
+  FF <- GetRawCrCovFuncFunc(Ly1, Lt1, Ymu1, Ly2, Lt2, Ymu2)
+  FFbin <- BinRawCov(FF)
+
+  expect_equal(weighted.mean(FFbin$meanVals, FFbin$count), mean(FF$rawCCov))
+  expect_equal(sort(unique(FFbin$tPairs[, 1])), sort(unique(FF$tpairn[, 1])))
+  expect_equal(sort(unique(FFbin$tPairs[, 2])), sort(unique(FF$tpairn[, 2])))
+})
