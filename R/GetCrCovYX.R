@@ -73,8 +73,14 @@ GetCrCovYX <- function(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL, Ly2
   
   if (rmDiag) {
     diagInd <- rawCC$tPairs[, 1] == rawCC$tPairs[, 2]
+    rawCC$tDiag <- rawCC$tPairs[diagInd, , drop=FALSE]
+    rawCC$diagMeans <- rawCC$meanVals[diagInd]
+    rawCC$diagCount <- rawCC$count[diagInd]
+    rawCC$diagRSS <- rawCC$RSS[diagInd]
     rawCC$tPairs <- rawCC$tPairs[!diagInd, , drop=FALSE]
     rawCC$meanVals <- rawCC$meanVals[!diagInd]
+    rawCC$count <- rawCC$count[!diagInd]
+    rawCC$RSS <- rawCC$RSS[!diagInd]
   }
   
   # Calculate the observation and the working grids

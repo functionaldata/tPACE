@@ -1,7 +1,7 @@
 Current version
 =============
 Changes:
-`K` is used for specifying the number of components in functions such as SelectK, fitted, etc, instead of `k`.
+`K` is used for specifying the number of components in functions such as SelectK, fitted, CreatePathPlot, CreateFuncBoxPlot, etc, instead of `k`.
 
 fdapace v0.2.0 (Release date: 17-Jun-2016)
 ==============

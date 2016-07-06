@@ -7,6 +7,7 @@
 #' @param K The integer number of the first K components used for the representation. (default: length(fpcaObj$lambda ))
 #' @param derOptns A list of options to control the derivation parameters specified by \code{list(name=value)}. See `Details'. (default = NULL)
 #'
+#' @return An \code{n} by \code{length(workGrid)} matrix, each row of which contains a sample.
 #' @details Available derivation control options are 
 #' \describe{
 #' \item{p}{The order of the derivatives returned (default: 0, max: 2)}

@@ -5,12 +5,24 @@ CPPlwls1d <- function(bw, kernel_type, win, xin, yin, xout, npoly = 1L, nder = 0
     .Call('fdapace_CPPlwls1d', PACKAGE = 'fdapace', bw, kernel_type, win, xin, yin, xout, npoly, nder)
 }
 
+cumtrapzRcpp <- function(X, Y) {
+    .Call('fdapace_cumtrapzRcpp', PACKAGE = 'fdapace', X, Y)
+}
+
+dropZeroElementsXYWin <- function(win, xin, yin) {
+    .Call('fdapace_dropZeroElementsXYWin', PACKAGE = 'fdapace', win, xin, yin)
+}
+
 GetIndCEScoresCPP <- function(yVec, muVec, lamVec, phiMat, SigmaYi) {
     .Call('fdapace_GetIndCEScoresCPP', PACKAGE = 'fdapace', yVec, muVec, lamVec, phiMat, SigmaYi)
 }
 
 GetIndCEScoresCPPnewInd <- function(yVec, muVec, lamVec, phiMat, SigmaYi, newPhi, newMu) {
     .Call('fdapace_GetIndCEScoresCPPnewInd', PACKAGE = 'fdapace', yVec, muVec, lamVec, phiMat, SigmaYi, newPhi, newMu)
+}
+
+interp2lin <- function(xin, yin, zin, xou, you) {
+    .Call('fdapace_interp2lin', PACKAGE = 'fdapace', xin, yin, zin, xou, you)
 }
 
 RCPPmean <- function(X) {
@@ -39,18 +51,6 @@ RmullwlskUniversal <- function(bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid,
 
 Rrotatedmullwlsk <- function(bw, kernel_type, tPairs, cxxn, win, xygrid, npoly, bwCheck) {
     .Call('fdapace_Rrotatedmullwlsk', PACKAGE = 'fdapace', bw, kernel_type, tPairs, cxxn, win, xygrid, npoly, bwCheck)
-}
-
-cumtrapzRcpp <- function(X, Y) {
-    .Call('fdapace_cumtrapzRcpp', PACKAGE = 'fdapace', X, Y)
-}
-
-dropZeroElementsXYWin <- function(win, xin, yin) {
-    .Call('fdapace_dropZeroElementsXYWin', PACKAGE = 'fdapace', win, xin, yin)
-}
-
-interp2lin <- function(xin, yin, zin, xou, you) {
-    .Call('fdapace_interp2lin', PACKAGE = 'fdapace', xin, yin, zin, xou, you)
 }
 
 trapzRcpp <- function(X, Y) {

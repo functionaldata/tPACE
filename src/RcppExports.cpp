@@ -24,6 +24,31 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// cumtrapzRcpp
+Rcpp::NumericVector cumtrapzRcpp(const Rcpp::NumericVector X, const Rcpp::NumericVector Y);
+RcppExport SEXP fdapace_cumtrapzRcpp(SEXP XSEXP, SEXP YSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector >::type X(XSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector >::type Y(YSEXP);
+    __result = Rcpp::wrap(cumtrapzRcpp(X, Y));
+    return __result;
+END_RCPP
+}
+// dropZeroElementsXYWin
+Eigen::MatrixXd dropZeroElementsXYWin(const Eigen::Map<Eigen::VectorXd>& win, const Eigen::Map<Eigen::VectorXd>& xin, const Eigen::Map<Eigen::VectorXd>& yin);
+RcppExport SEXP fdapace_dropZeroElementsXYWin(SEXP winSEXP, SEXP xinSEXP, SEXP yinSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type win(winSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type xin(xinSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type yin(yinSEXP);
+    __result = Rcpp::wrap(dropZeroElementsXYWin(win, xin, yin));
+    return __result;
+END_RCPP
+}
 // GetIndCEScoresCPP
 Rcpp::List GetIndCEScoresCPP(const Eigen::Map<Eigen::VectorXd>& yVec, const Eigen::Map<Eigen::VectorXd>& muVec, const Eigen::Map<Eigen::VectorXd>& lamVec, const Eigen::Map<Eigen::MatrixXd>& phiMat, const Eigen::Map<Eigen::MatrixXd>& SigmaYi);
 RcppExport SEXP fdapace_GetIndCEScoresCPP(SEXP yVecSEXP, SEXP muVecSEXP, SEXP lamVecSEXP, SEXP phiMatSEXP, SEXP SigmaYiSEXP) {
@@ -53,6 +78,21 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd>& >::type newPhi(newPhiSEXP);
     Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type newMu(newMuSEXP);
     __result = Rcpp::wrap(GetIndCEScoresCPPnewInd(yVec, muVec, lamVec, phiMat, SigmaYi, newPhi, newMu));
+    return __result;
+END_RCPP
+}
+// interp2lin
+Eigen::VectorXd interp2lin(const Eigen::Map<Eigen::VectorXd>& xin, const Eigen::Map<Eigen::VectorXd>& yin, const Eigen::Map<Eigen::VectorXd>& zin, const Eigen::Map<Eigen::VectorXd>& xou, const Eigen::Map<Eigen::VectorXd>& you);
+RcppExport SEXP fdapace_interp2lin(SEXP xinSEXP, SEXP yinSEXP, SEXP zinSEXP, SEXP xouSEXP, SEXP youSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type xin(xinSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type yin(yinSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type zin(zinSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type xou(xouSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type you(youSEXP);
+    __result = Rcpp::wrap(interp2lin(xin, yin, zin, xou, you));
     return __result;
 END_RCPP
 }
@@ -167,46 +207,6 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const unsigned int >::type npoly(npolySEXP);
     Rcpp::traits::input_parameter< const bool& >::type bwCheck(bwCheckSEXP);
     __result = Rcpp::wrap(Rrotatedmullwlsk(bw, kernel_type, tPairs, cxxn, win, xygrid, npoly, bwCheck));
-    return __result;
-END_RCPP
-}
-// cumtrapzRcpp
-Rcpp::NumericVector cumtrapzRcpp(const Rcpp::NumericVector X, const Rcpp::NumericVector Y);
-RcppExport SEXP fdapace_cumtrapzRcpp(SEXP XSEXP, SEXP YSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< const Rcpp::NumericVector >::type X(XSEXP);
-    Rcpp::traits::input_parameter< const Rcpp::NumericVector >::type Y(YSEXP);
-    __result = Rcpp::wrap(cumtrapzRcpp(X, Y));
-    return __result;
-END_RCPP
-}
-// dropZeroElementsXYWin
-Eigen::MatrixXd dropZeroElementsXYWin(const Eigen::Map<Eigen::VectorXd>& win, const Eigen::Map<Eigen::VectorXd>& xin, const Eigen::Map<Eigen::VectorXd>& yin);
-RcppExport SEXP fdapace_dropZeroElementsXYWin(SEXP winSEXP, SEXP xinSEXP, SEXP yinSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type win(winSEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type xin(xinSEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type yin(yinSEXP);
-    __result = Rcpp::wrap(dropZeroElementsXYWin(win, xin, yin));
-    return __result;
-END_RCPP
-}
-// interp2lin
-Eigen::VectorXd interp2lin(const Eigen::Map<Eigen::VectorXd>& xin, const Eigen::Map<Eigen::VectorXd>& yin, const Eigen::Map<Eigen::VectorXd>& zin, const Eigen::Map<Eigen::VectorXd>& xou, const Eigen::Map<Eigen::VectorXd>& you);
-RcppExport SEXP fdapace_interp2lin(SEXP xinSEXP, SEXP yinSEXP, SEXP zinSEXP, SEXP xouSEXP, SEXP youSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type xin(xinSEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type yin(yinSEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type zin(zinSEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type xou(xouSEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type you(youSEXP);
-    __result = Rcpp::wrap(interp2lin(xin, yin, zin, xou, you));
     return __result;
 END_RCPP
 }

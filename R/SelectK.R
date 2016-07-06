@@ -10,6 +10,7 @@
 #' @return A list including the following two fields:
 #' \item{K}{An integer indicating the selected number of components based on given criterion.}
 #' \item{criterion}{The calculated criterion value for the selected number of components, i.e. FVE, AIC or BIC value, NULL for fixedK criterion.}
+#' \item{k}{Same as \code{K} for compatibility. WARNING: This will be removed in the next iteration}
 #'
 #' @export
 
@@ -19,6 +20,9 @@ SelectK = function(fpcaObj, criterion = 'FVE', FVEthreshold = 0.95, Ly = NULL, L
   }
   if(is.null(criterion)){
     stop('Invalid selection criterion. Selection criterion must not be NULL!')
+  }
+  if (length(criterion) != 1) {
+    stop('The length of criterion needs to be 1')
   }
   if(!(criterion %in% c('FVE', 'AIC', 'BIC'))){
     if(is.numeric(criterion)){
@@ -50,10 +54,11 @@ SelectK = function(fpcaObj, criterion = 'FVE', FVEthreshold = 0.95, Ly = NULL, L
       IC[i] = logliktemp + C * i
       if(i > 1 && IC[i] > IC[i-1]){
         # cease whenever AIC/BIC stops decreasing
-        return(list(K = i-1, criterion = IC[i-1]))
-      }
-      if(i == length(fpcaObj$lambda)){
-        return(list(K = i, criterion = IC[i]))
+        K <- i-1
+        criterion <- IC[i-1]
+      } else if(i == length(fpcaObj$lambda)){
+        K <- i
+        criterion <- IC[i]
       }
     }
     #if(criterion != 'FVE'){
@@ -64,11 +69,18 @@ SelectK = function(fpcaObj, criterion = 'FVE', FVEthreshold = 0.95, Ly = NULL, L
     if(is.null(FVEthreshold)){stop('Need to specify FVEthreshold to choose number of components via FVE.')}
     cumFVE = fpcaObj$cumFVE
     buff <- .Machine[['double.eps']] * 100
-    return( list(K = min( which(cumFVE > FVEthreshold * 100 - buff) ), criterion = cumFVE[min(which(cumFVE > FVEthreshold * 100 - buff))]))
-  } else { # fixed K is specified.
+    K <- min( which(cumFVE > FVEthreshold * 100 - buff) )
+    criterion <- cumFVE[min(which(cumFVE > FVEthreshold * 100 - buff))]
+  } else if (is.numeric(criterion) && criterion > 0) { # fixed K is specified.
     if(criterion > length(fpcaObj$lambda)){
       stop("Specified number of components is more than available components.")
     }
-    return(list(K = criterion, criterion = NULL))
+    K <- criterion
+    criterion <- NULL
+  } else {
+    stop('Unknown criterion!')
   }
+  
+  # For compatibility reason, k is also returned.
+  return(list(K=K, criterion=criterion, k=K)) 
 }

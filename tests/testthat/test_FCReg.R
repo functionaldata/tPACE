@@ -2,6 +2,34 @@ library(MASS)
 library(testthat)
 # devtools::load_all()
 
+test_that('Simple dense case works', {
+  # X(t) = Y(t), and they are contaminated with errors.
+  # beta_0 = 0; beta_1 = t
+  set.seed(1)
+  n <- 100
+  p <- 20
+  sigma <- 1
+  pts <- seq(0, 1, length.out=p)
+  T <- 1 + pts * p
+  X <- Wiener(n, pts) + rnorm(n)
+  Y <- t(apply(X, 1, `*`, e2=pts))
+  Xn <- X + rnorm(n * p, sd=sigma)
+  Yn <- Y + rnorm(n * p, sd=sigma)
+  vars <- list(X=MakeFPCAInputs(tVec=T, yVec=Xn), 
+               Y=MakeFPCAInputs(tVec=T, yVec=Yn))
+  
+  bw <- 0.25 * diff(range(T))
+  kern <- 'epan'
+  
+  res <- FCReg(vars, bw, bw, T, kern, measurementError=FALSE)
+  resN <- FCReg(vars, bw, bw, T, kern, measurementError=TRUE)
+  # plot(pts, res$beta); abline(a=0, b=1)
+  # plot(pts, resN$beta); abline(a=0, b=1)
+  expect_equal(as.numeric(res$beta), pts, scale=1, tolerance=0.1)
+  expect_equal(as.numeric(resN$beta), pts, scale=1, tolerance=0.1)
+  # Assume noise is better than no noise
+  expect_lt(mean((as.numeric(resN$beta) - pts)^2), mean((as.numeric(res$beta) - pts)^2)) 
+})
 
 # Y(t) = \beta_0(t) + \beta_1(t) X_1(t) + \beta_2(t) X_2(t) + \beta_3 Z_3 + \beta_4 Z_4 + \epsilon
 # X_1(t) = \mu_{X_1}(t) + Z_1 \phi_1(t); X_2(t) = \mu_{X_2}(t) + Z_2 \phi_2(t);
@@ -117,6 +145,12 @@ withError1D <- FCReg(vars, bw,bw, outGrid, diag1D='cross')
 noError2D <- FCReg(vars, bw,bw, outGrid, measurementError=FALSE)
 noError1D <- FCReg(vars, bw, bw,outGrid, measurementError=FALSE, diag1D='all')
 
+# matplot(outGrid, t(withError2D$beta), 'l')
+# matplot(outGrid, t(noError2D$beta), 'l')
+# matplot(outGrid, t(noError1D$beta), 'l')
+
+expect_error(FCReg(vars, bw, bw, outGrid, measurementError=TRUE, diag1D='all'), "Cannot assume measurement error when diag1D == 'all'")
+
 # # Minimal eigenvalues sometimes smaller than 0.
 # minLambda <- sapply(seq_along(outGrid), function(i) {
   # min(eigen(noError1D[['cov']][i, i, 1:4, 1:4])[['values']])
@@ -173,43 +207,41 @@ test_that('subseting covariates is fine', {
   expect_equal(length(subVars[['Z_3']]), 1)
 })
 
-## Test based on previous implementation
+test_that('Test based on previous implementation: simple concurrent regression works fine', {
+  set.seed(123);  N = 1001;  M = 101;
+  # Define the continuum
+  s = seq(0,10,length.out = M)
+  # Define the mean and 2 eigencomponents
+  meanFunct <- function(s) 0.2*s + 2.0*exp(-(s-5)^2)
+  eigFunct1 <- function(s) +cos(2*s*pi/10) / sqrt(5)
+  eigFunct2 <- function(s) 1* -sin(2*s*pi/10) / sqrt(5)
+  # Create FPC scores
+  Ksi = matrix(rnorm(N*2), ncol=2);
+  Ksi = apply(Ksi, 2, scale)
+  Ksi = Ksi %*% diag(c(5,2))
+  # Create X_covariate
+  xTrue = Ksi %*% t(matrix(c(eigFunct1(s),eigFunct2(s)), ncol=2))
+  # Create beta_Func
+  betaFunc1 = c(2,2) %*%  t(matrix(c(eigFunct1(s),eigFunct2(s)), ncol=2))
+  z1 <- rnorm(N,sd=1)
+  # Create scalar dep. variable a
+  y = matrix(rep(0,N*M), ncol = M); 
+  yTrue = matrix(rep(0,N*M), ncol = M); 
+  for (i in 1:N) { 
+    y[i,] = rnorm(sd=1.99,0, n=M) + z1[i] * 2.5 +  0.2 * s +(xTrue[i,]) * t(betaFunc1); 
+    yTrue[i,] = rnorm(sd=0.0011,0, n=M) + z1[i] * 2.5 +  0.2 * s +(xTrue[i,]) * t(betaFunc1); 
+  }
+  sparsitySchedule = 1:16;
+  set.seed(1)
+  Yf <- Sparsify(y, s, sparsitySchedule)
+  set.seed(1)
+  Xf <- Sparsify(xTrue, s, sparsitySchedule)
 
-set.seed(123);  N = 1001;  M = 101;
-# Define the continuum
-s = seq(0,10,length.out = M)
-# Define the mean and 2 eigencomponents
-meanFunct <- function(s) 0.2*s + 2.0*exp(-(s-5)^2)
-eigFunct1 <- function(s) +cos(2*s*pi/10) / sqrt(5)
-eigFunct2 <- function(s) 1* -sin(2*s*pi/10) / sqrt(5)
-# Create FPC scores
-Ksi = matrix(rnorm(N*2), ncol=2);
-Ksi = apply(Ksi, 2, scale)
-Ksi = Ksi %*% diag(c(5,2))
-# Create X_covariate
-xTrue = Ksi %*% t(matrix(c(eigFunct1(s),eigFunct2(s)), ncol=2))
-# Create beta_Func
-betaFunc1 = c(2,2) %*%  t(matrix(c(eigFunct1(s),eigFunct2(s)), ncol=2))
-z1 <- rnorm(N,sd=1)
-# Create scalar dep. variable a
-y = matrix(rep(0,N*M), ncol = M); 
-yTrue = matrix(rep(0,N*M), ncol = M); 
-for (i in 1:N) { 
-  y[i,] = rnorm(sd=1.99,0, n=M) + z1[i] * 2.5 +  0.2 * s +(xTrue[i,]) * t(betaFunc1); 
-  yTrue[i,] = rnorm(sd=0.0011,0, n=M) + z1[i] * 2.5 +  0.2 * s +(xTrue[i,]) * t(betaFunc1); 
-}
-sparsitySchedule = 1:16;
-set.seed(1)
-Yf <- Sparsify(y, s, sparsitySchedule)
-set.seed(1)
-Xf <- Sparsify(xTrue, s, sparsitySchedule)
+  outGrid <- s
+  vars <- list(X = Xf, Z = z1, Y = Yf)
 
-outGrid <- s
-vars <- list(X = Xf, Z = z1, Y = Yf)
+  Q <- FCReg(vars, 0.5,0.5, outGrid, 'epan', measurementError=FALSE)
 
-Q <- FCReg(vars, 0.5,0.5, outGrid, 'epan', measurementError=FALSE)
-
-test_that('simple concurrent regression works fine', {
   expect_equal( 2.5, mean(Q$beta[2,]) , tol= 0.01 )
   expect_gt( cor( Q$beta0, 0.2*s), 0.95) # this should be change to beta0 at some point.
   expect_gt( cor(Q$beta[1,], as.vector(betaFunc1)), 0.99)

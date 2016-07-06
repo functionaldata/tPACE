@@ -15,6 +15,9 @@
 
 \item{...}{Additional arguments}
 }
+\value{
+An \code{n} by \code{length(workGrid)} matrix, each row of which contains a sample.
+}
 \description{
 Combine the zero-meaned fitted values and the interpolated mean to get the fitted values for the trajectories or the derivatives of these trajectories.
 Estimates are given on the work-grid, not on the observation grid. Use ConvertSupport to map the estimates to your desired domain.

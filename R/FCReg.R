@@ -1,6 +1,6 @@
 #' Functional Concurrent Regression by 2D smoothing method.
 #' 
-#' Functional concurrent regression with dense or sparse functional data for scalar or functional dependant variable. 
+#' Functional concurrent regression with dense or sparse functional data for scalar or functional dependent variable. 
 #' 
 #' @param vars A list of input functional/scaler covariates. Each field corresponds to a functional (a list) or scaler (a vector) covariate. The last entry is assumed to be the response if no entry is names 'Y'. If a field corresponds to a functional covariate, it should have two fields: 'Lt', a list of time points, and 'Ly', a list of function values.
 #' @param userBwMu A scalar with bandwidth used for smoothing the mean
@@ -15,6 +15,7 @@
 #'  and the last two correspond to the covariates and the response, i.e. (i, j, k, l) entry being Cov(X_k(t_i), X_l(t_j)) (default: FALSE)
 #' @param ...  Additional arguments 
 #' 
+#' @details If measurement error is assumed, the diagonal elements of the raw covariance will be removed. This could result in highly unstable estimate if the design is very sparse, or strong seasonality presents. 
 #' @references
 #' \cite{Yao, F., Mueller, H.G., Wang, J.L. "Functional Linear Regression Analysis for Longitudinal Data." Annals of Statistics 33, (2005): 2873-2903.(Dense data)} 
 #'
@@ -151,6 +152,9 @@ MvCov <- function(vars, userBwCov, outGrid, kern, measurementError=TRUE, center=
   if (!is.list(vars) || length(vars) < 1)
     stop('`vars` needs to be a list of length >= 1')
   
+  if (diag1D == 'all' && measurementError) {
+    stop("Cannot assume measurement error when diag1D == 'all'")
+  }
   isFuncVars <- sapply(vars, is.list)
   p <- length(isFuncVars)
   pFunc <- sum(isFuncVars)
@@ -196,7 +200,7 @@ MvCov <- function(vars, userBwCov, outGrid, kern, measurementError=TRUE, center=
 
 ## Univariate function/scaler covariance.
 # rmDiag: whether to remove the diagonal of the raw covariance. Ignored if 1D smoother is used.
-# center: whether to center the covariates before calcuate covariance.
+# center: whether to center the covariates before calculate covariance.
 # use1D: whether to use 1D smoothing for estimating the diagonal covariance.
 uniCov <- function(X, Y, userBwCov, outGrid, kern='gauss', rmDiag=FALSE, center=TRUE, use1D=FALSE) {
   flagScalerFunc <- FALSE

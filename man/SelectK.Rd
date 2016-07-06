@@ -23,6 +23,7 @@ SelectK(fpcaObj, criterion = "FVE", FVEthreshold = 0.95, Ly = NULL,
 A list including the following two fields:
 \item{K}{An integer indicating the selected number of components based on given criterion.}
 \item{criterion}{The calculated criterion value for the selected number of components, i.e. FVE, AIC or BIC value, NULL for fixedK criterion.}
+\item{k}{Same as \code{K} for compatibility. WARNING: This will be removed in the next iteration}
 }
 \description{
 Selects number of functional principal components for
