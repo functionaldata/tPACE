@@ -1,22 +1,28 @@
-#' Makke Gaussian Process Dense Functional Data sample                                                             
+#' Make Gaussian Process Dense Functional Data sample                                                             
 #' 
-#' Make a Gaussian process dense functional data sample of size N over a [0,1] support.
+#' Make a Gaussian process dense functional data sample of size n over a [0,1] support.
 #' 
-#' @param N number of samples to generate
+#' @param n number of samples to generate
 #' @param M number of equidistant readings per sample (default: 100)
 #' @param mu vector of size M specifying the mean (default: rep(0,M))
 #' @param K scalar specifying the number of basis to be used (default: 2)
 #' @param lambda vector of size K specifying the variance of each components (default: rep(1,K))
+#' @param sigma The standard deviation of the Gaussian noise added to each observation points.
 #' @param basisType string specifiying the basis type used; possible options are: 'sin', 'cos' and 'fourier' (default: 'cos') (See code of 'CreateBasis' for implementation details.)
 #'
+#' @return TODO
+#' @export
 
-MakeGPFunctionalData <-function(N, M = 100, mu=rep(0,M), K = 2, lambda = rep(1,K),  basisType='cos'){
+MakeGPFunctionalData <-function(n, M = 100, mu=rep(0,M), K = 2, lambda = rep(1,K), sigma=0, basisType='cos'){
    
-  if(N <2){
+  if(n <2){
       stop("Samples of size 1 are irrelevant.")
   }  
   if(M <20){
       stop("Dense samples with less than 20 observations per subject are irrelevant.")
+  }
+  if (!is.numeric(sigma) || sigma < 0) {
+    stop("'sigma' needs to be a nonnegative number")
   }
   s <- seq(0,1,length.out = M)
 
@@ -33,10 +39,18 @@ MakeGPFunctionalData <-function(N, M = 100, mu=rep(0,M), K = 2, lambda = rep(1,K
       stop("Make sure you provide a valid parametric basis.")
   } 
    
-  Ksi <- apply(matrix(rnorm(N*K), ncol=K), 2, scale) %*% diag(sqrt(lambda))
+  Ksi <- apply(matrix(rnorm(n*K), ncol=K), 2, scale) %*% diag(sqrt(lambda))
   Phi <- CreateBasis(pts= s, type= basisType, K = K)
    
-  yTrue <- t(matrix(rep(mu,N), nrow=M)) + Ksi %*% t(Phi) 
-  return(list(Y = yTrue, Phi = Phi, xi=Ksi, pts=s) )
+  yTrue <- t(matrix(rep(mu,n), nrow=M)) + Ksi %*% t(Phi) 
+  
+  res <- list(Y = yTrue, Phi = Phi, xi=Ksi, pts=s)
+  
+  if (sigma > 0) {
+    yNoisy <- yTrue + rnorm(n * M, sd=sigma)
+    res <- c(res, list(Yn = yNoisy))
+  }
+  
+  return(res)
  }
  
