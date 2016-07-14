@@ -3,8 +3,8 @@ Type: Package
 Title: Functional Data Analysis and Empirical Dynamics
 URL: https://github.com/functionaldata/tPACE 
 BugReports: https://github.com/functionaldata/tPACE/issues
-Version: 0.2.0
-Date: 2016-06-14,
+Version: 0.2.5
+Date: 2016-07-14,
 Author: Xiongtao Dai,
     Pantelis Z. Hadjipantelis,
     Hao Ji,
