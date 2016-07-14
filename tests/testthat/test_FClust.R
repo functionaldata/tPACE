@@ -11,7 +11,7 @@ test_that('the growth example works.', {
          D <- FClust(B$Ly, B$Lt, k = 2, cmethod = 'kCFC')
          trueClusters <-  A$V2[!duplicated(A$V1)]
          N = length(trueClusters)
-         cRates <- c( sum(trueClusters != C$cluster), sum(trueClusters != ifelse(D$cluster==1, 2, 1)))/N # 0.9677 & 0.9355 
+         cRates <- c( sum(trueClusters == C$cluster), sum(trueClusters != ifelse(D$cluster==1, 2, 1)))/N # 0.9677 & 0.9355 
 
          expect_gt( cRates[2], 0.935) # kCFC
          expect_gt( cRates[1], 0.967) # Rmixmod
