@@ -38,6 +38,8 @@ A list containing the following fields:
 FPCA for dense or sparse functional data.
 }
 \details{
+If the input is sparse data, make sure you check the design plot is dense and the 2D domain is well covered, using \code{plot} or \code{CreateDesignPlot}. Some study design such as snippet data (each subject is observed only on a sub-interval of the period of study) will have an ill-covered design plot, for which the covariance estimate will be unreliable.
+
 Available control options are 
 \describe{
 \item{userBwCov}{The bandwidth value for the smoothed covariance function; positive numeric - default: determine automatically based on 'methodBwCov'}
@@ -78,6 +80,7 @@ sampWiener <- Wiener(n, pts)
 sampWiener <- Sparsify(sampWiener, pts, 10)
 res <- FPCA(sampWiener$Ly, sampWiener$Lt, 
             list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
+plot(res) # The design plot covers [0, 1] * [0, 1] well.
 CreateCovPlot(res, 'Fitted')
 }
 \references{

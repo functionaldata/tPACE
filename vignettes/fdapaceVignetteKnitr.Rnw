@@ -132,7 +132,7 @@ The generated \texttt{FPCAobj} will contain all the basic information regarding 
   L3 <- MakeFPCAInputs(IDs = rep(1:N, each=M),tVec=rep(s,N), t(yTrue))
   FPCAdense <- FPCA(L3$Ly, L3$Lt)   
   
-  # Make a basic diagnostics plot
+  # Plot the FPCA object
   plot(FPCAdense)
   
   # Find the standard deviation associated with each component
@@ -159,7 +159,7 @@ The generated \texttt{FPCAobj} will contain all the basic information regarding 
   # Do FPCA on this sparse sample
   # Notice that sparse FPCA will smooth the data internally (Yao et al., 2005)
   # Smoothing is the main computational cost behind sparse FPCA
-  FPCAsparse <- FPCA(ySparse$yNoisy, ySparse$Lt, list(diagnosticsPlot = TRUE))  
+  FPCAsparse <- FPCA(ySparse$yNoisy, ySparse$Lt, list(plot = TRUE))  
   
 @
 \end{minipage}
@@ -216,7 +216,7 @@ We use the \texttt{medfly25} dataset that this available with \texttt{fdapace} t
 
   # Turn the original data into a list of paired amplitude and timing lists
   Flies <- MakeFPCAInputs(medfly25$ID, medfly25$Days, medfly25$nEggs) 
-  fpcaObjFlies <- FPCA(Flies$Ly, Flies$Lt, list(diagnosticsPlot = TRUE, methodMuCovEst = 'smooth', userBwCov = 2)) 
+  fpcaObjFlies <- FPCA(Flies$Ly, Flies$Lt, list(plot = TRUE, methodMuCovEst = 'smooth', userBwCov = 2)) 
 @
 \end{minipage}
 \begin{minipage}[r]{0.495\textwidth}
@@ -247,7 +247,7 @@ Functional data lend themselves naturally to questions about their rate of chang
 @
 
 We note that if finite support kernel types are used (eg. \texttt{rect} or \texttt{epan}), bandwidths smaller than the distance between two adjacent points over which the data are registered onto will lead to (expected) \texttt{NaN} estimates. In case of dense data, the grid used is (by default) equal to the grid the data were originally registered on; in the case of sparse data, the grid used (by default) spans the range of the sample's supports and uses 51 points. A user can change the number of points using the argument \texttt{nRegGrid}.  
-One can investigate the effect a particular kernel type (\texttt{kernelType}) or bandwidth size (\texttt{bw}) has on the generated derivatives by using the function \texttt{CreateDiagnosticsPlot} but this time providing a relevant \texttt{derOptns} list. This will generate estimates about the mean function $\mu(t)$ as well as the first two principal modes of variation $\phi_1(t)$ and $\phi_2(t)$ for different multiples of \texttt{bw}. 
+One can investigate the effect a particular kernel type (\texttt{kernelType}) or bandwidth size (\texttt{bw}) has on the generated derivatives by using the function \texttt{CreateBWPlot} and providing a relevant \texttt{derOptns} list. This will generate estimates about the mean function $\mu(t)$ as well as the first two principal modes of variation $\phi_1(t)$ and $\phi_2(t)$ for different multiples of \texttt{bw}. 
 
 <<bwPlot, fig.width=7, fig.height=3>>= 
 fpcaObjFlies79 <- FPCA(Flies$Ly, Flies$Lt, list(nRegGrid = 79, methodMuCovEst = 'smooth', userBwCov = 2)) # Use 79 equidistant points for the support
@@ -256,7 +256,7 @@ CreateBWPlot(fpcaObjFlies79 , derOptns = list(p = 1, bw = 2.0 , kernelType = 're
 
 %' \begin{minipage}[l]{0.5\textwidth}
 %' <<eval=FALSE>>= 
-%' fpcaObjFlies79 <- FPCA(Flies$Ly, Flies$Lt, list(diagnosticsPlot = TRUE, nRegGrid = 79, methodMuCovEst = 'smooth', userBwCov = 2)) # Use 79 equidistant points for the support
+%' fpcaObjFlies79 <- FPCA(Flies$Ly, Flies$Lt, list(plot = TRUE, nRegGrid = 79, methodMuCovEst = 'smooth', userBwCov = 2)) # Use 79 equidistant points for the support
 %' 
 %' CreateBWPlot(fpcaObjFlies79 , derOptns = list(p = 1, bw = 2.0 , kernelType = 'rect') )
 %' @

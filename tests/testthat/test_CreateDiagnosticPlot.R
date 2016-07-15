@@ -8,7 +8,7 @@ pts <- seq(0, 1, length.out=M)
 mu <- rep(0, length(pts))
 sampDense <- Wiener(n, pts)
 samp <- Sparsify(sampDense, pts, M)
-res <- FPCA(samp$Ly, samp$Lt, list(error=TRUE, FVEthreshold=1, dataType='Dense'))
+res <- FPCA(samp$Ly, samp$Lt, list(error=TRUE, FVEthreshold=1, dataType='Dense', plot=TRUE))
 
 if (viewPdf) {
   pdf('tmp.pdf')

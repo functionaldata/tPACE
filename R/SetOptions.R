@@ -30,6 +30,11 @@ SetOptions = function(y, t, optns){
   yname =optns[['yname']];
   rho =optns[['rho']];                
   diagnosticsPlot =optns[['diagnosticsPlot']];
+  plot =optns[['plot']]
+  if (!is.null(diagnosticsPlot)) {
+    warning("The option 'diagnosticsPlot' is deprecated. Use 'plot' instead")
+    plot = diagnosticsPlot
+  } 
   verbose =optns[['verbose']];   
   userMu =optns[['userMu']];                  
   #methodMu =optns[['methodMu']];
@@ -173,8 +178,8 @@ SetOptions = function(y, t, optns){
       FVEthreshold = 0.95;
     }
   }
-  if(is.null(diagnosticsPlot)){ # make corrplot
-    diagnosticsPlot = FALSE;
+  if(is.null(plot)){ # make corrplot
+    plot = FALSE;
   }
   if(is.null(rho)){ # truncation threshold for the iterative residual that is used
     # no regularization if sigma2 is specified or assume no measurement error.
@@ -229,7 +234,7 @@ SetOptions = function(y, t, optns){
           kFoldMuCov = kFoldMuCov, methodSelectK = methodSelectK, FVEthreshold = FVEthreshold,
           fitEigenValues = fitEigenValues, maxK = maxK, dataType = dataType, error = error, shrink = shrink,
           nRegGrid = nRegGrid, rotationCut = rotationCut, methodXi = methodXi, kernel = kernel, 
-          lean = lean, diagnosticsPlot = diagnosticsPlot, numBins = numBins, useBinnedCov = useBinnedCov, 
+          lean = lean, diagnosticsPlot = diagnosticsPlot, plot=plot, numBins = numBins, useBinnedCov = useBinnedCov, 
           yname = yname,  rho = rho, verbose = verbose, userMu = userMu, userCov = userCov, methodMuCovEst = methodMuCovEst,
           userSigma2 = userSigma2, outPercent = outPercent, useBinnedData = useBinnedData)
 

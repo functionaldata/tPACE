@@ -3,7 +3,8 @@
 #' This function will open a new device if not instructed otherwise.
 #'
 #' @param Lt a list of observed time points for functional data
-#' @param obsGrid a vector of sorted observed time points
+#' @param obsGrid a vector of sorted observed time points. Default to the 
+#' unique time points in Lt.
 #' @param isColorPlot an option for colorful plot: 
 #'                    TRUE: create color plot with color indicating counts
 #'                    FALSE: create black and white plot with dots indicating observed time pairs
@@ -38,7 +39,7 @@ CreateDesignPlot = function(Lt, obsGrid = NULL, isColorPlot=TRUE, noDiagonal=TRU
   
   # Check if we have very dense data (for visualization) on a regular grid
   if( (length(obsGrid) > 101) & all(sapply(Lt, function(u) identical(obsGrid, u)))){
-    res = matrix(5, nrow = 101, ncol = 101)
+    res = matrix(length(Lt), nrow = 101, ncol = 101)
     obsGrid = approx(x = seq(0,1,length.out = length(obsGrid)), y = obsGrid, 
                      xout = seq(0,1,length.out = 101))$y
   } else {

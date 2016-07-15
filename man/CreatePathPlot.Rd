@@ -6,7 +6,7 @@
 \usage{
 CreatePathPlot(fpcaObj, subset, K = NULL,
   inputData = fpcaObj[["inputData"]], showObs = !is.null(inputData),
-  showMean = FALSE, derOptns = NULL, ...)
+  obsOnly = FALSE, showMean = FALSE, derOptns = NULL, ...)
 }
 \arguments{
 \item{fpcaObj}{Returned object from FPCA().}
@@ -22,6 +22,8 @@ fields: \code{Lt} for a list of time points and \code{Ly} for a list of
 observations. Default to the `inputData` field within `fpcaObj`.}
 
 \item{showObs}{Whether to plot the original observations for each subject.}
+
+\item{obsOnly}{Whether to show only the original curves.}
 
 \item{showMean}{Whether to plot the mean function as a bold solid curve.}
 

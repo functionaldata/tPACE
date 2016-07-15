@@ -1,6 +1,10 @@
 Current version
 =============
+New functionality:
+* Added obsOnly option to CreatePathPlot.
+
 Changes:
+* "Diagnostic plots" are renamed.
 * `K` is used for specifying the number of components in functions such as SelectK, fitted, CreatePathPlot, CreateFuncBoxPlot, etc, instead of `k`.
 * GetCrCovYX is sped up.
 

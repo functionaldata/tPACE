@@ -9,6 +9,7 @@
 #' fields: \code{Lt} for a list of time points and \code{Ly} for a list of
 #' observations. Default to the `inputData` field within `fpcaObj`.
 #' @param showObs Whether to plot the original observations for each subject.
+#' @param obsOnly Whether to show only the original curves.
 #' @param showMean Whether to plot the mean function as a bold solid curve.
 #' @param derOptns A list of options to control derivation parameters; see `fitted.FPCA'. (default = NULL)
 #' @param ... other arguments passed into matplot for plotting options
@@ -25,8 +26,8 @@
 #' @export
 
 CreatePathPlot = function(fpcaObj, subset, K=NULL, inputData=fpcaObj[['inputData']], 
-                          showObs=!is.null(inputData), showMean=FALSE, 
-                          derOptns = NULL, ...){
+                          showObs=!is.null(inputData), obsOnly=FALSE, showMean=FALSE, 
+                          derOptns = NULL, ...) {
   
   n <- dim(fpcaObj[['xiEst']])[1]
   inargs <- list(...)
@@ -45,6 +46,9 @@ CreatePathPlot = function(fpcaObj, subset, K=NULL, inputData=fpcaObj[['inputData
       stop('inputData does not contain the required fields `Lt` and `Ly`')
     }
   } 
+  if (obsOnly) {
+    showObs <- TRUE
+  }
   if (showObs) {
     if (is.null(inputData)) {
       stop('Cannot show the sparse observations due to unspecified input data')
@@ -76,8 +80,12 @@ CreatePathPlot = function(fpcaObj, subset, K=NULL, inputData=fpcaObj[['inputData
   
     do.call(plot, c(list(x=c(rep(workGrid, nrow(fit)), t(obst)), 
                          y=c(t(fit), t(obsy)), type='n' ), args1))
-    do.call(points, c(list(x=t(obst), y=t(obsy), type='p'), args1))
-    do.call(matplot, c(list(x=workGrid, y=t(fit), type='l', add=TRUE ), args1))
+    if (obsOnly) {
+      do.call(matplot, c(list(x=obst, y=obsy, type='l'), args1))
+    } else {
+      do.call(points, c(list(x=t(obst), y=t(obsy), type='p'), args1))
+      do.call(matplot, c(list(x=workGrid, y=t(fit), type='l', add=TRUE ), args1))
+    }
   } else {
       do.call(matplot, c(list(x=workGrid, y=t(fit), type='l'), args1))
   }
