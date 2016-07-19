@@ -18,7 +18,7 @@
 #' @return A list containing:
 #' \item{smoothedCC}{The smoothed cross-covariance as a vector}
 #' \item{rawCC}{The raw cross-covariance as a vector }
-#' \item{bw}{The bandwidth used for smoohting as a scaler}
+#' \item{bw}{The bandwidth used for smoohting as a scalar}
 #' \item{score}{The GCV score associated with the scalar used}
 #' @examples
 #' Ly <- list( runif(5),  c(1:3), c(2:4), c(4))

@@ -2,7 +2,7 @@
 #' 
 #' Functional concurrent regression with dense or sparse functional data for scalar or functional dependent variable. 
 #' 
-#' @param vars A list of input functional/scaler covariates. Each field corresponds to a functional (a list) or scaler (a vector) covariate. The last entry is assumed to be the response if no entry is names 'Y'. If a field corresponds to a functional covariate, it should have two fields: 'Lt', a list of time points, and 'Ly', a list of function values.
+#' @param vars A list of input functional/scalar covariates. Each field corresponds to a functional (a list) or scalar (a vector) covariate. The last entry is assumed to be the response if no entry is names 'Y'. If a field corresponds to a functional covariate, it should have two fields: 'Lt', a list of time points, and 'Ly', a list of function values.
 #' @param userBwMu A scalar with bandwidth used for smoothing the mean
 #' @param userBwCov A scalar with bandwidth used for smoothing the auto- and cross-covariances
 #' @param outGrid A vector with the output time points
@@ -106,7 +106,7 @@ FCReg <- function(vars, userBwMu, userBwCov, outGrid, kern='gauss', measurementE
   })
   
   muBeta <- sapply(seq_len(p), function(j) {
-    if (!is.function(muList[[j]])) { # scaler mean
+    if (!is.function(muList[[j]])) { # scalar mean
       beta[j, ] * rep(muList[[j]], length(outGrid))
     } else { # functional mean
       beta[j, ] * muList[[j]](outGrid)
@@ -122,7 +122,7 @@ FCReg <- function(vars, userBwMu, userBwCov, outGrid, kern='gauss', measurementE
 
 demean <- function(vars, userBwMu, kern) {
   tmp <- lapply(vars, function(x) {
-    if (is.numeric(x)) { # scaler
+    if (is.numeric(x)) { # scalar
       xmu <- mean(x)
       x <- x - xmu
     } else if (is.list(x)) { # functional
@@ -144,7 +144,7 @@ demean <- function(vars, userBwMu, kern) {
   list(xList = xList, muList = muList)
 }
 
-## Multivariate function/scaler covariance.
+## Multivariate function/scalar covariance.
 # INPUTS: same as FCReg
 # Output: a 4-D array containing the covariances. The first two dimensions corresponds to 
 # time s and t, and the last two dimensions correspond to the variables taken covariance upon.
@@ -184,9 +184,9 @@ MvCov <- function(vars, userBwCov, outGrid, kern, measurementError=TRUE, center=
         if (attr(covRes, 'covType') %in% c('FF', 'SS'))
           res[, , i, j] <- covRes
         else {
-          if (nrow(covRes) == 1)   # cov(scaler, function)
+          if (nrow(covRes) == 1)   # cov(scalar, function)
             res[, , i, j] <- matrix(covRes, lenoutGrid, lenoutGrid, byrow=TRUE)
-          else                     # cov(function, scaler)
+          else                     # cov(function, scalar)
             res[, , i, j] <- matrix(covRes, lenoutGrid, lenoutGrid, byrow=FALSE)
         }
       } else { # fill up the symmetric cov(y, x)
@@ -198,13 +198,13 @@ MvCov <- function(vars, userBwCov, outGrid, kern, measurementError=TRUE, center=
   return(res)
 }
 
-## Univariate function/scaler covariance.
+## Univariate function/scalar covariance.
 # rmDiag: whether to remove the diagonal of the raw covariance. Ignored if 1D smoother is used.
 # center: whether to center the covariates before calculate covariance.
 # use1D: whether to use 1D smoothing for estimating the diagonal covariance.
 uniCov <- function(X, Y, userBwCov, outGrid, kern='gauss', rmDiag=FALSE, center=TRUE, use1D=FALSE) {
   flagScalerFunc <- FALSE
-  # Force X to be a function in the scaler-function case.
+  # Force X to be a function in the scalar-function case.
   if (!is.list(X) && is.list(Y)) {
     flagScalerFunc <- TRUE
     tmp <- X
@@ -212,12 +212,12 @@ uniCov <- function(X, Y, userBwCov, outGrid, kern='gauss', rmDiag=FALSE, center=
     Y <- tmp
   }
   
-  # Scaler-scaler
+  # Scalar-scalar
   if (!is.list(X) && !is.list(Y)) {
     res <- cov(X, Y)
     attr(res, 'covType') <- 'SS'
     
-    # Scaler-function    
+    # Scalar-function    
   } else if (is.list(X) && !is.list(Y)) {
     Tin <- sort(unique(unlist(X[['Lt']])))
     if (center) {
@@ -326,7 +326,7 @@ imputeConReg <- function(FPCAlist, Z, outGrid) {
 }
 
 ## regObj: an object returned by mvConReg.
-## vars: a list of input functional/scaler covariates. Each field  can correspond to a covariate. 
+## vars: a list of input functional/scalar covariates. Each field  can correspond to a covariate. 
 #        The last entry is assumed to be the response if no entry is names 'Y'.
 summaryConReg <- function(regObj, vars) {
   

@@ -10,7 +10,7 @@ CreateDiagnosticsPlot(...)
 \method{plot}{FPCA}(fpcaObj, openNewDev = FALSE, addLegend = TRUE, ...)
 }
 \arguments{
-\item{...}{passed into \code{plot.FPCA}}
+\item{...}{passed into \code{plot.FPCA}.}
 
 \item{fpcaObj}{An FPCA class object returned by FPCA().}
 

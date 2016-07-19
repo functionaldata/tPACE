@@ -31,7 +31,7 @@ from \code{FPCA} and \code{ConvertSupport}.}
 A list containing:
 \item{smoothedCC}{The smoothed cross-covariance as a vector}
 \item{rawCC}{The raw cross-covariance as a vector }
-\item{bw}{The bandwidth used for smoohting as a scaler}
+\item{bw}{The bandwidth used for smoohting as a scalar}
 \item{score}{The GCV score associated with the scalar used}
 }
 \description{

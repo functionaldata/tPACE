@@ -9,7 +9,7 @@ FCReg(vars, userBwMu, userBwCov, outGrid, kern = "gauss",
   returnCov = TRUE)
 }
 \arguments{
-\item{vars}{A list of input functional/scaler covariates. Each field corresponds to a functional (a list) or scaler (a vector) covariate. The last entry is assumed to be the response if no entry is names 'Y'. If a field corresponds to a functional covariate, it should have two fields: 'Lt', a list of time points, and 'Ly', a list of function values.}
+\item{vars}{A list of input functional/scalar covariates. Each field corresponds to a functional (a list) or scalar (a vector) covariate. The last entry is assumed to be the response if no entry is names 'Y'. If a field corresponds to a functional covariate, it should have two fields: 'Lt', a list of time points, and 'Ly', a list of function values.}
 
 \item{userBwMu}{A scalar with bandwidth used for smoothing the mean}
 
