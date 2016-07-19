@@ -35,6 +35,7 @@
 #' 
 #' plot(T, FuncCorrCent(Xsp, Ysp, tAll, bw)[['corr']], ylim=c(-1, 1))
 #' abline(h=0.5)
+#' @export
 
 FuncCorrCent <- function(x, y, Lt, bw=stop('bw missing'), kern='epan', Tout=sort(unique(unlist(Lt)))) {
   
