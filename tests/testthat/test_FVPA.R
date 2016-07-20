@@ -148,3 +148,15 @@ test_that('noisy dense data, IN scores and smooth mu/cov', {
   expect_gt( abs( cor( Zeta[,2], fvpaResults$fpcaObjR$xiEst[,2])), 0.91)
   
 })
+
+test_that('FVPA works for long dense data', {
+  
+  set.seed(123)
+  n <- 100
+  p <- 500
+
+  input <- Wiener(n, seq(0, 1, length.out=p), sparsify=p)
+  expect_error(FVPA(input$Ly, input$Lt, optns=list(useBinnedData='FORCE', error=TRUE, FVEthreshold=0.9)), "optns\\$useBinnedData cannot be 'FORCE'")
+  res <- FVPA(input$Ly, input$Lt, optns=list(error=TRUE, FVEthreshold=0.9))
+})
+

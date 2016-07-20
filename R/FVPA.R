@@ -37,6 +37,10 @@ FVPA = function(y, t, q= 0.1, optns = list(error=TRUE, FVEthreshold = 0.9)){
   if(!optns$error){
     stop("FVPA is irrelevant if no error is assumed")
   }
+  if (!is.null(optns[['useBinnedData']]) && optns[['useBinnedData']] == 'FORCE') {
+    stop("optns$useBinnedData cannot be 'FORCE'")
+  }
+  optns[['useBinnedData']] <- 'OFF'
   
   fpcaObjY <- FPCA(y, t, optns)
   
