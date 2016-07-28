@@ -5,6 +5,7 @@ New functionality:
 
 Changes:
 * "Diagnostic plots" are renamed.
+* GetNormalisedSample now uses fitted covariance.
 
 fdapace v0.2.5 (Release date: 14-Jul-2016)
 =============

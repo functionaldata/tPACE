@@ -1,4 +1,4 @@
-#' Make Gaussian Process Dense Functional Data sample                                                             
+#' Make Gaussian Process Dense Functional Data sample
 #' 
 #' Make a Gaussian process dense functional data sample of size n over a [0,1] support.
 #' 

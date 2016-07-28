@@ -23,13 +23,31 @@
 #'             list(dataType='Sparse', error=FALSE, kernel='epan',
 #'             verbose=TRUE))
 #' CreatePathPlot(res, subset=1:5)
+#'
+#' # CreatePathPlot has a lot of usages:
+#' \dontrun{
+#' CreatePathPlot(res)
+#' CreatePathPlot(res, 1:20)
+#' CreatePathPlot(res, 1:20, showObs=FALSE)
+#' CreatePathPlot(res, 1:20, showMean=TRUE, showObs=FALSE)
+#' CreatePathPlot(res, 1:20, obsOnly=TRUE)
+#' CreatePathPlot(res, 1:20, obsOnly=TRUE, showObs=FALSE)
+#' CreatePathPlot(inputData=sampWiener, subset=1:20, obsOnly=TRUE)}
+#' 
 #' @export
 
 CreatePathPlot = function(fpcaObj, subset, K=NULL, inputData=fpcaObj[['inputData']], 
                           showObs=!is.null(inputData), obsOnly=FALSE, showMean=FALSE, 
                           derOptns = NULL, ...) {
   
-  n <- dim(fpcaObj[['xiEst']])[1]
+  if (missing(fpcaObj)) {
+    showFit <- FALSE
+    n <- length(inputData[['Lt']])
+  } else {
+    showFit <- !obsOnly
+    n <- dim(fpcaObj[['xiEst']])[1]
+  }
+
   inargs <- list(...)
   if (!is.null(inargs[['k']])) {
     K <- inargs[['k']]
@@ -41,14 +59,13 @@ CreatePathPlot = function(fpcaObj, subset, K=NULL, inputData=fpcaObj[['inputData
   # makes no sense to show original observations with derivatives.
     showObs <- FALSE 
   }
+
   if (!is.null(inputData)) {
     if (!all(c('Lt', 'Ly') %in% names(inputData))) {
       stop('inputData does not contain the required fields `Lt` and `Ly`')
     }
   } 
-  if (obsOnly) {
-    showObs <- TRUE
-  }
+
   if (showObs) {
     if (is.null(inputData)) {
       stop('Cannot show the sparse observations due to unspecified input data')
@@ -61,39 +78,52 @@ CreatePathPlot = function(fpcaObj, subset, K=NULL, inputData=fpcaObj[['inputData
   if (missing(subset)) {
     subset <- seq_len(n)
   }
-  # browser()
-  workGrid <- fpcaObj[['workGrid']]
-  fit <- fitted(fpcaObj, K=K, derOptns = derOptns)[subset, , drop=FALSE]
+
+  if (showFit) {
+    workGrid <- fpcaObj[['workGrid']]
+    fit <- fitted(fpcaObj, K=K, derOptns = derOptns)[subset, , drop=FALSE]
+  } else {
+    workGrid <- sort(unique(unlist(inputData[['Lt']])))
+  }
   
-  defaultColPalette = rep(palette(), ceiling(nrow(fit)/7))[1:nrow(fit)]
+  defaultColPalette = palette()
   args1 <- list( xlab= 's', ylab= ' ',col = defaultColPalette)    
   args1[names(inargs)] <- inargs
   
   #matplot(obst, obsy, type='p',...)
   #args2 = list (x = obst, y = obsy, type='p' )
   
-  if( showObs ){
+  plotx <- ploty <- numeric(0)
+
+  if( showObs || obsOnly ) {
     # make a matrix with NAs for the sparse observations.
     maxN_i <- max(sapply(inputData[['Lt']][subset], length))
     obst <- sapply(inputData[['Lt']][subset], function(x) c(x, rep(NA, maxN_i - length(x))))
     obsy <- sapply(inputData[['Ly']][subset], function(x) c(x, rep(NA, maxN_i - length(x))))
-  
-    do.call(plot, c(list(x=c(rep(workGrid, nrow(fit)), t(obst)), 
-                         y=c(t(fit), t(obsy)), type='n' ), args1))
-    if (obsOnly) {
-      do.call(matplot, c(list(x=obst, y=obsy, type='l'), args1))
-    } else {
-      do.call(points, c(list(x=t(obst), y=t(obsy), type='p'), args1))
-      do.call(matplot, c(list(x=workGrid, y=t(fit), type='l', add=TRUE ), args1))
-    }
-  } else {
-      do.call(matplot, c(list(x=workGrid, y=t(fit), type='l'), args1))
+    plotx <- c(plotx, t(obst))
+    ploty <- c(ploty, t(obsy))
   }
-  
+
+  if (showFit) {
+    plotx <- c(plotx, rep(workGrid, nrow(fit)))
+    ploty <- c(ploty, t(fit))
+  }
+
+  # Make canvas
+  do.call(plot, c(list(x=plotx, y=ploty, type='n'), args1))
+
+  if (obsOnly) {
+    do.call(matplot, c(list(x=obst, y=obsy, type='l', add=TRUE), args1))
+  } 
+  if (showObs) {
+    do.call(matplot, c(list(x=obst, y=obsy, type='p', pch=1, add=TRUE), args1))
+  }
+  if (showFit) { # plot fitted curves
+    do.call(matplot, c(list(x=workGrid, y=t(fit), type='l', add=TRUE ), args1))
+  }
   if (showMean) {
     lines(workGrid, fpcaObj[['mu']], lty=1, lwd=2)
   }
    
-  
   invisible()
 }

@@ -17,6 +17,8 @@ test_that('CreatePathPlot works', {
   CreatePathPlot(res, 1:20, showObs=FALSE)
   CreatePathPlot(res, 1:20, showMean=TRUE, showObs=FALSE)
   CreatePathPlot(res, 1:20, obsOnly=TRUE)
+  CreatePathPlot(res, 1:20, obsOnly=TRUE, showObs=FALSE)
+  CreatePathPlot(inputData=sampWiener, subset=1:20, obsOnly=TRUE)
   CreatePathPlot(res, subset=seq_len(n) %% 5 == 0, K=5, inputData=list(Lt=sampWiener$Lt, Ly=sampWiener$Ly), main='123', xlab='T')
 })
 
