@@ -87,7 +87,7 @@ CreatePathPlot = function(fpcaObj, subset, K=NULL, inputData=fpcaObj[['inputData
   }
   
   defaultColPalette = palette()
-  args1 <- list( xlab= 's', ylab= ' ',col = defaultColPalette)    
+  args1 <- list( xlab= 's', ylab= ' ',col = defaultColPalette, pch=1)    
   args1[names(inargs)] <- inargs
   
   #matplot(obst, obsy, type='p',...)
@@ -116,7 +116,7 @@ CreatePathPlot = function(fpcaObj, subset, K=NULL, inputData=fpcaObj[['inputData
     do.call(matplot, c(list(x=obst, y=obsy, type='l', add=TRUE), args1))
   } 
   if (showObs) {
-    do.call(matplot, c(list(x=obst, y=obsy, type='p', pch=1, add=TRUE), args1))
+    do.call(matplot, c(list(x=obst, y=obsy, type='p', add=TRUE), args1))
   }
   if (showFit) { # plot fitted curves
     do.call(matplot, c(list(x=workGrid, y=t(fit), type='l', add=TRUE ), args1))
