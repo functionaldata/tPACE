@@ -1,6 +1,6 @@
 
 myEps <- .Machine$double.eps;
-load('data/dataForGetRawCov.RData')
+load(system.file('testdata', 'dataForGetRawCov.RData', package='fdapace'))
 AA = GetRawCov(y,t, sort(unlist(t)), mu,'Sparse',TRUE)  #Matches ML output
 BB = GetRawCov(y,t, sort(unlist(t)), mu,'Sparse',FALSE) #Matches ML output
 

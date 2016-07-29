@@ -1,5 +1,5 @@
 library(testthat)
-devtools::load_all()
+# devtools::load_all()
 
 # Uniform time points
 ## a speed test

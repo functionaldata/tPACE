@@ -31,6 +31,9 @@ Lwls2D <- function(bw, kern='epan', xin, yin, win=NULL, xout1=NULL, xout2=NULL, 
   if (is.null(win)){
     win <- rep(1, nrow(xin))
   }  
+  if (!(nrow(xin) == length(yin) && nrow(xin) == length(win))) {
+    stop('The length of xin, yin, and win (if specified) must be the same')
+  }
   if (!is.null(subset)) {
     xin <- xin[subset, ]
     yin <- yin[subset]

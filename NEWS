@@ -1,0 +1,40 @@
+Current version
+=============
+New functionality:
+* Added obsOnly option to CreatePathPlot.
+
+Changes:
+* "Diagnostic plots" are renamed.
+* GetNormalisedSample now uses fitted covariance.
+
+fdapace v0.2.5 (Release date: 14-Jul-2016)
+=============
+Changes:
+* `K` is used for specifying the number of components in functions such as SelectK, fitted, CreatePathPlot, CreateFuncBoxPlot, etc, instead of `k`.
+* GetCrCovYX is sped up.
+
+Minors:
+* Improved the legend placing in CreateDesignPlot.
+* Plot functions no longer show warnings.
+* Changed clustering example in vignettes.
+
+Minors:
+* Improved the legend placing in CreateDesignPlot.
+* Plot functions no longer show warnings.
+
+fdapace v0.2.0 (Release date: 17-Jun-2016)
+==============
+
+New functionality:
+* Addition of Functional Variance Process Analysis (FVPA.R), Functional Clustering (FClust.R) and Functional Singular Value Decomposition (FSVD.R) functionality.
+
+Changes:
+* Minor changes to the interface of functions FPCA.R and FCReg.R.
+* New internal C++ smoother used. 
+* General improvements and bug fixes. 
+* Vignette with knitr.
+
+fdapace v0.1.1 (Release data: 15-Mar-2016)
+==============
+
+* Initial release

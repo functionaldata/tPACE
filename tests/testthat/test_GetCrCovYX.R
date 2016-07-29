@@ -1,5 +1,21 @@
-devtools::load_all()
+# devtools::load_all()
 library(testthat)
+
+test_that('The binned crosscov is the same as unbinned',{
+  
+  N  = 100
+  set.seed(123)
+  Ly1 = lapply(1:N, function(x) runif(7))
+  Ly2 = lapply(1:N, function(x) runif(7)) 
+  Lt1 = lapply(1:N, function(x) round(sort(c(0, runif(5),1)), 2))
+  Lt2 = Lt1
+  Ymu1 = rep(0.5, length(unique(unlist(Lt1))))
+  Ymu2 = rep(0.1^9,  length(unique(unlist(Lt2))))
+  
+  system.time(A1<-GetCrCovYX(Ly1 = Ly1, Ly2= Ly2, Lt1=Lt1, Lt2=Lt2, Ymu1=Ymu1, Ymu2=Ymu2, bw1=2, bw2=2))
+  system.time(A2 <- GetCrCovYX_old(Ly1 = Ly1, Ly2= Ly2, Lt1=Lt1, Lt2=Lt2, Ymu1=Ymu1, Ymu2=Ymu2, bw1=2, bw2=2))
+  expect_equal(A1$smoothedCC, A2$smoothedCC)
+})
 
 test_that('The cross-covariance of two constant processes is zero.',{
   
@@ -21,12 +37,13 @@ test_that('The cross-covariance of two unrelated process is close to zero.',{
   set.seed(123)
   Ly1 = lapply(1:N, function(x) runif(7))
   Ly2 = lapply(1:N, function(x) runif(7)) 
-  Lt1 = lapply(1:N, function(x) sort(c(0, runif(5),1)) )
+  Lt1 = lapply(1:N, function(x) round(sort(c(0, runif(5),1)), 2))
   Lt2 = Lt1
   Ymu1 = rep(0.5, length(unique(unlist(Lt1))))
   Ymu2 = rep(0.1^9,  length(unique(unlist(Lt2))))
   
-  AA<-GetCrCovYX(Ly1 = Ly1, Ly2= Ly2, Lt1=Lt1, Lt2=Lt2, Ymu1=Ymu1, Ymu2=Ymu2, bw1=2, bw2=2)
+  system.time(AA<-GetCrCovYX(Ly1 = Ly1, Ly2= Ly2, Lt1=Lt1, Lt2=Lt2, Ymu1=Ymu1, Ymu2=Ymu2, bw1=2, bw2=2))
+  system.time(A2 <- GetCrCovYX_old(Ly1 = Ly1, Ly2= Ly2, Lt1=Lt1, Lt2=Lt2, Ymu1=Ymu1, Ymu2=Ymu2, bw1=2, bw2=2))
   expect_equal( 0.0,  mean(AA$smoothedCC), tol=1e-3 )
 })
 
@@ -72,10 +89,11 @@ test_that('The cross-covariance of two simple related process is correct. Same r
   expect_equal( max(abs( eigFunct1(s)%*%t(eigFunct1(s))*3 - AA$rawCC$rawCCov )),  0.01, tol=.01, scale=1 )
 })
 
+if (Sys.getenv('TRAVIS') != 'true') { # slow
 test_that('The cross-covariance of two simple related process is correct. Same readings lengths.',{
   
   set.seed(123)
-  N = 611;   
+  N = 311;   
   M = 101;
   
   # Define the continuum
@@ -98,17 +116,25 @@ test_that('The cross-covariance of two simple related process is correct. Same r
   
   BB1 <- GetCrCovYX(Ly1 = ySparseA$Ly, Lt1 = ySparseA$Lt, Ly2 = ySparseB$Ly, Lt2 = ySparseB$Lt, 
                 Ymu1 = rep(0,M), Ymu2 = rep(0,M), useGAM = TRUE  )
-  
   BB2 <- GetCrCovYX(Ly1 = ySparseA$Ly, Lt1 = ySparseA$Lt, Ly2 = ySparseB$Ly, Lt2 = ySparseB$Lt, 
                  Ymu1 = rep(0,M), Ymu2 = rep(0,M), bw1=0.4, bw2=0.4  )
-  
+  BB3 <- GetCrCovYX(Ly1 = ySparseA$Ly, Lt1 = ySparseA$Lt, Ly2 = ySparseB$Ly, Lt2 = ySparseB$Lt, bwRoutine = 'l-bfgs-b',
+                                    Ymu1 = rep(0,M), Ymu2 = rep(0,M),   )
+  BB4 <- GetCrCovYX(Ly1 = ySparseA$Ly, Lt1 = ySparseA$Lt, Ly2 = ySparseB$Ly, Lt2 = ySparseB$Lt, bwRoutine = 'bobyqa',
+                                    Ymu1 = rep(0,M), Ymu2 = rep(0,M))
+  # BB5 <- GetCrCovYX(Ly1 = ySparseA$Ly, Lt1 = ySparseA$Lt, Ly2 = ySparseB$Ly, Lt2 = ySparseB$Lt, # Too expensive / 
+  #                                  Ymu1 = rep(0,M), Ymu2 = rep(0,M), bwRoutine = 'grid-search'  )
+
   sSmall = seq(0,10,length.out = 51)
   
   # we know that the covariance between ksi_1 and ksi_2 is three
-  expect_equal( median(abs( eigFunct1(sSmall)%*%t(eigFunct1(sSmall))*3 - BB1$smoothedCC )),  0.02, tol=.01, scale=1 )
-  expect_equal( median(abs( eigFunct1(sSmall)%*%t(eigFunct1(sSmall))*3 - BB2$smoothedCC )),  0.02, tol=.01, scale=1 )
-   
-})
+  expect_equal( median(abs( eigFunct1(sSmall)%*%t(eigFunct1(sSmall))*3 - BB1$smoothedCC )),  0.02, tol=.02, scale=1 )
+  expect_equal( median(abs( eigFunct1(sSmall)%*%t(eigFunct1(sSmall))*3 - BB2$smoothedCC )),  0.02, tol=.02, scale=1 )
+  expect_equal( median(abs( eigFunct1(sSmall)%*%t(eigFunct1(sSmall))*3 - BB3$smoothedCC )),  0.02, tol=.02, scale=1 )
+  expect_equal( median(abs( eigFunct1(sSmall)%*%t(eigFunct1(sSmall))*3 - BB4$smoothedCC )),  0.02, tol=.02, scale=1 )
+  # expect_equal( median(abs( eigFunct1(sSmall)%*%t(eigFunct1(sSmall))*3 - BB5$smoothedCC )),  0.02, tol=.02, scale=1 )
+
+})}
 
 test_that('The cross-covariance of two simple unrelated process is correct. Same readings lengths.',{
   
@@ -177,7 +203,7 @@ test_that('Dense Wiener process has cov(s,t) = min(s,t)', {
 
 test_that('Sparse Wiener process has cov(s,t) = min(s,t)', {
   set.seed(4)
-  n <- 200
+  n <- 500
   nGridIn <- 51
   sparsity <- 1:5 # must have length > 1
   bw <- 0.2
@@ -196,7 +222,7 @@ test_that('Sparse Wiener process has cov(s,t) = min(s,t)', {
   Ysp <- lapply(1:n, function(i) Y[i, indEach[[i]]])
 
   tmp <- GetCrCovYX(bw, bw, Xsp, tAll, rep(0, nGridIn), Ysp, tAll, rep(0, nGridIn))
-  tmpGCV <- GetCrCovYX(NULL, NULL, Xsp, tAll, rep(0, nGridIn), Ysp, tAll, rep(0, nGridIn))
-  expect_equal(diag(tmp$smoothedCC), as.numeric(T), tolerance=0.37)
-  expect_equal(diag(tmpGCV$smoothedCC), as.numeric(T), tolerance=0.37)
+  #tmpGCV <- GetCrCovYX(NULL, NULL, Xsp, tAll, rep(0, nGridIn), Ysp, tAll, rep(0, nGridIn)) # Too costly test
+  expect_equal(diag(tmp$smoothedCC), as.numeric(T), tolerance=0.1, scale=1)
+  #expect_equal(diag(tmpGCV$smoothedCC), as.numeric(T), tolerance=0.15)
 })

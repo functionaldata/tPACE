@@ -15,7 +15,7 @@
 #' \item{variant}{string defining the method used ('KDE', 'pointwise' or 'bagplot') (default: 'bagplot')}
 #' \item{unimodal}{logical specifying if the KDE estimate should be unimodal (default: FALSE, relavant only for variant='KDE')}
 #' \item{addIndx}{vector of indeces corresponding to which samples one should overlay (Default: NULL)}
-#' \item{k}{integer number of the first k components used for the representation. (default: length(fpcaObj$lambda ))} 
+#' \item{K}{integer number of the first K components used for the representation. (default: length(fpcaObj$lambda ))} 
 #' }
 #'  
 #' @examples
@@ -34,10 +34,16 @@
 
 CreateFuncBoxPlot <- function(fpcaObj, optns = list() , ...){
    
-  if(is.null(optns$k)){
-    k = length(fpcaObj$lambda)
+  if (!is.null(optns[['k']])) {
+    optns[['K']] <- optns[['k']]
+    optns[['k']] <- NULL
+    warning("specifying 'k' is deprecated. Use 'K' instead!")
+  }
+
+  if(is.null(optns$K)){
+    K = length(fpcaObj$lambda)
   } else {
-    k = optns$k
+    K = optns$K
   }
   
   if(is.null(optns$addIndx)){
@@ -88,7 +94,7 @@ CreateFuncBoxPlot <- function(fpcaObj, optns = list() , ...){
     variant = 'pointwise'
   }
   
-  fittedCurves <- fitted(fpcaObj, k = k, ...)   
+  fittedCurves <- fitted(fpcaObj, K = K, ...)   
   s <- fpcaObj$workGrid
   N <- nrow(fittedCurves)
   

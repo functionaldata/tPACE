@@ -1,4 +1,4 @@
-devtools::load_all()
+# devtools::load_all()
 library(testthat)
 
 trueLam <- 4 / ((2 * (1:50) - 1 ) * pi) ^ 2

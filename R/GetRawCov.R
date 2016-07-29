@@ -29,7 +29,7 @@ GetRawCov <- function(y,t,obsGridnew, mu, dataType, error){
   indx = NULL 
   diag = NULL
 
-  if(dataType == 'Sparse'){
+  if(dataType %in% c('Sparse', 'DenseWithMV')){
   
     Ys = lapply(X = y, FUN=pracma::meshgrid) #pracma
     Xs = lapply(X = t, FUN=pracma::meshgrid) #pracma

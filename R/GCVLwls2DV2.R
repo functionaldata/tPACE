@@ -69,12 +69,12 @@ GCVLwls2DV2 <- function(obsGrid, regGrid, ngrid=NULL, dataType=rcov$dataType, er
         if (CV == FALSE) # GCV
           Scores[i] <- getGCVscoresV2(h, kern, rcov$tPairs, rcov$meanVals, win=rcov$count, regGrid=regGrid, RSS=rcov$RSS, verbose=verbose)
         else # CV
-          Scores[i] <- getCVscoresV2(partition, h, kern, rcov$tPairs, rcov$meanVals, win=rcov$count, regGrid=regGrid, RSS=rcov$RSS)
+          Scores[i] <- getCVscoresV2(partition, h, kern, rcov$tPairs, rcov$meanVals, win=rcov$count, regGrid=regGrid, RSS=rcov$RSS, verbose=verbose)
       } else {
         if (CV == FALSE) # GCV
           Scores[i] <- getGCVscoresV2(h, kern, rcov$tPairs, rcov$cxxn, regGrid=regGrid, verbose=verbose)
         else # CV
-          Scores[i] <- getCVscoresV2(partition, h, kern, rcov$tPairs, rcov$cxxn, regGrid=regGrid)
+          Scores[i] <- getCVscoresV2(partition, h, kern, rcov$tPairs, rcov$cxxn, regGrid=regGrid, verbose=verbose)
       }
       
       if (is.infinite(Scores[i])) { 
@@ -129,7 +129,7 @@ GCVLwls2DV2 <- function(obsGrid, regGrid, ngrid=NULL, dataType=rcov$dataType, er
       q <- (newr[ind] / h0) ^ (1/9)
       bw <- q ^ (0:9) * h0
       if (verbose) {
-        cat('New bwuserCov candidates:\n')
+        message('New bwuserCov candidates:\n')
         print(bw)
       }
       iter <- iter + 1
@@ -154,7 +154,7 @@ getGCVscoresV2 <- function(bw, kern, xin, yin, win=NULL, regGrid, RSS=NULL, verb
   
   fit <- tryCatch(Lwls2D(bw, kern, xin=xin, yin=yin, win=win, xout1=regGrid, xout2=regGrid), error=function(err) {
     if (verbose) {
-      cat('Invalid bandwidth. Try enlarging the window size.\n')
+      message('Invalid bandwidth. Try enlarging the window size.\n')
     }
     return(Inf)
   })
@@ -187,7 +187,7 @@ getGCVscoresV2 <- function(bw, kern, xin, yin, win=NULL, regGrid, RSS=NULL, verb
 # k-fold CV
 # partition: a list of testset observation indices, returned by caret::createFolds
 # ...: passed on to Lwls2D
-getCVscoresV2 <- function(partition, bw, kern, xin, yin, win=NULL, regGrid, RSS=NULL) {
+getCVscoresV2 <- function(partition, bw, kern, xin, yin, win=NULL, regGrid, RSS=NULL, verbose=FALSE) {
   
   if (is.null(win))
     win <- rep(1, length(yin))
@@ -198,7 +198,9 @@ getCVscoresV2 <- function(partition, bw, kern, xin, yin, win=NULL, regGrid, RSS=
   cvSubSum <- sapply(partition, function(testSet) {
     # browser()
     fit <- tryCatch(Lwls2D(bw, kern, xin=xin, yin=yin, win=win, xout1=regGrid, xout2=regGrid, subset=-testSet), error=function(err) {
-      warning('Invalid bandwidth. Try enlarging the window size.')
+      if (verbose) {
+        message('Invalid bandwidth. Try enlarging the window size.\n')
+      }
       return(Inf)
     })
     

@@ -1,4 +1,4 @@
-devtools::load_all(); library(testthat)
+# devtools::load_all(); library(testthat)
 
 
 library(testthat)

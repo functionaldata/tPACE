@@ -2,25 +2,30 @@
 % Please edit documentation in R/MakeGPFunctionalData.R
 \name{MakeGPFunctionalData}
 \alias{MakeGPFunctionalData}
-\title{Makke Gaussian Process Dense Functional Data sample}
+\title{Make Gaussian Process Dense Functional Data sample}
 \usage{
-MakeGPFunctionalData(N, M = 100, mu = rep(0, M), k = 2, lambda = rep(1,
-  k), basisType = "cos")
+MakeGPFunctionalData(n, M = 100, mu = rep(0, M), K = 2, lambda = rep(1,
+  K), sigma = 0, basisType = "cos")
 }
 \arguments{
-\item{N}{number of samples to generate}
+\item{n}{number of samples to generate}
 
 \item{M}{number of equidistant readings per sample (default: 100)}
 
 \item{mu}{vector of size M specifying the mean (default: rep(0,M))}
 
-\item{k}{scalar specifying the number of basis to be used (default: 2)}
+\item{K}{scalar specifying the number of basis to be used (default: 2)}
 
-\item{lambda}{vector of size K specifying the variance of each components (default: rep(1,k))}
+\item{lambda}{vector of size K specifying the variance of each components (default: rep(1,K))}
+
+\item{sigma}{The standard deviation of the Gaussian noise added to each observation points.}
 
 \item{basisType}{string specifiying the basis type used; possible options are: 'sin', 'cos' and 'fourier' (default: 'cos') (See code of 'CreateBasis' for implementation details.)}
 }
+\value{
+TODO
+}
 \description{
-Make a Gaussian process dense functional data sample of size N over a [0,1] support.
+Make a Gaussian process dense functional data sample of size n over a [0,1] support.
 }
 

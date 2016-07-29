@@ -1,12 +1,13 @@
 #' Fitted functional sample from FPCA object
 #' 
 #' Combine the zero-meaned fitted values and the interpolated mean to get the fitted values for the trajectories or the derivatives of these trajectories.
-#' Estimates are given on the work-grid, not on the observation grid.
+#' Estimates are given on the work-grid, not on the observation grid. Use ConvertSupport to map the estimates to your desired domain.
 #' 
 #' @param object A object of class FPCA returned by the function FPCA().   
-#' @param k The integer number of the first k components used for the representation. (default: length(fpcaObj$lambda ))
+#' @param K The integer number of the first K components used for the representation. (default: length(fpcaObj$lambda ))
 #' @param derOptns A list of options to control the derivation parameters specified by \code{list(name=value)}. See `Details'. (default = NULL)
 #'
+#' @return An \code{n} by \code{length(workGrid)} matrix, each row of which contains a sample.
 #' @details Available derivation control options are 
 #' \describe{
 #' \item{p}{The order of the derivatives returned (default: 0, max: 2)}
@@ -30,7 +31,12 @@
 #' @export
 
 
-fitted.FPCA <-  function (object, k = NULL, derOptns = list(), ...) {
+fitted.FPCA <-  function (object, K = NULL, derOptns = list(), ...) {
+  ddd <- list(...)
+  if (!is.null(ddd[['k']])) {
+    K <- ddd[['k']]
+    warning("specifying 'k' is deprecated. Use 'K' instead!")
+  }
   
   derOptns <- SetDerOptions(fpcaObject = object, derOptns)
   p <- derOptns[['p']]
@@ -43,14 +49,13 @@ fitted.FPCA <-  function (object, k = NULL, derOptns = list(), ...) {
     # stop("fitted.FPCA() requires an FPCA class object as basic input")
   # }
 
-  if( is.null(k) ){
-    k = length( fpcaObj$lambda )
+  if( is.null(K) ){
+    K = length( fpcaObj$lambda )
   } else {
-    if( ( round(k)>=1) && ( round(k) <= length( fpcaObj$lambda ) ) ){
-      k = round(k)
-    } else if (p > 0) { # OK
+    if( ( round(K)>=1) && ( round(K) <= length( fpcaObj$lambda ) ) ){
+      K = round(K);
     } else {
-      stop("'fitted.FPCA()' is requested to use more components than it currently has available. (or 'k' is smaller than 1)")
+      stop("'fitted.FPCA()' is requested to use more components than it currently has available. (or 'K' is smaller than 1)")
     }
   }
  
@@ -59,13 +64,13 @@ fitted.FPCA <-  function (object, k = NULL, derOptns = list(), ...) {
   } 
 
   if( p < 1 ){  
-    ZMFV = fpcaObj$xiEst[,1:k, drop = FALSE] %*% t(fpcaObj$phi[,1:k, drop = FALSE]);   
+    ZMFV = fpcaObj$xiEst[,1:K, drop = FALSE] %*% t(fpcaObj$phi[,1:K, drop = FALSE]);   
     IM = fpcaObj$mu 
     return( t(apply( ZMFV, 1, function(x) x + IM))) 
   } else { #Derivative is not zero
  
-    if( k > SelectK( fpcaObj, FVEthreshold=0.95, criterion='FVE')$k ){
-    warning("Potentially you use too many components to estimate derivatives. \n  Consider using SelectK() to find a more informed estimate for 'k'.");
+    if( K > SelectK( fpcaObj, FVEthreshold=0.95, criterion='FVE')$K ){
+    warning("Potentially you use too many components to estimate derivatives. \n  Consider using SelectK() to find a more informed estimate for 'K'.");
     }
 
     if( is.null(method) ){
@@ -81,11 +86,13 @@ fitted.FPCA <-  function (object, k = NULL, derOptns = list(), ...) {
       phi = apply(phi, 2, function(phiI) Lwls1D(bw = bw, kernelType, win = rep(1, length(workGrid)), 
                                                   xin = workGrid, yin = phiI, xout = workGrid, npoly = p, nder = p))
       mu = Lwls1D(bw = bw, kernelType, win = rep(1, length(workGrid)), xin = workGrid, yin = mu, xout = workGrid, npoly = p, nder = p)
-      ZMFV = fpcaObj$xiEst[,1:k, drop = FALSE] %*% t(phi[,1:k, drop = FALSE]);
+      ZMFV = fpcaObj$xiEst[,1:K, drop = FALSE] %*% t(phi[,1:K, drop = FALSE]);
       IM = mu 
       return( t(apply( ZMFV, 1, function(x) x + IM) ))
-    } else if( method == 'QUO'){
-      impSample <- fitted(fpcaObj, k = k); # Look ma! I do recursion!
+    }
+
+    if( method == 'QUO'){
+      impSample <- fitted(fpcaObj, K = K); # Look ma! I do recursion!
       return( t(apply(impSample, 1, function(curve) Lwls1D(bw = bw, kernelType, win = rep(1, length(workGrid)), 
                                                          xin = workGrid, yin = curve, xout = workGrid, npoly = p, nder = p))))
     } else if (method == 'DPC') {

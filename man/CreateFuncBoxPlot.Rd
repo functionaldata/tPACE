@@ -26,7 +26,7 @@ Available control options are
 \item{variant}{string defining the method used ('KDE', 'pointwise' or 'bagplot') (default: 'bagplot')}
 \item{unimodal}{logical specifying if the KDE estimate should be unimodal (default: FALSE, relavant only for variant='KDE')}
 \item{addIndx}{vector of indeces corresponding to which samples one should overlay (Default: NULL)}
-\item{k}{integer number of the first k components used for the representation. (default: length(fpcaObj$lambda ))} 
+\item{K}{integer number of the first K components used for the representation. (default: length(fpcaObj$lambda ))} 
 }
 }
 \examples{

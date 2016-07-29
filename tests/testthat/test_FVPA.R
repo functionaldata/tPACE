@@ -1,4 +1,5 @@
-devtools::load_all(); library(testthat)
+# devtools::load_all()
+library(testthat)
 
 test_that('noisy dense data, default arguments: ie. cross-sectional mu/cov, use IN score', {
   
@@ -38,15 +39,15 @@ test_that('noisy dense data, default arguments: ie. cross-sectional mu/cov, use 
   
   fvpaResults = FVPA(y= tmp$Ly, t= tmp$Lt)
   
-  expect_more_than( abs( cor( eigFunct1(s), fvpaResults$fpcaObjY$phi[,1])), 0.975)
-  expect_more_than( abs( cor( eigFunct2(s), fvpaResults$fpcaObjY$phi[,2])), 0.975)
-  expect_more_than( abs( cor( eigFunctA(s), fvpaResults$fpcaObjR$phi[,1])), 0.975)
-  expect_more_than( abs( cor( eigFunctB(s), fvpaResults$fpcaObjR$phi[,2])), 0.975)
+  expect_gt( abs( cor( eigFunct1(s), fvpaResults$fpcaObjY$phi[,1])), 0.975)
+  expect_gt( abs( cor( eigFunct2(s), fvpaResults$fpcaObjY$phi[,2])), 0.975)
+  expect_gt( abs( cor( eigFunctA(s), fvpaResults$fpcaObjR$phi[,1])), 0.975)
+  expect_gt( abs( cor( eigFunctB(s), fvpaResults$fpcaObjR$phi[,2])), 0.975)
   
-  expect_more_than( abs( cor( Ksi[,1], fvpaResults$fpcaObjY$xiEst[,1])), 0.975)
-  expect_more_than( abs( cor( Ksi[,2], fvpaResults$fpcaObjY$xiEst[,2])), 0.975)
-  expect_more_than( abs( cor( Zeta[,1], fvpaResults$fpcaObjR$xiEst[,1])), 0.975)
-  expect_more_than( abs( cor( Zeta[,2], fvpaResults$fpcaObjR$xiEst[,2])), 0.94)
+  expect_gt( abs( cor( Ksi[,1], fvpaResults$fpcaObjY$xiEst[,1])), 0.975)
+  expect_gt( abs( cor( Ksi[,2], fvpaResults$fpcaObjY$xiEst[,2])), 0.975)
+  expect_gt( abs( cor( Zeta[,1], fvpaResults$fpcaObjR$xiEst[,1])), 0.975)
+  expect_gt( abs( cor( Zeta[,2], fvpaResults$fpcaObjR$xiEst[,2])), 0.94)
   
 })
 
@@ -78,7 +79,7 @@ test_that('noisy dense data, CE scores and cross-sectional mu/cov', {
   evR <- c(0.5, 0.3)^2 
   Zeta = apply(matrix(rnorm(N*2), ncol=2), 2, scale) %*% diag(sqrt(evR))
   Vij = Zeta %*% t(Psi)
-   
+  
   Rij = epsilonSign * ( exp(Vij + Wij)^(0.5) )
   
   Xij = Sij +  Rij;
@@ -87,15 +88,15 @@ test_that('noisy dense data, CE scores and cross-sectional mu/cov', {
   
   fvpaResults = FVPA(y= tmp$Ly, t= tmp$Lt, optns = list(error=TRUE, FVEthreshold = 0.9, methodXi='CE' ))
   
-  expect_more_than( abs( cor( eigFunct1(s), fvpaResults$fpcaObjY$phi[,1])), 0.975)
-  expect_more_than( abs( cor( eigFunct2(s), fvpaResults$fpcaObjY$phi[,2])), 0.975)
-  expect_more_than( abs( cor( eigFunctA(s), fvpaResults$fpcaObjR$phi[,1])), 0.975)
-  expect_more_than( abs( cor( eigFunctB(s), fvpaResults$fpcaObjR$phi[,2])), 0.975)
+  expect_gt( abs( cor( eigFunct1(s), fvpaResults$fpcaObjY$phi[,1])), 0.975)
+  expect_gt( abs( cor( eigFunct2(s), fvpaResults$fpcaObjY$phi[,2])), 0.975)
+  expect_gt( abs( cor( eigFunctA(s), fvpaResults$fpcaObjR$phi[,1])), 0.975)
+  expect_gt( abs( cor( eigFunctB(s), fvpaResults$fpcaObjR$phi[,2])), 0.975)
   
-  expect_more_than( abs( cor( Ksi[,1], fvpaResults$fpcaObjY$xiEst[,1])), 0.975)
-  expect_more_than( abs( cor( Ksi[,2], fvpaResults$fpcaObjY$xiEst[,2])), 0.975)
-  expect_more_than( abs( cor( Zeta[,1], fvpaResults$fpcaObjR$xiEst[,1])), 0.975)
-  expect_more_than( abs( cor( Zeta[,2], fvpaResults$fpcaObjR$xiEst[,2])), 0.94)
+  expect_gt( abs( cor( Ksi[,1], fvpaResults$fpcaObjY$xiEst[,1])), 0.975)
+  expect_gt( abs( cor( Ksi[,2], fvpaResults$fpcaObjY$xiEst[,2])), 0.975)
+  expect_gt( abs( cor( Zeta[,1], fvpaResults$fpcaObjR$xiEst[,1])), 0.975)
+  expect_gt( abs( cor( Zeta[,2], fvpaResults$fpcaObjR$xiEst[,2])), 0.94)
   
 })
 
@@ -136,14 +137,26 @@ test_that('noisy dense data, IN scores and smooth mu/cov', {
   
   fvpaResults = FVPA(y= tmp$Ly, t= tmp$Lt, optns = list(error=TRUE, FVEthreshold = 0.9, methodMuCovEst='smooth', userBwCov = 0.600 ))
   
-  expect_more_than( abs( cor( eigFunct1(s), fvpaResults$fpcaObjY$phi[,1])), 0.975)
-  expect_more_than( abs( cor( eigFunct2(s), fvpaResults$fpcaObjY$phi[,2])), 0.975)
-  expect_more_than( abs( cor( eigFunctA(s), fvpaResults$fpcaObjR$phi[,1])), 0.975)
-  expect_more_than( abs( cor( eigFunctB(s), fvpaResults$fpcaObjR$phi[,2])), 0.975)
+  expect_gt( abs( cor( eigFunct1(s), fvpaResults$fpcaObjY$phi[,1])), 0.975)
+  expect_gt( abs( cor( eigFunct2(s), fvpaResults$fpcaObjY$phi[,2])), 0.975)
+  expect_gt( abs( cor( eigFunctA(s), fvpaResults$fpcaObjR$phi[,1])), 0.975)
+  expect_gt( abs( cor( eigFunctB(s), fvpaResults$fpcaObjR$phi[,2])), 0.975)
   
-  expect_more_than( abs( cor( Ksi[,1], fvpaResults$fpcaObjY$xiEst[,1])), 0.975)
-  expect_more_than( abs( cor( Ksi[,2], fvpaResults$fpcaObjY$xiEst[,2])), 0.975)
-  expect_more_than( abs( cor( Zeta[,1], fvpaResults$fpcaObjR$xiEst[,1])), 0.97)
-  expect_more_than( abs( cor( Zeta[,2], fvpaResults$fpcaObjR$xiEst[,2])), 0.91)
+  expect_gt( abs( cor( Ksi[,1], fvpaResults$fpcaObjY$xiEst[,1])), 0.975)
+  expect_gt( abs( cor( Ksi[,2], fvpaResults$fpcaObjY$xiEst[,2])), 0.975)
+  expect_gt( abs( cor( Zeta[,1], fvpaResults$fpcaObjR$xiEst[,1])), 0.97)
+  expect_gt( abs( cor( Zeta[,2], fvpaResults$fpcaObjR$xiEst[,2])), 0.91)
   
 })
+
+test_that('FVPA works for long dense data', {
+  
+  set.seed(123)
+  n <- 100
+  p <- 500
+
+  input <- Wiener(n, seq(0, 1, length.out=p), sparsify=p)
+  expect_error(FVPA(input$Ly, input$Lt, optns=list(useBinnedData='FORCE', error=TRUE, FVEthreshold=0.9)), "optns\\$useBinnedData cannot be 'FORCE'")
+  res <- FVPA(input$Ly, input$Lt, optns=list(error=TRUE, FVEthreshold=0.9))
+})
+

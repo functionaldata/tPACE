@@ -9,7 +9,7 @@ FCReg(vars, userBwMu, userBwCov, outGrid, kern = "gauss",
   returnCov = TRUE)
 }
 \arguments{
-\item{vars}{A list of input functional/scaler covariates. Each field corresponds to a functional (a list) or scaler (a vector) covariate. The last entry is assumed to be the response if no entry is names 'Y'. If a field corresponds to a functional covariate, it should have two fields: 'Lt', a list of time points, and 'Ly', a list of function values.}
+\item{vars}{A list of input functional/scalar covariates. Each field corresponds to a functional (a list) or scalar (a vector) covariate. The last entry is assumed to be the response if no entry is names 'Y'. If a field corresponds to a functional covariate, it should have two fields: 'Lt', a list of time points, and 'Ly', a list of function values.}
 
 \item{userBwMu}{A scalar with bandwidth used for smoothing the mean}
 
@@ -32,7 +32,10 @@ and the last two correspond to the covariates and the response, i.e. (i, j, k, l
 \item{...}{Additional arguments}
 }
 \description{
-Functional concurrent regression with dense or sparse functional data for scalar or functional dependant variable.
+Functional concurrent regression with dense or sparse functional data for scalar or functional dependent variable.
+}
+\details{
+If measurement error is assumed, the diagonal elements of the raw covariance will be removed. This could result in highly unstable estimate if the design is very sparse, or strong seasonality presents.
 }
 \examples{
 # Y(t) = \\beta_0(t) + \\beta_1(t) X_1(t) + \\beta_2(t) Z_2 + \\epsilon

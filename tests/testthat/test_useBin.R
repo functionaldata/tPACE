@@ -1,4 +1,4 @@
-devtools::load_all()
+# devtools::load_all()
 library(testthat)
 
 test_that('The binned version is exactly the same as the unbinned version.', {

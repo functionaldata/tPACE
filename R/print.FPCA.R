@@ -11,19 +11,19 @@
 #' pts <- seq(0, 1, by=0.05)
 #' sampWiener <- Wiener(n, pts)
 #' sampWiener <- Sparsify(sampWiener, pts, 10)
-#' res <- FPCA(sampWiener$Ly, sampWiener$Lt, 
-#'             list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
+#' res <- FPCA(sampWiener$Ly, sampWiener$Lt)
 #' res
 #'
+#' @method print FPCA
 #' @export
 print.FPCA <- function(x, ...){
   obj = x;
-  cat("Functional Principal Components Object for", tolower(obj$optns$dataType), "data.\n\n")
-  cat("The optimal number of components selected is:", length(obj$lambda),"and \nthe first k (<=3) eigenvalues are: ");
+  cat(paste0("Functional Principal Components Object for ", tolower(obj$optns$dataType), " data.\n\n"))
+  cat(paste0("The optimal number of components selected is: ", length(obj$lambda), ", and \nthe first K (<=3) eigenvalues are: "))
   if ( length(obj$lambda) < 4) { 
-    cat( round(obj$lambda,3) ,"\n");
+    cat(paste0( round(obj$lambda,3) ,"\n"))
   } else {
-    cat( round(obj$lambda[1:3],3) ,"\n")
+    cat(paste0( round(obj$lambda[1:3],3) ,"\n"))
   }
 }
 

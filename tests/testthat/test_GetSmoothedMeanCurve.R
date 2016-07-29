@@ -1,6 +1,6 @@
  cat("\nTests for 'GetSmoothedMeanCurve.R'")
 library(testthat)
-load('data/dataGeneratedByExampleSeed123.RData')
+load(system.file('testdata', 'dataGeneratedByExampleSeed123.RData', package='fdapace'))
 
 p = list(kernel='epan')
 optns = SetOptions(y,t,p)

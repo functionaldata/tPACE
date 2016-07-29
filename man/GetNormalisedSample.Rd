@@ -2,9 +2,12 @@
 % Please edit documentation in R/GetNormalisedSample.R
 \name{GetNormalisedSample}
 \alias{GetNormalisedSample}
+\alias{GetNormalizedSample}
 \title{Normalise sparse functional sample}
 \usage{
 GetNormalisedSample(fpcaObj, errorSigma = FALSE)
+
+GetNormalizedSample(...)
 }
 \arguments{
 \item{fpcaObj}{An FPCA object.}
@@ -16,6 +19,22 @@ A list containing the normalised sample 'y' at times 't'
 }
 \description{
 Normalise sparse functional sample given in an FPCA object
+
+\code{GetNormalizedSample} is an alias of \code{GetNormalizedSample}
+}
+\examples{
+set.seed(1)
+n <- 100
+M <- 51
+pts <- seq(0, 1, length.out=M)
+mu <- rep(0, length(pts))
+sampDense <- MakeGPFunctionalData(n, M, mu, K=1, basisType='sin', sigma=0.01)
+samp4 <- MakeFPCAInputs(tVec=sampDense$pts, yVec=sampDense$Yn)
+res4E <- FPCA(samp4$Ly, samp4$Lt, list(error=TRUE))
+sampN <- GetNormalisedSample(res4E, errorSigma=TRUE)
+
+CreatePathPlot(subset=1:20, inputData=samp4, obsOnly=TRUE, showObs=FALSE)
+CreatePathPlot(subset=1:20, inputData=sampN, obsOnly=TRUE, showObs=FALSE)
 }
 \references{
 \cite{Chiou, Jeng-Min and Chen, Yu-Ting and Yang, Ya-Fang. "Multivariate Functional Principal Component Analysis: A Normalization Approach" Statistica Sinica 24 (2014): 1571-1596}

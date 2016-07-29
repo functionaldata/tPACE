@@ -24,6 +24,18 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// cumtrapzRcpp
+Rcpp::NumericVector cumtrapzRcpp(const Rcpp::NumericVector X, const Rcpp::NumericVector Y);
+RcppExport SEXP fdapace_cumtrapzRcpp(SEXP XSEXP, SEXP YSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector >::type X(XSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector >::type Y(YSEXP);
+    __result = Rcpp::wrap(cumtrapzRcpp(X, Y));
+    return __result;
+END_RCPP
+}
 // dropZeroElementsXYWin
 Eigen::MatrixXd dropZeroElementsXYWin(const Eigen::Map<Eigen::VectorXd>& win, const Eigen::Map<Eigen::VectorXd>& xin, const Eigen::Map<Eigen::VectorXd>& yin);
 RcppExport SEXP fdapace_dropZeroElementsXYWin(SEXP winSEXP, SEXP xinSEXP, SEXP yinSEXP) {

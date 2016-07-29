@@ -15,7 +15,7 @@
 Sparsify <- function(samp, pts, sparsity, aggressive = FALSE, fragment=FALSE) {
 
     if (length(sparsity) == 1)
-      sparsity <- c(sparsity, sparsity) # avoid scaler case
+      sparsity <- c(sparsity, sparsity) # avoid scalar case
 
     if (aggressive && fragment)
       stop('Specify one of `aggressive` or `fragment` only')

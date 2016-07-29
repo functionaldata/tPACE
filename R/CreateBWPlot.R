@@ -26,7 +26,8 @@ CreateBWPlot <-function(fpcaObj, derOptns = NULL, bwMultipliers = NULL){
   if(class(fpcaObj) != 'FPCA'){
     stop("Input class is incorrect; CreateDiagnosticsPlot() is only usable from FPCA objects.")
   }
-  oldPar <- par()
+  oldPar <- par(no.readonly=TRUE)
+  on.exit(par(oldPar))
   if( is.null(bwMultipliers)){
     bwMultipliers = c(0.50, 0.75, 1.00, 1.25, 1.50)
     # This is knowingly wasteful as 1.00 is already computed; not having it would perplex the code 
@@ -105,6 +106,5 @@ CreateBWPlot <-function(fpcaObj, derOptns = NULL, bwMultipliers = NULL){
     grid(); legend('topleft', lty = 1, col=1:M, legend = apply( rbind( rep('bw: ',M),  round( bwMultipliers * bw, digits=2) ), 2, paste, collapse = ''))
     
   }
-  suppressWarnings(par(oldPar))
 }
 

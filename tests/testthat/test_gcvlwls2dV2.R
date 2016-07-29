@@ -1,9 +1,9 @@
-devtools::load_all()
+# devtools::load_all()
 ##options(error=recover)
 library(testthat)
 
-try(silent = TRUE, load('data/dataForGetRawCov.RData'))
-# try(silent = TRUE, load('tPACE/data/dataForGetRawCov.RData'))
+try(silent = TRUE, load(system.file('testdata', 'dataForGetRawCov.RData', package='fdapace')))
+# try(silent = TRUE, load(system.file('testdata', 'dataForGetRawCov.RData', package='fdapace')))
 rcov <- GetRawCov(y,t, sort(unlist(t)), mu,'Sparse',FALSE) 
 r <- range(sort(unlist(t)))
 regGrid <- seq(r[1], r[2], length.out=101)
@@ -12,7 +12,7 @@ getGCVscoresV2(tmp$minBW, 'epan', rcov$tPairs, rcov$cxxn, regGrid=regGrid)
 
 test_that('getGCVscoresV2 spits out Inf if bandwidth is too small', {
   expect_equal(suppressWarnings(getGCVscoresV2(2, 'epan', rcov$tPairs, rcov$cxxn, regGrid=regGrid)), Inf)
-  expect_warning(getGCVscoresV2(2, 'epan', rcov$tPairs, rcov$cxxn, regGrid=regGrid), 'Invalid bandwidth. Try enlarging the window size.')
+  expect_message(getGCVscoresV2(2, 'epan', rcov$tPairs, rcov$cxxn, regGrid=regGrid, verbose=TRUE), 'Invalid bandwidth. Try enlarging the window size.\n')
 })
 
 
@@ -40,8 +40,8 @@ test_that('getCVscoresV2 works for binning', {
   brcov3 <- BinRawCov(rcov3)
   obsGrid <- sort(unique(unlist(samp3$Lt)))
   regGrid <- seq(min(obsGrid), max(obsGrid), length.out=101)
-  partition <- caret::createFolds(rcov3$cxxn, k=10)
-  bpartition <- caret::createFolds(brcov3$meanVals, k=10)
+  partition <- CreateFolds(1:nrow(rcov3$tPairs), k=10)
+  bpartition <- CreateFolds(seq_along(brcov3$meanVals), k=10)
   g1 <- getCVscoresV2(partition, 0.35, 'epan', rcov3$tPairs, rcov3$cxxn, regGrid=regGrid)
   g2 <- getCVscoresV2(bpartition, 0.35, 'epan', brcov3$tPairs, brcov3$meanVals, brcov3$count, regGrid=regGrid, RSS=brcov3$RSS)
   expect_equal(g1, g2, tolerance=1e-2)

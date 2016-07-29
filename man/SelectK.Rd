@@ -5,13 +5,13 @@
 \title{Selects number of functional principal components for
 given FPCA output and selection criteria}
 \usage{
-SelectK(fpcaObj, criterion = "AIC", FVEthreshold = NULL, Ly = NULL,
+SelectK(fpcaObj, criterion = "FVE", FVEthreshold = 0.95, Ly = NULL,
   Lt = NULL)
 }
 \arguments{
 \item{fpcaObj}{A list containing FPCA related subjects returned by MakeFPCAResults().}
 
-\item{criterion}{A string or positive integer specifying selection criterion for number of functional principal components, available options: 'FVE', 'AIC', 'BIC', or the specified number of components - default: 'AIC'}
+\item{criterion}{A string or positive integer specifying selection criterion for number of functional principal components, available options: 'FVE', 'AIC', 'BIC', or the specified number of components - default: 'FVE'}
 
 \item{FVEthreshold}{A threshold percentage specified by user when using "FVE" as selection criterion: (0,1] - default: NULL}
 
@@ -21,8 +21,9 @@ SelectK(fpcaObj, criterion = "AIC", FVEthreshold = NULL, Ly = NULL,
 }
 \value{
 A list including the following two fields:
-\item{k}{An integer indicating the selected number of components based on given criterion.}
+\item{K}{An integer indicating the selected number of components based on given criterion.}
 \item{criterion}{The calculated criterion value for the selected number of components, i.e. FVE, AIC or BIC value, NULL for fixedK criterion.}
+\item{k}{Same as \code{K} for compatibility. WARNING: This will be removed in the next iteration}
 }
 \description{
 Selects number of functional principal components for
