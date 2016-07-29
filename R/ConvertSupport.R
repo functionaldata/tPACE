@@ -28,16 +28,7 @@ ConvertSupport <- function(fromGrid, toGrid, mu=NULL, Cov=NULL, phi=NULL, isCros
   if (!is.null(mu)) {# convert mu
     return(MapX1D(fromGrid, mu, toGrid))
   } else if (!is.null(Cov)) {
-<<<<<<< HEAD
     gd <- expand.grid(X=toGrid, Y=toGrid)
-||||||| merged common ancestors
-    gd <- pracma::meshgrid(toGrid) #pracma
-=======
-    if(!isSymmetric(Cov, tol= buff)){
-      stop("The input matrix 'Cov' is not symmetric.")
-    }
-    gd <- pracma::meshgrid(toGrid) #pracma
->>>>>>> master
     ret <- matrix(interp2lin(fromGrid, fromGrid, Cov, gd$X, gd$Y), nrow=length(toGrid))
     if (!isCrossCov) { # ensure that covariance is symmetric
       ret <- 0.5 * (ret + t(ret))
