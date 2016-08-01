@@ -96,15 +96,15 @@ GCVLwls2DV2 <- function(obsGrid, regGrid, ngrid=NULL, dataType=rcov$dataType, er
     if(is.infinite(min(Scores))){
       opth <- max(bw)
       optgcv <- Inf
-    } else if( sum(!is.infinite(Scores)) >= 2 ){ # Given we have at least two points we can fit "something"
-      nonInf = which(!is.infinite(Scores));
-      costSpline = spline(bw[nonInf], Scores[nonInf])
-      opth = costSpline$x[which.min(costSpline$y)]
-      optgcv = min(costSpline$y)
+    # } else if( sum(!is.infinite(Scores)) >= 2 ){ # Given we have at least two points we can fit "something"
+      # nonInf = which(!is.infinite(Scores));
+      # costSpline = spline(bw[nonInf], Scores[nonInf])
+      # opth = costSpline$x[which.min(costSpline$y)]
+      # optgcv = min(costSpline$y)
     } else {
-      nonInf = which(!is.infinite(Scores));
-      opth =  bw[nonInf]
-      optgcv = Scores[nonInf]
+      ind <- which.min(Scores)
+      opth <- bw[ind]
+      optgcv <- Scores[ind]
     } 
     
     ## Check that what we found is coherent.
@@ -178,7 +178,7 @@ getGCVscoresV2 <- function(bw, kern, xin, yin, win=NULL, regGrid, RSS=NULL, verb
   k0 <- KernelAt0(kern)
   N <- sum(win)
   r <- diff(range(xin[, 1]))
-  bottom <- 1 - (1 / N) * (r * k0 / bw)^2
+  bottom <- max(1 - 3 * (1 / N) * (r * k0 / bw)^2, 0)
   GCV <- res / bottom^2
   
   return(GCV)
@@ -225,7 +225,6 @@ getCVscoresV2 <- function(partition, bw, kern, xin, yin, win=NULL, regGrid, RSS=
   return(sum(cvSubSum))
 }
 
-# ??? Why is this not the 2D kernel
 KernelAt0 <- function(kern) {
   if (kern == 'quar')
     k0 <- 0.9375

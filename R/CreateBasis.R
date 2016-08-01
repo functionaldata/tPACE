@@ -9,7 +9,7 @@ CreateBasis <- function(K, pts=seq(0, 1, length.out=50), type='sin') {
   stopifnot(is.numeric(K) && length(K) == 1 && K > 0)
   
   if (type == 'cos') {
-    sapply(seq_len(K), function(k) 
+    res <- sapply(seq_len(K), function(k) 
       if (k == 1) {
         rep(1, nGrid)
       } else {
@@ -17,9 +17,9 @@ CreateBasis <- function(K, pts=seq(0, 1, length.out=50), type='sin') {
       }
     )
   } else if (type == 'sin') {
-    sapply(seq_len(K), function(k) sqrt(2) * sin(k * pi * pts))
+    res <- sapply(seq_len(K), function(k) sqrt(2) * sin(k * pi * pts))
   } else if (type == 'fourier') {
-    sapply(seq_len(K), function(k) 
+    res <- sapply(seq_len(K), function(k) 
       if (k == 1) {
         rep(1, nGrid)
       } else if (k %% 2 == 0) {
@@ -31,4 +31,7 @@ CreateBasis <- function(K, pts=seq(0, 1, length.out=50), type='sin') {
   } else if (type == 'unknown') {
     stop('unknown basis type')
   }
+
+  res <- matrix(res, ncol=K) # prevent single length pts
+  res
 }

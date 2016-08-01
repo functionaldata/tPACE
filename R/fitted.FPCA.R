@@ -11,7 +11,7 @@
 #' @details Available derivation control options are 
 #' \describe{
 #' \item{p}{The order of the derivatives returned (default: 0, max: 2)}
-#' \item{method}{The method used to produce the sample of derivatives ('EIG' (default) or 'QUO'). See Liu and Mueller (2009) for more details}
+#' \item{method}{The method used to produce the sample of derivatives ('FPC' (default) or 'QUO'). See Liu and Mueller (2009) for more details}
 #' \item{bw}{Bandwidth for smoothing the derivatives (default: p * 0.10 * S)}
 #' \item{kernelType}{Smoothing kernel choice; same available types are FPCA(). default('epan')}
 #' }
@@ -74,7 +74,7 @@ fitted.FPCA <-  function (object, K = NULL, derOptns = list(), ...) {
     }
 
     if( is.null(method) ){
-      method = 'EIG'
+      method = 'FPC'
     }
 
     mu = fpcaObj$mu
@@ -82,7 +82,7 @@ fitted.FPCA <-  function (object, K = NULL, derOptns = list(), ...) {
     obsGrid = fpcaObj$obsGrid
     workGrid = fpcaObj$workGrid
 
-    if ( method == 'EIG'){
+    if ( method == 'FPC'){
       phi = apply(phi, 2, function(phiI) Lwls1D(bw = bw, kernelType, win = rep(1, length(workGrid)), 
                                                   xin = workGrid, yin = phiI, xout = workGrid, npoly = p, nder = p))
       mu = Lwls1D(bw = bw, kernelType, win = rep(1, length(workGrid)), xin = workGrid, yin = mu, xout = workGrid, npoly = p, nder = p)

@@ -18,7 +18,7 @@ Take derivative of an FPCA object
 Available derivation control options are 
 \describe{
 \item{p}{The order of the derivatives returned (default: 0, max: 2)}
-\item{bw}{Bandwidth for smoothing the derivatives (default: p * 0.1 * S)}
+\item{bw}{Bandwidth for smoothing the derivatives (default: p * 0.1 * S). For 'DPC', bw * 2 is used for smoothing G^(1,1)(s,t)}
 \item{kernelType}{Smoothing kernel choice; same available types are FPCA(). default('epan')}
 }
 }

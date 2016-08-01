@@ -4,7 +4,8 @@
 \alias{ConvertSupport}
 \title{Convert support of a mu/phi/cov etc. to and from obsGrid and workGrid}
 \usage{
-ConvertSupport(fromGrid, toGrid, mu = NULL, Cov = NULL, phi = NULL)
+ConvertSupport(fromGrid, toGrid, mu = NULL, Cov = NULL, phi = NULL,
+  isCrossCov = FALSE)
 }
 \arguments{
 \item{fromGrid}{vector of points with input grid to interpolate from}
@@ -16,6 +17,8 @@ ConvertSupport(fromGrid, toGrid, mu = NULL, Cov = NULL, phi = NULL)
 \item{Cov}{a square matrix supported on fromGrid * fromGrid, to be interpolated to toGrid * toGrid.}
 
 \item{phi}{any matrix, each column containing a function to be interpolated}
+
+\item{isCrossCov}{logical, indicating whether the input covariance is a cross-covariance. If so then the output is not made symmetric.}
 }
 \description{
 Convert the support of a given function 1-D or 2-D function from 'fromGrd' to 'toGrid'.

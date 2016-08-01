@@ -3,7 +3,7 @@ SetDerOptions <- function(fpcaObject = NULL, derOptns = list()) {
     derOptns <- list()
   }
   # These are relevant for fitted.FPCA
-  derOptns$method <- ifelse (is.null(derOptns$method), 'EIG',
+  derOptns$method <- ifelse (is.null(derOptns$method), 'FPC',
                             derOptns$method)
   #derOptns$k <- ifelse (is.null(derOptns$k), length(fpcaObject$lambda), derOptns$k)
   # derOptns$GCV <- ifelse (is.null(derOptns$GCV), FALSE, TRUE)

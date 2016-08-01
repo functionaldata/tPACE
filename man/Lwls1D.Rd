@@ -4,7 +4,8 @@
 \alias{Lwls1D}
 \title{One dimensional local linear kernel smoother}
 \usage{
-Lwls1D(bw, kernel_type, win, xin, yin, xout, npoly = 1L, nder = 0L)
+Lwls1D(bw, kernel_type, win = rep(1L, length(xin)), xin, yin, xout,
+  npoly = 1L, nder = 0L)
 }
 \arguments{
 \item{bw}{Scalar holding the bandwidth}
