@@ -5,6 +5,7 @@
 #'
 #' @details Available derivation control options are 
 #' \describe{
+#' \item{method}{The method used for obtaining the derivatives. 'DPC': cite, 'FPC': cite}
 #' \item{p}{The order of the derivatives returned (default: 0, max: 2)}
 #' \item{bw}{Bandwidth for smoothing the derivatives (default: p * 0.1 * S). For 'DPC', bw * 2 is used for smoothing G^(1,1)(s,t)}
 #' \item{kernelType}{Smoothing kernel choice; same available types are FPCA(). default('epan')}
@@ -47,7 +48,7 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
   }
 
   if( ! (p %in% c(1, 2))){
-    stop("'FPCAder()' is requested to use a derivative order other than p = {1, 2}!")
+    stop("The derivative order p should be in {1, 2}!")
   } 
 
   if (p == 2 && method == 'DPC') {
@@ -59,7 +60,7 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
   } 
 
   if (method == 'DPC') {
-    if (!derOptns$useTrue) {
+    # if (!derOptns$useTrue) {
     # Get mu'(t)
     xin <- unlist(Lt)
     yin <- unlist(Ly)
@@ -71,6 +72,7 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
 
     # Get raw covariance
     rcov <- BinRawCov(GetRawCov(Ly, Lt, obsGrid, muDense, 'Sparse', TRUE))
+
     # Use 1D smoothing on G(s, t) for G^(1,0)(s, t)
     if (is.null(derOptns[['G10_1D']]) || !derOptns[['G10_1D']]) {
       cov10 <- Lwls2DDeriv(bw, kernelType, xin=rcov$tPairs, yin=rcov$meanVals,
@@ -83,18 +85,18 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
     cov11 <- Lwls2DDeriv(bw * 2, kernelType, xin=rcov$tPairs, yin=rcov$meanVals,
                          win=rcov$count, xout1=workGrid, xout2=workGrid,
                          npoly=2L, nder1=1L, nder2=1L)
-    } else { # use true values
-      muDense <- rep(0, length(obsGrid))
-      mu1 <- rep(0, nWorkGrid)
-      cov10 <- ConvertSupport(obsGrid, workGrid, Cov=cov10True, isCrossCov=TRUE)
-      cov11 <- ConvertSupport(obsGrid, workGrid, Cov=cov11True)
-      cov10T <- ConvertSupport(obsGrid, workGrid, Cov=cov10True, isCrossCov=TRUE)
-      cov11T <- ConvertSupport(obsGrid, workGrid, Cov=cov11True)
-      rgl::persp3d(workGrid, workGrid, cov10, xlab='s', ylab='t')
-      rgl::persp3d(workGrid, workGrid, cov10T, xlab='s', ylab='t')
-      rgl::persp3d(workGrid, workGrid, cov11)
-      rgl::persp3d(workGrid, workGrid, cov11T, xlab='s', ylab='t')
-    }
+    # } else { # use true values
+      # muDense <- rep(0, length(obsGrid))
+      # mu1 <- rep(0, nWorkGrid)
+      # cov10 <- ConvertSupport(obsGrid, workGrid, Cov=cov10True, isCrossCov=TRUE)
+      # cov11 <- ConvertSupport(obsGrid, workGrid, Cov=cov11True)
+      # cov10T <- ConvertSupport(obsGrid, workGrid, Cov=cov10True, isCrossCov=TRUE)
+      # cov11T <- ConvertSupport(obsGrid, workGrid, Cov=cov11True)
+      # rgl::persp3d(workGrid, workGrid, cov10, xlab='s', ylab='t')
+      # rgl::persp3d(workGrid, workGrid, cov10T, xlab='s', ylab='t')
+      # rgl::persp3d(workGrid, workGrid, cov11)
+      # rgl::persp3d(workGrid, workGrid, cov11T, xlab='s', ylab='t')
+    # }
     # browser()
     eig <- eigen(cov11) 
     positiveInd <- eig[['values']] >= 0

@@ -36,14 +36,19 @@
 #' 
 #' @export
 
-CreatePathPlot = function(fpcaObj, subset, K=NULL, inputData=fpcaObj[['inputData']], 
-                          showObs=!is.null(inputData), obsOnly=FALSE, showMean=FALSE, 
-                          derOptns = NULL, ...) {
+CreatePathPlot = function(fpcaObj, subset, K=NULL,
+                          inputData=fpcaObj[['inputData']],
+                          showObs=!is.null(inputData), 
+                          obsOnly=FALSE, showMean=FALSE,
+                          derOptns = list(p=0), ...) {
   
   if (missing(fpcaObj)) {
     showFit <- FALSE
     n <- length(inputData[['Lt']])
+    isDer <- FALSE
   } else {
+    isDer <- 'FPCAder' %in% class(fpcaObj) || (!is.null(derOptns[['p']]) &&
+                                               derOptns[['p']] >= 1)
     showFit <- !obsOnly
     n <- dim(fpcaObj[['xiEst']])[1]
   }
@@ -55,7 +60,7 @@ CreatePathPlot = function(fpcaObj, subset, K=NULL, inputData=fpcaObj[['inputData
     warning("specifying 'k' is deprecated. Use 'K' instead!")
   }
   
-  if (!is.null(derOptns[['p']]) && derOptns[['p']] >= 1 && missing(showObs)) {
+  if (isDer && missing(showObs)) {
   # makes no sense to show original observations with derivatives.
     showObs <- FALSE 
   }
@@ -122,7 +127,12 @@ CreatePathPlot = function(fpcaObj, subset, K=NULL, inputData=fpcaObj[['inputData
     do.call(matplot, c(list(x=workGrid, y=t(fit), type='l', add=TRUE ), args1))
   }
   if (showMean) {
-    lines(workGrid, fpcaObj[['mu']], lty=1, lwd=2)
+    if (!isDer) {
+      meanCurve <- fpcaObj[['mu']]
+    } else { # isDer
+      meanCurve <- fpcaObj[['muDer']]
+    }
+    lines(workGrid, meanCurve, lty=1, lwd=2)
   }
    
   invisible()

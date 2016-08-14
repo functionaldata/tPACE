@@ -31,7 +31,7 @@
 #' @export
 
 
-fitted.FPCA <-  function (object, K = NULL, derOptns = list(), ...) {
+fitted.FPCA <-  function (object, K = NULL, derOptns = list(p=0), ...) {
   ddd <- list(...)
   if (!is.null(ddd[['k']])) {
     K <- ddd[['k']]

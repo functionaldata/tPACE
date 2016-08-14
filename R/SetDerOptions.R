@@ -8,7 +8,7 @@ SetDerOptions <- function(fpcaObject = NULL, derOptns = list()) {
   #derOptns$k <- ifelse (is.null(derOptns$k), length(fpcaObject$lambda), derOptns$k)
   # derOptns$GCV <- ifelse (is.null(derOptns$GCV), FALSE, TRUE)
   
-  derOptns$p <- ifelse (is.null(derOptns$p), 0, derOptns$p)
+  derOptns$p <- ifelse (is.null(derOptns$p), 1, derOptns$p)
   derOptns$kernelType <-  ifelse(is.null(derOptns$kernelType), 'gauss',
                                  derOptns$kernelType)
   derOptns$bw <- ifelse( is.null(derOptns$bw), 
