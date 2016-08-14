@@ -6,7 +6,7 @@
 \usage{
 CreatePathPlot(fpcaObj, subset, K = NULL,
   inputData = fpcaObj[["inputData"]], showObs = !is.null(inputData),
-  obsOnly = FALSE, showMean = FALSE, derOptns = NULL, ...)
+  obsOnly = FALSE, showMean = FALSE, derOptns = list(p = 0), ...)
 }
 \arguments{
 \item{fpcaObj}{Returned object from FPCA().}

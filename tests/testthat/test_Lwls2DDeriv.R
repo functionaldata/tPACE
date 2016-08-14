@@ -1,8 +1,8 @@
-devtools::load_all()
+# devtools::load_all()
 library(testthat)
-library(scatterplot3d)
+# library(scatterplot3d)
 
-try(silent=TRUE, load('data/InputFormMllwlskInCpp.RData'))
+try(silent=TRUE, load(system.file('testdata', 'InputFormMllwlskInCpp.RData', package='fdapace')))
 IN <- InputFormMllwlskInCpp
 
 

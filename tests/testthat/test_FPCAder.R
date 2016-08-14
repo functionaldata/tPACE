@@ -1,6 +1,6 @@
 # devtools::load_all()
 library(testthat)
-library(RColorBrewer)
+# library(RColorBrewer)
 
 test_that('FPCAder correct derivatives of mean for dense case', {
   set.seed(1)
