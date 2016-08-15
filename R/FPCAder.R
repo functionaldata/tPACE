@@ -85,6 +85,7 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
     cov11 <- Lwls2DDeriv(bw * 2, kernelType, xin=rcov$tPairs, yin=rcov$meanVals,
                          win=rcov$count, xout1=workGrid, xout2=workGrid,
                          npoly=2L, nder1=1L, nder2=1L)
+    cov11 <- (cov11 + t(cov11)) / 2
     # } else { # use true values
       # muDense <- rep(0, length(obsGrid))
       # mu1 <- rep(0, nWorkGrid)
