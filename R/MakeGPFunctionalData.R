@@ -10,7 +10,7 @@
 #' @param sigma The standard deviation of the Gaussian noise added to each observation points.
 #' @param basisType string specifiying the basis type used; possible options are: 'sin', 'cos' and 'fourier' (default: 'cos') (See code of 'CreateBasis' for implementation details.)
 #'
-#' @return TODO
+#' @return Y: X(t_{j}), Yn: noisy observations
 #' @export
 
 MakeGPFunctionalData <-function(n, M = 100, mu=rep(0,M), K = 2, lambda = rep(1,K), sigma=0, basisType='cos'){

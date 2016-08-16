@@ -23,7 +23,7 @@ MakeGPFunctionalData(n, M = 100, mu = rep(0, M), K = 2, lambda = rep(1,
 \item{basisType}{string specifiying the basis type used; possible options are: 'sin', 'cos' and 'fourier' (default: 'cos') (See code of 'CreateBasis' for implementation details.)}
 }
 \value{
-TODO
+Y: X(t_{j}), Yn: noisy observations
 }
 \description{
 Make a Gaussian process dense functional data sample of size n over a [0,1] support.

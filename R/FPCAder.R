@@ -151,6 +151,72 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
     ret <- append(fpcaObj, list(muDer=mu1, phiDer=phi1, xiDer=xiEst1,
                                 lambdaDer=lambda1, 
                                 derOptns=derOptns))
+  } else if (method == 'DPC1') {
+    if (p != 1) {
+      stop("For method = 'DPC1', p must equal to 1")
+    }
+    xin <- unlist(Lt)
+    yin <- unlist(Ly)
+    ord <- order(xin)
+    xin <- xin[ord]
+    yin <- yin[ord]
+    muDense <- Lwls1D(bw, kernelType, xin=xin, yin=yin, xout=obsGrid)
+    mu1 <- Lwls1D(bw, kernelType, xin=xin, yin=yin, xout=workGrid, npoly=p + 1, nder=p)
+
+    # Get raw covariance
+    rcov <- BinRawCov(GetRawCov(Ly, Lt, obsGrid, muDense, 'Sparse', TRUE))
+
+    cov10 <- Lwls2DDeriv(bw, kernelType, xin=rcov$tPairs, yin=rcov$meanVals,
+                         win=rcov$count, xout1=workGrid, xout2=workGrid,
+                         npoly=1L, nder1=1L, nder2=0L)
+    
+    cov11 <- apply(cov10, 1, function(x) 
+      Lwls1D(bw, kernelType, xin=workGrid, yin=x, xout=workGrid, npoly=2, nder=1)
+    )
+    cov11 <- (cov11 + t(cov11)) / 2
+
+    eig <- eigen(cov11) 
+    positiveInd <- eig[['values']] >= 0
+    if (sum(positiveInd) == 0) {
+      stop('Derivative surface is negative definite')
+    }
+    lambda1 <- eig[['values']][positiveInd] * gridSize
+    FVE1 <- cumsum(lambda1) / sum(lambda1)
+
+    # TODO: select number of derivative components
+    FVEthreshold1 <- 0.9999
+    k <- min(which(FVE1 >= FVEthreshold1))
+    lambda1 <- lambda1[seq_len(k)]
+    phi1 <- apply(eig[['vectors']][, positiveInd, drop=FALSE][, seq_len(k), drop=FALSE], 2, 
+                  function(tmp) 
+                    tmp / sqrt(trapzRcpp(as.numeric(workGrid),
+                                         as.numeric(tmp^2))))
+
+    fittedCov1 <- phi1 %*% diag(lambda1, k) %*% t(phi1)
+
+    # convert phi and fittedCov to obsGrid.
+    zeta <- crossprod(cov10, phi1) * gridSize
+    zetaObs <- ConvertSupport(workGrid, obsGrid, phi=zeta)
+    # zetaObs1 <- ConvertSupport(workGrid, obsGrid, phi=t(cov10)) %*% phi1 * gridSize
+    CovObs <- ConvertSupport(workGrid, obsGrid, Cov=fittedCov)
+    phiObs <- ConvertSupport(workGrid, obsGrid, phi=phi)
+
+    # conditional expectation
+    if (!is.null(derOptns[['userSigma2']])) {
+      sigma2 <- derOptns[['userSigma2']]
+    } else {
+      sigma2 <- ifelse(is.null(fpcaObj[['rho']]), fpcaObj[['sigma2']],
+                       max(fpcaObj[['sigma2']], fpcaObj[['rho']]))
+    }
+    xi1 <- GetCEScores(Ly, Lt, list(verbose=FALSE), 
+                       muDense, obsGrid, CovObs, 
+                       lambda=rep(1, ncol(zetaObs)), zetaObs, 
+                       sigma2)
+    xiEst1 <- t(do.call(cbind, xi1['xiEst', ]))
+
+    ret <- append(fpcaObj, list(muDer=mu1, phiDer=phi1, xiDer=xiEst1,
+                                lambdaDer=lambda1, 
+                                derOptns=derOptns))
   } else if (method == 'FPC') {
     muDer <- Lwls1D(bw, kernelType, rep(1, nWorkGrid), workGrid, fpcaObj$mu, workGrid, p+0, nder= p)
     phiDer <- apply(phi, 2, function(phij) Lwls1D(bw, kernelType, rep(1, nWorkGrid), workGrid, phij, workGrid, p+0, nder= p))
@@ -169,6 +235,27 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
     #    phiDer2 <- apply(phiDer2, 2, function(x)
     #                      getSmoothCurve(t=workGrid, ft=x, GCV =TRUE, kernelType = kernelType, mult=1))
     # }
+
+    ret <- append(fpcaObj, list(muDer = muDer, phiDer = phiDer, derOptns = derOptns))
+  } else if (method == 'FPC1') {
+    xin <- unlist(Lt)
+    yin <- unlist(Ly)
+    ord <- order(xin)
+    xin <- xin[ord]
+    yin <- yin[ord]
+    muDense <- Lwls1D(bw, kernelType, xin=xin, yin=yin, xout=obsGrid)
+    muDer <- Lwls1D(bw, kernelType, xin=xin, yin=yin, xout=workGrid, npoly=p + 1, nder=p)
+
+    # Get raw covariance
+    rcov <- BinRawCov(GetRawCov(Ly, Lt, obsGrid, muDense, 'Sparse', TRUE))
+
+    if (p != 1) {
+      stop("'FPC1' is available only for p=1")
+    }
+    cov10 <- Lwls2DDeriv(bw, kernelType, xin=rcov$tPairs, yin=rcov$meanVals,
+                         win=rcov$count, xout1=workGrid, xout2=workGrid,
+                         npoly=1L, nder1=1L, nder2=0L)
+    phiDer <- cov10 %*% phi %*% diag(1 / lambda[seq_len(ncol(phi))]) * gridSize 
 
     ret <- append(fpcaObj, list(muDer = muDer, phiDer = phiDer, derOptns = derOptns))
   }

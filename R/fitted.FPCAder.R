@@ -50,10 +50,10 @@ fitted.FPCAder <-  function (object, K = NULL, ...) {
       stop("'fitted.FPCAder()' is requested to use more components than it currently has available.")
   }
  
-  if (method == 'DPC') {
+  if (substr(method, 1, 3) == 'DPC') {
     fit <- tcrossprod(derObj[['xiDer']][, seq_len(K), drop=FALSE],
                       derObj[['phiDer']][, seq_len(K), drop=FALSE])
-  } else if (method == 'FPC') {
+  } else if (substr(method, 1, 3) == 'FPC') {
     fit <- tcrossprod(derObj[['xiEst']][, seq_len(K), drop=FALSE],
                       derObj[['phiDer']][, seq_len(K), drop=FALSE])
   }
