@@ -30,7 +30,7 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
   method <- derOptns[['method']]
   bw <- derOptns[['bw']]
   kernelType <- derOptns[['kernelType']]
-  k <- derOptns[['k']]
+  # K <- derOptns[['K']]
 
   # TODO: truncated workGrid/obsGrid may not work
   obsGrid <- fpcaObj$obsGrid
@@ -108,15 +108,15 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
     FVE1 <- cumsum(lambda1) / sum(lambda1)
     # TODO: select number of derivative components
     FVEthreshold1 <- 0.9999
-    k <- min(which(FVE1 >= FVEthreshold1))
-    lambda1 <- lambda1[seq_len(k)]
-    phi1 <- apply(eig[['vectors']][, positiveInd, drop=FALSE][, seq_len(k), drop=FALSE], 2, 
+    K <- min(which(FVE1 >= FVEthreshold1))
+    lambda1 <- lambda1[seq_len(K)]
+    phi1 <- apply(eig[['vectors']][, positiveInd, drop=FALSE][, seq_len(K), drop=FALSE], 2, 
                   function(tmp) 
                     tmp / sqrt(trapzRcpp(as.numeric(workGrid),
                                          as.numeric(tmp^2))))
     # phi1 <- eig[['vectors']][, seq_len(ncol(phi))]
 
-    fittedCov1 <- phi1 %*% diag(lambda1, k) %*% t(phi1)
+    fittedCov1 <- phi1 %*% diag(lambda1, K) %*% t(phi1)
 
     # rgl::persp3d(workGrid, workGrid, fittedCov1)
     # rgl::persp3d(workGrid, workGrid, cov11)
@@ -136,11 +136,27 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
       sigma2 <- ifelse(is.null(fpcaObj[['rho']]), fpcaObj[['sigma2']],
                        max(fpcaObj[['sigma2']], fpcaObj[['rho']]))
     }
+
+    # browser()
     xi1 <- GetCEScores(Ly, Lt, list(verbose=FALSE), 
                        muDense, obsGrid, CovObs, 
-                       lambda=rep(1, ncol(zetaObs)), zetaObs, 
-                       sigma2)
+                       lambda=lambda1, 
+                       phi=zetaObs %*% diag(1 / lambda1, length(lambda1)), 
+                       sigma2=sigma2)
     xiEst1 <- t(do.call(cbind, xi1['xiEst', ]))
+    # xiVar1 <- xi1['xiVar', ]
+    xiVar1 <- lapply(xi1['xiVar', ], function(x) {
+                       # need to truncate negative eigenvalues because cov10 is smoothed--the joint covariance of xi1 and Yi is not garanteed to be PD
+                       eig <- eigen(x)
+                       keep <- eig[['values']] > 0
+                       if (sum(keep) == 0) {
+                         # warning('xiVarDer is unrealiable due to degeneracy')
+                         return(matrix(0, nrow(x), ncol(x)))
+                       } else {
+                         return(eig[['vectors']][, keep, drop=FALSE] %*%
+                                diag(eig[['values']][keep], sum(keep)) %*%
+                                t(eig[['vectors']][, keep, drop=FALSE]))
+                       }})
     # xi <- GetCEScores(Ly, Lt, list(verbose=FALSE), 
                        # muDense, obsGrid, CovObs, 
                        # lambda=lambda, phiObs, 
@@ -148,7 +164,8 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
                               # fpcaObj[['sigma2']], fpcaObj[['rho']]))
     # xiEst <- t(simplify2array(xi['xiEst', ], higher=FALSE))
 
-    ret <- append(fpcaObj, list(muDer=mu1, phiDer=phi1, xiDer=xiEst1,
+    ret <- append(fpcaObj, list(muDer=mu1, phiDer=phi1, 
+                                xiDer=xiEst1, xiVarDer=xiVar1, 
                                 lambdaDer=lambda1, 
                                 derOptns=derOptns))
   } else if (method == 'DPC1') {
@@ -185,14 +202,14 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
 
     # TODO: select number of derivative components
     FVEthreshold1 <- 0.9999
-    k <- min(which(FVE1 >= FVEthreshold1))
-    lambda1 <- lambda1[seq_len(k)]
-    phi1 <- apply(eig[['vectors']][, positiveInd, drop=FALSE][, seq_len(k), drop=FALSE], 2, 
+    K <- min(which(FVE1 >= FVEthreshold1))
+    lambda1 <- lambda1[seq_len(K)]
+    phi1 <- apply(eig[['vectors']][, positiveInd, drop=FALSE][, seq_len(K), drop=FALSE], 2, 
                   function(tmp) 
                     tmp / sqrt(trapzRcpp(as.numeric(workGrid),
                                          as.numeric(tmp^2))))
 
-    fittedCov1 <- phi1 %*% diag(lambda1, k) %*% t(phi1)
+    fittedCov1 <- phi1 %*% diag(lambda1, K) %*% t(phi1)
 
     # convert phi and fittedCov to obsGrid.
     zeta <- crossprod(cov10, phi1) * gridSize
@@ -213,8 +230,10 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
                        lambda=rep(1, ncol(zetaObs)), zetaObs, 
                        sigma2)
     xiEst1 <- t(do.call(cbind, xi1['xiEst', ]))
+    xiVar1 <- t(do.call(cbind, xi1['xiVar', ]))
 
-    ret <- append(fpcaObj, list(muDer=mu1, phiDer=phi1, xiDer=xiEst1,
+    ret <- append(fpcaObj, list(muDer=mu1, phiDer=phi1, 
+                                xiDer=xiEst1, xiVarDer=xiVar1, 
                                 lambdaDer=lambda1, 
                                 derOptns=derOptns))
   } else if (method == 'FPC') {

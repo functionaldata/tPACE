@@ -36,7 +36,7 @@ fitted.FPCAder <-  function (object, K = NULL, ...) {
   # }
   method <- derObj[['derOptns']][['method']]
 
-  if (method == 'DPC') {
+  if (substr(method, 1, 3) == 'DPC') {
     maxK <- length(derObj[['lambdaDer']])
   } else {
     maxK <- length(derObj[['lambda']])
