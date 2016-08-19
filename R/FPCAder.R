@@ -59,7 +59,7 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
     warning('Second derivative is experimental only.')
   } 
 
-  if (method == 'DPC') {
+  if (substr(method, 1, 3) == 'DPC') {
     # if (!derOptns$useTrue) {
     # Get mu'(t)
     xin <- unlist(Lt)
@@ -82,9 +82,18 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
       tmpGrid <- seq(min(workGrid), max(workGrid), length=nWorkGrid - 1)
       cov10 <- ConvertSupport(tmpGrid, workGrid, apply(fpcaObj[['smoothedCov']], 2, diff) / gridSize)
     }
-    cov11 <- Lwls2DDeriv(bw * 2, kernelType, xin=rcov$tPairs, yin=rcov$meanVals,
-                         win=rcov$count, xout1=workGrid, xout2=workGrid,
-                         npoly=2L, nder1=1L, nder2=1L)
+
+    if (method == 'DPC') {
+      cov11 <- Lwls2DDeriv(bw * 2, kernelType, xin=rcov$tPairs,
+                           yin=rcov$meanVals, win=rcov$count, xout1=workGrid,
+                           xout2=workGrid, npoly=2L, nder1=1L, nder2=1L)
+    } else if (method == 'DPC1') {
+      # 1D smooth cov10 to get cov11
+      cov11 <- apply(cov10, 1, function(x) 
+        Lwls1D(bw, kernelType, xin=workGrid, yin=x, xout=workGrid, npoly=2,
+               nder=1)
+      )
+    }
     cov11 <- (cov11 + t(cov11)) / 2
     # } else { # use true values
       # muDense <- rep(0, length(obsGrid))
@@ -116,7 +125,7 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
                                          as.numeric(tmp^2))))
     # phi1 <- eig[['vectors']][, seq_len(ncol(phi))]
 
-    fittedCov1 <- phi1 %*% diag(lambda1, K) %*% t(phi1)
+    # fittedCov1 <- phi1 %*% diag(lambda1, K) %*% t(phi1)
 
     # rgl::persp3d(workGrid, workGrid, fittedCov1)
     # rgl::persp3d(workGrid, workGrid, cov11)
@@ -125,7 +134,6 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
     # convert phi and fittedCov to obsGrid.
     zeta <- crossprod(cov10, phi1) * gridSize
     zetaObs <- ConvertSupport(workGrid, obsGrid, phi=zeta)
-    # zetaObs1 <- ConvertSupport(workGrid, obsGrid, phi=t(cov10)) %*% phi1 * gridSize
     CovObs <- ConvertSupport(workGrid, obsGrid, Cov=fittedCov)
     phiObs <- ConvertSupport(workGrid, obsGrid, phi=phi)
 
@@ -138,15 +146,33 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
     }
 
     # browser()
+
+    # For estimating the xiVar1, Estimate lambdaDer from the difference
+    # quotient surface constructed from smoothedCov, and xiVar1 by truncating
+    # the negative eigenvalues
+    # noSmooth <- !is.null(derOptns[['lambdaDerNoSmooth']]) &&     
+                # derOptns[['lambdaDerNoSmooth']]
+    # if (noSmooth) {
+    d <- function(x) diff(x) / gridSize
+    cov11diff <- apply(apply(fpcaObj[['smoothedCov']], 2, d), 1, d)
+    cov11diff <- (cov11diff + t(cov11diff)) / 2
+    lambdaDerNoSmooth  <- eigen(cov11diff)[['values']] * gridSize
+    lambdaDerNoSmooth  <- lambdaDerNoSmooth [seq_len(K)]
+    # } else {
+      # lambdaDerNoSmooth <- lambda1
+    # }
+
     xi1 <- GetCEScores(Ly, Lt, list(verbose=FALSE), 
                        muDense, obsGrid, CovObs, 
-                       lambda=lambda1, 
-                       phi=zetaObs %*% diag(1 / lambda1, length(lambda1)), 
+                       lambda=lambdaDerNoSmooth, 
+                       phi=zetaObs %*% diag(1 / lambdaDerNoSmooth ,
+                                            length(lambdaDerNoSmooth )), 
                        sigma2=sigma2)
     xiEst1 <- t(do.call(cbind, xi1['xiEst', ]))
-    # xiVar1 <- xi1['xiVar', ]
+    # if (is.null(derOptns[['truncxiVar1']]) || derOptns[['truncxiVar1']]) {
+    # # truncate negative eigenvalues because cov10 is smoothed--the joint
+    # # covariance of xi1 and Yi is not garanteed to be PD. Default to truncate
     xiVar1 <- lapply(xi1['xiVar', ], function(x) {
-                       # need to truncate negative eigenvalues because cov10 is smoothed--the joint covariance of xi1 and Yi is not garanteed to be PD
                        eig <- eigen(x)
                        keep <- eig[['values']] > 0
                        if (sum(keep) == 0) {
@@ -157,6 +183,10 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
                                 diag(eig[['values']][keep], sum(keep)) %*%
                                 t(eig[['vectors']][, keep, drop=FALSE]))
                        }})
+    # } else {
+      # xiVar1 <- xi1['xiVar', ]
+    # }
+
     # xi <- GetCEScores(Ly, Lt, list(verbose=FALSE), 
                        # muDense, obsGrid, CovObs, 
                        # lambda=lambda, phiObs, 
@@ -168,75 +198,11 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
                                 xiDer=xiEst1, xiVarDer=xiVar1, 
                                 lambdaDer=lambda1, 
                                 derOptns=derOptns))
-  } else if (method == 'DPC1') {
-    if (p != 1) {
-      stop("For method = 'DPC1', p must equal to 1")
-    }
-    xin <- unlist(Lt)
-    yin <- unlist(Ly)
-    ord <- order(xin)
-    xin <- xin[ord]
-    yin <- yin[ord]
-    muDense <- Lwls1D(bw, kernelType, xin=xin, yin=yin, xout=obsGrid)
-    mu1 <- Lwls1D(bw, kernelType, xin=xin, yin=yin, xout=workGrid, npoly=p + 1, nder=p)
-
-    # Get raw covariance
-    rcov <- BinRawCov(GetRawCov(Ly, Lt, obsGrid, muDense, 'Sparse', TRUE))
-
-    cov10 <- Lwls2DDeriv(bw, kernelType, xin=rcov$tPairs, yin=rcov$meanVals,
-                         win=rcov$count, xout1=workGrid, xout2=workGrid,
-                         npoly=1L, nder1=1L, nder2=0L)
-    
-    cov11 <- apply(cov10, 1, function(x) 
-      Lwls1D(bw, kernelType, xin=workGrid, yin=x, xout=workGrid, npoly=2, nder=1)
-    )
-    cov11 <- (cov11 + t(cov11)) / 2
-
-    eig <- eigen(cov11) 
-    positiveInd <- eig[['values']] >= 0
-    if (sum(positiveInd) == 0) {
-      stop('Derivative surface is negative definite')
-    }
-    lambda1 <- eig[['values']][positiveInd] * gridSize
-    FVE1 <- cumsum(lambda1) / sum(lambda1)
-
-    # TODO: select number of derivative components
-    FVEthreshold1 <- 0.9999
-    K <- min(which(FVE1 >= FVEthreshold1))
-    lambda1 <- lambda1[seq_len(K)]
-    phi1 <- apply(eig[['vectors']][, positiveInd, drop=FALSE][, seq_len(K), drop=FALSE], 2, 
-                  function(tmp) 
-                    tmp / sqrt(trapzRcpp(as.numeric(workGrid),
-                                         as.numeric(tmp^2))))
-
-    fittedCov1 <- phi1 %*% diag(lambda1, K) %*% t(phi1)
-
-    # convert phi and fittedCov to obsGrid.
-    zeta <- crossprod(cov10, phi1) * gridSize
-    zetaObs <- ConvertSupport(workGrid, obsGrid, phi=zeta)
-    # zetaObs1 <- ConvertSupport(workGrid, obsGrid, phi=t(cov10)) %*% phi1 * gridSize
-    CovObs <- ConvertSupport(workGrid, obsGrid, Cov=fittedCov)
-    phiObs <- ConvertSupport(workGrid, obsGrid, phi=phi)
-
-    # conditional expectation
-    if (!is.null(derOptns[['userSigma2']])) {
-      sigma2 <- derOptns[['userSigma2']]
-    } else {
-      sigma2 <- ifelse(is.null(fpcaObj[['rho']]), fpcaObj[['sigma2']],
-                       max(fpcaObj[['sigma2']], fpcaObj[['rho']]))
-    }
-    xi1 <- GetCEScores(Ly, Lt, list(verbose=FALSE), 
-                       muDense, obsGrid, CovObs, 
-                       lambda=rep(1, ncol(zetaObs)), zetaObs, 
-                       sigma2)
-    xiEst1 <- t(do.call(cbind, xi1['xiEst', ]))
-    xiVar1 <- t(do.call(cbind, xi1['xiVar', ]))
-
-    ret <- append(fpcaObj, list(muDer=mu1, phiDer=phi1, 
-                                xiDer=xiEst1, xiVarDer=xiVar1, 
-                                lambdaDer=lambda1, 
-                                derOptns=derOptns))
+    # if (noSmooth) {
+      # ret <- append(ret, list(lambdaDerNoSmooth = lambdaDerNoSmooth))
+    # }
   } else if (method == 'FPC') {
+    # smooth phi to get phi1
     muDer <- Lwls1D(bw, kernelType, rep(1, nWorkGrid), workGrid, fpcaObj$mu, workGrid, p+0, nder= p)
     phiDer <- apply(phi, 2, function(phij) Lwls1D(bw, kernelType, rep(1, nWorkGrid), workGrid, phij, workGrid, p+0, nder= p))
 
@@ -257,6 +223,7 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
 
     ret <- append(fpcaObj, list(muDer = muDer, phiDer = phiDer, derOptns = derOptns))
   } else if (method == 'FPC1') {
+    # Smooth out cov10 first and then estimate phi1
     xin <- unlist(Lt)
     yin <- unlist(Ly)
     ord <- order(xin)
