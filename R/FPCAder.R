@@ -91,7 +91,7 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
     } else if (method == 'DPC1') {
       # 1D smooth cov10 to get cov11
       cov11 <- apply(cov10, 1, function(x) 
-        Lwls1D(bwCov, kernelType, xin=workGrid, yin=x, xout=workGrid, npoly=2,
+        Lwls1D(bwCov / 2, kernelType, xin=workGrid, yin=x, xout=workGrid, npoly=2,
                nder=1)
       )
     } else if (method == 'DPC2') {
