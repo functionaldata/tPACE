@@ -76,7 +76,7 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
 
     # Use 1D smoothing on G(s, t) for G^(1,0)(s, t)
     if (is.null(derOptns[['G10_1D']]) || !derOptns[['G10_1D']]) {
-      cov10 <- Lwls2DDeriv(bwCov / 2, kernelType, xin=rcov$tPairs, yin=rcov$meanVals,
+      cov10 <- Lwls2DDeriv(bwCov, kernelType, xin=rcov$tPairs, yin=rcov$meanVals,
                            win=rcov$count, xout1=workGrid, xout2=workGrid,
                            npoly=1L, nder1=1L, nder2=0L)
     } else {
@@ -91,7 +91,7 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
     } else if (method == 'DPC1') {
       # 1D smooth cov10 to get cov11
       cov11 <- apply(cov10, 1, function(x) 
-        Lwls1D(bwCov / 2, kernelType, xin=workGrid, yin=x, xout=workGrid, npoly=2,
+        Lwls1D(bwCov, kernelType, xin=workGrid, yin=x, xout=workGrid, npoly=2,
                nder=1)
       )
     } else if (method == 'DPC2') {
