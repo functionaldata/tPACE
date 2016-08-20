@@ -35,9 +35,9 @@ MakeGPFunctionalData <-function(n, M = 100, mu=rep(0,M), K = 2, lambda = rep(1,K
   if(K != length(lambda)){
       stop("Make sure you provide 'lambda's for all 'K' modes of variation.")
   }
-  if( !(basisType %in% c('cos','sin','fourier'))){
-      stop("Make sure you provide a valid parametric basis.")
-  } 
+  # if( !(basisType %in% c('cos','sin','fourier'))){
+      # stop("Make sure you provide a valid parametric basis.")
+  # } 
    
   Ksi <- apply(matrix(rnorm(n*K), ncol=K), 2, scale) %*% diag(sqrt(lambda))
   Phi <- CreateBasis(pts= s, type= basisType, K = K)

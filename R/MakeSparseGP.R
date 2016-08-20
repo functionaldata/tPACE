@@ -37,9 +37,9 @@ MakeSparseGP <- function(n, rdist=runif, sparsity=2:9,
   if(K != length(lambda)){
       stop("Make sure you provide 'lambda's for all 'K' modes of variation.")
   }
-  if( !(basisType %in% c('cos','sin','fourier'))) {
-      stop("Make sure you provide a valid parametric basis.")
-  } 
+  # if( !(basisType %in% c('cos','sin','fourier'))) {
+      # stop("Make sure you provide a valid parametric basis.")
+  # } 
   if (length(sparsity) == 1) {
     sparsity <- c(sparsity, sparsity) # avoid scalar case for sample()
   }

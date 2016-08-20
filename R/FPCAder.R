@@ -7,7 +7,7 @@
 #' \describe{
 #' \item{method}{The method used for obtaining the derivatives. 'DPC': cite, 'FPC': cite}
 #' \item{p}{The order of the derivatives returned (default: 0, max: 2)}
-#' \item{bw}{Bandwidth for smoothing the derivatives (default: p * 0.1 * S). For 'DPC', bw * 2 is used for smoothing G^(1,1)(s,t)}
+#' \item{bw}{Bandwidth for smoothing the derivatives (default: p * 0.1 * S). For 'DPC', bw is used for smoothing G^(1,1)(s,t)}
 #' \item{kernelType}{Smoothing kernel choice; same available types are FPCA(). default('epan')}
 #' }
 #'
@@ -28,7 +28,8 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
   derOptns <- SetDerOptions(fpcaObj,derOptns = derOptns)
   p <- derOptns[['p']]
   method <- derOptns[['method']]
-  bw <- derOptns[['bw']]
+  bwMu <- derOptns[['bwMu']]
+  bwCov <- derOptns[['bwCov']]
   kernelType <- derOptns[['kernelType']]
   # K <- derOptns[['K']]
 
@@ -67,15 +68,15 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
     ord <- order(xin)
     xin <- xin[ord]
     yin <- yin[ord]
-    muDense <- Lwls1D(bw, kernelType, xin=xin, yin=yin, xout=obsGrid)
-    mu1 <- Lwls1D(bw, kernelType, xin=xin, yin=yin, xout=workGrid, npoly=p + 1, nder=p)
+    muDense <- Lwls1D(bwMu, kernelType, xin=xin, yin=yin, xout=obsGrid)
+    mu1 <- Lwls1D(bwMu, kernelType, xin=xin, yin=yin, xout=workGrid, npoly=p + 1, nder=p)
 
     # Get raw covariance
     rcov <- BinRawCov(GetRawCov(Ly, Lt, obsGrid, muDense, 'Sparse', TRUE))
 
     # Use 1D smoothing on G(s, t) for G^(1,0)(s, t)
     if (is.null(derOptns[['G10_1D']]) || !derOptns[['G10_1D']]) {
-      cov10 <- Lwls2DDeriv(bw, kernelType, xin=rcov$tPairs, yin=rcov$meanVals,
+      cov10 <- Lwls2DDeriv(bwCov, kernelType, xin=rcov$tPairs, yin=rcov$meanVals,
                            win=rcov$count, xout1=workGrid, xout2=workGrid,
                            npoly=1L, nder1=1L, nder2=0L)
     } else {
@@ -84,15 +85,21 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
     }
 
     if (method == 'DPC') {
-      cov11 <- Lwls2DDeriv(bw * 2, kernelType, xin=rcov$tPairs,
+      cov11 <- Lwls2DDeriv(bwCov, kernelType, xin=rcov$tPairs,
                            yin=rcov$meanVals, win=rcov$count, xout1=workGrid,
                            xout2=workGrid, npoly=2L, nder1=1L, nder2=1L)
     } else if (method == 'DPC1') {
       # 1D smooth cov10 to get cov11
       cov11 <- apply(cov10, 1, function(x) 
-        Lwls1D(bw, kernelType, xin=workGrid, yin=x, xout=workGrid, npoly=2,
+        Lwls1D(bwCov, kernelType, xin=workGrid, yin=x, xout=workGrid, npoly=2,
                nder=1)
       )
+    } else if (method == 'DPC2') {
+      d <- function(x) diff(x) / gridSize
+      cov11 <- apply(apply(fpcaObj[['smoothedCov']], 2, d), 1, d)
+      cov11 <- ConvertSupport(seq(min(workGrid), max(workGrid),
+                                  length.out=nrow(cov11)),
+                              workGrid, Cov=cov11)
     }
     cov11 <- (cov11 + t(cov11)) / 2
     # } else { # use true values
@@ -157,7 +164,7 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
     cov11diff <- apply(apply(fpcaObj[['smoothedCov']], 2, d), 1, d)
     cov11diff <- (cov11diff + t(cov11diff)) / 2
     lambdaDerNoSmooth  <- eigen(cov11diff)[['values']] * gridSize
-    lambdaDerNoSmooth  <- lambdaDerNoSmooth [seq_len(K)]
+    lambdaDerNoSmooth  <- lambdaDerNoSmooth[seq_len(K)]
     # } else {
       # lambdaDerNoSmooth <- lambda1
     # }
@@ -203,8 +210,8 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
     # }
   } else if (method == 'FPC') {
     # smooth phi to get phi1
-    muDer <- Lwls1D(bw, kernelType, rep(1, nWorkGrid), workGrid, fpcaObj$mu, workGrid, p+0, nder= p)
-    phiDer <- apply(phi, 2, function(phij) Lwls1D(bw, kernelType, rep(1, nWorkGrid), workGrid, phij, workGrid, p+0, nder= p))
+    muDer <- Lwls1D(bwMu, kernelType, rep(1, nWorkGrid), workGrid, fpcaObj$mu, workGrid, p+0, nder= p)
+    phiDer <- apply(phi, 2, function(phij) Lwls1D(bwCov, kernelType, rep(1, nWorkGrid), workGrid, phij, workGrid, p+0, nder= p))
 
     # muDer2<- fpcaObj$mu
     # phiDer2 <- fpcaObj$phi
@@ -229,8 +236,8 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
     ord <- order(xin)
     xin <- xin[ord]
     yin <- yin[ord]
-    muDense <- Lwls1D(bw, kernelType, xin=xin, yin=yin, xout=obsGrid)
-    muDer <- Lwls1D(bw, kernelType, xin=xin, yin=yin, xout=workGrid, npoly=p + 1, nder=p)
+    muDense <- Lwls1D(bwMu, kernelType, xin=xin, yin=yin, xout=obsGrid)
+    muDer <- Lwls1D(bwMu, kernelType, xin=xin, yin=yin, xout=workGrid, npoly=p + 1, nder=p)
 
     # Get raw covariance
     rcov <- BinRawCov(GetRawCov(Ly, Lt, obsGrid, muDense, 'Sparse', TRUE))
@@ -238,7 +245,7 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
     if (p != 1) {
       stop("'FPC1' is available only for p=1")
     }
-    cov10 <- Lwls2DDeriv(bw, kernelType, xin=rcov$tPairs, yin=rcov$meanVals,
+    cov10 <- Lwls2DDeriv(bwCov, kernelType, xin=rcov$tPairs, yin=rcov$meanVals,
                          win=rcov$count, xout1=workGrid, xout2=workGrid,
                          npoly=1L, nder1=1L, nder2=0L)
     phiDer <- cov10 %*% phi %*% diag(1 / lambda[seq_len(ncol(phi))]) * gridSize 
