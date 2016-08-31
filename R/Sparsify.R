@@ -14,38 +14,46 @@
 #' @export
 Sparsify <- function(samp, pts, sparsity, aggressive = FALSE, fragment=FALSE) {
 
-    if (length(sparsity) == 1)
-      sparsity <- c(sparsity, sparsity) # avoid scalar case
+  if (!is.matrix(samp)) {
+    stop('samp needs to be a matrix')
+  }
+  if (ncol(samp) != length(pts)) {
+    stop('The number of columns in samp needs to be equal to the length of pts')
+  }
+  if (length(sparsity) == 1) {
+    sparsity <- c(sparsity, sparsity) # avoid scalar case
+  }
 
-    if (aggressive && fragment)
-      stop('Specify one of `aggressive` or `fragment` only')
-      
-    if (aggressive) {
-      indEach <- lapply(1:nrow(samp), function(x)
-        remotesampling(ncol(samp), sparsity) )
-    } else if (fragment != FALSE) {
-      nptsEach <- fragment / mean(diff(pts))
-      indEach <- lapply(1:nrow(samp), function(x) {
-        ranPts <- range(pts)
-        mid <- runif(1, ranPts[1], ranPts[2])
-        usePts <- which(pts >= mid - 1/2 * diff(ranPts) * fragment & 
-                        pts <= mid + 1/2 * diff(ranPts) * fragment)
-        nSampPts <- sample(sparsity, 1)
-        if (nSampPts >= length(usePts)) usePts else sort(sample(usePts, nSampPts))
-      })
-    } else {
-      indEach <- lapply(1:nrow(samp), function(x) 
-        sort(sample(ncol(samp), sample(sparsity, 1))))
-    }
+  if (aggressive && fragment) {
+    stop('Specify one of `aggressive` or `fragment` only')
+  }
     
-    Lt <- lapply(indEach, function(x) pts[x])
-    Ly <- lapply(1:length(indEach), function(x) {
-        ind <- indEach[[x]]
-        y <- samp[x, ind]
-        return(y)
+  if (aggressive) {
+    indEach <- lapply(1:nrow(samp), function(x)
+      remotesampling(ncol(samp), sparsity) )
+  } else if (fragment != FALSE) {
+    nptsEach <- fragment / mean(diff(pts))
+    indEach <- lapply(1:nrow(samp), function(x) {
+      ranPts <- range(pts)
+      mid <- runif(1, ranPts[1], ranPts[2])
+      usePts <- which(pts >= mid - 1/2 * diff(ranPts) * fragment & 
+                      pts <= mid + 1/2 * diff(ranPts) * fragment)
+      nSampPts <- sample(sparsity, 1)
+      if (nSampPts >= length(usePts)) usePts else sort(sample(usePts, nSampPts))
     })
-   
-    return(list(Lt=Lt, Ly=Ly))
+  } else {
+    indEach <- lapply(1:nrow(samp), function(x) 
+      sort(sample(ncol(samp), sample(sparsity, 1))))
+  }
+  
+  Lt <- lapply(indEach, function(x) pts[x])
+  Ly <- lapply(1:length(indEach), function(x) {
+      ind <- indEach[[x]]
+      y <- samp[x, ind]
+      return(y)
+  })
+ 
+  return(list(Lt=Lt, Ly=Ly))
 }
 
 

@@ -52,7 +52,7 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
     stop("The derivative order p should be in {1, 2}!")
   } 
 
-  if (p == 2 && method == 'DPC') {
+  if (p == 2 && substr(method, 1, 3) == 'DPC') {
     stop('\'DPC\' method does not support p = 2')
   }
 
@@ -100,6 +100,26 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
       cov11 <- ConvertSupport(seq(min(workGrid), max(workGrid),
                                   length.out=nrow(cov11)),
                               workGrid, Cov=cov11)
+    } else if (method == 'DPCCE') {
+      # Condition the derivative curves on the observations.
+      CovObs <- ConvertSupport(workGrid, obsGrid, Cov=fittedCov)
+      cov01Obs <- ConvertSupport(workGrid, obsGrid, phi=t(cov10))
+
+      if (!is.null(derOptns[['userSigma2']])) {
+        sigma2 <- derOptns[['userSigma2']]
+      } else {
+        sigma2 <- ifelse(is.null(fpcaObj[['rho']]), fpcaObj[['sigma2']],
+                         max(fpcaObj[['sigma2']], fpcaObj[['rho']]))
+      }
+
+      xi1 <- GetCEScores(Ly, Lt, list(verbose=FALSE), 
+                         muDense, obsGrid, CovObs, 
+                         lambda=rep(1, nWorkGrid), 
+                         phi=cov01Obs, 
+                         sigma2=sigma2)
+      fit <- t(do.call(cbind, xi1['xiEst', ]) + mu1)
+
+      return(fit)
     }
     cov11 <- (cov11 + t(cov11)) / 2
     # } else { # use true values
