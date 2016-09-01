@@ -14,6 +14,7 @@ test_that('MakeSparseGP works', {
   r7 <- MakeSparseGP(n, lambda=3:1)
   r8 <- MakeSparseGP(n, sigma=1)
   r9 <- MakeSparseGP(n, basisType='sin')
+  r10 <- MakeSparseGP(2, CovFun=function(x) matrix(1, length(x), length(x)))
 
   expect_equal(length(r1$Ly), length(r1$Lt))
   # hist(unlist(r2$Lt))
@@ -28,4 +29,5 @@ test_that('MakeSparseGP works', {
   expect_equal(sd(unlist(r7$Ly)), sqrt(sum(3:1)), tolerance=0.1)
   expect_equal(sd(unlist(r8$Ly) - unlist(r8$LyTrue)), 1, tolerance=0.1)
   expect_equal(mean(abs(unlist(r9$Ly)[unlist(r9$Lt) < 0.05])), 0, scale=1, tolerance=0.5)
+  expect_equal(max(abs(sapply(r10$yCurve, diff))), 0, scale=1, tolerance=1e-6)
 })
