@@ -268,7 +268,7 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
     cov10 <- Lwls2DDeriv(bwCov, kernelType, xin=rcov$tPairs, yin=rcov$meanVals,
                          win=rcov$count, xout1=workGrid, xout2=workGrid,
                          npoly=1L, nder1=1L, nder2=0L)
-    phiDer <- cov10 %*% phi %*% diag(1 / lambda[seq_len(ncol(phi))]) * gridSize 
+    phiDer <- cov10 %*% phi %*% diag(1 / lambda[seq_len(ncol(phi))], ncol(phi)) * gridSize 
 
     ret <- append(fpcaObj, list(muDer = muDer, phiDer = phiDer, derOptns = derOptns))
   }
