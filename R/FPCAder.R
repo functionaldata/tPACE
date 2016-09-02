@@ -223,7 +223,8 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
 
     ret <- append(fpcaObj, list(muDer=mu1, phiDer=phi1, 
                                 xiDer=xiEst1, xiVarDer=xiVar1, 
-                                lambdaDer=lambda1, 
+                                lambdaDer=lambda1,
+                                zeta=zeta,  
                                 derOptns=derOptns))
     # if (noSmooth) {
       # ret <- append(ret, list(lambdaDerNoSmooth = lambdaDerNoSmooth))

@@ -84,13 +84,16 @@ CreatePathPlot = function(fpcaObj, subset, K=NULL,
     subset <- seq_len(n)
   }
 
-  if (showFit) {
+  if (!missing(fpcaObj)) {
     workGrid <- fpcaObj[['workGrid']]
-    fit <- fitted(fpcaObj, K=K, derOptns = derOptns)[subset, , drop=FALSE]
   } else {
-    workGrid <- sort(unique(unlist(inputData[['Lt']])))
+    workGrid <- NA
   }
-  
+
+  if (showFit) {
+    fit <- fitted(fpcaObj, K=K, derOptns = derOptns)[subset, , drop=FALSE]
+  }   
+
   defaultColPalette = palette()
   args1 <- list( xlab= 's', ylab= ' ',col = defaultColPalette, pch=1)    
   args1[names(inargs)] <- inargs
