@@ -24,7 +24,7 @@
 #' \item{kFoldMuCov}{The number of folds to be used for mean and covariance smoothing. Default: 10}
 #' \item{lean}{If TRUE the 'inputData' field in the output list is empty. Default: FALSE}
 #' \item{maxK}{The maximum number of principal components to consider - default: min(20, N-1), N:# of curves}
-#' \item{methodXi}{The method to estimate the PC scores; 'CE' (Condit. Expectation), 'IN' (Numerical Integration) - default: 'CE' for sparse data, 'IN' for dense data.}
+#' \item{methodXi}{The method to estimate the PC scores; 'CE' (Condit. Expectation), 'IN' (Numerical Integration) - default: 'CE' for sparse data and dense data with missing values, 'IN' for dense data.}
 #' \item{methodMuCovEst}{The method to estimate the mean and covariance in the case of dense functional data; 'cross-sectional', 'smooth' - default: 'cross-sectional'}
 #' \item{nRegGrid}{The number of support points in each direction of covariance surface; numeric - default: 51}
 #' \item{numBins}{The number of bins to bin the data into; positive integer > 10, default: NULL}
@@ -131,7 +131,9 @@ FPCA = function(Ly, Lt, optns = list()){
                         regGrid < minGrid + diff(rangeGrid) * outPercent[2] +
                         buff]
 
-## Mean function
+  ymat <- List2Mat(Ly, Lt)
+
+  ## Mean function
   # If the user provided a mean function use it
   userMu <- optns$userMu
   if ( is.list(userMu) && (length(userMu$mu) == length(userMu$t))){
@@ -140,7 +142,6 @@ FPCA = function(Ly, Lt, optns = list()){
   } else if (optns$methodMuCovEst == 'smooth') { # smooth mean
     smcObj = GetSmoothedMeanCurve(Ly, Lt, obsGrid, regGrid, optns)
   } else if (optns$methodMuCovEst == 'cross-sectional') { # cross-sectional mean
-    ymat = List2Mat(Ly,Lt)
     smcObj = GetMeanDense(ymat, obsGrid, optns)
   }
 # mu: the smoothed mean curve evaluated at times 'obsGrid'

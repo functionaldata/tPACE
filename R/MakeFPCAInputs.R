@@ -11,10 +11,9 @@
 
 MakeFPCAInputs <- function(IDs = NULL, tVec, yVec, na.rm=FALSE){
 
-  if ((!is.null(IDs) && any(is.na(IDs)) || 
-       any(is.na(tVec)) || any(is.na(yVec))) && 
+  if ((!is.null(IDs) && any(is.na(IDs)) || any(is.na(tVec))) && 
       na.rm == FALSE) {
-    stop('NAs exist in the input. Use na.rm=TRUE')
+    stop('NAs exist in the IDs or tVec. Use na.rm=TRUE')
   }
 
   if( !is.null(IDs) ){ 
