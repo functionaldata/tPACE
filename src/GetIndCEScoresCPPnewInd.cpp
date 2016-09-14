@@ -26,7 +26,7 @@ Eigen::MatrixXd pinv( const Eigen::MatrixXd& Mat){
 Rcpp::List GetIndCEScoresCPPnewInd( const Eigen::Map<Eigen::VectorXd> & yVec, const Eigen::Map<Eigen::VectorXd> & muVec, const Eigen::Map<Eigen::VectorXd> & lamVec, const Eigen::Map<Eigen::MatrixXd> & phiMat, const Eigen::Map<Eigen::MatrixXd> & SigmaYi, const Eigen::Map<Eigen::MatrixXd> & newPhi, const Eigen::Map<Eigen::VectorXd> & newMu ){ 
   
   // Setting up initial values
-  const unsigned int lenyVec = yVec.size();
+  // const unsigned int lenyVec = yVec.size();
   const unsigned int lenlamVec = lamVec.size(); 
   
   Eigen::MatrixXd xiVar = Eigen::MatrixXd::Constant(lenlamVec,lenlamVec,std::numeric_limits<double>::quiet_NaN());

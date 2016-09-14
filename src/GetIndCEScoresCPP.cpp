@@ -11,7 +11,6 @@ Rcpp::List GetIndCEScoresCPP( const Eigen::Map<Eigen::VectorXd> & yVec, const Ei
 
   // Setting up initial values
 
-  const unsigned int lenyVec = yVec.size();
   const unsigned int lenlamVec = lamVec.size(); 
  
   Eigen::MatrixXd xiVar = Eigen::MatrixXd::Constant(lenlamVec,lenlamVec,std::numeric_limits<double>::quiet_NaN());
