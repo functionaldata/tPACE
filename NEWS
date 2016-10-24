@@ -2,8 +2,11 @@ Current version
 =============
 New functionality:
 * Added obsOnly option to CreatePathPlot.
+* Added derivative estimators (FPCAder, fitted.FPCAder)
+* Miscellaneous update to utility functions (CreateBasis, MakeSparseGP, 
 
 Changes:
+* Covariance GCV bandwidth is modified to prevent oversmoothing.
 * "Diagnostic plots" are renamed.
 * GetNormalisedSample now uses fitted covariance.
 

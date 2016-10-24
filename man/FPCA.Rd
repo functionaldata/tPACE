@@ -56,7 +56,7 @@ Available control options are
 \item{kFoldMuCov}{The number of folds to be used for mean and covariance smoothing. Default: 10}
 \item{lean}{If TRUE the 'inputData' field in the output list is empty. Default: FALSE}
 \item{maxK}{The maximum number of principal components to consider - default: min(20, N-1), N:# of curves}
-\item{methodXi}{The method to estimate the PC scores; 'CE' (Condit. Expectation), 'IN' (Numerical Integration) - default: 'CE' for sparse data, 'IN' for dense data.}
+\item{methodXi}{The method to estimate the PC scores; 'CE' (Condit. Expectation), 'IN' (Numerical Integration) - default: 'CE' for sparse data and dense data with missing values, 'IN' for dense data.}
 \item{methodMuCovEst}{The method to estimate the mean and covariance in the case of dense functional data; 'cross-sectional', 'smooth' - default: 'cross-sectional'}
 \item{nRegGrid}{The number of support points in each direction of covariance surface; numeric - default: 51}
 \item{numBins}{The number of bins to bin the data into; positive integer > 10, default: NULL}

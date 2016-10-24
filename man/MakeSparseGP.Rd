@@ -5,7 +5,8 @@
 \title{Make Gaussian Process Sparse Functional Data sample}
 \usage{
 MakeSparseGP(n, rdist = runif, sparsity = 2:9, muFun = function(x) rep(0,
-  length(x)), K = 2, lambda = rep(1, K), sigma = 0, basisType = "cos")
+  length(x)), K = 2, lambda = rep(1, K), sigma = 0, basisType = "cos",
+  CovFun = NULL)
 }
 \arguments{
 \item{n}{number of samples to generate.}
@@ -23,6 +24,8 @@ MakeSparseGP(n, rdist = runif, sparsity = 2:9, muFun = function(x) rep(0,
 \item{sigma}{The standard deviation of the Gaussian noise added to each observation points.}
 
 \item{basisType}{string specifiying the basis type used; possible options are: 'sin', 'cos' and 'fourier' (default: 'cos') (See code of 'CreateBasis' for implementation details.)}
+
+\item{CovFun}{an alternative specification of the covariance structure.}
 }
 \value{
 TODO
