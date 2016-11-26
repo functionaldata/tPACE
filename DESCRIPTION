@@ -17,6 +17,7 @@ LazyData: false
 Imports:
     Rcpp (>= 0.11.5), 
     Hmisc,
+    survival (>= 2.40.1),
     Matrix,
     pracma, 
     numDeriv
