@@ -18,7 +18,9 @@ A list containing the following fields:
 \item{lambda}{Penalty parameter used.}
 \item{aligned}{Aligned curves evaluated at time 't'}
 \item{h}{Warping functions for 't'} 
-\item{hInv}{Inverse warping functions evaluated at 't'}
+\item{hInv}{Inverse warping functions evaluated at 't'} 
+\item{The mean cost associated with each curve}{costs} 
+\item{timing}{The time required by time-warping.}
 }
 \description{
 Pairwise curve synchronization for functional data

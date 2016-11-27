@@ -14,6 +14,7 @@
 #' \item{subsetting}{Pairwise warping functions are determined by using a subset of the whole sample; numeric (0,1] - default: 0.50}
 #' \item{lambda}{Penalty parameter used for estimating pairwise warping functions; numeric - default : V*10^-4, where V is the average L2 norm of y-mean(y).}
 #' \item{nknots}{Number of knots used for estimating pairwise warping functions; numeric - default: 3} 
+#' \item{isPWL}{Indicator if the resulting warping functions should piece-wise linear, if FALSE 'nknots' is ignored and the resulting warping functions are simply monotonic; logical - default: TRUE} 
 #' \item{seed}{Random seed for the selection of the subset of warping functions; numeric - default: 666}
 #' }
 #' @return A list containing the following fields: 
@@ -21,6 +22,8 @@
 #' \item{aligned}{Aligned curves evaluated at time 't'}
 #' \item{h}{Warping functions for 't'} 
 #' \item{hInv}{Inverse warping functions evaluated at 't'} 
+#' \item{The mean cost associated with each curve}{costs} 
+#' \item{timing}{The time required by time-warping.} 
 #' @examples
 #' N = 50;
 #' eps = 0.05;
@@ -53,13 +56,21 @@
 
 WFDA = function(Ly, Lt, optns = list()){
   
-  if(is.null(optns$nknots)){
-    optns$nknots = 3;
-  } 
-  if( !(optns$nknots %in% 1:7) ){
-    stop("Number of knots should be between 1 and 7.")
+  if(is.null(optns$isPWL)){
+    optns$isPWL = TRUE
   }
   
+  if(optns$isPWL){
+    # Knot related checks
+    if(is.null(optns$nknots)){
+      optns$nknots = 3;
+    } 
+    if( !(optns$nknots %in% 1:7) ){
+      stop("Number of knots should be between 1 and 7.")
+    }
+  }
+  
+  # Subsettig related checks
   if(is.null(optns$subsetting)){
     optns$subsetting = 0.50;
   } 
@@ -67,6 +78,7 @@ WFDA = function(Ly, Lt, optns = list()){
     stop("Number of knots should be above 0 and at most 1.")
   }
   
+  # Averaging related checks
   if(is.null(optns$choice)){
     optns$choice = 'truncated';
   } 
@@ -75,14 +87,17 @@ WFDA = function(Ly, Lt, optns = list()){
   }
   
   theCurrentRandomSeed <- .Random.seed #Store the current random seed to restore in the end of the function.
+  #Restore the current random seed to the state it had in the beginning of the function.
+  on.exit( .Random.seed <- theCurrentRandomSeed )
   
+  # Seed related checks
   if(is.null(optns$seed)){
     optns$seed = 666;
   } 
   if(!(is.numeric(optns$seed))) {
     stop("The seed has to be numeric..")
-  }
-  
+  } 
+   
   # Check the data validity for further analysis
   CheckData(Ly,Lt) 
   inputData <- HandleNumericsAndNAN(Ly,Lt);
@@ -122,7 +137,7 @@ WFDA = function(Ly, Lt, optns = list()){
     lambda = Vy*10^-4
   }
   
-  numOfKcurves = round(optns$subsetting * (N-1)) 
+  numOfKcurves = min(round(optns$subsetting * (N-1)))
   hikMat   <- array(dim = c(numOfKcurves,M,N) ) 
   distMat <- matrix( nrow = N, ncol = numOfKcurves)
   hMat   <- array(dim = c(N,M) )
@@ -137,7 +152,7 @@ WFDA = function(Ly, Lt, optns = list()){
     sum((getcurveJ(tk, curvek)-curvei)^2) + lambda * sum((tk-ti)^2) 
   }
   
-  getHik <- function(curvei, curvek, lambda){
+  getHikRS <- function(curvei, curvek, lambda){
     myCosts <- sapply(1:numOfKcurves^2, function(u){ set.seed(u); 
       theCost(curvei, curvek, lambda, obsGrid,  c(0,sort(runif(M-2)) ,1)) })
     set.seed( which.min( myCosts ) )
@@ -145,15 +160,48 @@ WFDA = function(Ly, Lt, optns = list()){
     return( c(0,sort(runif(M-2)),1) )
   }
   
+  getSol <- function(x){
+    approx(x = seq(0,1, length.out = (2+ optns$nknots)), y = c(0, sort(x),1) ,n = M)$y
+  }
+  
+  theCostOptim <- function(x , curvei, curvek,lambda,ti){
+    tk = getSol(x);
+    sum((getcurveJ(tk, curvek)-curvei)^2) + lambda * sum((tk-ti)^2) 
+  }
+  
+  getHikOptim <- function(curvei, curvek, lambda){
+    s0 <- seq(0,1,length.out = (2+ optns$nknots))[2:(1+optns$nknots)]
+    if( !is.element('minqa', installed.packages()[,1]) ) { 
+      optimRes <- optim( par = s0, fn = theCostOptim, method = 'L-BFGS-B', 
+                         lower = rep(1e-6, optns$nknots), upper = rep(1 - 1e-6, optns$nknots),
+                         curvei = curvei, curvek = curvek, lambda = lambda, ti =obsGrid)
+    } else {
+      optimRes <-  minqa::bobyqa( par = s0, fn = theCostOptim,  
+                                  lower = rep(1e-6, optns$nknots), upper = rep(1 - 1e-6, optns$nknots),
+                                  curvei = curvei, curvek = curvek, lambda = lambda, ti =obsGrid)
+    }
+    bestSol <- getSol(optimRes$par)  
+    return( bestSol )
+  }
+  
+  
+  start <- Sys.time ()
+  if( !is.element('minqa', installed.packages()[,1]) && optns$isPWL){
+    warning("Cannot use 'minqa::bobyqa' to find the optimal knot locations as 'minqa' is not installed. We will do an 'L-BFGS-B' search.") 
+  }
   
   for(i in seq_len(N)){ # For each curve
-    
+    print(i)
     set.seed( i + optns$seed );
     curvei = ymatNormalised[i,];
     candidateKcurves = sample(seq_len(N)[-i], numOfKcurves)  
     
-    for(k in seq_len(numOfKcurves)){ # For each of the candidate curves
-      hikMat[k, ,i] = getHik(curvei, ymatNormalised[candidateKcurves[k],], lambda)
+    for(k in seq_len(numOfKcurves)){ # For each of the candidate curves 
+      if(!optns$isPWL){
+        hikMat[k, ,i] = getHikRS(curvei, ymatNormalised[candidateKcurves[k],], lambda)
+      } else {
+        hikMat[k, ,i] = getHikOptim(curvei, ymatNormalised[candidateKcurves[k],], lambda)
+      }
       distMat[i,k] =  mean( ( getcurveJ(tj =hikMat[k, ,i], curvei) - ymatNormalised[candidateKcurves[k]])^2 )
     }
     
@@ -165,12 +213,12 @@ WFDA = function(Ly, Lt, optns = list()){
     
     hInvMat[i,] = approx(y = obsGrid, x = hMat[i,], xout = obsGrid)$y
     alignedMat[i,] = approx(x = obsGrid, y = ymat[i,], xout = hInvMat[i,])$y
+    
   }  
   
-  ret <- list(lambda = lambda, h = hMat, hInv = hInvMat, aligned = alignedMat)
+  timing = Sys.time () - start
+  ret <- list(lambda = lambda, h = hMat, hInv = hInvMat, aligned = alignedMat, costs = rowMeans(distMat), timing = timing)
   class(ret) <- 'WFDA' 
   
-  #Restore the current random seed to the state it had in the beginning of the function.
-  .Random.seed <- theCurrentRandomSeed; 
   return(ret); 
 }
