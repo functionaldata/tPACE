@@ -191,7 +191,7 @@ WFDA = function(Ly, Lt, optns = list()){
   }
   
   for(i in seq_len(N)){ # For each curve
-    print(i)
+    # print(i)
     set.seed( i + optns$seed );
     curvei = ymatNormalised[i,];
     candidateKcurves = sample(seq_len(N)[-i], numOfKcurves)  
