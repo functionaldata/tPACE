@@ -9,38 +9,6 @@ GetBinnedCurve <- function(x, y, M = 10, isMnumBin = TRUE,
   # nonEmptyOnly : output only non-empty bins (TRUE)
   # limits : lower and upper limit of domain x (a0, b0)
   
-  # Auxilary function 'GetBins'
-  GetBins <-  function(x,y, xx, N){
-    count = rep(0,N-1);
-    newy = count;
-    
-    for (i in  2:(N-1)){    
-      ids = ((x >= xx[i-1]) &  (x < xx[i]));
-      if (all(ids == 0)){
-        count[i-1] = 0;
-        newy[i-1] = NaN;      
-      }
-      else{
-        count[i-1] =   sum(ids);
-        newy[i-1] =  mean(y[ids]); 
-      }
-    }
-    
-    # print('GetBins used')
-    # for the last bin, include the left and right end point
-    ids =  ((x >= xx[i]) &(x <= xx[i+1]));
-    if (all(ids == 0)){
-      count[i] = 0;
-      newy[i] = NaN;
-    }else {
-      count[i] = sum(ids);
-      newy[i] = mean(y[ids]);
-    }
-    
-    zList = list(newy = newy, count = count)
-    return( zList );     
-  }
-  
  
   # Function 'GetBinnedCurve' starts here  
   if( M<0 ){  
@@ -60,7 +28,7 @@ GetBinnedCurve <- function(x, y, M = 10, isMnumBin = TRUE,
     N = M + 1;
     midpoint = xx[1:(N-1)]+(h/2);
     print(midpoint)
-    zList = GetBins(x,y,xx,N);
+    zList = GetBins(x,y,xx)
     newy = zList$newy
     count = zList$count
     
@@ -80,12 +48,15 @@ GetBinnedCurve <- function(x, y, M = 10, isMnumBin = TRUE,
       res = getResMisOne(x,y);
       return(res);
     } else {
-      xx =  seq(limits[1],limits[2],length.out=(1+M))
-      N = length(xx);
-      h = xx[2]-xx[1];
-      midpoint = xx[1:(N-1)]+(h/2);
+      h <- diff(limits) / M
+      xx <- c(limits[1], 
+              seq(limits[1] + h / 2, limits[2] - h / 2, length.out=M - 1), 
+              limits[2])
+      N <- length(xx);
+      midpoint <- seq(limits[1], limits[2], length.out=M)
+      # browser()
       
-      zList = GetBins(x,y,xx,N);
+      zList = GetBins(x,y,xx)
       newy = zList$newy
       count = zList$count
       
@@ -103,6 +74,38 @@ GetBinnedCurve <- function(x, y, M = 10, isMnumBin = TRUE,
   }
 }
 
+# Auxilary function 'GetBins'
+GetBins <-  function(x,y, xx){
+  N <- length(xx)
+  count = rep(0,N-1);
+  newy = count;
+  
+  for (i in  2:(N-1)){    
+    ids = ((x >= xx[i-1]) &  (x < xx[i]));
+    if (all(ids == 0)){
+      count[i-1] = 0;
+      newy[i-1] = NaN;      
+    } else {
+      count[i-1] =   sum(ids);
+      newy[i-1] =  mean(y[ids]); 
+    }
+  }
+  
+  # print('GetBins used')
+  # for the last bin, include the left and right end point
+  ids =  ((x >= xx[i]) &(x <= xx[i+1]));
+  if (all(ids == 0)){
+    count[i] = 0;
+    newy[i] = NaN;
+  }else {
+    count[i] = sum(ids);
+    newy[i] = mean(y[ids]);
+  }
+  
+  zList = list(newy = newy, count = count)
+  return( zList );     
+}
+  
  # Auxilary function 'GetResMisOne'
 getResMisOne <-  function(x, y, h = diff(range(x))){
   r = h;

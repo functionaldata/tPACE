@@ -232,8 +232,11 @@ test_that('Dense data that requires binning', {
   samp <- sampTrue + rnorm(n * length(pts), sd=sqrt(sigma2))
   tmp <- MakeFPCAInputs(tVec=pts, yVec=samp)
 
-  resErr <- FPCA(tmp$Ly, tmp$Lt, list(error=TRUE, dataType='Dense'))
+  resErr <- FPCA(tmp$Ly, tmp$Lt, list(error=TRUE, dataType='Dense', useBinnedData='AUTO'))
+  resErrNoBin <- FPCA(tmp$Ly, tmp$Lt, list(error=TRUE, dataType='Dense', useBinnedData='OFF'))
 
+  expect_equal(range(resErr$obsGrid), range(resErrNoBin$obsGrid))
+  expect_equal(range(resErr$workGrid), range(resErrNoBin$workGrid))
   expect_equal(resErr$sigma2, sigma2, tolerance=1e-1)
   expect_equal(length(resErr$obsGrid), 400)
   expect_equal(length(resErr$workGrid), 400)
