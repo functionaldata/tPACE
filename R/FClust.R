@@ -39,7 +39,7 @@
 #' \cite{Jeng-Min Chiou and Pai-Ling Li, "Functional clustering and identifying substructures of longitudinal data." Journal of the Royal Statistical Society 69 (2007): 679-699}
 #' @export
 
-FClust = function(Ly, Lt, k = 3, cmethod = 'Rmixmod', optnsFPCA = NULL, optnsCS = NULL){ 
+FClust = function(Ly, Lt, k = 3, cmethod = 'Rmixmod', optnsFPCA = NULL, optnsCS = NULL, seed=123){ 
   
   if(is.null(optnsFPCA)){
      optnsFPCA = list( methodMuCovEst = 'smooth', FVEthreshold = 0.90, methodBwCov = 'GCV', methodBwMu = 'GCV')
@@ -62,7 +62,7 @@ FClust = function(Ly, Lt, k = 3, cmethod = 'Rmixmod', optnsFPCA = NULL, optnsCS 
     fpcaObjY <- FPCA(Ly = Ly, Lt = Lt, optnsFPCA)
     xiData <- as.data.frame(fpcaObjY$xiEst) 
     clusterObj <- Rmixmod::mixmodCluster( data = xiData, nbCluster = k, criterion = 'NEC', 
-                          strategy = Rmixmod::mixmodStrategy(algo = c("EM","SEM"), seed = 123),
+                          strategy = Rmixmod::mixmodStrategy(algo = c("EM","SEM"), seed = seed),
                           models = Rmixmod::mixmodGaussianModel( equal.proportions = FALSE, free.proportions = TRUE, family = 'general')) 
     clustConf = apply(Rmixmod::mixmodPredict(data = xiData, classificationRule = clusterObj@bestResult)@proba, 1, which.max)
   } else {
