@@ -8,7 +8,6 @@ sudo: false
 before_install:
   - tlmgr update --self --all
   - tlmgr install listings
-  - R -e 'install.packages("http://cran.r-project.org/src/contrib/Archive/Rcpp/Rcpp_0.12.7.tar.gz", repos = NULL)'
 
 r_packages:
   - survival
@@ -21,3 +20,7 @@ addons:
       - texlive-latex-extra
       
 warnings_are_errors: false
+
+before_script:
+  - R -e 'install.packages("http://cran.r-project.org/src/contrib/Archive/Rcpp/Rcpp_0.12.7.tar.gz", repos = NULL)'
+
