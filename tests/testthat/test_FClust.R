@@ -19,10 +19,10 @@ test_that('the growth example works.', {
 
   load(system.file('data', 'medfly25.RData', package='fdapace'))
   Flies <- MakeFPCAInputs(medfly25$ID, medfly25$Days, medfly25$nEggs) 
-#   for (i in 101:200) {
-#     set.seed(i)
-#     A <- FClust(Flies$Ly, Flies$Lt, optnsFPCA = list(methodMuCovEst = 'smooth', userBwCov = 2, FVEthreshold = 0.90), seed=i)
-#     # B <- FClust(Flies$Ly, Flies$Lt, optnsFPCA = list(methodMuCovEst = 'smooth', userBwCov = 2, FVEthreshold = 0.90), k = 2, seed=i)
-#   }
+   for (i in 101:200) {
+     set.seed(i)
+     A <- FClust(Flies$Ly, Flies$Lt, optnsFPCA = list(methodMuCovEst = 'smooth', userBwCov = 2, FVEthreshold = 0.90), seed=i)
+     B <- FClust(Flies$Ly, Flies$Lt, optnsFPCA = list(methodMuCovEst = 'smooth', userBwCov = 2, FVEthreshold = 0.90), k = 2, seed=i)
+   }
 })
 

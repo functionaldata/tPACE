@@ -62,8 +62,9 @@ FClust = function(Ly, Lt, k = 3, cmethod = 'Rmixmod', optnsFPCA = NULL, optnsCS 
     fpcaObjY <- FPCA(Ly = Ly, Lt = Lt, optnsFPCA)
     xiData <- as.data.frame(fpcaObjY$xiEst) 
     clusterObj <- Rmixmod::mixmodCluster( data = xiData, nbCluster = k, criterion = 'NEC', 
-                          strategy = Rmixmod::mixmodStrategy(algo = c("EM","SEM"), seed = seed),
+                          strategy = Rmixmod::mixmodStrategy(algo = c("EM"), seed = seed),
                           models = Rmixmod::mixmodGaussianModel( equal.proportions = FALSE, free.proportions = TRUE, family = 'general')) 
+    # print(seed)
     clustConf = apply(Rmixmod::mixmodPredict(data = xiData, classificationRule = clusterObj@bestResult)@proba, 1, which.max)
   } else {
     fpcaObjY <- NULL
