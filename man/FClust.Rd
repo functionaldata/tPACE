@@ -5,7 +5,7 @@
 \title{Functional clustering and identifying substructures of longitudinal data}
 \usage{
 FClust(Ly, Lt, k = 3, cmethod = "Rmixmod", optnsFPCA = NULL,
-  optnsCS = NULL)
+  optnsCS = NULL, seed = 123)
 }
 \arguments{
 \item{Ly}{A list of \emph{n} vectors containing the observed values for each individual. Missing values specified by \code{NA}s are supported for dense case (\code{dataType='dense'}).}
@@ -21,6 +21,8 @@ FClust(Ly, Lt, k = 3, cmethod = "Rmixmod", optnsFPCA = NULL,
 
 \item{optnsCS}{A list of options control parameters specified by \code{list(name=value)} to be used for cluster-specific FPCA from kCFC; by default:
 "list( methodMuCovEst ='smooth', FVEthreshold= 0.70, methodBwCov = 'GCV', methodBwMu = 'GCV' )". See `Details in ?FPCA' and '?kCFC'. This is not used by Rmixmod!}
+
+\item{seed}{A positive integer defining the seed of the random number generator, see ?Rmixmod::mixmodStrategy for details; default: 123.}
 }
 \value{
 A list containing the following fields:
@@ -46,9 +48,9 @@ newClust <- FClust(Flies$Ly, Flies$Lt, k = 2, optnsFPCA =
 # than twenty-five eggs during the 25-day period examined.
 
 veryLowCount = ifelse( sapply( unique(medfly25$ID), function(u) 
-                   sum( medfly25$nEggs[medfly25$ID == u] )) < 25, 1, 0)
+                   sum( medfly25$nEggs[medfly25$ID == u] )) < 25, 0, 1)
 N <- length(unique(medfly25$ID))
-(correctRate <- sum( (1 + veryLowCount) ==  newClust$cluster) / N) # 99.62\%; "It's super effective!"
+(correctRate <- sum( (1 + veryLowCount) ==  newClust$cluster) / N) # 99.6\%
 }
 \references{
 \cite{Christophe Biernacki, Gilles Celeux, Gerard Govaert and Florent Langrognet, "Model-Based Cluster and Discriminant Analysis with the MIXMOD Software". Computational Statistics and Data Analysis 51 (2007): 587-600}
