@@ -145,7 +145,8 @@ WFDA = function(Ly, Lt, optns = list()){
   alignedMat   <- array(dim = c(N,M) )
   
   getcurveJ <- function(tj, curvej){
-    approx(x = obsGrid, y = curvej, xout = tj)$y
+    # approx(x = obsGrid, y = curvej, xout = tj)$y
+    RcppPseudoApprox(X = obsGrid, Y = curvej, X_target = tj)
   }
   
   theCost <- function(curvei, curvek,lambda,ti,tk){ 

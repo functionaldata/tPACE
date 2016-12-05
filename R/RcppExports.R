@@ -29,6 +29,10 @@ RCPPmean <- function(X) {
     .Call('fdapace_RCPPmean', PACKAGE = 'fdapace', X)
 }
 
+RcppPseudoApprox <- function(X, Y, X_target) {
+    .Call('fdapace_RcppPseudoApprox', PACKAGE = 'fdapace', X, Y, X_target)
+}
+
 Rcppsort <- function(v) {
     .Call('fdapace_Rcppsort', PACKAGE = 'fdapace', v)
 }

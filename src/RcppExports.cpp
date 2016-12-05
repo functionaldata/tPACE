@@ -107,6 +107,19 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// RcppPseudoApprox
+Eigen::VectorXd RcppPseudoApprox(const Eigen::Map<Eigen::VectorXd>& X, const Eigen::Map<Eigen::VectorXd>& Y, const Eigen::Map<Eigen::VectorXd>& X_target);
+RcppExport SEXP fdapace_RcppPseudoApprox(SEXP XSEXP, SEXP YSEXP, SEXP X_targetSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type X_target(X_targetSEXP);
+    rcpp_result_gen = Rcpp::wrap(RcppPseudoApprox(X, Y, X_target));
+    return rcpp_result_gen;
+END_RCPP
+}
 // Rcppsort
 NumericVector Rcppsort(NumericVector v);
 RcppExport SEXP fdapace_Rcppsort(SEXP vSEXP) {
