@@ -6,9 +6,11 @@ sudo: false
 
 
 before_install:
-  - ./travis-tool.sh bootstrap
   - tlmgr update --self --all
   - tlmgr install listings
+
+r_packages:
+  - survival
 
 addons:
   apt:
