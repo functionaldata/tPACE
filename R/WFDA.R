@@ -154,14 +154,14 @@ WFDA = function(Ly, Lt, optns = list()){
   
   getHikRS <- function(curvei, curvek, lambda){
     myCosts <- sapply(1:numOfKcurves^2, function(u){ set.seed(u); 
-      theCost(curvei, curvek, lambda, obsGrid,  c(0,sort(runif(M-2)) ,1)) })
+      theCost(curvei, curvek, lambda, obsGrid,  c(0,Rcppsort(runif(M-2)) ,1)) })
     set.seed( which.min( myCosts ) )
     minCost <- min(myCosts)  
-    return( c(0,sort(runif(M-2)),1) )
+    return( c(0,Rcppsort(runif(M-2)),1) )
   }
   
   getSol <- function(x){
-    approx(x = seq(0,1, length.out = (2+ optns$nknots)), y = c(0, sort(x),1) ,n = M)$y
+    approx(x = seq(0,1, length.out = (2+ optns$nknots)), y = c(0, Rcppsort(x),1) ,n = M)$y
   }
   
   theCostOptim <- function(x , curvei, curvek,lambda,ti){
@@ -169,9 +169,9 @@ WFDA = function(Ly, Lt, optns = list()){
     sum((getcurveJ(tk, curvek)-curvei)^2) + lambda * sum((tk-ti)^2) 
   }
   
-  getHikOptim <- function(curvei, curvek, lambda){
+  getHikOptim <- function(curvei, curvek, lambda, minqaAvail ){
     s0 <- seq(0,1,length.out = (2+ optns$nknots))[2:(1+optns$nknots)]
-    if( !is.element('minqa', installed.packages()[,1]) ) { 
+    if( !minqaAvail ) { 
       optimRes <- optim( par = s0, fn = theCostOptim, method = 'L-BFGS-B', 
                          lower = rep(1e-6, optns$nknots), upper = rep(1 - 1e-6, optns$nknots),
                          curvei = curvei, curvek = curvek, lambda = lambda, ti =obsGrid)
@@ -188,6 +188,9 @@ WFDA = function(Ly, Lt, optns = list()){
   start <- Sys.time ()
   if( !is.element('minqa', installed.packages()[,1]) && optns$isPWL){
     warning("Cannot use 'minqa::bobyqa' to find the optimal knot locations as 'minqa' is not installed. We will do an 'L-BFGS-B' search.") 
+    minqaAvail = FALSE
+  } else {
+    minqaAvail = TRUE
   }
   
   for(i in seq_len(N)){ # For each curve
@@ -200,7 +203,7 @@ WFDA = function(Ly, Lt, optns = list()){
       if(!optns$isPWL){
         hikMat[k, ,i] = getHikRS(curvei, ymatNormalised[candidateKcurves[k],], lambda)
       } else {
-        hikMat[k, ,i] = getHikOptim(curvei, ymatNormalised[candidateKcurves[k],], lambda)
+        hikMat[k, ,i] = getHikOptim(curvei, ymatNormalised[candidateKcurves[k],], lambda, minqaAvail)
       }
       distMat[i,k] =  mean( ( getcurveJ(tj =hikMat[k, ,i], curvei) - ymatNormalised[candidateKcurves[k]])^2 )
     }
