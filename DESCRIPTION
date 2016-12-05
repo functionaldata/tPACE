@@ -15,9 +15,8 @@ Description: Provides implementation of various methods of Functional Data Analy
 License: BSD_3_clause + file LICENSE
 LazyData: false
 Imports:
-    Rcpp (>= 0.11.5), 
+    Rcpp (>= 0.12.8), 
     Hmisc,
-    survival (>= 2.40.1),
     Matrix,
     pracma, 
     numDeriv
