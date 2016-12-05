@@ -96,11 +96,11 @@ fitted.FPCA <-  function (object, K = NULL, derOptns = list(p=0), ...) {
       return( t(apply(impSample, 1, function(curve) Lwls1D(bw = bw, kernelType, win = rep(1, length(workGrid)), 
                                                          xin = workGrid, yin = curve, xout = workGrid, npoly = p, nder = p))))
     } else if (method == 'DPC') {
-      if (k > ncol(fpcaObj[['xiDer']])) {
-        stop('fpcaObj does not contain k columns!')
+      if (K > ncol(fpcaObj[['xiDer']])) {
+        stop('fpcaObj does not contain K columns!')
       }
-      return(tcrossprod(fpcaObj[['xiDer']][, seq_len(k), drop=FALSE], 
-                        fpcaObj[['phiDer']][, seq_len(k), drop=FALSE]))
+      return(tcrossprod(fpcaObj[['xiDer']][, seq_len(K), drop=FALSE], 
+                        fpcaObj[['phiDer']][, seq_len(K), drop=FALSE]))
     }else {
       stop('You asked for a derivation scheme that is not implemented.')
     }

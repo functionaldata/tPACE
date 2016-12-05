@@ -1,10 +1,10 @@
+# devtools::load_all()
 # setwd('misc/', bwCheck = FALSE) 
 
 library(Rcpp)
 
 library(testthat)
 
-try( silent=TRUE, load(system.file('testdata', 'InputForRotatedMllwlskInCpp.RData', package='fdapace')))
 try( silent=TRUE, load(system.file('testdata', 'InputForRotatedMllwlskInCpp.RData', package='fdapace')))
 
 # tolerance is relatively large because we cannot control of 2500 * 1e-16 anyway 

@@ -42,6 +42,7 @@ GetNormalisedSample<- function(fpcaObj, errorSigma = FALSE){
 }
 
 #' \code{GetNormalizedSample} is an alias of \code{GetNormalizedSample}
+#' @param ... Passed into GetNormalisedSample
 #' @export
 #' @rdname GetNormalisedSample 
 GetNormalizedSample <- function(...) {

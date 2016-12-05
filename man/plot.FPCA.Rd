@@ -7,12 +7,12 @@
 \usage{
 CreateDiagnosticsPlot(...)
 
-\method{plot}{FPCA}(fpcaObj, openNewDev = FALSE, addLegend = TRUE, ...)
+\method{plot}{FPCA}(x, openNewDev = FALSE, addLegend = TRUE, ...)
 }
 \arguments{
 \item{...}{passed into \code{plot.FPCA}.}
 
-\item{fpcaObj}{An FPCA class object returned by FPCA().}
+\item{x}{An FPCA class object returned by FPCA().}
 
 \item{openNewDev}{A logical specifying if a new device should be opened - default: FALSE}
 

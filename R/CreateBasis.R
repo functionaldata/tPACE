@@ -43,7 +43,7 @@ CreateBasis <- function(K, pts=seq(0, 1, length.out=50), type='sin') {
         }
         coef * sqrt(2 * n - 1)
       })
-      xMat <- cbind(1, poly(pts, K - 1, raw=TRUE))
+      xMat <- cbind(1, stats::poly(pts, K - 1, raw=TRUE))
       res <- xMat %*% coefMat
       # browser()
     }
@@ -51,7 +51,7 @@ CreateBasis <- function(K, pts=seq(0, 1, length.out=50), type='sin') {
     if (K == 1) {
       res <- matrix(1, length(pts), 1)
     } else if (K > 1) {
-     res <- cbind(1, poly(pts, K - 1, raw=TRUE))
+     res <- cbind(1, stats::poly(pts, K - 1, raw=TRUE))
     }
   } else if (type == 'unknown') {
     stop('unknown basis type')

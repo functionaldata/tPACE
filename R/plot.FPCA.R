@@ -4,7 +4,7 @@
 #' and the first three eigenfunctions of a sample. If provided with a derivative options object (?FPCAder) it will return the 
 #' differentiated mean and first two principal modes of variations for 50\%, 75\%, 100\%, 125\% and 150\% of the defined bandwidth choice.
 #'
-#' @param fpcaObj An FPCA class object returned by FPCA().
+#' @param x An FPCA class object returned by FPCA().
 #' @param openNewDev A logical specifying if a new device should be opened - default: FALSE
 #' @param addLegend A logical specifying whether to add legend.
 #'
@@ -22,7 +22,9 @@
 #'             list(dataType='Sparse', error=FALSE, kernel='epan', verbose=FALSE))
 #' plot(res1)
 #' @export
-plot.FPCA <- function(fpcaObj, openNewDev = FALSE, addLegend=TRUE, ...){ 
+plot.FPCA <- function(x, openNewDev = FALSE, addLegend=TRUE, ...){ 
+
+  fpcaObj <- x
   
   oldPar <- par(no.readonly=TRUE)
   if (any(oldPar[['pin']] < 0)) {

@@ -25,6 +25,12 @@ Lwls2DDeriv(bw, kern = "epan", xin, yin, win = NULL, xout1 = NULL,
 
 \item{xout}{alternative to xout1 and xout2. A matrix of p by 2 specifying the output points (may be inefficient if the size of \code{xout} is small).}
 
+\item{npoly}{The degree of polynomials (include all \eqn{x^a y^b} terms where \eqn{a + b <= npoly})}
+
+\item{nder1}{Order of derivative in the first direction}
+
+\item{nder2}{Order of derivative in the second direction}
+
 \item{subset}{a vector with the indices of x-/y-/w-in to be used (Default: NULL)}
 
 \item{crosscov}{using function for cross-covariance estimation (Default: TRUE)}

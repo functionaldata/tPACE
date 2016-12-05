@@ -13,6 +13,8 @@ GetNormalizedSample(...)
 \item{fpcaObj}{An FPCA object.}
 
 \item{errorSigma}{Indicator to use sigma^2 error variance when normalising the data (default: FALSE)}
+
+\item{...}{Passed into GetNormalisedSample}
 }
 \value{
 A list containing the normalised sample 'y' at times 't'

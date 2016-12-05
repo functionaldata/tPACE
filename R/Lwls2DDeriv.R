@@ -9,6 +9,9 @@
 #' @param xout1 a p1-vector of first output coordinate grid. Defaults to the input gridpoints if left unspecified.
 #' @param xout2 a p2-vector of second output coordinate grid. Defaults to the input gridpoints if left unspecified.
 #' @param xout alternative to xout1 and xout2. A matrix of p by 2 specifying the output points (may be inefficient if the size of \code{xout} is small).
+#' @param npoly The degree of polynomials (include all \eqn{x^a y^b} terms where \eqn{a + b <= npoly})
+#' @param nder1 Order of derivative in the first direction
+#' @param nder2 Order of derivative in the second direction
 #' @param crosscov using function for cross-covariance estimation (Default: TRUE)
 #' @param subset  a vector with the indices of x-/y-/w-in to be used (Default: NULL)
 #' @param method should one try to sort the values xin and yin before using the lwls smoother? if yes ('sort2' - default for non-Gaussian kernels), if no ('plain' - fully stable; de)
