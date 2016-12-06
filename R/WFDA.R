@@ -162,7 +162,8 @@ WFDA = function(Ly, Lt, optns = list()){
   }
   
   getSol <- function(x){
-    approx(x = seq(0,1, length.out = (2+ optns$nknots)), y = c(0, Rcppsort(x),1) ,n = M)$y
+    #approx(x = seq(0,1, length.out = (2+ optns$nknots)), y = c(0, Rcppsort(x),1) ,n = M)$y
+    RcppPseudoApprox(X = seq(0,1, length.out = (2+ optns$nknots)), Y = c(0, Rcppsort(x),1), X_target = seq(0,1, length.out = M))
   }
   
   theCostOptim <- function(x , curvei, curvek,lambda,ti){
