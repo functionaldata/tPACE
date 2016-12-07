@@ -120,6 +120,7 @@ WFDA = function(Ly, Lt, optns = list()){
   
   obsGrid = sort(unique( c(unlist(Lt))));
   workGrid = (obsGrid - min(obsGrid))/ max(obsGrid - min(obsGrid)) # Same grid on [0,1]
+  M = length(workGrid)
   
   ## Super-norm normalization 
   maxAtTimeT = apply(ymat,2, function(u) max(abs(u)));
