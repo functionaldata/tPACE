@@ -115,10 +115,11 @@ WFDA = function(Ly, Lt, optns = list()){
   numOfCurves = length(Ly);
   CheckOptions(Lt, optnsFPCA,numOfCurves)
   
-  obsGrid = sort(unique( c(unlist(Lt))));
-  
   ymat <- List2Mat(Ly, Lt)
   N = nrow(ymat)
+  
+  obsGrid = sort(unique( c(unlist(Lt))));
+  workGrid = (obsGrid - min(obsGrid))/ max(obsGrid - min(obsGrid)) # Same grid on [0,1]
   
   ## Super-norm normalization 
   maxAtTimeT = apply(ymat,2, function(u) max(abs(u)));
@@ -146,7 +147,7 @@ WFDA = function(Ly, Lt, optns = list()){
   
   getcurveJ <- function(tj, curvej){
     # approx(x = obsGrid, y = curvej, xout = tj)$y
-    RcppPseudoApprox(X = obsGrid, Y = curvej, X_target = tj)
+    RcppPseudoApprox(X = workGrid, Y = curvej, X_target = tj)
   }
   
   theCost <- function(curvei, curvek,lambda,ti,tk){ 
@@ -155,7 +156,7 @@ WFDA = function(Ly, Lt, optns = list()){
   
   getHikRS <- function(curvei, curvek, lambda){
     myCosts <- sapply(1:numOfKcurves^2, function(u){ set.seed(u); 
-      theCost(curvei, curvek, lambda, obsGrid,  c(0,Rcppsort(runif(M-2)) ,1)) })
+      theCost(curvei, curvek, lambda, workGrid,  c(0,Rcppsort(runif(M-2)) ,1)) })
     set.seed( which.min( myCosts ) )
     minCost <- min(myCosts)  
     return( c(0,Rcppsort(runif(M-2)),1) )
@@ -176,16 +177,15 @@ WFDA = function(Ly, Lt, optns = list()){
     if( !minqaAvail ) { 
       optimRes <- optim( par = s0, fn = theCostOptim, method = 'L-BFGS-B', 
                          lower = rep(1e-6, optns$nknots), upper = rep(1 - 1e-6, optns$nknots),
-                         curvei = curvei, curvek = curvek, lambda = lambda, ti =obsGrid)
+                         curvei = curvei, curvek = curvek, lambda = lambda, ti =workGrid)
     } else {
       optimRes <-  minqa::bobyqa( par = s0, fn = theCostOptim,  
                                   lower = rep(1e-6, optns$nknots), upper = rep(1 - 1e-6, optns$nknots),
-                                  curvei = curvei, curvek = curvek, lambda = lambda, ti =obsGrid)
+                                  curvei = curvei, curvek = curvek, lambda = lambda, ti =workGrid)
     }
     bestSol <- getSol(optimRes$par)  
     return( bestSol )
   }
-  
   
   start <- Sys.time ()
   if( !is.element('minqa', installed.packages()[,1]) && optns$isPWL){
@@ -216,8 +216,8 @@ WFDA = function(Ly, Lt, optns = list()){
       hMat[i,] = apply(hikMat[  (distMat[i,] <= quantile( distMat[i,], p=0.90) ),  ,i] , 2, mean)
     }
     
-    hInvMat[i,] = approx(y = obsGrid, x = hMat[i,], xout = obsGrid)$y
-    alignedMat[i,] = approx(x = obsGrid, y = ymat[i,], xout = hInvMat[i,])$y
+    hInvMat[i,] = approx(y = workGrid, x = hMat[i,], xout = workGrid)$y
+    alignedMat[i,] = approx(x = workGrid, y = ymat[i,], xout = hInvMat[i,])$y
     
   }  
   

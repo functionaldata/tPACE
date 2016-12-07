@@ -10,7 +10,8 @@ float LinearInterpolation ( const Eigen::Map<Eigen::VectorXd> & X ,  const Eigen
   //PointOfInterest : Point of X to estimate the new point of Y
   
   float   xk, xkp1, yk, ykp1 = 0;  //Points adjecent to the point of interpolation
-  if ( X.size() != Y.size() ){Rcpp::warning("Problem with vector sizes"); return(-1);}
+  if ( X.size() != Y.size() ){
+    Rcpp::stop("Problem with unequal vector sizes when doing linear interpolation.");}
   //cout <<  " X(0): " <<  X(0) <<" X(Y.size()-1): " <<X(Y.size()-1)   <<   " Point of interest: " << X_PointOfInterest<< endl;
   if ( X_PointOfInterest < X(0) || X_PointOfInterest > X(Y.size()-1) ){Rcpp::warning("You interpolate out of the curve boundaries"); return(-1);}
   //Find the points right before and right after the point of interest
