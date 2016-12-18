@@ -1,7 +1,7 @@
 library(testthat)
 # devtools::load_all('.')
 
-test_that('FuncCorrCent works', {
+test_that('FCCor works', {
   set.seed(4)
 
   n <- 200
@@ -26,13 +26,13 @@ test_that('FuncCorrCent works', {
   expect_equal(sapply(Xsp, length), sapply(tAll, length))
 
   # Perfect correlation case
-  expect_equal(mean(FuncCorrCent(Xsp, Xsp, tAll, bw)[['corr']], na.rm=TRUE), 1)
+  expect_equal(mean(FCCor(Xsp, Xsp, tAll, bw)[['corr']], na.rm=TRUE), 1)
 
   # Consistency
-  expect_true(mean((FuncCorrCent(Xsp, Ysp, tAll, bw, kern)[['corr']] - 0.5)^2, na.rm=TRUE) < 1e-2)
+  expect_true(mean((FCCor(Xsp, Ysp, tAll, bw, kern)[['corr']] - 0.5)^2, na.rm=TRUE) < 1e-2)
 
   # Gauss and epan kernels are similar
-  expect_equal(FuncCorrCent(Xsp, Ysp, tAll, bw, 'epan')[['corr']], FuncCorrCent(Xsp, Ysp, tAll, bw, 'gauss')[['corr']], 0.1)
+  expect_equal(FCCor(Xsp, Ysp, tAll, bw, 'epan')[['corr']], FCCor(Xsp, Ysp, tAll, bw, 'gauss')[['corr']], 0.1)
 })
 
 

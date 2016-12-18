@@ -7,7 +7,7 @@
 #' @param kern Smoothing kernel for mu and covariance; "rect", "gauss", "epan", "gausvar", "quar" (default: "gauss")
 #' @param Tout Output time points. Default to the sorted unique time points. 
 #'
-#' @details \code{FuncCorrCent} calculate only the concurrent correlation corr(X(t), Y(t)) (note that the time points t are the same). It assumes no measurement error in the observed values.
+#' @details \code{FCCor} calculate only the concurrent correlation corr(X(t), Y(t)) (note that the time points t are the same). It assumes no measurement error in the observed values.
 #' @return A list with the following components:
 #' \item{corr}{A vector of the correlation corr(X(t), Y(t)) evaluated at \code{Tout}.}
 #' \item{Tout}{Same as the input Tout.}
@@ -33,11 +33,11 @@
 #' Xsp <- lapply(1:n, function(i) X[i, indEach[[i]]])
 #' Ysp <- lapply(1:n, function(i) Y[i, indEach[[i]]])
 #' 
-#' plot(T, FuncCorrCent(Xsp, Ysp, tAll, bw)[['corr']], ylim=c(-1, 1))
+#' plot(T, FCCor(Xsp, Ysp, tAll, bw)[['corr']], ylim=c(-1, 1))
 #' abline(h=0.5)
 #' @export
 
-FuncCorrCent <- function(x, y, Lt, bw=stop('bw missing'), kern='epan', Tout=sort(unique(unlist(Lt)))) {
+FCCor <- function(x, y, Lt, bw=stop('bw missing'), kern='epan', Tout=sort(unique(unlist(Lt)))) {
   
   stopifnot(!is.null(x) && !is.null(y) && !is.null(Lt))
   

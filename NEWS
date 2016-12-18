@@ -3,6 +3,7 @@ Current version
 New functionality:
 * Added obsOnly option to CreatePathPlot.
 * Added derivative estimators (FPCAder, fitted.FPCAder)
+* Added functional concurrent correlation (FCCor).
 * Miscellaneous update to utility functions (CreateBasis, MakeSparseGP, 
 
 Changes:
