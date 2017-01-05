@@ -4,25 +4,27 @@
 #' 
 #' @param Ly A list of \emph{n} vectors containing the observed values for each individual. Missing values specified by \code{NA}s are supported for dense case (\code{dataType='dense'}).
 #' @param Lt A list of \emph{n} vectors containing the observation time points for each individual corresponding to y. Each vector should be sorted in ascending order.
-#' @param optns A list of options control parameters specified by \code{list(name=value)}. See `Details'.
+#' @param optns A list of options control parameters specified by \code{list(name=value)}. See 'Details'.
 #'
-#' @details WFDA uses a pairwise warping method to obtain the desired alignment (registration) of the random trajectories. The data has to be regular. The routine returns the aligned curves and the associated warping function. 
+#' @details WFDA uses a pairwise warping method to obtain the desired alignment (registration) of the random trajectories. 
+#' The data has to be regular. The routine returns the aligned curves and the associated warping function. 
 #' 
 #' Available control options are 
 #' \describe{
-#' \item{choice}{Choice of estimating the warping functions ('weighted' or 'truncated'). If 'weighted' then weighted averages of pairwise warping functions are computed; the weighting is based on the inverse pairwise distances. If 'truncated' the pairs with the top 10% largest distances are truncated and the simple average of the remaining pairwise distances are used - default: 'truncated'}
-#' \item{subsetting}{Pairwise warping functions are determined by using a subset of the whole sample; numeric (0,1] - default: 0.50}
+#' \item{choice}{Choice of estimating the warping functions ('weighted' or 'truncated'). If 'weighted' then weighted averages of pairwise warping functions are computed; the weighting is based on the inverse pairwise distances. If 'truncated' the pairs with the top 10\% largest distances are truncated and the simple average of the remaining pairwise distances are used - default: 'truncated'}
+#' \item{subsetProp}{Pairwise warping functions are determined by using a subset of the whole sample; numeric (0,1] - default: 0.50}
 #' \item{lambda}{Penalty parameter used for estimating pairwise warping functions; numeric - default : V*10^-4, where V is the average L2 norm of y-mean(y).}
-#' \item{nknots}{Number of knots used for estimating pairwise warping functions; numeric - default: 3} 
-#' \item{isPWL}{Indicator if the resulting warping functions should piece-wise linear, if FALSE 'nknots' is ignored and the resulting warping functions are simply monotonic; logical - default: TRUE} 
+#' \item{nknots}{Number of knots used for estimating the piece-wise linear pairwise warping functions; numeric - default: 2} 
+#' \item{isPWL}{Indicator if the resulting warping functions should piece-wise linear, if FALSE 'nknots' is ignored and the resulting warping functions are simply monotonic; logical - default: TRUE (significantly larger computation time.)} 
 #' \item{seed}{Random seed for the selection of the subset of warping functions; numeric - default: 666}
+#' \item{verbose}{Indicator if the progress of the pairwise warping procedure should be displayed; logical - default: FALSE}
 #' }
 #' @return A list containing the following fields: 
 #' \item{lambda}{Penalty parameter used.}
 #' \item{aligned}{Aligned curves evaluated at time 't'}
 #' \item{h}{Warping functions for 't'} 
 #' \item{hInv}{Inverse warping functions evaluated at 't'} 
-#' \item{The mean cost associated with each curve}{costs} 
+#' \item{costs}{The mean cost associated with each curve} 
 #' \item{timing}{The time required by time-warping.} 
 #' @examples
 #' N = 50;
@@ -60,10 +62,14 @@ WFDA = function(Ly, Lt, optns = list()){
     optns$isPWL = TRUE
   }
   
+  if(is.null(optns$verbose)){
+    optns$verbose = FALSE
+  }
+  
   if(optns$isPWL){
     # Knot related checks
     if(is.null(optns$nknots)){
-      optns$nknots = 3;
+      optns$nknots = 2;
     } 
     if( !(optns$nknots %in% 1:7) ){
       stop("Number of knots should be between 1 and 7.")
@@ -71,11 +77,11 @@ WFDA = function(Ly, Lt, optns = list()){
   }
   
   # Subsettig related checks
-  if(is.null(optns$subsetting)){
-    optns$subsetting = 0.50;
+  if(is.null(optns$subsetProp)){
+    optns$subsetProp = 0.50;
   } 
-  if(findInterval(optns$subsetting - .Machine$double.eps, c(0,1)) != 1){
-    stop("Number of knots should be above 0 and at most 1.")
+  if(findInterval(optns$subsetProp - .Machine$double.eps, c(0,1)) != 1){
+    stop("Number of proportion used should be above 0 and at most 1.")
   }
   
   # Averaging related checks
@@ -95,7 +101,7 @@ WFDA = function(Ly, Lt, optns = list()){
     optns$seed = 666;
   } 
   if(!(is.numeric(optns$seed))) {
-    stop("The seed has to be numeric..")
+    stop("The seed has to be numeric.")
   } 
    
   # Check the data validity for further analysis
@@ -123,10 +129,9 @@ WFDA = function(Ly, Lt, optns = list()){
   M = length(workGrid)
   
   ## Super-norm normalization 
-  maxAtTimeT = apply(ymat,2, function(u) max(abs(u)));
-  maxAtTimeT[maxAtTimeT == 0] <- 1 ; #0/1 is still 0 so we are good.
+  maxAtTimeT = apply(ymat,1, function(u) max(abs(u))); 
   
-  ymatNormalised <- ymat / rep(maxAtTimeT, each= N) # This is a very strong normalisation; check with Hans, I suspect it can lead to non-smooth artifacts.
+  ymatNormalised <- ymat / rep(maxAtTimeT, times = M)  
   
   ## Mean function
   smcObj = GetMeanDense(ymatNormalised, obsGrid, optnsFPCA)
@@ -139,7 +144,7 @@ WFDA = function(Ly, Lt, optns = list()){
     lambda = Vy*10^-4
   }
   
-  numOfKcurves = min(round(optns$subsetting * (N-1)))
+  numOfKcurves = min(round(optns$subsetProp * (N-1)))
   hikMat   <- array(dim = c(numOfKcurves,M,N) ) 
   distMat <- matrix( nrow = N, ncol = numOfKcurves)
   hMat   <- array(dim = c(N,M) )
@@ -197,7 +202,9 @@ WFDA = function(Ly, Lt, optns = list()){
   }
   
   for(i in seq_len(N)){ # For each curve
-    # print(i)
+    if(optns$verbose){
+      cat('Computing pairwise warping for curve #:', i, ' out of', N, 'curves.\n')
+    }
     set.seed( i + optns$seed );
     curvei = ymatNormalised[i,];
     candidateKcurves = sample(seq_len(N)[-i], numOfKcurves)  

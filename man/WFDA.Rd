@@ -11,7 +11,7 @@ WFDA(Ly, Lt, optns = list())
 
 \item{Lt}{A list of \emph{n} vectors containing the observation time points for each individual corresponding to y. Each vector should be sorted in ascending order.}
 
-\item{optns}{A list of options control parameters specified by \code{list(name=value)}. See `Details'.}
+\item{optns}{A list of options control parameters specified by \code{list(name=value)}. See 'Details'.}
 }
 \value{
 A list containing the following fields: 
@@ -19,11 +19,26 @@ A list containing the following fields:
 \item{aligned}{Aligned curves evaluated at time 't'}
 \item{h}{Warping functions for 't'} 
 \item{hInv}{Inverse warping functions evaluated at 't'} 
-\item{The mean cost associated with each curve}{costs} 
+\item{costs}{The mean cost associated with each curve} 
 \item{timing}{The time required by time-warping.}
 }
 \description{
 Pairwise curve synchronization for functional data
+}
+\details{
+WFDA uses a pairwise warping method to obtain the desired alignment (registration) of the random trajectories. 
+The data has to be regular. The routine returns the aligned curves and the associated warping function. 
+
+Available control options are 
+\describe{
+\item{choice}{Choice of estimating the warping functions ('weighted' or 'truncated'). If 'weighted' then weighted averages of pairwise warping functions are computed; the weighting is based on the inverse pairwise distances. If 'truncated' the pairs with the top 10\% largest distances are truncated and the simple average of the remaining pairwise distances are used - default: 'truncated'}
+\item{subsetProp}{Pairwise warping functions are determined by using a subset of the whole sample; numeric (0,1] - default: 0.50}
+\item{lambda}{Penalty parameter used for estimating pairwise warping functions; numeric - default : V*10^-4, where V is the average L2 norm of y-mean(y).}
+\item{nknots}{Number of knots used for estimating the piece-wise linear pairwise warping functions; numeric - default: 2} 
+\item{isPWL}{Indicator if the resulting warping functions should piece-wise linear, if FALSE 'nknots' is ignored and the resulting warping functions are simply monotonic; logical - default: TRUE (significantly larger computation time.)} 
+\item{seed}{Random seed for the selection of the subset of warping functions; numeric - default: 666}
+\item{verbose}{Indicator if the progress of the pairwise warping procedure should be displayed; logical - default: FALSE}
+}
 }
 \examples{
 N = 50;
