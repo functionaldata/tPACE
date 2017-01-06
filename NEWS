@@ -4,7 +4,8 @@ New functionality:
 * Added obsOnly option to CreatePathPlot.
 * Added derivative estimators (FPCAder, fitted.FPCAder)
 * Added functional concurrent correlation (FCCor).
-* Miscellaneous update to utility functions (CreateBasis, MakeSparseGP, 
+* Added pairwise curve synchronization for functional data (WFDA).
+* Miscellaneous update to utility functions (CreateBasis, MakeSparseGP)
 
 Changes:
 * Covariance GCV bandwidth is modified to prevent oversmoothing.
