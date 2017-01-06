@@ -7,7 +7,7 @@
 WFDA(Ly, Lt, optns = list())
 }
 \arguments{
-\item{Ly}{A list of \emph{n} vectors containing the observed values for each individual. Missing values specified by \code{NA}s are supported for dense case (\code{dataType='dense'}).}
+\item{Ly}{A list of \emph{n} vectors containing the observed values for each individual.}
 
 \item{Lt}{A list of \emph{n} vectors containing the observation time points for each individual corresponding to y. Each vector should be sorted in ascending order.}
 
@@ -41,29 +41,30 @@ Available control options are
 }
 }
 \examples{
-N = 50;
-eps = 0.05;
-M = 51;
+N = 44;
+eps = 0.123;
+M = 41;
 set.seed(123) 
-me <- function(t) exp(-10*(t-0.5)^2);
-T = seq(0,1,length.out = M) 
+Tfinal = 3
+me <- function(t) exp(-Tfinal*(((t/Tfinal^2)-0.5))^2);
+T = seq(0,Tfinal,length.out = M) 
 recondingTimesMat = matrix(nrow = N, ncol = M)
 yMat = matrix(nrow = N, ncol = M)
 
 for (i in 1:N){
-  peak = runif(min = 0.3,max =  0.7,1)# rnorm(1, mean=0.5, sd= 0.133)
-  recondingTimesMat[i,] = sort( c(0,    runif(min = 0, max = peak, n = round((M-3)/2)), 
-                                  peak, runif(min = peak, max = 1, n = round((M-3)/2)), 1) )
-  yMat[i,] = me(recondingTimesMat[i,])  + rnorm(M, mean=0.0, sd=  eps) 
+  peak = runif(min = 0.2,max =  0.8,1)*Tfinal 
+  recondingTimesMat[i,] = Tfinal* sort( unique(c( seq(0.0 , peak, length.out = round((M+1)/2)),
+                                                  seq( peak, Tfinal, length.out = round((M+1)/2))) ))
+  yMat[i,] = me(recondingTimesMat[i,])* rnorm(1, mean=4.0, sd=  eps)    + rnorm(M, mean=0.0, sd=  eps) 
 }
 
 Y = as.list(as.data.frame(t(yMat)))
 X = rep(list(T),N)
-
-sss =  WFDA(Y, X)
+ 
+sss =  WFDA(Ly = Y, Lt = X, list( choice = 'weighted' ))
 par(mfrow=c(1,2))
-matplot(x= T, t(yMat), t='l'); grid()
-matplot(x= T, t(sss$aligned), t='l'); grid() 
+matplot(x= T, t(yMat), t='l', main = 'Raw', ylab = 'Y'); grid()
+matplot(x= T, t(sss$aligned), t='l', main = 'Aligned', ylab='Y'); grid() 
 }
 \references{
 \cite{Tang, R. and Mueller, H.G. (2008). "Pairwise curve synchronization for functional data." Biometrika 95, 875-889}
