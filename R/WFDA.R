@@ -38,10 +38,11 @@
 #' yMat = matrix(nrow = N, ncol = M)
 #' 
 #' for (i in 1:N){
-#'   peak = runif(min = 0.2,max =  0.8,1)*Tfinal 
-#'   recondingTimesMat[i,] = Tfinal* sort( unique(c( seq(0.0 , peak, length.out = round((M+1)/2)),
-#'                                                   seq( peak, Tfinal, length.out = round((M+1)/2))) ))
-#'   yMat[i,] = me(recondingTimesMat[i,])* rnorm(1, mean=4.0, sd=  eps)    + rnorm(M, mean=0.0, sd=  eps) 
+#'   peak = runif(min = 0.2,max =  0.8,1) * Tfinal 
+#'   recondingTimesMat[i,] = sort( unique(c( seq(0.0 , peak, length.out = round((M+1)/2)),
+#'                             seq( peak, Tfinal, length.out = round((M+1)/2))))) * Tfinal
+#'   yMat[i,] = me(recondingTimesMat[i,]) * rnorm(1, mean=4.0, sd=  eps)
+#'                                        + rnorm(M, mean=0.0, sd=  eps) 
 #' }
 #' 
 #' Y = as.list(as.data.frame(t(yMat)))
