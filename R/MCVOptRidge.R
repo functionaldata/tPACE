@@ -1,5 +1,5 @@
 ### Functional Optimal Designs: modified cross validation for ridge parameter selection
-MCVOptRidge <- function(y, t, Resp, p, RidgeCand, isDense = FALSE, nRegGrid,
+MCVOptRidge <- function(y, t, Resp, p, RidgeCand, isDense = FALSE,
                         isRegression = FALSE, isSequential = TRUE){
   # Modified CV approach for ridge parameter selection
   n <- length(y)
@@ -87,7 +87,12 @@ MCVOptRidge <- function(y, t, Resp, p, RidgeCand, isDense = FALSE, nRegGrid,
                               ridge = RidgeCand[cviter], Cov = CovA)
         # returns the fitted list at observed time points
         # calculate performance criterion
-        crittemp[ii,] <- ARE_CV(yB2Prd, FittedB$yres)
+        yB2PrdAdj <- list()
+        for(rr in 1:length(yB2Prd)){
+          ttemp <- which( ( signif(tB2Prd[[rr]],8) %in% signif(workGridA,8) ) == TRUE)
+          yB2PrdAdj[[rr]] <- yB2Prd[[rr]][ttemp]
+        }
+        crittemp[ii,] <- ARE_CV(yB2PrdAdj, FittedB$yres)
       }
     }
     ridgecrit[cviter,] <- colMeans(crittemp, na.rm = TRUE)

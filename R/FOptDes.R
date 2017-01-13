@@ -57,7 +57,7 @@ FOptDes <- function(Ly = NULL, Lt = NULL, Resp = NULL, p = 3, optns = list(),
   
   # find the best ridge parameter via cross validation
   OptRidge <- MCVOptRidge(y = y, t = t, Resp = Resp, p = p, RidgeCand = RidgeCand,
-                          isDense = isDense, nRegGrid = optns$nRegGrid,
+                          isDense = isDense,
                           isRegression = isRegression, isSequential = isSequential)
   optridge <- OptRidge$optridge
   # find optdes with optridge
