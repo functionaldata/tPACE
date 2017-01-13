@@ -40,7 +40,7 @@ test_that("optimal designs for response prediction for sparse data does not retu
     return(mat)
   }
   n=100
-  RegGrid=reggrid
+  reggrid = seq(0,1,0.05)
   mu=rep(0,length(reggrid))
   phi=eifnMat(K=10,t=reggrid)
   lambda=c(30, 20, 12, 8, 30/c(5:10)^2)
@@ -54,12 +54,12 @@ test_that("optimal designs for response prediction for sparse data does not retu
   for(i in 1:ncol(scores)){ scores[,i] <- rnorm(n,mean=0,sd=sqrt(lambda[i])) }
   DenseTrue <- DenseTrue + t(phi %*% t(scores))
   # Generate independent measurement errors
-  errorMat <- matrix(rnorm(n*length(RegGrid),mean=0,sd=sqrt(errorvar)),nrow=n,ncol=length(RegGrid))
+  errorMat <- matrix(rnorm(n*length(reggrid),mean=0,sd=sqrt(errorvar)),nrow=n,ncol=length(reggrid))
   DenseObs <- DenseTrue + errorMat
   RespTrue <- scores %*% c(1,-2,1,-2,rep(0,K-4))
   RespObs <- RespTrue + rnorm(n, mean=0, sd=sqrt(resp_errorvar))
   t <- list(); y <- list();
-  for(i in 1:n){ t[[i]] <- RegGrid; y[[i]] <- DenseObs[i,] }
+  for(i in 1:n){ t[[i]] <- reggrid; y[[i]] <- DenseObs[i,] }
   # global
   #res <- FOptDes(Ly=y, Lt=t, Resp=RespObs, p=3, isRegression = TRUE,
   #               isSequential=FALSE, RidgeCand = seq(0.1,1,0.1))

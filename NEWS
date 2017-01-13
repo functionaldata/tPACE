@@ -5,6 +5,7 @@ New functionality:
 * Added derivative estimators (FPCAder, fitted.FPCAder)
 * Added functional concurrent correlation (FCCor).
 * Added pairwise curve synchronization for functional data (WFDA).
+* Added optimal designs for longitudinal or functional data (FOptDes).
 * Miscellaneous update to utility functions (CreateBasis, MakeSparseGP)
 
 Changes:
