@@ -32,7 +32,7 @@ MCVOptRidge <- function(y, t, Resp, p, RidgeCand, isDense = FALSE,
         if(length(tB[[j]]) >= p){
           subidxj <- which(workGridA %in% tB[[j]])
           if(length(subidxj) < p){cat(subidxj,"\n")}
-          DesPoolB <- cbind(DesPoolB, combn(subidxj,p))
+          DesPoolB <- cbind(DesPoolB, utils::combn(subidxj,p))
         }
       }
       DesPoolB <- t(unique(t(DesPoolB))) # take only unique designs

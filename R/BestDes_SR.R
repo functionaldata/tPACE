@@ -2,7 +2,7 @@
 BestDes_SR <- function(p, ridge, workGrid, Cov, CCov, isSequential=FALSE){
   # select optimal designs for regression case, sequential method available
   if(isSequential == FALSE){
-    comblist <- combn(1:length(workGrid), p)
+    comblist <- utils::combn(1:length(workGrid), p)
     temps <- rep(0,ncol(comblist))
     for(i in 1:ncol(comblist)){  temps[i] <- SRCri(comblist[,i], ridge, Cov, CCov)  }
     best <- sort(comblist[,min(which(temps==max(temps)))])

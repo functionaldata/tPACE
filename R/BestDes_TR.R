@@ -2,7 +2,7 @@
 BestDes_TR <- function(p, ridge, workGrid, Cov, isSequential=FALSE){
   # select optimal designs for trajectory recovery case, sequential method available
   if(isSequential == FALSE){ # Global Selection
-    comblist <- combn(1:length(workGrid),p)
+    comblist <- utils::combn(1:length(workGrid),p)
     temps <- rep(0,ncol(comblist))
     for(i in 1:ncol(comblist)){  temps[i] <- TRCri(comblist[,i], ridge, Cov, workGrid)  }
     best <- sort(comblist[,min(which(temps==max(temps)))])
