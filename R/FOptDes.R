@@ -35,10 +35,10 @@ FOptDes <- function(Ly, Lt, Resp, p = 3, optns = list(),
                         isRegression = !missing(Resp), isSequential = FALSE, RidgeCand = NULL){
   # check options
   if(is.null(RidgeCand)){
-    error("RidgeCand missing! Need to specify at least one ridge candidate.")
+    stop("RidgeCand missing! Need to specify at least one ridge candidate.")
   }
   if(any(RidgeCand <= 0)){
-    error("Some ridge candidates are non-positive! Change RidgeCand to make sure all ridge candidates are postive")
+    stop("Some ridge candidates are non-positive! Change RidgeCand to make sure all ridge candidates are postive")
   }
   
   CheckData(y = Ly, t = Lt);
