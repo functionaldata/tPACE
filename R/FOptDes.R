@@ -3,12 +3,12 @@
 #'
 #' @param Ly A list of \emph{n} vectors containing the observed values for each individual. Missing values specified by \code{NA}s are supported for dense case (\code{dataType='dense'}).
 #' @param Lt A list of \emph{n} vectors containing the observation time points for each individual corresponding to y. Each vector should be sorted in ascending order.
-#' @param Resp A vector of response values, only necessary for scalar response prediction task.
+#' @param Resp A vector of response values, keep void for trajectory recovery, only necessary for scalar response prediction task.
 #' @param p A fixed positive integer indicating the number of optimal design points requested, with default: 3.
 #' @param optns A list of options control parameters specified by \code{list(name=value)} for FPCA, with default: list().
 #' @param isRegression A logical argument, indicating the purpose of the optimal designs: TRUE for scalar response prediction, FALSE for trajectory recovery, with default value !missing(Resp).
 #' @param isSequential A logical argument, indicating whether to use the sequential optimization procedure for faster computation, recommended for relatively large p (default: FALSE).
-#' @param RidgeCand A vector of positive ridge penalty candidates for regularization.
+#' @param RidgeCand A vector of positive numbers as ridge penalty candidates for regularization. The final value is selected via cross validation. If only 1 ridge parameter is specified, CV procedure is skipped.
 #' 
 #' @details To select a proper RidgeCand, check with the returned optimal ridge parameter. If the selected parameter is the maximum/minimum values in the candidates, it is possible that the selected one is too small/big.
 #' 
@@ -33,12 +33,29 @@
 
 FOptDes <- function(Ly, Lt, Resp, p = 3, optns = list(),
                         isRegression = !missing(Resp), isSequential = FALSE, RidgeCand = NULL){
-  # check options
+  # check inputs
   if(is.null(RidgeCand)){
     stop("RidgeCand missing! Need to specify at least one ridge candidate.")
   }
+  if( !(is.vector(RidgeCand) && is.numeric(RidgeCand)) ){
+    stop("RidgeCand does not have the correct input format! Need to be a vector of positive numbers.")
+  }
   if(any(RidgeCand <= 0)){
     stop("Some ridge candidates are non-positive! Change RidgeCand to make sure all ridge candidates are postive")
+  }
+  if( !(is.numeric(p) && p==as.integer(p) && p > 0) ){
+    stop("Argument 'p' is not a positive integer! Need to specify a positive integer as the number of design points to be selected.")
+  }
+  if(isRegression){
+    if(!(is.numeric(Resp) && is.vector(Resp)) ){
+      stop("Resp does not have the correct input format! Need to be a vector of numbers.")
+    }
+    if( length(Resp) != length(Ly) ){
+      stop("Resp does not have the same length as Ly! Double check the data inputs.")
+    }
+    cat("Finding optimal designs for scalar response prediction.\n")
+  } else {
+    cat("Finding optimal designs for trajectory recovery.\n")
   }
   
   CheckData(y = Ly, t = Lt);
@@ -64,10 +81,16 @@ FOptDes <- function(Ly, Lt, Resp, p = 3, optns = list(),
   RegGrid = seq(min(obsGrid), max(obsGrid), length.out = optns$nRegGrid);
   
   # find the best ridge parameter via cross validation
-  OptRidge <- MCVOptRidge(y = y, t = t, Resp = Resp, p = p, RidgeCand = RidgeCand,
-                          isDense = isDense,
-                          isRegression = isRegression, isSequential = isSequential)
-  optridge <- OptRidge$optridge
+  if(length(RidgeCand) > 1){
+    OptRidge <- MCVOptRidge(y = y, t = t, Resp = Resp, p = p, RidgeCand = RidgeCand,
+                            isDense = isDense,
+                            isRegression = isRegression, isSequential = isSequential)
+    optridge <- OptRidge$optridge
+  } else { # skip CV if only ridge is prespecified.
+    cat("Only 1 ridge candidate in RidgeCand. The candidate is used and cross validation is skipped.\n")
+    OptRidge <- RidgeCand
+    optridge <- RidgeCand
+  }
   # find optdes with optridge
   TrainFPCA <- FPCA(Ly=y, Lt=t, optns=optns)
   if(isRegression == FALSE){ # Trajectory Recovery

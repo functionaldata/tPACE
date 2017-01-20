@@ -57,7 +57,7 @@ test_that("optimal designs for response prediction for dense data does not retur
   errorMat <- matrix(rnorm(n*length(reggrid),mean=0,sd=sqrt(errorvar)),nrow=n,ncol=length(reggrid))
   DenseObs <- DenseTrue + errorMat
   RespTrue <- scores %*% c(1,-2,1,-2,rep(0,K-4))
-  RespObs <- RespTrue + rnorm(n, mean=0, sd=sqrt(resp_errorvar))
+  RespObs <- c(RespTrue + rnorm(n, mean=0, sd=sqrt(resp_errorvar)))
   t <- list(); y <- list();
   for(i in 1:n){ t[[i]] <- reggrid; y[[i]] <- DenseObs[i,] }
   # global
