@@ -8,10 +8,10 @@ test_that("optimal designs for trajectory recovery for dense data does not retur
   sampWiener <- Wiener(n, pts)
   sampWiener <- MakeFPCAInputs(IDs = rep(c(1:n),length(pts)), tVec = rep(pts,each = n), yVec = as.vector(sampWiener))
   # global
-  res <- FOptDes(Ly=sampWiener$Ly, Lt=sampWiener$Lt, Resp=NULL, p=3, isRegression = FALSE,
+  res <- FOptDes(Ly=sampWiener$Ly, Lt=sampWiener$Lt, p=3,
                  isSequential=FALSE, RidgeCand = seq(0.1,1,0.1))
   # sequential optimization
-  res <- FOptDes(Ly=sampWiener$Ly, Lt=sampWiener$Lt, Resp=NULL, p=3, isRegression = FALSE,
+  res <- FOptDes(Ly=sampWiener$Ly, Lt=sampWiener$Lt, p=3,
                  isSequential=TRUE, RidgeCand = seq(0.1,1,0.1))
 })
 
@@ -22,14 +22,14 @@ test_that("optimal designs for trajectory recovery for sparse data does not retu
   sampWiener <- Wiener(n, pts)
   sampWiener <- Sparsify(sampWiener, pts, 4:6)
   # global
-  res <- FOptDes(Ly=sampWiener$Ly, Lt=sampWiener$Lt, Resp=NULL, p=3, isRegression = FALSE,
+  res <- FOptDes(Ly=sampWiener$Ly, Lt=sampWiener$Lt, p=3,
                 isSequential=FALSE, RidgeCand = seq(2,10,1))
   # sequential optimization
-  resseq <- FOptDes(Ly=sampWiener$Ly, Lt=sampWiener$Lt, Resp=NULL, p=3, isRegression = FALSE,
+  resseq <- FOptDes(Ly=sampWiener$Ly, Lt=sampWiener$Lt, p=3,
                  isSequential=TRUE, RidgeCand = seq(2,10,1))
 })
 
-test_that("optimal designs for response prediction for sparse data does not return any errors", { 
+test_that("optimal designs for response prediction for dense data does not return any errors", { 
   eifnMat <- function(K,t){
     l <- diff(range(t))
     a <- t[1]
@@ -57,13 +57,20 @@ test_that("optimal designs for response prediction for sparse data does not retu
   errorMat <- matrix(rnorm(n*length(reggrid),mean=0,sd=sqrt(errorvar)),nrow=n,ncol=length(reggrid))
   DenseObs <- DenseTrue + errorMat
   RespTrue <- scores %*% c(1,-2,1,-2,rep(0,K-4))
-  RespObs <- RespTrue + rnorm(n, mean=0, sd=sqrt(resp_errorvar))
+  RespObs <- c(RespTrue + rnorm(n, mean=0, sd=sqrt(resp_errorvar)))
   t <- list(); y <- list();
   for(i in 1:n){ t[[i]] <- reggrid; y[[i]] <- DenseObs[i,] }
   # global
-  #res <- FOptDes(Ly=y, Lt=t, Resp=RespObs, p=3, isRegression = TRUE,
+  #res <- FOptDes(Ly=y, Lt=t, Resp=RespObs, p=3,
   #               isSequential=FALSE, RidgeCand = seq(0.1,1,0.1))
   # sequential optimization
-  res <- FOptDes(Ly=y, Lt=t, Resp=RespObs, p=3, isRegression = TRUE,
+  res <- FOptDes(Ly=y, Lt=t, Resp=RespObs, p=3,
                  isSequential=TRUE, RidgeCand = seq(0.1,1,0.1))
 })
+
+
+#test_that("medfly25 data example: optimal designs for response prediction for sparse data", { 
+#  data(medfly25)
+#  medinput = MakeFPCAInputs(IDs = medfly25$ID, tVec = medfly25$Days, yVec = medfly25$nEggs)
+#  
+#})
