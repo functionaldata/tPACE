@@ -98,8 +98,12 @@ CreateFuncBoxPlot <- function(fpcaObj, optns = list() , ...){
   s <- fpcaObj$workGrid
   N <- nrow(fittedCurves)
   
+  if(is.null(args1$ylim)){
+    args1$ylim = range(fittedCurves)
+  }
+  
   do.call(plot, c(list(type='n'), list(x=s), list(y=s), 
-                  list(ylim=range(fittedCurves)), args1))
+                  (args1)))
   grid()   
   
   if ( length(fpcaObj$lambda) <2) {
@@ -188,7 +192,7 @@ CreateFuncBoxPlot <- function(fpcaObj, optns = list() , ...){
   #add sample lines
   if (!is.null(addIndx) && !is.null(Ly) && !is.null(Lt)  ){
     for (i in 1:length(addIndx) ) {
-      lines(x = Lt[[addIndx[i]]] , y= Ly[[addIndx[i]]], lwd = 1.5, type='o', pch=0)
+      lines(x = Lt[[addIndx[i]]] , y= Ly[[addIndx[i]]], lwd = 1.5, type='o', pch=0, col=args1$col)
     } 
   }
 }
