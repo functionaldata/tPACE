@@ -5,25 +5,25 @@
 \title{Optimal Designs for Functional and Longitudinal Data
 for Trajectory Recovery or Scalar Response Prediction}
 \usage{
-FOptDes(Ly = NULL, Lt = NULL, Resp = NULL, p = 3, optns = list(),
-  isRegression = FALSE, isSequential = FALSE, RidgeCand = NULL)
+FOptDes(Ly, Lt, Resp, p = 3, optns = list(),
+  isRegression = !missing(Resp), isSequential = FALSE, RidgeCand = NULL)
 }
 \arguments{
 \item{Ly}{A list of \emph{n} vectors containing the observed values for each individual. Missing values specified by \code{NA}s are supported for dense case (\code{dataType='dense'}).}
 
 \item{Lt}{A list of \emph{n} vectors containing the observation time points for each individual corresponding to y. Each vector should be sorted in ascending order.}
 
-\item{Resp}{A vector of response values}
+\item{Resp}{A vector of response values, keep void for trajectory recovery, only necessary for scalar response prediction task.}
 
-\item{p}{A prefixed positive integer indicating the number of optimal design points requested, with default: 3.}
+\item{p}{A fixed positive integer indicating the number of optimal design points requested, with default: 3.}
 
 \item{optns}{A list of options control parameters specified by \code{list(name=value)} for FPCA, with default: list().}
 
-\item{isRegression}{A logical argument, indicating the purpose of the optimal designs: TRUE for scalar response prediction, FALSE for trajectory recovery (default).}
+\item{isRegression}{A logical argument, indicating the purpose of the optimal designs: TRUE for scalar response prediction, FALSE for trajectory recovery, with default value !missing(Resp).}
 
 \item{isSequential}{A logical argument, indicating whether to use the sequential optimization procedure for faster computation, recommended for relatively large p (default: FALSE).}
 
-\item{RidgeCand}{A vector of positive ridge penalty candidates for regularization.}
+\item{RidgeCand}{A vector of positive numbers as ridge penalty candidates for regularization. The final value is selected via cross validation. If only 1 ridge parameter is specified, CV procedure is skipped.}
 }
 \value{
 A list containing the following fields:
@@ -37,7 +37,7 @@ Optimal Designs for Functional and Longitudinal Data
 for Trajectory Recovery or Scalar Response Prediction
 }
 \details{
-To select a proper RidgeCand, check with the returned optimal ridge parameter. The selected parameter is valid if not on the boundary of the range.
+To select a proper RidgeCand, check with the returned optimal ridge parameter. If the selected parameter is the maximum/minimum values in the candidates, it is possible that the selected one is too small/big.
 }
 \examples{
 set.seed(1)
@@ -45,8 +45,8 @@ n <- 50
 pts <- seq(0, 1, by=0.05)
 sampWiener <- Wiener(n, pts)
 sampWiener <- Sparsify(sampWiener, pts, 5)
-res <- FOptDes(Ly=sampWiener$Ly, Lt=sampWiener$Lt, p=2, isRegression=FALSE,
-               isSequential=FALSE, RidgeCand = seq(0.1,1,0.4))
+res <- FOptDes(Ly=sampWiener$Ly, Lt=sampWiener$Lt, p=2,
+               isSequential=FALSE, RidgeCand = seq(0.2,2,0.4))
 }
 \references{
 \cite{Ji, H., Mueller, H.G. (2016) "Optimal Designs for Longitudinal and Functional Data" Journal of the Royal Statistical Society: Series B (Statistical Methodology)}
