@@ -68,9 +68,27 @@ test_that("optimal designs for response prediction for dense data does not retur
                  isSequential=TRUE, RidgeCand = seq(0.1,1,0.1))
 })
 
+test_that("trajectory recovery case with p=1 for Brownian Motion on [0,1] returns theoretically correct optimal design", { 
+  set.seed(1)
+  n <- 100
+  pts <- seq(0, 1, by=0.05)
+  sampWiener <- Wiener(n, pts)
+  fpcainput <- MakeFPCAInputs(IDs = rep(1:50,each=length(pts)), tVec = rep(pts, n), 
+                              yVec = t(sampWiener))
+  # global
+  res <- FOptDes(Ly=fpcainput$Ly, Lt=fpcainput$Lt, p=1,
+                 isSequential=FALSE, RidgeCand = 0.05)
+  expect_equal(res$OptDes, 0.75)
+})
 
-#test_that("medfly25 data example: optimal designs for response prediction for sparse data", { 
-#  data(medfly25)
-#  medinput = MakeFPCAInputs(IDs = medfly25$ID, tVec = medfly25$Days, yVec = medfly25$nEggs)
-#  
-#})
+test_that("medfly25 data example: optimal designs for response prediction for sparse data does not return error", { 
+  data(medfly25_res)
+  set.seed(1)
+  medinput = MakeFPCAInputs(IDs = medfly25_res$ID, tVec = medfly25_res$Days, 
+                            yVec = medfly25_res$nEggs)
+  n = length(unique(medfly25_res$ID))
+  respidx = seq(from = 1, by = 25, length.out = n)
+  Resp = medfly25_res$remain_nEggs[respidx]
+  res <- FOptDes(Ly = medinput$Ly, Lt = medinput$Lt, Resp = Resp, p = 2,
+                 isSequential = FALSE, RidgeCand = seq(60,70,1))
+})
