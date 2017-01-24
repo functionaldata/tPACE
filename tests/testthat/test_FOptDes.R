@@ -88,7 +88,7 @@ test_that("medfly25 data example: optimal designs for response prediction for sp
                             yVec = medfly25$nEggs)
   n = length(unique(medfly25$ID))
   respidx = seq(from = 1, by = 25, length.out = n)
-  Resp = medfly25$remain_nEggs[respidx]
+  Resp = medfly25$nEggsRemain[respidx]
   res <- FOptDes(Ly = medinput$Ly, Lt = medinput$Lt, Resp = Resp, p = 2,
                  isSequential = FALSE, RidgeCand = seq(60,70,1))
 })

@@ -12,6 +12,7 @@
 #' \item{ID}{: Medfly ID according to the orignal dataset}
 #' \item{Days}{: Day of measurement}
 #' \item{nEggs}{: Number of eggs laid at that particular day} 
+#' \item{nEggsRemain}{: Remaining total number of eggs laid}
 #' } 
 #' @source \url{http://anson.ucdavis.edu/~mueller/data/medfly1000.html}
 #' @references
