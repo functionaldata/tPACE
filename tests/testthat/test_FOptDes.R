@@ -82,13 +82,13 @@ test_that("trajectory recovery case with p=1 for Brownian Motion on [0,1] return
 })
 
 test_that("medfly25 data example: optimal designs for response prediction for sparse data does not return error", { 
-  data(medfly25_res)
+  data(medfly25)
   set.seed(1)
-  medinput = MakeFPCAInputs(IDs = medfly25_res$ID, tVec = medfly25_res$Days, 
-                            yVec = medfly25_res$nEggs)
-  n = length(unique(medfly25_res$ID))
+  medinput = MakeFPCAInputs(IDs = medfly25$ID, tVec = medfly25$Days, 
+                            yVec = medfly25$nEggs)
+  n = length(unique(medfly25$ID))
   respidx = seq(from = 1, by = 25, length.out = n)
-  Resp = medfly25_res$remain_nEggs[respidx]
+  Resp = medfly25$remain_nEggs[respidx]
   res <- FOptDes(Ly = medinput$Ly, Lt = medinput$Lt, Resp = Resp, p = 2,
                  isSequential = FALSE, RidgeCand = seq(60,70,1))
 })
