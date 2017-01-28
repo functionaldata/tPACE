@@ -1,4 +1,4 @@
-If you are filing a enhancement/feature request, make sure you:
+If you are filing an enhancement/feature request, make sure you:
 
 - Provide at least one reference about it, or
 - Provide at least one particular user case.
