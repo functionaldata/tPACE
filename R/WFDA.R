@@ -19,7 +19,8 @@
 #' \item{seed}{Random seed for the selection of the subset of warping functions; numeric - default: 666}
 #' \item{verbose}{Indicator if the progress of the pairwise warping procedure should be displayed; logical - default: FALSE}
 #' }
-#' @return A list containing the following fields: 
+#' @return A list containing the following fields:
+#' \item{optns}{Control options used.}
 #' \item{lambda}{Penalty parameter used.}
 #' \item{aligned}{Aligned curves evaluated at time 't'}
 #' \item{h}{Warping functions for 't'} 
@@ -232,7 +233,7 @@ WFDA = function(Ly, Lt, optns = list()){
   }  
   
   timing = Sys.time () - start
-  ret <- list(lambda = lambda, h = hMat, hInv = hInvMat, aligned = alignedMat, costs = rowMeans(distMat), timing = timing)
+  ret <- list(optns = optns, lambda = lambda, h = hMat, hInv = hInvMat, aligned = alignedMat, costs = rowMeans(distMat), timing = timing)
   class(ret) <- 'WFDA' 
   
   return(ret); 
