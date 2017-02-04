@@ -21,4 +21,3 @@ L list containing 3 lists each of length 'm', 'm' being the number of unique sub
 \description{
 Turn vector inputs to the list so they can be used in FPCA
 }
-

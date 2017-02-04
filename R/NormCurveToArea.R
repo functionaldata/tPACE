@@ -1,6 +1,6 @@
 #' Normalise a curve to a particular area.
 #' 
-#' Normalise a curve such that \int{yNew}dx = area (according to trapezoid integration)
+#' Normalise a curve such that \\int{yNew}dx = area (according to trapezoid integration)
 #' 
 #' @param y values of curve at time-points x
 #' @param x design time-points (default: seq(0,1, length.out=length(y)))

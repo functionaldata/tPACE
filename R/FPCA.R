@@ -37,7 +37,8 @@
 #' \item{useBinnedCov}{Whether to use the binned raw covariance for smoothing; logical - default:TRUE}
 #' \item{userCov}{The user-defined smoothed covariance function; list of two elements: numerical vector 't' and matrix 'cov', 't' must cover the support defined by 'Ly' - default: NULL}
 #' \item{userMu}{The user-defined smoothed mean function; list of two numerical vector 't' and 'mu' of equal size, 't' must cover the support defined 'Ly' - default: NULL}
-#' \item{userSigma2}{The user-defined measurement error variance. A positive scalar. If specified then no regularization is used (rho is set to 'no', unless specified otherwise). Default to `NULL`}
+##' \item{userSigma2}{The user-defined measurement error variance. A positive scalar. If specified then no regularization is used (rho is set to 'no', unless specified otherwise). Default to `NULL`}
+#' \item{userRho}{The user-defined measurement truncation threshold used for the calculation of functional principal components scores. A positive scalar. Default to `NULL`}
 #' \item{verbose}{Display diagnostic messages; logical - default: FALSE}
 #' }
 #' @return A list containing the following fields:
@@ -193,11 +194,15 @@ FPCA = function(Ly, Lt, optns = list()){
   # Get scores  
   if (optns$methodXi == 'CE') {
     if (optns$rho != 'no') { 
-      if( length(Ly) > 2048 ){
-        randIndx <- sample( length(Ly), 2048)
-        rho <- GetRho(Ly[randIndx], Lt[randIndx], optns, muObs, truncObsGrid, CovObs, eigObj$lambda, phiObs, sigma2)
+      if( is.null(optns$userRho) ){
+        if( length(Ly) > 2048 ){
+          randIndx <- sample( length(Ly), 2048)
+          rho <- GetRho(Ly[randIndx], Lt[randIndx], optns, muObs, truncObsGrid, CovObs, eigObj$lambda, phiObs, sigma2)
+        } else {
+          rho <- GetRho(Ly, Lt, optns, muObs, truncObsGrid, CovObs, eigObj$lambda, phiObs, sigma2)
+        }
       } else {
-        rho <- GetRho(Ly, Lt, optns, muObs, truncObsGrid, CovObs, eigObj$lambda, phiObs, sigma2)
+        rho = optns$userRho;
       }
       sigma2 <- rho
     }
@@ -217,7 +222,7 @@ FPCA = function(Ly, Lt, optns = list()){
   ret <- MakeResultFPCA(optns, smcObj, muObs, scsObj, eigObj, 
                         inputData = inputData, 
                         scoresObj, truncObsGrid, workGrid, 
-                        rho = if (optns$rho =='cv') rho else NULL, 
+                        rho = if (optns$rho != 'no') rho else NULL, 
                         fitLambda=fitLambda)
   
   # select number of components based on specified criterion

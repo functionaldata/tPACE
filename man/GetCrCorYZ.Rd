@@ -19,4 +19,3 @@ A cross-correlation matrix between variables Y (functional) and Z (scalar).
 \description{
 Make cross-correlation matrix from auto- andcross-covariance matrix
 }
-

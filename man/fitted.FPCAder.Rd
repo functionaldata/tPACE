@@ -30,4 +30,3 @@ sampWiener <- Sparsify(sampWiener, pts, 10)
 \references{
 \cite{Liu, Bitao, and Hans-Georg Mueller. "Estimating derivatives for samples of sparsely observed functions, with application to online auction dynamics." Journal of the American Statistical Association 104, no. 486 (2009): 704-717. (Sparse data FPCA)}
 }
-

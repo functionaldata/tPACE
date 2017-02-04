@@ -14,4 +14,3 @@
 \description{
 Print a simple description of an FSVD object
 }
-

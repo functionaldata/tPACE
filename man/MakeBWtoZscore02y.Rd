@@ -19,4 +19,3 @@ A vector of Z-scores of size Q.
 \description{
 Make vector of age and body-weight to z-scores based on WHO standards using LMS
 }
-

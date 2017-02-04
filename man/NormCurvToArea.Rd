@@ -17,6 +17,5 @@ NormCurvToArea(y, x = seq(0, 1, length.out = length(y)), area = 1)
 yNew values of curve at times x such that \int{yNew}dx = area
 }
 \description{
-Normalise a curve such that \int{yNew}dx = area (according to trapezoid integration)
+Normalise a curve such that \\int{yNew}dx = area (according to trapezoid integration)
 }
-

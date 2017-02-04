@@ -1,8 +1,8 @@
  cat("\nTests for 'CheckData'")
 
 test_that("basic valid lists arguments do not return any errors ", { 
-  CheckData( list(c(1,2,3), c(1,2)),list(c(1,2,3), c(1,2)))
-  CheckData( list(c(1,2,3), c(1,2)),list(runif(3), runif(2)))
+  CheckData(y = list(c(1,2,3), c(1,2)), t = list(c(1,2,3), c(1,2)))
+  CheckData(y = list(c(1,2,3), c(1,2)), t = list(runif(3), runif(2)))
 })
 
 

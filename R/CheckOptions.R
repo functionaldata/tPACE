@@ -134,6 +134,16 @@ CheckOptions = function(t,optns,n){
       stop('userSigma2 specified to be 0 but error = TRUE. If no measurement error is assumed then use error = FALSE.')
     }
   }
+  if (!is.null(optns[['userRho']])) {
+    if (!(is.numeric(optns[['userRho']]) && 
+          length(optns[['userRho']]) == 1 && 
+          optns[['userRho']] >= 0)) {
+      stop('userSigma2 invalid.')
+    }
+    if (optns[['userRho']] == 0 && optns[['error']]) {
+      stop('userRho specified to be 0 but error = TRUE. If no measurement error is assumed then use error = FALSE.')
+    }
+  }
   #if(!(any(optns[['methodMu']] == c('PACE','RARE','CrossSectional')))){ 
   #  # user-defined mean functions
   #  stop("FPCA is aborted because the argument: methodMu is invalid!\n");     

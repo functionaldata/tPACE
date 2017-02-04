@@ -55,4 +55,3 @@ Ysp <- lapply(1:n, function(i) Y[i, indEach[[i]]])
 plot(T, FCCor(Xsp, Ysp, tAll, bw)[['corr']], ylim=c(-1, 1))
 abline(h=0.5)
 }
-

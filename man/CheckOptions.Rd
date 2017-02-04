@@ -16,4 +16,3 @@ CheckOptions(t, optns, n)
 \description{
 Check if the options structure is valid and set the ones that are NULL
 }
-
