@@ -8,7 +8,7 @@ PACE package for Functional Data Analysis and Empirical Dynamics
 [![total downloads](http://cranlogs.r-pkg.org/badges/grand-total/fdapace)](http://cranlogs.r-pkg.org/badges/grand-total/fdapace)
 
 ## Installation of the current development version
-You can install the package in R using:
+You can install the development version of the package in R using:
 ```
 devtools::install_github("functionaldata/tPACE")
 ```
