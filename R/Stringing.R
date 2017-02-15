@@ -55,6 +55,10 @@ Stringing = function(X, Y = NULL, disOptns = "euclidean", disMat = NA, isPlot = 
   n = nrow(X); p = ncol(X);
   if(disOptns != "user"){
     disMat = GetDisMatrix(X, disOptns, Y)
+  } else { # check if the user-specified dissimilarity matrix is a well-defined
+    if(!(isSymmetric(disMat) && sum(disMat > 0) == p*(p-1) && sum(abs(diag(disMat))) == 0)){
+      stop("User-specified dissimilarity matrix is not valid!")
+    }
   }
   
   # UDS
