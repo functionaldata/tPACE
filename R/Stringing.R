@@ -2,14 +2,16 @@
 #' 
 #' @param X A matrix (n by p) of data, where X[i,] is the row vector of measurements for the ith subject.
 #' @param Y A vector (n by 1), where Y[i] is the reponse associated with X[i,]
+#' @param isStandardize A logical variable indicating whether standardization of the input data matrix is required, with default: FALSE.
 #' @param disOptns A distance metric to be used, one of the following: "euclidean" (default), "correlation", "spearman", "hamming", "xycor" or "user". If specified as "xycor", the absolute difference of correlation between predictor and response is used. If specified as "user", a dissimilarity matrix for the argument "disMat" must be provided.
 #' @param disMat A user-specified dissimilarity matrix, only necessary when "disOptns" is "user".
-#' @param isPlot A logical variable indicating whether to plot the stringing function, default: TRUE.
 #' 
 #' @return A list containing the following fields:
 #' \item{Ly}{A list of n vectors, which are the random trajectories for all subjects identified by the Stringing method.}
 #' \item{Lt}{A list of n time points vectors, at which corresponding measurements Ly are taken.}
 #' \item{stringedPos}{A vector, indicating positions of corresponding predictors after stringing.}
+#' \item{Xin}{A matrix, corresponding to the input data matrix.}
+#' \item{Xstd}{A matrix, corresponding to the standardized input data matrix. It is NULL if isStandardize is FALSE.}
 #' @examples
 #' set.seed(1)
 #' n <- 50
@@ -29,7 +31,7 @@
 #' \cite{Chen, K., Chen, K., Mueller, H. G., and Wang, J. L. (2011). "Stringing high-dimensional data for functional analysis." Journal of the American Statistical Association, 106(493), 275-284.}
 #' @export
 
-Stringing = function(X, Y = NULL, disOptns = "euclidean", disMat = NA, isPlot = FALSE){
+Stringing = function(X, Y = NULL, isStandardize = FALSE, disOptns = "euclidean", disMat = NA){
   # input check
   if(!(is.numeric(X) && is.matrix(X))){
     stop('Incorrect format for input data matrix X! Check if it is a matrix.')
@@ -51,6 +53,16 @@ Stringing = function(X, Y = NULL, disOptns = "euclidean", disMat = NA, isPlot = 
       stop('Incosistent sample size based on input design matrix X and response vector Y.')
     }
   }
+  # Standardization of the input data X
+  Xin = X
+  if(isStandardize){
+    Xstd = t(t(X) - colMeans(X)) %*% diag((1/sqrt(diag(cov(X)))), nrow = ncol(X))
+    X = Xstd
+  } else {
+    Xstd = NULL
+    X = Xin
+  }
+  
   # Calculate dissimilarity matrix
   n = nrow(X); p = ncol(X);
   if(disOptns != "user"){
@@ -62,23 +74,22 @@ Stringing = function(X, Y = NULL, disOptns = "euclidean", disMat = NA, isPlot = 
   }
   
   # UDS
-  uds = isoMDS(d = disMat, k = 1, trace = FALSE)
+  uds = MASS::isoMDS(d = disMat, k = 1, trace = FALSE)
   pts = uds$points
   stringedPos = order( (pts - min(pts))/diff(range(pts)) )
-  if(isPlot){
-    plot(1:p, stringedPos, main="Stringing Function",
-         xlab = "Original Order", ylab = "UDS Induced Order")
-  }
-  
+
   # obtain stringed data
   stringedX = X[,stringedPos]
   stringedTime = 1:p
-  fpcainput = MakeFPCAInputs(IDs = rep(1:n,times=p), tVec = rep(stringedTime, each=n),
+  fpcainput = MakeFPCAInputs(IDs = rep(seq_len(n),times=p), tVec = rep(stringedTime, each=n),
                              yVec = c(stringedX))
   Ly = fpcainput$Ly
   Lt = fpcainput$Lt
-  return(list(Ly = Ly, Lt = Lt, stringedPos = stringedPos))
+  stringingObj <- list(Ly = Ly, Lt = Lt, stringedPos = stringedPos, Xin = Xin, Xstd = Xstd)
+  class(stringingObj) <- "Stringing"
+  return(stringingObj)
 }
+
 
 # function to get dissimilarity matrix for given data matrix
 GetDisMatrix = function(X, disOptns = "euclidean", Y){
@@ -86,7 +97,7 @@ GetDisMatrix = function(X, disOptns = "euclidean", Y){
   if(disOptns == "euclidean"){
     disMat = dist(x = t(X), method = "euclidean")
   } else if(disOptns == "correlation"){
-    disMat = 1 - cor(X)
+    disMat = sqrt(2*(1 - cor(X)))
   } else if(disOptns == "spearman"){
     rankX = X
     for(i in 1:p){
