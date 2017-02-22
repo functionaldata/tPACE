@@ -1,4 +1,8 @@
-#' Create plots for observed and stringed high dimensional data and the corresponding stringing function
+#' Create plots for observed and stringed high dimensional data and the corresponding stringing function.
+#' The function produces the following three plots:
+#' 1) A plot of predictors (standardized if specified so during stringing) in original order for a subset of observations;
+#' 2) A plot of predictors in stringed order for the same subset of observations;
+#' 3) A plot of the stringing function, which is the stringed order vs. the original order.
 #' 
 #' @param stringingObj A stringing object of class "Stringing", returned by the function Stringing.
 #' @param subset A vector of indices or a logical vector for subsetting the observations. If missing,  first min(n,50) observations will be plotted where n is the sample size.
@@ -54,18 +58,19 @@ CreateStringingPlot <- function(stringingObj, subset, ...){
   ploty1 = X[subset, ,drop = FALSE]
   ploty2 = X[subset, stringingObj$stringedPos, drop = FALSE]
   
-  par(mfrow=c(2,2))
   # 1. plot for the original observations
   # Make canvas
   do.call(plot, c(list(x=plotx, y=ploty1, type='n'), args1))
   # plot the observed/standardized predictors
   do.call(matplot, c(list(x=t(plotx), y=t(ploty1), type='l', add = TRUE), args1))
-
+  readline("Press enter to continue.")
+  
   # 2. plot for the stringed observations
   # Make canvas
-  do.call(plot, c(list(x=plotx, y=ploty2, type='n'), args1))
+  do.call(plot, c(list(x=plotx, y=ploty2, type='n'), args2))
   # plot the stringed predictors
-  do.call(matplot, c(list(x=t(plotx), y=t(ploty2), type='l', add = TRUE), args1))
+  do.call(matplot, c(list(x=t(plotx), y=t(ploty2), type='l', add = TRUE), args2))
+  readline("Press enter to continue.")
 
   # 3. plot the stringing function
   plot(seq_len(ncol(X)), stringingObj$stringedPos, 

@@ -38,7 +38,7 @@ test_that("CreateStringingPlot works",{
 test_that("CreateStringingPlot works",{
   set.seed(1)
   simdata = stringing_sim1(SNR = Inf)
-  stringingfit = Stringing(simdata$X, disOptns = "euclidean", isStandardize = TRUE)
+  stringingfit = Stringing(simdata$X, disOptns = "euclidean", standardize = TRUE)
   # check with simulated data to see if reversal of order is needed
   diff_norev = sum(abs(simdata$order[stringingfit$stringedPos] - 1:simdata$p))
   diff_rev = sum(abs(simdata$order[stringingfit$stringedPos] - simdata$p:1))
