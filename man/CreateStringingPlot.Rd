@@ -2,11 +2,7 @@
 % Please edit documentation in R/CreateStringingPlot.R
 \name{CreateStringingPlot}
 \alias{CreateStringingPlot}
-\title{Create plots for observed and stringed high dimensional data and the corresponding stringing function.
-The function produces the following three plots:
-1) A plot of predictors (standardized if specified so during stringing) in original order for a subset of observations;
-2) A plot of predictors in stringed order for the same subset of observations;
-3) A plot of the stringing function, which is the stringed order vs. the original order.}
+\title{Create plots for observed and stringed high dimensional data}
 \usage{
 CreateStringingPlot(stringingObj, subset, ...)
 }
@@ -18,7 +14,6 @@ CreateStringingPlot(stringingObj, subset, ...)
 \item{...}{Other arguments passed into matplot for plotting options}
 }
 \description{
-Create plots for observed and stringed high dimensional data and the corresponding stringing function.
 The function produces the following three plots:
 1) A plot of predictors (standardized if specified so during stringing) in original order for a subset of observations;
 2) A plot of predictors in stringed order for the same subset of observations;

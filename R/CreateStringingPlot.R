@@ -1,4 +1,5 @@
-#' Create plots for observed and stringed high dimensional data and the corresponding stringing function.
+#' Create plots for observed and stringed high dimensional data
+#' 
 #' The function produces the following three plots:
 #' 1) A plot of predictors (standardized if specified so during stringing) in original order for a subset of observations;
 #' 2) A plot of predictors in stringed order for the same subset of observations;
