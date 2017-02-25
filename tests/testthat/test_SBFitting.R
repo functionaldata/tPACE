@@ -1,12 +1,12 @@
-setwd('/Users/kyunghee/Desktop/SBF')
-SBF_scripts<-list.files(pattern="*.R")
-for(i in 1:length(SBF_scripts)){
-  source(SBF_scripts[i])
-}
+#setwd('/Users/kyunghee/Desktop/SBF')
+#SBF_scripts<-list.files(pattern="*.R")
+#for(i in 1:length(SBF_scripts)){
+#  source(SBF_scripts[i])
+#}
 
-library(Rcpp)
-setwd('/Users/kyunghee/Desktop/tPACE/src')
-sourceCpp('trapzRcpp.cpp')
+#library(Rcpp)
+#setwd('/Users/kyunghee/Desktop/tPACE/src')
+#sourceCpp('trapzRcpp.cpp')
 
 library(testthat)
 
