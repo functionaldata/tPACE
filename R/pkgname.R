@@ -36,7 +36,7 @@
 #' @importFrom numDeriv grad hessian
 #' @importFrom grDevices colorRampPalette dev.new palette
 #' @importFrom graphics abline barplot boxplot grid legend lines matlines matplot par plot points polygon 
-#' @importFrom stats aggregate approx approxfun cov dist fitted kmeans lm median na.omit optim predict quantile rnorm runif spline var sd poly weighted.mean
+#' @importFrom stats aggregate approx approxfun cov dist fitted kmeans lm median na.omit optim predict quantile rnorm runif spline var sd poly weighted.mean cor dunif
 #' @importFrom utils installed.packages
 #' @importFrom MASS isoMDS mvrnorm
 NULL

@@ -22,15 +22,17 @@ Kh<-function(x, X, h=NULL, K=NULL){
   n<-length(X)
   if(is.null(K)==T){
     K<-EpchKer
+  }else{
+    cat(paste('Epanechnikov kernel is only supported currently.'))
   }
   if(is.null(h)==T){
     h<-0.25*n^(-1/5)*(supp[2]-supp[1])
   }
   
-  x_tmp<-matrix(rep(x,n),nrow=N)
-  X_tmp<-matrix(rep(X,N),ncol=n,byrow=T)
+  xTmp<-matrix(rep(x,n),nrow=N)
+  XTmp<-matrix(rep(X,N),ncol=n,byrow=T)
   
-  return(K((x_tmp-X_tmp)/h)/h)
+  return(K((xTmp-XTmp)/h)/h)
 }
 
 ### normalized kernel
@@ -40,6 +42,8 @@ NormKernel<-function(x, X, h=NULL, K=NULL, supp=NULL){
   n<-length(X)
   if(is.null(K)==T){
     K<-EpchKer
+  }else{
+    cat(paste('Epanechnikov kernel is only supported currently.'))
   }
   if(is.null(supp)==T){
     supp<-c(0,1)
@@ -64,13 +68,13 @@ NormKernel<-function(x, X, h=NULL, K=NULL, supp=NULL){
   
   ind2<-which(denom==0)
   
-  K_h_tmp<-numer/matrix(rep(denom,N),nrow=N,byrow=T)
-  K_h_tmp[,ind2]<-0
+  NormKernelTmp<-numer/matrix(rep(denom,N),nrow=N,byrow=T)
+  NormKernelTmp[,ind2]<-0
   
-  if(min(nrow(K_h_tmp),ncol(K_h_tmp))==1){
-    return(c(K_h_tmp))
+  if(min(nrow(NormKernelTmp),ncol(NormKernelTmp))==1){
+    return(c(NormKernelTmp))
   }else{
-    return(K_h_tmp)
+    return(NormKernelTmp)
   }
 }
 
