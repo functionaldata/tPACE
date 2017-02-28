@@ -4,7 +4,7 @@
 
 ##### input variables: 
 #####   f: evaluated values of component functions at estimation grid (N*d matrix)
-#####   index_kj: index of conditional projection for the k-th component function on the j-th component function space (2-dim. vector)
+#####   kj: index of conditional projection for the k-th component function on the j-th component function space (2-dim. vector)
 #####   x: estimation grid (N*d matrix)
 #####   X: covariate observation grid (n*d matrix)
 #####   MgnJntDensity: evaluated values of marginal and 2-dim. joint densities (2-dim. list, referred to the output of 'MgnJntDensity')
@@ -13,45 +13,45 @@
 #####   conditional projection of the k-th component function on the j-th component function space (N-dim. vector)
 
 
-CondProjection<-function(f, ind_kj, x, X, MgnJntDens){
+CondProjection <- function(f, kj, x, X, MgnJntDens){
   
-  N<-nrow(x)
-  n<-nrow(X)
-  d<-ncol(X)
+  N <- nrow(x)
+  n <- nrow(X)
+  d <- ncol(X)
   
-  k<-ind_kj[1]
-  j<-ind_kj[2]
+  k <- kj[1]
+  j <- kj[2]
   
-  x_j<-x[,j]
-  x_k<-c()
+  xj <- x[,j]
+  xk <- c()
   
-  f_k<-f[,k]
-  if(length(f_k)==n){
-    x_k<-X[,k]
-  }else{
-    x_k<-x[,k]
+  fk <- f[,k]
+  if (length(fk)==n) {
+    xk <- X[,k]
+  } else {
+    xk <- x[,k]
   }
   
-  asdf<-MgnJntDens$p_mat_mgn[,j]
+  asdf <- MgnJntDens$pMatMgn[,j]
   
-  tmp_ind<-which(asdf!=0)
-  qwer<-MgnJntDens$p_arr_jnt[,tmp_ind,k,j]
+  tmpInd <- which(asdf!=0)
+  qwer <- MgnJntDens$pArrJnt[,tmpInd,k,j]
   
-  if(length(tmp_ind)>0){
+  if (length(tmpInd)>0) {
     
-    p_hat<-matrix(0,nrow=length(x_k),ncol=length(x_j))
+    pHat <- matrix(0,nrow=length(xk),ncol=length(xj))
     
-    p_hat[,tmp_ind]<-t(t(qwer)/asdf[tmp_ind])
+    pHat[,tmpInd] <- t(t(qwer)/asdf[tmpInd])
     
-    tmp<-c()
-    for(l in 1:ncol(p_hat)){
-      tmptmp<-f_k*c(p_hat[,l])
-      tmp[l]<-trapzRcpp(sort(x_k),tmptmp[order(x_k)])
+    tmp <- c()
+    for (l in 1:ncol(pHat)) {
+      tmptmp <- fk*c(pHat[,l])
+      tmp[l] <- trapzRcpp(sort(xk),tmptmp[order(xk)])
     }
     
     return(tmp)    
     
-  }else{
+  } else {
     return(0)
   }
 }
