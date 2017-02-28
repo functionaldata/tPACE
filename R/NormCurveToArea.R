@@ -6,7 +6,7 @@
 #' @param x design time-points (default: seq(0,1, length.out=length(y)))
 #' @param area value to normalise the curve onto (default: 1)
 #'
-#' @return yNew values of curve at times x such that \int{yNew}dx = area
+#' @return yNew values of curve at times x such that [\\int{yNew}dx = area]
 #' @export
 
 NormCurvToArea <- function(y, x = seq(0, 1, length.out = length(y)), area = 1){
