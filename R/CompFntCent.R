@@ -4,7 +4,7 @@
 
 ##### input variables: 
 #####   f: evaluated values of component functions at estimation grid (N*d matrix)
-#####   ind_j: index of centering for the j-th component function (scalar)
+#####   j: index of centering for the j-th component function (scalar)
 #####   x: estimation grid (N*d matrix)
 #####   MgnJntDensity: evaluated values of marginal and 2-dim. joint densities (2-dim. list, referred to the output of 'MgnJntDensity')
 
@@ -13,31 +13,17 @@
 
 
 # centering
-CompFntCent<-function(f,ind_j,x,MgnJntDens){
+CompFntCent <- function(f,j,x,MgnJntDens){
   
-  j<-ind_j
+  fj <- f[,j]
+  xj <- x[,j]
   
-  f_j<-f[,j]
-  x_j<-x[,j]
+  pMatMgn <- MgnJntDens$pMatMgn
   
-  p_mat_mgn<-MgnJntDens$p_mat_mgn
-  
-  tmp1<-p_mat_mgn[,j]
-  tmp<-f_j-trapzRcpp(sort(x_j),(f_j*tmp1)[order(x_j)])
+  tmp1 <- pMatMgn[,j]
+  tmp <- fj-trapzRcpp(sort(xj),(fj*tmp1)[order(xj)])
   
   return(tmp)
   
 }
 
-
-
-
-#attach(mtcars)
-#par_tmp<-par(no.readonly=T)
-#par(mfrow=c(2,2))
-#for(j in 1:4){
-#  plot(x[,j],CompFntCent(qwer,j,x,MgnJntDens=asdf),type='l')
-#  points(X[,j],Y,cex=0.5)
-#}
-#par(par_tmp)
-#detach(mtcars)

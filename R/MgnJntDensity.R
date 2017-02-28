@@ -3,8 +3,8 @@
 #####
 
 ##### input variables:
-#####   ind_j: index of kernel estimation for marginal density (scalar)
-#####   ind_kj: index of kernel estimation for 2-dim. joint density (2-dim. vector)
+#####   j: index of kernel estimation for marginal density (scalar)
+#####   kj: index of kernel estimation for 2-dim. joint density (2-dim. vector)
 #####   x: estimation grid (N*d matrix)
 #####   X: covariate observation grid (n*d matrix)
 #####   h: bandwidths (d-dim. vector)
@@ -17,130 +17,126 @@
 
 
 ### propertion of non-truncated observation
-p_0<-function(X, supp=NULL){ 
+P0 <- function(X, supp=NULL){ 
   
-  n<-nrow(X)
-  d<-ncol(X)
-  if(is.null(supp)==T){
-    supp<-matrix(rep(c(0,1),d),ncol=2,byrow=T)
+  n <- nrow(X)
+  d <- ncol(X)
+  
+  if (is.null(supp)==TRUE) {
+    supp <- matrix(rep(c(0,1),d),ncol=2,byrow=T)
   }
   
-  tmp<-rep(1,n)
+  tmp <- rep(1,n)
   for(j in 1:d){
-    tmp<-tmp*dunif(X[,j],supp[j,1],supp[j,2])*(supp[j,2]-supp[j,1])
+    tmp <- tmp*dunif(X[,j],supp[j,1],supp[j,2])*(supp[j,2]-supp[j,1])
   }
   
   return(mean(tmp))
 }
 
 # marginal density estimation
-p_j<-function(ind_j, x, X, h=NULL, K=NULL, supp=NULL){
+Pj <- function(j, x, X, h=NULL, K='epan', supp=NULL){
   
-  N<-nrow(x)
-  d<-ncol(x)
-  n<-nrow(X)
-  if(is.null(K)==T){
-    K<-EpchKer
-  }
-  if(is.null(supp)==T){
-    supp<-matrix(rep(c(0,1),d),ncol=2,byrow=T)
-  }
-  if(is.null(h)==T){
-    h<-rep(0.25*n^(-1/5),d)*(supp[,2]-supp[,1])
-  }
-  #if(is.null(Kh)==T){
-  #  Kh<-Kh
-  #}
+  N <- nrow(x)
+  d <- ncol(x)
+  n <- nrow(X)
   
-  j<-ind_j
+  if (K!='epan') {
+    message('Epanechnikov kernel is only supported currently. It uses Epanechnikov kernel automatically')
+    K<-'epan'
+  }
+  if (is.null(supp)==TRUE) {
+    supp <- matrix(rep(c(0,1),d),ncol=2,byrow=T)
+  }
+  if (is.null(h)==TRUE) {
+    h <- rep(0.25*n^(-1/5),d)*(supp[,2]-supp[,1])
+  }
 
-  tmp_index<-rep(1,n)
+  tmpIndex <- rep(1,n)
   for(l in 1:d){
-    tmp_index<-tmp_index*dunif(X[,l],supp[l,1],supp[l,2])*(supp[l,2]-supp[l,1])
+    tmpIndex <- tmpIndex*dunif(X[,l],supp[l,1],supp[l,2])*(supp[l,2]-supp[l,1])
   }
-  index<-which(tmp_index==1)
-  p_hat<-apply(NormKernel(x[,j],X[,j],h[j],K,c(supp[j,1],supp[j,2]))[,index],1,'sum')/n
+  index <- which(tmpIndex==1)
+  pHat <- apply(NormKernel(x[,j],X[,j],h[j],K,c(supp[j,1],supp[j,2]))[,index],1,'sum')/n
 
-  p_hat<-p_hat/trapzRcpp(sort(x[,j]),p_hat[order(x[,j])])
+  pHat <- pHat/trapzRcpp(sort(x[,j]),pHat[order(x[,j])])
 
-  return(p_hat/p_0(X,supp))   
+  return(pHat/P0(X,supp))   
 }
 
 # 2-dimensional joint density estimation
-p_kj<-function(ind_kj, x, X, h=NULL, K=NULL, supp=NULL){
+Pkj <- function(kj, x, X, h=NULL, K='epan', supp=NULL){
   
-  N<-nrow(x)
-  d<-ncol(x)
-  n<-nrow(X)
-  if(is.null(K)==T){
-    K<-EpchKer
+  N <- nrow(x)
+  d <- ncol(x)
+  n <- nrow(X)
+  
+  if (K!='epan') {
+    message('Epanechnikov kernel is only supported currently. It uses Epanechnikov kernel automatically')
+    K<-'epan'
   }
-  if(is.null(supp)==T){
-    supp<-matrix(rep(c(0,1),d),ncol=2,byrow=T)
+  if (is.null(supp)==TRUE) {
+    supp <- matrix(rep(c(0,1),d),ncol=2,byrow=T)
   }
-  if(is.null(h)==T){
-    h<-rep(0.25*n^(-1/5),d)*(supp[,2]-supp[,1])
+  if (is.null(h)==TRUE) {
+    h <- rep(0.25*n^(-1/5),d)*(supp[,2]-supp[,1])
   }
-  #if(is.null(Kh)==T){
-  #  Kh<-Kh
-  #}
   
-  k<-ind_kj[1]
-  p_hat_k<-NormKernel(x[,k],X[,k],h[k],K,c(supp[k,1],supp[k,2]))
+  k <- kj[1]
+  pHatk <- NormKernel(x[,k],X[,k],h[k],K,c(supp[k,1],supp[k,2]))
   
-  j<-ind_kj[2]
-  p_hat_j<-NormKernel(x[,j],X[,j],h[j],K,c(supp[j,1],supp[j,2]))
+  j <- kj[2]
+  pHatj <- NormKernel(x[,j],X[,j],h[j],K,c(supp[j,1],supp[j,2]))
   
-  tmp_index<-rep(1,n)
+  tmpIndex <- rep(1,n)
   for(l in 1:d){
-    tmp_index<-tmp_index*dunif(X[,l],supp[l,1],supp[l,2])*(supp[l,2]-supp[l,1])
+    tmpIndex <- tmpIndex*dunif(X[,l],supp[l,1],supp[l,2])*(supp[l,2]-supp[l,1])
   }
-  index<-which(tmp_index==1)
-  p_hat<-p_hat_k[,index]%*%t(p_hat_j[,index])/n
+  index <- which(tmpIndex==1)
+  pHat <- pHatk[,index]%*%t(pHatj[,index])/n
   
-  p_hat<-p_hat/trapzRcpp(sort(x[,j]),p_j(j,x,X,h)[order(x[,j])])/trapzRcpp(sort(x[,k]),p_j(k,x,X,h)[order(x[,k])])
+  pHat <- pHat/trapzRcpp(sort(x[,j]),Pj(j,x,X,h)[order(x[,j])])/trapzRcpp(sort(x[,k]),Pj(k,x,X,h)[order(x[,k])])
   
-  return(p_hat/p_0(X,supp))     
+  return(pHat/P0(X,supp))     
 }
 
 # construction of evaluation matrices for marginal and joint densities estimators
-MgnJntDensity<-function(x, X, h=NULL, K=NULL, supp=NULL){
+MgnJntDensity <- function(x, X, h=NULL, K='epan', supp=NULL){
   
-  N<-nrow(x)
-  d<-ncol(x)
-  n<-nrow(X)
-  if(is.null(K)==T){
-    K<-EpchKer
-  }
-  if(is.null(supp)==T){
-    supp<-matrix(rep(c(0,1),d),ncol=2,byrow=T)
-  }
-  if(is.null(h)==T){
-    h<-rep(0.25*n^(-1/5),d)*(supp[,2]-supp[,1])
-  }
-  #if(is.null(Kh)==T){
-  #  Kh<-Kh
-  #}
+  N <- nrow(x)
+  d <- ncol(x)
+  n <- nrow(X)
   
-  p_mat_mgn<-matrix(0,nrow=N,ncol=d)
-  p_arr_jnt<-array(0,dim=c(N,N,d,d))
+  if (K!='epan') {
+    message('Epanechnikov kernel is only supported currently. It uses Epanechnikov kernel automatically')
+    K<-'epan'
+  }
+  if (is.null(supp)==TRUE) {
+    supp <- matrix(rep(c(0,1),d),ncol=2,byrow=T)
+  }
+  if (is.null(h)==TRUE) {
+    h <- rep(0.25*n^(-1/5),d)*(supp[,2]-supp[,1])
+  }
+  
+  pMatMgn <- matrix(0,nrow=N,ncol=d)
+  pArrJnt <- array(0,dim=c(N,N,d,d))
   #cat(paste('Computing all pairs of 1-/2-dim.l marginal/joint density estimators...','\n',sep=''))
-  for(j in 1:d){
+  for (j in 1:d) {
     #cat(paste('   ',round(j/d,3),'\n',sep=''))
     #cat('\n')
-    p_mat_mgn[,j]<-p_j(j,x,X,h,K,supp)
+    pMatMgn[,j] <- Pj(j,x,X,h,K,supp)
     
-    for(k in j:d){ 
+    for (k in j:d) { 
       #print(k)
-      if(k==j){
-        p_arr_jnt[,,k,j]<-diag(p_j(j,x,X,h,K,supp))
-      }else{
-        p_arr_jnt[,,k,j]<-p_kj(c(k,j),x,X,h,K,supp)
-        p_arr_jnt[,,j,k]<-t(p_arr_jnt[,,k,j])
+      if (k==j) {
+        pArrJnt[,,k,j] <- diag(Pj(j,x,X,h,K,supp))
+      } else {
+        pArrJnt[,,k,j] <- Pkj(c(k,j),x,X,h,K,supp)
+        pArrJnt[,,j,k] <- t(pArrJnt[,,k,j])
       }
     }
   }
   
-  return(list(p_arr_jnt=p_arr_jnt, p_mat_mgn=p_mat_mgn))
+  return(list(pArrJnt=pArrJnt, pMatMgn=pMatMgn))
 }
 
