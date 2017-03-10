@@ -17,8 +17,8 @@
 #' \item{NW}{An \emph{N} by \emph{d} matrix whose column vectors consist of the Nadaraya-Watson marginal regression function estimators for each predictor component at the given estimation points.}
 #' \item{mgnDens}{An \emph{N} by \emph{d} matrix whose column vectors consist of the marginal kernel density estimators for each predictor component at the given estimation points.}
 #' \item{jntDens}{An \emph{N} by \emph{N} by \emph{d} by \emph{d} array representing the 2-dimensional joint kernel density estimators for all pairs of predictor components at the given estimation grid. For example, \code{[,,j,k]} of the object provides the 2-dimensional joint kernel density estimator of the \code{(j,k)}-component of predictor components at the corresponding \emph{N} by \emph{N} matrix of estimation grid.}
-#' \item{itemNum}{The iteration number of the smooth backfitting algorithm.}
-#' \item{itemErr}{The iteration error of the smooth backfitting algorithm.}
+#' \item{itemNum}{The iteration number that the smooth backfitting algorithm has stopped.}
+#' \item{itemErr}{The iteration error of the smooth backfitting algorithm that represents the maximum L2 distance among component functions in the last successive updates.}
 #' @examples
 #' set.seed(100)
 #' 
@@ -78,6 +78,16 @@
 
 SBFitting <- function(Y,x,X,h=NULL,K='epan',supp=NULL){
   
+  if (is.null(ncol(x))==TRUE) {
+    return(message('Evaluation grid must be multi-dimensional.'))
+  }
+  if (is.null(ncol(X))==TRUE) {
+    return(message('Observation grid must be multi-dimensional.'))
+  }
+  if (length(h)<2) {
+    return(message('Bandwidth must be multi-dimensional.'))
+  }
+  
   N <- nrow(x)
   n <- nrow(X)
   d <- ncol(X)
@@ -109,9 +119,12 @@ SBFitting <- function(Y,x,X,h=NULL,K='epan',supp=NULL){
   # backfitting
   eps <- epsTmp <- 100
   iter <- 1
-  while (eps>1e-5) {
-    
-    #cat(paste('   SBF iteration: ',iter,', stop criterion=',round(eps,3),'(>1e-05)\n',sep=''))
+  
+  critEps <- 1e-6
+  critEpsDiff <- 1e-4
+  critIter <- 100
+  
+  while (eps>critEps) {
     
     epsTmp <- eps
     
@@ -126,21 +139,7 @@ SBFitting <- function(Y,x,X,h=NULL,K='epan',supp=NULL){
     
     eps <- max(sqrt(apply(abs(f-f0)^2,2,'mean')))
     
-    #if (abs(epsTmp-eps)<1e-5) {
-    #  return(list(
-    #      SBFit=f, 
-    #      mY=yMean,
-    #      NW=fNW, 
-    #      mgnDens=MgnJntDens$pMatMgn, 
-    #      jntDens=MgnJntDens$pArrJnt, 
-    #      iterNum=iter,
-    #      iterErr=eps
-    #    )
-    #  )
-    #}
-
-    if (iter>50) {
-      message('The algorithm may not converge. Try another choice of bandwidths.')
+    if (abs(epsTmp-eps)<critEpsDiff) {
       return(list(
           SBFit=f, 
           mY=yMean,
@@ -148,7 +147,29 @@ SBFitting <- function(Y,x,X,h=NULL,K='epan',supp=NULL){
           mgnDens=MgnJntDens$pMatMgn, 
           jntDens=MgnJntDens$pArrJnt, 
           iterNum=iter,
-          iterErr=eps
+          iterErr=eps,
+          iterErrDiff=epsTmp-eps,
+          critNum=critIter,
+          critErr=critEps,
+          critErrDiff=critEpsDiff
+        )
+      )
+    }
+
+    if (iter>critIter) {
+      message('The algorithm may not converge (SBF iteration > stopping criterion). Try another choice of bandwidths.')
+      return(list(
+          SBFit=f, 
+          mY=yMean,
+          NW=fNW, 
+          mgnDens=MgnJntDens$pMatMgn, 
+          jntDens=MgnJntDens$pArrJnt, 
+          iterNum=iter,
+          iterErr=eps,
+          iterErrDiff=abs(epsTmp-eps),
+          critNum=critIter,
+          critErr=critEps,
+          critErrDiff=critEpsDiff
         )
       )
     }
@@ -163,7 +184,11 @@ SBFitting <- function(Y,x,X,h=NULL,K='epan',supp=NULL){
         mgnDens=MgnJntDens$pMatMgn, 
         jntDens=MgnJntDens$pArrJnt, 
         iterNum=iter,
-        iterErr=eps
+        iterErr=eps,
+        iterErrDiff=abs(epsTmp-eps),
+        critNum=critIter,
+        critErr=critEps,
+        critErrDiff=critEpsDiff
       )
   )
   
