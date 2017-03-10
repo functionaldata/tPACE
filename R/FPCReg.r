@@ -1,5 +1,5 @@
-library(Matrix)
-library(fields)#interp.surface.grid
+#library(Matrix)
+#library(fields)#interp.surface.grid
 
 FPCReg <- function(vars,m_optns=NULL,isNewSub=NULL,method='AIC',FVEthreshold=0.98,alpha=0.05){
 	#===============data checking and manipulation
