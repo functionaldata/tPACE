@@ -237,7 +237,7 @@ dense_Cov=function(p,vars_train,brk1,mx_wet,grid_n,m_optns){
 					grid_brk3=brk1[j]+1
 					grid_brk4=brk1[j+1]
 					mx_temp[grid_brk1:grid_brk2,grid_brk3:grid_brk4]=cov(vars_train[[i]]$Ly,vars_train[[j]]$Ly)
-					mx_temp[grid_brk3:grid_brk4,grid_brk1:grid_brk2]=t(mx_temp[grid_brk1:grid_brk2,grid_brk3:grid_brk4])
+					mx_temp[grid_brk3:grid_brk4,grid_brk1:grid_brk2]=t(as.matrix(mx_temp[grid_brk1:grid_brk2,grid_brk3:grid_brk4]))
 					}
 				}
 			}
@@ -299,7 +299,7 @@ sparse_Cov=function(p,vars_train,brk1,m_optns,nRegGrids,vars,muList,grid_x,mx_we
 					grid_brk3=brk1[j]+1
 					grid_brk4=brk1[j+1]
 					mx_temp[grid_brk1:grid_brk2,grid_brk3:grid_brk4]=GetCrCovYX(bw1=m_bwCov[[i]],bw2=m_bwCov[[j]],Ly1=vars_train[[i]]$Ly,Lt1=vars_train[[i]]$Lt,Ymu1=meanCrAll[[i]],Ly2=vars_train[[j]]$Ly,Lt2=vars_train[[j]]$Lt,Ymu2=meanCrAll[[j]])$smoothedCC
-					mx_temp[grid_brk3:grid_brk4,grid_brk1:grid_brk2]=t(mx_temp[grid_brk1:grid_brk2,grid_brk3:grid_brk4])
+					mx_temp[grid_brk3:grid_brk4,grid_brk1:grid_brk2]=t(as.matrix(mx_temp[grid_brk1:grid_brk2,grid_brk3:grid_brk4]))
 					}
 				}
 			}
