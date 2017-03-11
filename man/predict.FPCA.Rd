@@ -4,11 +4,11 @@
 \alias{predict.FPCA}
 \title{Predict FPC scores for a new sample given an FPCA object}
 \usage{
-\method{predict}{FPCA}(x, newX, newY, sigma2 = NULL, k = 1, im = "CE",
-  ...)
+\method{predict}{FPCA}(object, newX, newY, sigma2 = NULL, k = 1,
+  im = "CE", ...)
 }
 \arguments{
-\item{x}{An FPCA object.}
+\item{object}{An FPCA object.}
 
 \item{newX}{A list of \emph{n} vectors containing the observation time points for each individual corresponding to y.}
 

@@ -2,7 +2,7 @@
 #'
 #' Return a matrix with the first k FPC scores according to conditional expectation or numerical integration.
 #'
-#' @param x An FPCA object.
+#' @param object An FPCA object.
 #' @param newY  A list of \emph{n} vectors containing the observed values for each individual.
 #' @param newX A list of \emph{n} vectors containing the observation time points for each individual corresponding to y.
 #' @param sigma2 The user-defined measurement error variance. A positive scalar. (default: rho if applicable, otherwise sigma2 if applicable, otherwise 0 if no error. )
@@ -24,8 +24,8 @@
 #' @method predict FPCA
 #' @export
 
-predict.FPCA <- function(x, newX, newY, sigma2 = NULL, k = 1, im = 'CE', ...){
-  fpcaObj = x;
+predict.FPCA <- function(object, newX, newY, sigma2 = NULL, k = 1, im = 'CE', ...){
+  fpcaObj = object;
   
   if(class(fpcaObj) != "FPCA"){
     stop('Please provide a valid FPCA object.')

@@ -80,15 +80,15 @@ plot(fPred,Y,cex=0.5,xlab='SBFitted values',ylab='Y')
 abline(coef=c(0,1),col=8)
 }
 \references{
-\cite{Mammen, E., Linton, O. and Nielsen, J. (1999), “The existence and asymptotic properties of a backfitting projection algorithm under weak conditions”, Annals of Statistics, Vol.27, No.5, p.1443-1490.}
+\cite{Mammen, E., Linton, O. and Nielsen, J. (1999), "The existence and asymptotic properties of a backfitting projection algorithm under weak conditions", Annals of Statistics, Vol.27, No.5, p.1443-1490.}
 
-\cite{Mammen, E. and Park, B. U. (2006), “A simple smooth backfitting method for additive models”, Annals of Statistics, Vol.34, No.5, p.2252-2271.}
+\cite{Mammen, E. and Park, B. U. (2006), "A simple smooth backfitting method for additive models", Annals of Statistics, Vol.34, No.5, p.2252-2271.}
 
-\cite{Yu, K., Park, B. U. and Mammen, E. (2008), “Smooth backfitting in generalized additive models”, Annals of Statistics, Vol.36, No.1, p.228-260.}
+\cite{Yu, K., Park, B. U. and Mammen, E. (2008), "Smooth backfitting in generalized additive models", Annals of Statistics, Vol.36, No.1, p.228-260.}
 
-\cite{Lee, Y. K., Mammen, E. and Park., B. U. (2010), “backfitting and smooth backfitting for additive quantile models”, Vol.38, No.5, p.2857-2883.}
+\cite{Lee, Y. K., Mammen, E. and Park., B. U. (2010), "backfitting and smooth backfitting for additive quantile models", Vol.38, No.5, p.2857-2883.}
 
-\cite{Lee, Y. K., Mammen, E. and Park., B. U. (2012), “Flexible generalized varying coefficient regression models”, Annals of Statistics, Vol.40, No.3, p.1906-1933.}
+\cite{Lee, Y. K., Mammen, E. and Park., B. U. (2012), "Flexible generalized varying coefficient regression models", Annals of Statistics, Vol.40, No.3, p.1906-1933.}
 
-\cite{Han, K., Mueller, H.-G. and Park, B. U. (2016), “Smooth backfitting for additive modeling with small errors-in-variables, with an application to additive functional regression for multiple predictor functions”, Bernoulli (accepted).}
+\cite{Han, K., Mueller, H.-G. and Park, B. U. (2016), "Smooth backfitting for additive modeling with small errors-in-variables, with an application to additive functional regression for multiple predictor functions", Bernoulli (accepted).}
 }
