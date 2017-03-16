@@ -13,7 +13,7 @@ test_that('consistent estimates for dense case using IN', {
   resA <- FPCA(sampWiener$Ly, sampWiener$Lt)
   testK = 4;
   
-  AAA <- predict(resA, newY = sampWiener$Ly,newX =  sampWiener$Lt, k = testK, im = 'IN') 
+  AAA <- predict(resA, newLy = sampWiener$Ly,newLt =  sampWiener$Lt, K = testK, xiMethod = 'IN') 
   
   expect_lt( max(  abs(colMeans( abs(AAA) - abs(resA$xiEst[,1:testK]) ) ) ), .Machine$double.eps)  
   expect_gt( min(  abs(diag(cor( AAA , resA$xiEst[,1:testK])) ) ), 0.99999)  
@@ -30,7 +30,7 @@ test_that('consistent estimates for dense case using CE', {
   sampWiener <- Sparsify(sampWiener, pts, 33)
   resB <- FPCA(sampWiener$Ly, sampWiener$Lt)
   testK = 4;
-  BBB <- predict(resB, newY = sampWiener$Ly,newX =  sampWiener$Lt, k = testK, im = 'CE')
+  BBB <- predict(resB, newLy = sampWiener$Ly,newLt =  sampWiener$Lt, K = testK, xiMethod = 'CE')
 
   expect_lt( max( abs(colMeans( abs(BBB) - abs(resB$xiEst[,1:testK])) ) ), sd(abs(resB$xiEst[,1:testK])) / 50)
   expect_gt( min( abs(diag(cor(BBB , resB$xiEst[,1:testK])) ) ), 0.99)  
@@ -48,7 +48,7 @@ test_that('consistent estimates for sparse case using CE', {
   resC <- FPCA(sampWiener$Ly, sampWiener$Lt)
   testK = 4
   
-  CCC <- predict(resC, newY = sampWiener$Ly,newX =  sampWiener$Lt, k = testK)
+  CCC <- predict(resC, newLy = sampWiener$Ly,newLt =  sampWiener$Lt, K = testK)
   
   expect_lt( max( abs(colMeans(CCC - resC$xiEst[,1:testK]) ) - 1.96 * apply(CCC - resC$xiEst[,1:testK],2,sd) ), .Machine$double.eps)  
   expect_gt( min( abs(diag(cor(CCC , resC$xiEst[,1:testK])) ) ), 0.99999)  
@@ -71,7 +71,7 @@ test_that('consistent estimates for dense data with sparse FPCA object', {
   resD <- FPCA(sampWienerD$Ly, sampWienerD$Lt)
   testK = 4
   
-  AAA2 <- predict(resS, newY = sampWienerD$Ly,newX =  sampWienerD$Lt, k = testK)
+  AAA2 <- predict(resS, newLy = sampWienerD$Ly,newLt =  sampWienerD$Lt, K = testK)
   
   expect_lt( max( abs(colMeans( abs(AAA2) - abs(resD$xiEst[,1:testK])) ) - 1.96 * apply( abs(AAA2) - abs( resD$xiEst[,1:testK]),2,sd) ), .Machine$double.eps)  
   expect_gt( min( abs(diag(cor(AAA2 , resD$xiEst[,1:testK])) ) ), 0.985)
@@ -93,7 +93,7 @@ test_that('consistent estimates for sparse data with dense FPCA object', {
   resD <- FPCA(sampWienerD$Ly, sampWienerD$Lt)
   testK = 4
   
-  AAA3 <- predict(resD, newY = sampWienerS$Ly,newX =  sampWienerS$Lt, k = testK, im = 'CE')
+  AAA3 <- predict(resD, newLy = sampWienerS$Ly,newLt =  sampWienerS$Lt, K = testK, xiMethod = 'CE')
   
   expect_lt( max( abs(colMeans( abs(AAA3) - abs(resD$xiEst[,1:testK])) ) - 1.96 * apply( abs(AAA3) - abs( resD$xiEst[,1:testK]),2,sd) ), .Machine$double.eps)  
   expect_gt( min( abs(diag(cor(AAA3, resD$xiEst[,1:testK])) ) ), 0.90) # 
@@ -112,7 +112,7 @@ test_that('error when using Tr. Num. Int with sparse data FPCA object', {
   sampWienerS <- Sparsify(sampWiener, pts, 2)
   resS2 <- FPCA(sampWienerS$Ly, sampWienerS$Lt)
 
-  expect_error(  predict(resS2, newY = sampWienerS$Ly,newX =  sampWienerS$Lt, k = testK, im = 'IN'), 
+  expect_error(  predict(resS2, newLy = sampWienerS$Ly,newLt =  sampWienerS$Lt, K = testK, xiMethod = 'IN'), 
                  message =  'Trapezoid Numerical intergration (IN) is invalid for sparse data.') # 
   
 })

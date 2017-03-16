@@ -4,21 +4,21 @@
 \alias{predict.FPCA}
 \title{Predict FPC scores for a new sample given an FPCA object}
 \usage{
-\method{predict}{FPCA}(object, newX, newY, sigma2 = NULL, k = 1,
-  im = "CE", ...)
+\method{predict}{FPCA}(object, newLy, newLt, sigma2 = NULL, K = 1,
+  xiMethod = "CE", ...)
 }
 \arguments{
 \item{object}{An FPCA object.}
 
-\item{newX}{A list of \emph{n} vectors containing the observation time points for each individual corresponding to y.}
+\item{newLy}{A list of \emph{n} vectors containing the observed values for each individual.}
 
-\item{newY}{A list of \emph{n} vectors containing the observed values for each individual.}
+\item{newLt}{A list of \emph{n} vectors containing the observation time points for each individual corresponding to y.}
 
 \item{sigma2}{The user-defined measurement error variance. A positive scalar. (default: rho if applicable, otherwise sigma2 if applicable, otherwise 0 if no error. )}
 
-\item{k}{The scalar defining the number of clusters to define; (default: 1).}
+\item{K}{The scalar defining the number of clusters to define; (default: 1).}
 
-\item{im}{The integration method used to calculate the functional principal component scores ( standard numerical integration 'IN' or conditional expectation 'CE'); default: 'CE'.}
+\item{xiMethod}{The integration method used to calculate the functional principal component scores ( standard numerical integration 'IN' or conditional expectation 'CE'); default: 'CE'.}
 
 \item{...}{Not used.}
 }

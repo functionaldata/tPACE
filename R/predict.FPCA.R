@@ -3,11 +3,11 @@
 #' Return a matrix with the first k FPC scores according to conditional expectation or numerical integration.
 #'
 #' @param object An FPCA object.
-#' @param newY  A list of \emph{n} vectors containing the observed values for each individual.
-#' @param newX A list of \emph{n} vectors containing the observation time points for each individual corresponding to y.
+#' @param newLy  A list of \emph{n} vectors containing the observed values for each individual.
+#' @param newLt A list of \emph{n} vectors containing the observation time points for each individual corresponding to y.
 #' @param sigma2 The user-defined measurement error variance. A positive scalar. (default: rho if applicable, otherwise sigma2 if applicable, otherwise 0 if no error. )
-#' @param k The scalar defining the number of clusters to define; (default: 1).
-#' @param im The integration method used to calculate the functional principal component scores ( standard numerical integration 'IN' or conditional expectation 'CE'); default: 'CE'.
+#' @param K The scalar defining the number of clusters to define; (default: 1).
+#' @param xiMethod The integration method used to calculate the functional principal component scores ( standard numerical integration 'IN' or conditional expectation 'CE'); default: 'CE'.
 #' @param ... Not used.
 #' 
 #' @return  A matrix of size n-by-k 
@@ -24,22 +24,22 @@
 #' @method predict FPCA
 #' @export
 
-predict.FPCA <- function(object, newX, newY, sigma2 = NULL, k = 1, im = 'CE', ...){
+predict.FPCA <- function(object, newLy, newLt, sigma2 = NULL, K = 1, xiMethod = 'CE', ...){
   fpcaObj = object;
   
   if(class(fpcaObj) != "FPCA"){
     stop('Please provide a valid FPCA object.')
   } 
   
-  if(! all.equal( sapply(newX, length), sapply(newY, length) ) ){
-    stop('The size of the vectors in newX and newY differ. They must be equal.')
+  if(! all.equal( sapply(newLt, length), sapply(newLy, length) ) ){
+    stop('The size of the vectors in newLt and newLy differ. They must be equal.')
   } 
   
   # Standard data checks/massasing as in FPCA()
-  CheckData(newY, newX)
-  inputData <- HandleNumericsAndNAN(Lt = newX, Ly = newY);
-  newY <- inputData$Ly;
-  newX <- inputData$Lt;
+  CheckData(newLy, newLt)
+  inputData <- HandleNumericsAndNAN(Lt = newLt, Ly = newLy);
+  newLy <- inputData$Ly;
+  newLt <- inputData$Lt;
   
   if(is.null(sigma2)){
     sigma2 <- ifelse( !is.null(fpcaObj$rho), fpcaObj$rho, 
@@ -51,19 +51,19 @@ predict.FPCA <- function(object, newX, newY, sigma2 = NULL, k = 1, im = 'CE', ..
     }
   }
   
-  if(k > fpcaObj$selectK){
+  if(K > fpcaObj$selectK){
     stop( paste0( collapse = '', 'You cannot get FPC scores for more components than what is already available. (', fpcaObj$selectK ,').' ))
   } 
   
-  if( !(im %in% c('CE','IN')) ){
+  if( !(xiMethod %in% c('CE','IN')) ){
     stop( paste0( collapse = '', 'Unrecognised method to calculate the FPC scores.'))
   }
-  if( (fpcaObj$optns$dataType == 'Sparse') && (im == 'IN')){
+  if( (fpcaObj$optns$dataType == 'Sparse') && (xiMethod == 'IN')){
     stop( 'Trapezoid Numerical intergration (IN) is invalid for sparse data.')
   }
   
   rangeOfOrigData <- range(unlist(fpcaObj$workGrid))
-  rangeOfNewData <- range(unlist(newX))
+  rangeOfNewData <- range(unlist(newLt))
   
   if(rangeOfNewData[1] < rangeOfOrigData[1]){
     stop("The new data's lower range is below the original data's lower range.")
@@ -78,14 +78,14 @@ predict.FPCA <- function(object, newX, newY, sigma2 = NULL, k = 1, im = 'CE', ..
   PhiObs = ConvertSupport(fromGrid = fpcaObj$workGrid, toGrid = fpcaObj$obsGrid, phi = fpcaObj$phi)
 
   # Get scores  
-  if ( im == 'CE') {
-    scoresObj <- GetCEScores(y = newY, t = newX, optns = fpcaObj$optns, mu = MuObs, obsGrid = fpcaObj$obsGrid, sigma2 = sigma2,
+  if ( xiMethod == 'CE') {
+    scoresObj <- GetCEScores(y = newLy, t = newLt, optns = fpcaObj$optns, mu = MuObs, obsGrid = fpcaObj$obsGrid, sigma2 = sigma2,
                              fittedCov = CovObs, lambda = fpcaObj$lambda, phi = PhiObs)
-  finalXiEst <- t(do.call(cbind, scoresObj['xiEst', ]))[,1:k] 
-  } else if (im == 'IN') {
-    ymat = List2Mat(newY,newX)
-    scoresObj <- GetINScores(ymat = ymat, t = newX,optns = fpcaObj$optns,mu = MuObs,lambda =fpcaObj$lambda ,phi = PhiObs,sigma2 = sigma2)
-    finalXiEst <- scoresObj$xiEst[,1:k]
+  finalXiEst <- t(do.call(cbind, scoresObj['xiEst', ]))[,1:K] 
+  } else if (xiMethod == 'IN') {
+    ymat = List2Mat(newLy,newLt)
+    scoresObj <- GetINScores(ymat = ymat, t = newLt,optns = fpcaObj$optns,mu = MuObs,lambda =fpcaObj$lambda ,phi = PhiObs,sigma2 = sigma2)
+    finalXiEst <- scoresObj$xiEst[,1:K]
   }
   
   return(finalXiEst)
