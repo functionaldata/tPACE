@@ -35,10 +35,10 @@ CheckData = function(y,t){
   if(all(ni_tt == 1)){  
     stop("FPCA is aborted because the data do not contain repeated measurements in t!\n"); 
   }   
-  if( !all(unlist(lapply(y,function(x) class(x) %in% c('integer', 'numeric') ) ) ) ){
+  if( !all(unlist(lapply(y,function(x) any( class(x) %in% c('integer', 'numeric') ) ) ) ) ){
         stop("FPCA is aborted because 'y' members are not all of class numeric! Try  \"lapply(y,function(x) class(x))\" to see the current classes. \n");
   }
- if( !all(unlist(lapply(t,function(x) class(x) %in% c('integer', 'numeric'))) ) ){
+ if( !all(unlist(lapply(t,function(x) any( class(x) %in% c('integer', 'numeric') ) ) ) ) ){
         stop("FPCA is aborted because 't' members are not all of class numeric! Try  \"lapply(t,function(x) class(x))\" to see the current classes. \n");
   }
 
