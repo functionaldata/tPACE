@@ -5,12 +5,16 @@
 #'
 #' @details Available derivation control options are 
 #' \describe{
-#' \item{method}{The method used for obtaining the derivatives. 'DPC': cite, 'FPC': cite}
-#' \item{p}{The order of the derivatives returned (default: 0, max: 2)}
-#' \item{bw}{Bandwidth for smoothing the derivatives (default: p * 0.1 * S). For 'DPC', bw is used for smoothing G^(1,1)(s,t)}
+#' \item{method}{The method used for obtaining the derivatives (default: 'FPC'). 'DPC': derivatives principal component, with G^(1,1) estimated by first kernel local smoothing G^(1,0), and then apply a 1D smoother on the second direction; 'FPC': functional principal component, based on smoothing the eigenfunctions; 'FPC1': functional principal component, based on smoothing G^(1,0). May produce better estimate than 'FPC' but is slower.}
+#' \item{p}{The order of the derivatives returned (default: 1, max: 2). }
+#' \item{bw}{Bandwidth for the 1D and the 2D smoothers (default: p * 0.1 * S).}
+#' \item{G10_1D}{If TRUE, estimate G^(1,0) by taking a difference quotient of the smoothed G^(0,0), which have better boundary behaviors; if FALSE (the default), estimate G^(1,0) by 2D smoothing. Applies to DPC only.}
 #' \item{kernelType}{Smoothing kernel choice; same available types are FPCA(). default('epan')}
 #' }
 #'
+#' @references
+#' \cite{Dai, Xiongtao, Hans-Georg Mueller, and Wenwen Tao. "Derivative Principal Component Analysis for Representing the Time Dynamics of Longitudinal and Functional Data." Submitted (DPC)}
+#' \cite{Liu, Bitao, and Hans-Georg Mueller. "Estimating derivatives for samples of sparsely observed functions, with application to online auction dynamics." Journal of the American Statistical Association 104, no. 486 (2009): 704-717. (FPC)}
 #' @examples
 #' set.seed(1)
 #' n <- 20
@@ -52,8 +56,8 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
     stop("The derivative order p should be in {1, 2}!")
   } 
 
-  if (p == 2 && substr(method, 1, 3) == 'DPC') {
-    stop('\'DPC\' method does not support p = 2')
+  if (p == 2 && (substr(method, 1, 3) == 'DPC' || method == 'FPC1')) {
+    stop('Only \'FPC\' supports p = 2')
   }
 
   if (p == 2) {
@@ -85,42 +89,12 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
     }
 
     if (method == 'DPC') {
-      cov11 <- Lwls2DDeriv(bwCov, kernelType, xin=rcov$tPairs,
-                           yin=rcov$meanVals, win=rcov$count, xout1=workGrid,
-                           xout2=workGrid, npoly=2L, nder1=1L, nder2=1L)
-    } else if (method == 'DPC1') {
       # 1D smooth cov10 to get cov11
       cov11 <- apply(cov10, 1, function(x) 
         Lwls1D(bwCov, kernelType, xin=workGrid, yin=x, xout=workGrid, npoly=2,
                nder=1)
       )
-    } else if (method == 'DPC2') {
-      d <- function(x) diff(x) / gridSize
-      cov11 <- apply(apply(fpcaObj[['smoothedCov']], 2, d), 1, d)
-      cov11 <- ConvertSupport(seq(min(workGrid), max(workGrid),
-                                  length.out=nrow(cov11)),
-                              workGrid, Cov=cov11)
-    } else if (method == 'DPCCE') {
-      # Condition the derivative curves on the observations.
-      CovObs <- ConvertSupport(workGrid, obsGrid, Cov=fittedCov)
-      cov01Obs <- ConvertSupport(workGrid, obsGrid, phi=t(cov10))
-
-      if (!is.null(derOptns[['userSigma2']])) {
-        sigma2 <- derOptns[['userSigma2']]
-      } else {
-        sigma2 <- ifelse(is.null(fpcaObj[['rho']]), fpcaObj[['sigma2']],
-                         max(fpcaObj[['sigma2']], fpcaObj[['rho']]))
-      }
-
-      xi1 <- GetCEScores(Ly, Lt, list(verbose=FALSE), 
-                         muDense, obsGrid, CovObs, 
-                         lambda=rep(1, nWorkGrid), 
-                         phi=cov01Obs, 
-                         sigma2=sigma2)
-      fit <- t(do.call(cbind, xi1['xiEst', ]) + mu1)
-
-      return(fit)
-    }
+    } 
     cov11 <- (cov11 + t(cov11)) / 2
     # } else { # use true values
       # muDense <- rep(0, length(obsGrid))
@@ -165,12 +139,8 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
     phiObs <- ConvertSupport(workGrid, obsGrid, phi=phi)
 
     # conditional expectation
-    if (!is.null(derOptns[['userSigma2']])) {
-      sigma2 <- derOptns[['userSigma2']]
-    } else {
-      sigma2 <- ifelse(is.null(fpcaObj[['rho']]), fpcaObj[['sigma2']],
-                       max(fpcaObj[['sigma2']], fpcaObj[['rho']]))
-    }
+    sigma2 <- ifelse(is.null(fpcaObj[['rho']]), fpcaObj[['sigma2']],
+                     max(fpcaObj[['sigma2']], fpcaObj[['rho']]))
 
     # browser()
 

@@ -17,9 +17,10 @@ Take derivative of an FPCA object
 \details{
 Available derivation control options are 
 \describe{
-\item{method}{The method used for obtaining the derivatives. 'DPC': cite, 'FPC': cite}
-\item{p}{The order of the derivatives returned (default: 0, max: 2)}
-\item{bw}{Bandwidth for smoothing the derivatives (default: p * 0.1 * S). For 'DPC', bw is used for smoothing G^(1,1)(s,t)}
+\item{method}{The method used for obtaining the derivatives (default: 'FPC'). 'DPC': derivatives principal component, with G^(1,1) estimated by first kernel local smoothing G^(1,0), and then apply a 1D smoother on the second direction; 'FPC': functional principal component, based on smoothing the eigenfunctions; 'FPC1': functional principal component, based on smoothing G^(1,0). May produce better estimate than 'FPC' but is slower.}
+\item{p}{The order of the derivatives returned (default: 1, max: 2). }
+\item{bw}{Bandwidth for the 1D and the 2D smoothers (default: p * 0.1 * S).}
+\item{G10_1D}{If TRUE, estimate G^(1,0) by taking a difference quotient of the smoothed G^(0,0), which have better boundary behaviors; if FALSE (the default), estimate G^(1,0) by 2D smoothing. Applies to DPC only.}
 \item{kernelType}{Smoothing kernel choice; same available types are FPCA(). default('epan')}
 }
 }
@@ -32,4 +33,8 @@ sampWiener <- Sparsify(sampWiener, pts, 10)
 res <- FPCA(sampWiener$Ly, sampWiener$Lt, 
             list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
 derRes <- FPCAder(res)
+}
+\references{
+\cite{Dai, Xiongtao, Hans-Georg Mueller, and Wenwen Tao. "Derivative Principal Component Analysis for Representing the Time Dynamics of Longitudinal and Functional Data." Submitted (DPC)}
+\cite{Liu, Bitao, and Hans-Georg Mueller. "Estimating derivatives for samples of sparsely observed functions, with application to online auction dynamics." Journal of the American Statistical Association 104, no. 486 (2009): 704-717. (FPC)}
 }
