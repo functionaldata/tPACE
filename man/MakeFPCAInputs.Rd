@@ -4,7 +4,7 @@
 \alias{MakeFPCAInputs}
 \title{Format FPCA input}
 \usage{
-MakeFPCAInputs(IDs = NULL, tVec, yVec, na.rm = FALSE)
+MakeFPCAInputs(IDs = NULL, tVec, yVec, na.rm = FALSE, beSorted = FALSE)
 }
 \arguments{
 \item{IDs}{n-by-1 vector of subject IDs (Default: NULL)}
@@ -14,6 +14,8 @@ MakeFPCAInputs(IDs = NULL, tVec, yVec, na.rm = FALSE)
 \item{yVec}{n-by-1 vector of measurements from the variable of interest, or a n-by-p matrix with each row corresponding to the dense observations.}
 
 \item{na.rm}{logical indicating if NA should be omitted (Default: FALSE)}
+
+\item{beSorted}{logical indicating if the returned lists Lt and Ly should be ensured to be sorted (Default: FALSE)}
 }
 \value{
 L list containing 3 lists each of length 'm', 'm' being the number of unique subject IDs
