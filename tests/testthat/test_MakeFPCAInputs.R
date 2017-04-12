@@ -14,7 +14,7 @@ test_that('MakeFPCAInputs works', {
   LusersOrigVec = as.vector(unlist(LusersOrig))
   ZZ = MakeFPCAInputs(IDs= LusersOrigVec, tVec=LtOrigVec,yVec= LyOrigVec)
   # BB = FPCA(Ly= ZZ$Ly, Lt= ZZ$Lt) # This errs!
-  ZZs = MakeFPCAInputs(IDs= LusersOrigVec, tVec=LtOrigVec,yVec= LyOrigVec, beSorted=TRUE)
+  ZZs = MakeFPCAInputs(IDs= LusersOrigVec, tVec=LtOrigVec,yVec= LyOrigVec, sort=TRUE)
   # CC = FPCA(Ly= ZZs$Ly, Lt= ZZs$Lt)
   
   expect_s3_class(FPCA(Ly= ZZs$Ly, Lt= ZZs$Lt), 'FPCA')
