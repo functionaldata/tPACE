@@ -7,7 +7,6 @@
 #' @param FVEthreshold A scalar specifying the proportion used for 'FVE'. (default: 0.98)
 #' @param alpha A scalar specifying the level of the confidence bands. (default: 0.05)
 #'
-#' @details 
 #' @return A list containing the following fields:
 #' \item{estiBeta}{A list with fields of estimated beta_XiY(s,t) defiend on [range(Xi),range(Y)]}
 #' \item{predictY}{A list containing fitted or predicted (when is NewSub is true) functions for E(Y|X).}
@@ -238,8 +237,8 @@ FPCReg <- function(vars, varsOptns = NULL, isNewSub = NULL, method = 'AIC', FVEt
 		SigmaY <- xCov + diag(diagSigma2)  #This part may be considered to use raw cov
 		Omega <- diageValue - diageValue %*% t(eigenFun[, 1:Kx]) %*% solve(SigmaY) %*% eigenFun[, 1:Kx] %*% t(diageValue)
 		pwVar <- diag(intBetaPhi %*% Omega %*% t(intBetaPhi))
-		upCI <- t(apply(predictY, 1, '+', qnorm(1-alpha / 2) * sqrt(pwVar)))
-		lwCI <- t(apply(predictY, 1, '-', qnorm(1-alpha / 2) * sqrt(pwVar)))
+		upCI <- t(apply(predictY, 1, '+', stats::qnorm(1-alpha / 2) * sqrt(pwVar)))
+		lwCI <- t(apply(predictY, 1, '-', stats::qnorm(1-alpha / 2) * sqrt(pwVar)))
 		cbandY <- list(upCI = upCI, lwCI = lwCI)
 	} else {
 		score <- lapply(emputeScore, function(x){x[1:Kx]})		
@@ -252,8 +251,8 @@ FPCReg <- function(vars, varsOptns = NULL, isNewSub = NULL, method = 'AIC', FVEt
 		H <- lapply(subEigenFun, function(x){diag(eigenValue[1:Kx]) %*% x[1:Kx, ]})
 		Omega <- mapply(function(X, Y){diageValue - X %*% Y %*% t(X)}, X=H, Y=invSigma, SIMPLIFY = FALSE)
 		pwVar <- lapply(Omega, function(x){diag(intBetaPhi %*% x %*% t(intBetaPhi))})
-		upCI <- mapply(function(X, Y){X + qnorm(1 - alpha / 2)*sqrt(Y)}, X = predictY, Y = pwVar)
-		lwCI <- mapply(function(X, Y){X - qnorm(1 - alpha / 2)*sqrt(Y)}, X = predictY, Y = pwVar)
+		upCI <- mapply(function(X, Y){X + stats::qnorm(1 - alpha / 2)*sqrt(Y)}, X = predictY, Y = pwVar)
+		lwCI <- mapply(function(X, Y){X - stats::qnorm(1 - alpha / 2)*sqrt(Y)}, X = predictY, Y = pwVar)
 		cbandY <- lapply(1:dim(lwCI)[2], function(x){CI = cbind(lwCI[, x], upCI[, x]) ; colnames(CI) = c('lwCI', 'upCI') ; return(CI)})
 		}
 
@@ -409,7 +408,7 @@ sparseCov <- function(p, varsTrain, brkX, varsOptns, vars, muList, gridNum, dxMa
 		varDemean <- mapply('-',vars[[i]]$Ly, lapply(vars[[i]]$Lt, muList[[i]]), SIMPLIFY = FALSE)
 		if(i==1){varsDemean <- varDemean}else{varsDemean <- mapply(function(X, Y){c(X, Y)}, X = varsDemean, Y = varDemean)}
 		}
-	nZero <- rep(list(0), lengthVars(vars))
+	nZero <- rep(list(0), lengthVarsFPCReg(vars))
 	for (i in 1:p) {
 		varPnumber <- sapply(vars[[i]]$Lt, length)
 		nZero <- mapply(c, nZero, varPnumber, SIMPLIFY=FALSE)
@@ -470,7 +469,7 @@ sparseCov <- function(p, varsTrain, brkX, varsOptns, vars, muList, gridNum, dxMa
 	return(list(xCov = xCov, croCov = croCov, varsSigma2 = varsSigma2, yCov = yCov, varsbwMu = varsbwMu, varsbwCov = varsbwCov, varsDemean = varsDemean, subCov = subCov, subEigenFun = subEigenFun, subMeanX = subMeanX, numposiEigen = numposiEigen, diagSigma2 = diagSigma2, eigenValue = eigenValue, eigenFun = eigenFun))
 	}
 
-lengthVars <- function(varsTrain, subset) {
+lengthVarsFPCReg <- function(varsTrain, subset) {
 	lenEach <- sapply(varsTrain, function(x) {
 		if (is.list(x)) {
 		x[['userBwMu']] <- NULL
