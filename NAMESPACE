@@ -3,6 +3,7 @@
 S3method(fitted,FPCA)
 S3method(fitted,FPCAder)
 S3method(plot,FPCA)
+S3method(predict,FPCA)
 S3method(print,FPCA)
 S3method(print,FSVD)
 S3method(print,WFDA)

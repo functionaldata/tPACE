@@ -30,7 +30,7 @@
 #' @name fdapace
 #' @useDynLib fdapace
 #' @import Rcpp
-#' @importFrom Matrix Matrix bdiag
+#' @importFrom Matrix Matrix
 #' @importFrom Hmisc approxExtrap
 #' @importFrom pracma meshgrid midpoint mod ones uniq
 #' @importFrom numDeriv grad hessian
@@ -39,5 +39,4 @@
 #' @importFrom stats aggregate approx approxfun cov dist fitted kmeans lm median na.omit optim predict quantile rnorm runif spline var sd poly weighted.mean cor dunif
 #' @importFrom utils installed.packages
 #' @importFrom MASS isoMDS mvrnorm
-#' @importFrom fields interp.surface.grid
 NULL

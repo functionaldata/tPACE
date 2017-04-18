@@ -47,11 +47,19 @@ CreateBasis <- function(K, pts=seq(0, 1, length.out=50), type='sin') {
       res <- xMat %*% coefMat
       # browser()
     }
+
+    if (K >= 25) {
+      warning('Numeric unstability may occur. Use K < 25.')
+    }
   } else if (type == 'poly') {
     if (K == 1) {
       res <- matrix(1, length(pts), 1)
     } else if (K > 1) {
      res <- cbind(1, stats::poly(pts, K - 1, raw=TRUE))
+    }
+
+    if (K >= 25) {
+      warning('Numeric unstability may occur. Use K < 25.')
     }
   } else if (type == 'unknown') {
     stop('unknown basis type')
