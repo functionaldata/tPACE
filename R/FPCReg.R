@@ -1,8 +1,8 @@
 #' Function for performing functonal linear regression where the covariates are functions X1(t1),X2(t2),.. and the response is a function Y(t_y).
 #'
 #' @param vars A list of input functional covariates with name of "X1", "X2",.. and a functional response with name "Y". Each field should have two fields: 'Lt', a list (sparse) or a matrix (Dense) specifying the time of observations, and 'Ly', a list (Sparse) or a matrix (Dense) of the observations.
-#' @param varsOptns A list of options named by "X1", "X2",..."Y". Each filed specify the paramaters that control the corresponding variables. (default: see details of FPCA())    
-#' @param isNewSub A 1*n vector of 0s or 1s, where n is the total count of subjects. 0 denotes the corresponding subject is only used for estimation and 1 denotes the corresponding subject is only used for prediction. (default: 0's) 
+#' @param varsOptns A list of options named by "X1", "X2",..."Y". Each filed specify the paramaters that control the corresponding variables. (default: see details of FPCA())
+#' @param isNewSub A 1*n vector of 0s or 1s, where n is the total count of subjects. 0 denotes the corresponding subject is only used for estimation and 1 denotes the corresponding subject is only used for prediction. (default: 0's)
 #' @param method The method used for selecting the number of principal components of functional predictors X's used in functional regression , including 'AIC', 'BIC' and 'FVE'. (default: "AIC")
 #' @param FVEthreshold A scalar specifying the proportion used for 'FVE'. (default: 0.98)
 #' @param alpha A scalar specifying the level of the confidence bands. (default: 0.05)
@@ -12,15 +12,15 @@
 #' \item{predictY}{A list containing fitted or predicted (when is NewSub is true) functions for E(Y|X).}
 #' \item{cbandY}{A list with confidence bands of E(Y|X).}
 #' \item{Q}{Quasi R-square}
-#' \item{r2}{Functional R-square.} 
+#' \item{r2}{Functional R-square.}
 #' \item{varsMean}{A list with mean function of covariates and response.}
 #' \item{Kx}{The number of principal components of functional predictors X's used in functional regression.}
 #'
 #' @references
-#' \cite{Yao, F., Mueller, H.G., Wang, J.L. "Functional Linear Regression Analysis for Longitudinal Data." Annals of Statistics 33, (2005): 2873-2903.} 
+#' \cite{Yao, F., Mueller, H.G., Wang, J.L. "Functional Linear Regression Analysis for Longitudinal Data." Annals of Statistics 33, (2005): 2873-2903.}
 #'
 #' @export
-#' @examples 
+#' @examples
 #' set.seed(100)
 #' #Model: E(Y(t)|X) = int(beta(s,t)*X(s))
 #' n <- 200 #number of subjects
@@ -28,7 +28,7 @@
 #' ngridt <- 51 #number of grids in [0,1] for Y(t)
 #' grids <- seq(0, 1, length.out=ngrids) #regular grids in [0,1] for X(s)
 #' gridt <- seq(0, 1, length.out=ngridt) #regular grids in [0,1] for Y(t)
-#' 
+#'
 #' #generate X
 #' #{1, sqrt(2)*sin(2*pi*s), sqrt(2)*cos(2*pi*t)} are used to generate X.
 #' eigenFun <- list(function(s){1 + 0 * s},function(s){sqrt(2) * sin(2*pi*s)},function(s){sqrt(2) * cos(2*pi*s)})
@@ -37,13 +37,13 @@
 #' latentX <- scoreX %*% t(basisX)
 #' measErrX <- sqrt(0.01) * matrix(rnorm(n * ngrids), n, ngrids) #0.01 is sigma^2.
 #' denseX <- latentX + measErrX
-#' 
+#'
 #' #generate Y
 #' #beta(s, t) <- sin(2 * pi * s)*cos(2 * pi * t)
 #' betaEigen1 <- function(t){f <- function(s){sin(2*pi*s) * cos(2*pi*t) * (1+0*s)};return(f)}
 #' betaEigen2 <- function(t){f <- function(s){sin(2*pi*s) * cos(2*pi*t) * (sqrt(2)*sin(2*pi*s))};return(f)}
 #' betaEigen3 <- function(t){f <- function(s){sin(2*pi*s) * cos(2*pi*t) * (sqrt(2)*cos(2*pi*s))};return(f)}
-#' betaEigen <- list(betaEigen1, betaEigen2, betaEigen3) 
+#' betaEigen <- list(betaEigen1, betaEigen2, betaEigen3)
 #' basisY <- array(0,c(ngridt, 3))
 #' for(i in 1:3){
 #' 	intbetaEigen <- function (t) {integrate(betaEigen[[i]](t), lower = 0, upper = 1)$value}
