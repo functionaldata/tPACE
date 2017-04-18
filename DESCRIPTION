@@ -21,7 +21,8 @@ Imports:
     MASS,
     Matrix,
     pracma, 
-    numDeriv
+    numDeriv,
+	fields
 LinkingTo: Rcpp, RcppEigen 
 Suggests:
     plot3D,
