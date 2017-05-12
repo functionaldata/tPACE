@@ -155,3 +155,44 @@ test_that('biquadratic regression function', {
     expect_equal(d211n, matrix(-4, nrow(d211n), ncol(d211n)), tolerance=1e-1)
   }
 })
+
+
+test_that('biexponential regression function', {
+  sqrtn <- 50
+  n <- sqrtn^2
+  inGrid <- outGrid <- seq(-1, 1, length.out=sqrtn)
+  f <- function(x, y) exp(-2 * x + y)
+
+  set.seed(1)
+  xin <- as.matrix(expand.grid(inGrid, inGrid))
+  yin <- f(xin[, 1], xin[, 2])
+  inGrid <- seq(-1, 1, length.out=floor(sqrt(n)))
+  # persp3d(inGrid, inGrid, yin, col='white', xlab='x', ylab='y')
+
+  kern <- 'epan'
+  bw <- 0.1
+
+  # Noiseless
+  # Naming: results{npoly}{nder1}{nder2}
+  resOld <- Lwls2D(bw, kern, xin, yin, xout1=outGrid, xout2=outGrid, crosscov=TRUE)
+  d100 <- Lwls2DDeriv(bw, kern, xin, yin, xout1=outGrid, xout2=outGrid, npoly=1, nder1=0, nder2=0, crosscov=TRUE)
+  d110 <- Lwls2DDeriv(bw, kern, xin, yin, xout1=outGrid, xout2=outGrid, npoly=1, nder1=1, nder2=0)
+  d101 <- Lwls2DDeriv(bw, kern, xin, yin, xout1=outGrid, xout2=outGrid, npoly=1, nder1=0, nder2=1)
+  d211 <- Lwls2DDeriv(bw, kern, xin, yin, xout1=outGrid, xout2=outGrid, npoly=2, nder1=1, nder2=1)
+
+  expect_equal(d100, 
+               matrix(yin, sqrtn, sqrtn),
+               tolerance=1e-2)
+  expect_equal(resOld, d100)
+  expect_equal(d110, 
+               sapply(outGrid, function(y) 
+                      sapply(outGrid, function(x) -2 * exp(-2 * x + y))), 
+               tolerance=1e-1)
+  expect_equal(d101, 
+               sapply(outGrid, function(y) 
+                      sapply(outGrid, function(x) exp(-2 * x + y))),
+               tolerance=1e-1)
+  expect_equal(d211, sapply(outGrid, function(y) 
+                            sapply(outGrid, function(x) -2 * exp(-2 * x + y))), tolerance=1e-1)
+
+})

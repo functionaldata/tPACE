@@ -57,30 +57,30 @@ test_that('noisy dense case for DPC, FPC, and FPC1', {
   FPCoptn1 <- list(bw=bw, kernelType=kern, p=1, method='FPC')
   FPCoptn2 <- list(bw=bw, kernelType=kern, p=1, method='FPC1')
   DPCoptn1 <- list(bw=bw, kernelType=kern, p=1, method='DPC', G10_1D=TRUE)
-  DPCoptn2 <- list(bw=bw, kernelType=kern, p=1, method='DPC', G10_1D=FALSE)
+  # DPCoptn2 <- list(bw=bw, kernelType=kern, p=1, method='DPC', G10_1D=FALSE)
   FPC <- FPCAder(fpcaObj, FPCoptn1)
   FPC1 <- FPCAder(fpcaObj, FPCoptn2)
   fpcaObjDer1 <- FPCAder(fpcaObj, DPCoptn1)
-  fpcaObjDer2 <- FPCAder(fpcaObj, DPCoptn2)
+  # fpcaObjDer2 <- FPCAder(fpcaObj, DPCoptn2)
   k1 <- 3
   estFPC <- fitted(FPC, k1)
   estFPC1 <- fitted(FPC1, k1)
   estDPC <- fitted(fpcaObjDer1, k1)
-  estDPC1 <- fitted(fpcaObjDer2, k1)
+  # estDPC1 <- fitted(fpcaObjDer2, k1)
 
   matplot(t(samp2$Y), type='l')
   matplot(t(trueDer), type='l')
   matplot(t(estFPC1), type='l')
   matplot(t(estFPC), type='l')
   matplot(t(estDPC), type='l')
-  matplot(t(estDPC1), type='l')
+  # matplot(t(estDPC1), type='l')
 
   expect_equal(estFPC, trueDer, tolerance=1, scale=1)
   expect_equal(estFPC1, trueDer, tolerance=1, scale=1)
   expect_equal(estDPC, trueDer, tolerance=1, scale=1)
 
   # 1D smoother for cov10 is better
-  expect_true(mean(abs(estDPC - trueDer)) < mean(abs(estDPC1 - trueDer))) 
+  # expect_true(mean(abs(estDPC - trueDer)) < mean(abs(estDPC1 - trueDer))) 
 })
 
 # test_that('noiseless dense case for DPC', {
@@ -147,27 +147,27 @@ test_that('noisy sparse case for DPC, FPC, and FPC1', {
   FPCoptn1 <- list(bw=bw, kernelType=kern, p=1, method='FPC')
   FPCoptn2 <- list(bw=bw, kernelType=kern, p=1, method='FPC1')
   DPCoptn1 <- list(bw=bw, kernelType=kern, p=1, method='DPC', G10_1D=TRUE)
-  DPCoptn2 <- list(bw=bw, kernelType=kern, p=1, method='DPC', G10_1D=FALSE)
+  # DPCoptn2 <- list(bw=bw, kernelType=kern, p=1, method='DPC', G10_1D=FALSE)
   FPC <- FPCAder(fpcaObj, FPCoptn1)
   FPC1 <- FPCAder(fpcaObj, FPCoptn2)
   fpcaObjDer1 <- FPCAder(fpcaObj, DPCoptn1)
-  fpcaObjDer2 <- FPCAder(fpcaObj, DPCoptn2)
+  # fpcaObjDer2 <- FPCAder(fpcaObj, DPCoptn2)
   k1 <- 2
   estFPC <- fitted(FPC, k1)
   estFPC1 <- fitted(FPC1, k1)
   estDPC <- fitted(fpcaObjDer1, k1)
-  estDPC1 <- fitted(fpcaObjDer2, k1)
+  # estDPC1 <- fitted(fpcaObjDer2, k1)
 
   matplot(t(trueDer), type='l')
   matplot(t(estFPC), type='l')
   matplot(t(estFPC1), type='l')
   matplot(t(estDPC), type='l')
-  matplot(t(estDPC1), type='l')
+  # matplot(t(estDPC1), type='l')
 
   expect_equal(estFPC, trueDer, tolerance=5, scale=1)
   expect_equal(estFPC1, trueDer, tolerance=5, scale=1)
   expect_equal(estDPC, trueDer, tolerance=2, scale=1)
 
   # 1D smoother for cov10 is better
-  expect_true(mean(abs(estDPC - trueDer)) < mean(abs(estDPC1 - trueDer))) 
+  # expect_true(mean(abs(estDPC - trueDer)) < mean(abs(estDPC1 - trueDer))) 
 })

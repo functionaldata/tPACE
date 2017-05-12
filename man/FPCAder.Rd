@@ -20,19 +20,43 @@ Available derivation control options are
 \item{method}{The method used for obtaining the derivatives (default: 'FPC'). 'DPC': derivatives principal component, with G^(1,1) estimated by first kernel local smoothing G^(1,0), and then apply a 1D smoother on the second direction; 'FPC': functional principal component, based on smoothing the eigenfunctions; 'FPC1': functional principal component, based on smoothing G^(1,0). May produce better estimate than 'FPC' but is slower.}
 \item{p}{The order of the derivatives returned (default: 1, max: 2). }
 \item{bw}{Bandwidth for the 1D and the 2D smoothers (default: p * 0.1 * S).}
-\item{G10_1D}{If TRUE, estimate G^(1,0) by taking a difference quotient of the smoothed G^(0,0), which have better boundary behaviors; if FALSE (the default), estimate G^(1,0) by 2D smoothing. Applies to DPC only.}
 \item{kernelType}{Smoothing kernel choice; same available types are FPCA(). default('epan')}
 }
 }
 \examples{
+bw <- 0.2
+kern <- 'epan'
 set.seed(1)
-n <- 20
-pts <- seq(0, 1, by=0.05)
-sampWiener <- Wiener(n, pts)
-sampWiener <- Sparsify(sampWiener, pts, 10)
-res <- FPCA(sampWiener$Ly, sampWiener$Lt, 
-            list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
-derRes <- FPCAder(res)
+n <- 100 
+M <- 40
+pts <- seq(0, 1, length.out=M)
+lambdaTrue <- c(1, 0.8, 0.1)^2
+sigma2 <- 0.1
+
+samp2 <- MakeGPFunctionalData(n, M, pts, K=length(lambdaTrue), lambda=lambdaTrue, sigma=sqrt(sigma2), basisType='legendre01')
+samp2 <- c(samp2, MakeFPCAInputs(tVec=pts, yVec=samp2$Yn))
+fpcaObj <- FPCA(samp2$Ly, samp2$Lt, list(methodMuCovEst='smooth', userBwCov=bw, userBwMu=bw, kernel=kern, error=TRUE)) 
+CreatePathPlot(fpcaObj, showObs=FALSE)
+
+FPCoptn <- list(bw=bw, kernelType=kern, method='FPC')
+DPCoptn <- list(bw=bw, kernelType=kern, method='DPC', G10_1D=TRUE)
+FPC <- FPCAder(fpcaObj, FPCoptn)
+DPC <- FPCAder(fpcaObj, DPCoptn)
+
+CreatePathPlot(FPC, ylim=c(-5, 10))
+CreatePathPlot(DPC, ylim=c(-5, 10))
+
+# Get the true derivatives
+mu <- seq(0, 1, length.out=length(pts))
+phi <-  CreateBasis(K=3, type='legendre01', pts=pts)
+basisDerMat <- apply(phi, 2, function(x) ConvertSupport(seq(0, 1, length.out=M - 1), pts, diff(x) * (M - 1)))
+trueDer <- matrix(1, n, M, byrow=TRUE) + tcrossprod(samp2$xi, basisDerMat)
+matplot(t(trueDer), type='l', ylim=c(-5, 10))
+
+# DPC is slightly better in terms of RMSE
+mean((fitted(FPC) - trueDer)^2)
+mean((fitted(DPC) - trueDer)^2)
+
 }
 \references{
 \cite{Dai, Xiongtao, Hans-Georg Mueller, and Wenwen Tao. "Derivative Principal Component Analysis for Representing the Time Dynamics of Longitudinal and Functional Data." Submitted (DPC)}
