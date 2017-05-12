@@ -15,6 +15,7 @@
 #' \cite{Dai, Xiongtao, Hans-Georg Mueller, and Wenwen Tao. "Derivative Principal Component Analysis for Representing the Time Dynamics of Longitudinal and Functional Data." Submitted (DPC)}
 #' \cite{Liu, Bitao, and Hans-Georg Mueller. "Estimating derivatives for samples of sparsely observed functions, with application to online auction dynamics." Journal of the American Statistical Association 104, no. 486 (2009): 704-717. (FPC)}
 #' @examples
+#' 
 #' bw <- 0.2
 #' kern <- 'epan'
 #' set.seed(1)
@@ -30,7 +31,7 @@
 #' CreatePathPlot(fpcaObj, showObs=FALSE)
 #' 
 #' FPCoptn <- list(bw=bw, kernelType=kern, method='FPC')
-#' DPCoptn <- list(bw=bw, kernelType=kern, method='DPC', G10_1D=TRUE)
+#' DPCoptn <- list(bw=bw, kernelType=kern, method='DPC')
 #' FPC <- FPCAder(fpcaObj, FPCoptn)
 #' DPC <- FPCAder(fpcaObj, DPCoptn)
 #' 
@@ -38,7 +39,6 @@
 #' CreatePathPlot(DPC, ylim=c(-5, 10))
 #' 
 #' # Get the true derivatives
-#' mu <- seq(0, 1, length.out=length(pts))
 #' phi <-  CreateBasis(K=3, type='legendre01', pts=pts)
 #' basisDerMat <- apply(phi, 2, function(x) ConvertSupport(seq(0, 1, length.out=M - 1), pts, diff(x) * (M - 1)))
 #' trueDer <- matrix(1, n, M, byrow=TRUE) + tcrossprod(samp2$xi, basisDerMat)

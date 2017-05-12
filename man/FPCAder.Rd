@@ -24,6 +24,7 @@ Available derivation control options are
 }
 }
 \examples{
+
 bw <- 0.2
 kern <- 'epan'
 set.seed(1)
@@ -39,7 +40,7 @@ fpcaObj <- FPCA(samp2$Ly, samp2$Lt, list(methodMuCovEst='smooth', userBwCov=bw, 
 CreatePathPlot(fpcaObj, showObs=FALSE)
 
 FPCoptn <- list(bw=bw, kernelType=kern, method='FPC')
-DPCoptn <- list(bw=bw, kernelType=kern, method='DPC', G10_1D=TRUE)
+DPCoptn <- list(bw=bw, kernelType=kern, method='DPC')
 FPC <- FPCAder(fpcaObj, FPCoptn)
 DPC <- FPCAder(fpcaObj, DPCoptn)
 
@@ -47,7 +48,6 @@ CreatePathPlot(FPC, ylim=c(-5, 10))
 CreatePathPlot(DPC, ylim=c(-5, 10))
 
 # Get the true derivatives
-mu <- seq(0, 1, length.out=length(pts))
 phi <-  CreateBasis(K=3, type='legendre01', pts=pts)
 basisDerMat <- apply(phi, 2, function(x) ConvertSupport(seq(0, 1, length.out=M - 1), pts, diff(x) * (M - 1)))
 trueDer <- matrix(1, n, M, byrow=TRUE) + tcrossprod(samp2$xi, basisDerMat)
