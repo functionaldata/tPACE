@@ -25,9 +25,13 @@ MakeFPCAInputs <- function(IDs = NULL, tVec, yVec, na.rm=FALSE, sort = FALSE){
       yVec <- dat[, 'yVec']
     }
     uniqueIDs <- unique(IDs) 
-    Lt <- lapply( uniqueIDs, function(x) tVec[ which(IDs == x)])
-    Ly <- lapply( uniqueIDs, function(x) yVec[ which(IDs == x)])
+    # Lt <- lapply( uniqueIDs, function(x) tVec[ which(IDs == x)])
+    # Ly <- lapply( uniqueIDs, function(x) yVec[ which(IDs == x)])
     Lid <- as.list(uniqueIDs)
+    Lt <- split(tVec, IDs, drop=TRUE)
+    Lt <- Lt[match(as.character(uniqueIDs), names(Lt))]
+    Ly <- split(yVec, IDs, drop=TRUE)
+    Ly <- Ly[match(as.character(uniqueIDs), names(Ly))]
   } else if ( is.matrix(yVec) && is.null(IDs) && is.vector(tVec) ){
     if (ncol(yVec) != length(tVec)) {
       stop('columns of yVec does not correspond to tVec.')

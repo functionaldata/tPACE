@@ -24,12 +24,12 @@ test_that('MakeFPCAInputs works', {
 
 test_that("basic arguments give reasonable output ", { 
   
-  IDs = c('a','a','b','b','U34')
+  IDs = factor(c('a','a','b','b', 'd'), c('d', 'a', 'b', 'c'))
   tVec = 1:5;
   yVec = cos(tVec);
   B = MakeFPCAInputs(IDs= IDs , tVec=tVec, yVec=yVec)
   
-  expect_equal( unlist(B$Lt), tVec, tolerance = 2*.Machine$double.eps, scale = 1) 
+  expect_equal( unname(unlist(B$Lt)), tVec, tolerance = 2*.Machine$double.eps, scale = 1) 
   expect_equal( B$Ly[[2]], cos(c(3,4)), tolerance = 2*.Machine$double.eps, scale = 1) 
   expect_true( (length(B$Lid) == length(B$Ly)) && (length(B$Ly) == length(B$Lt)) )
   expect_true( B$Lid[[3]] == IDs[5]  )
@@ -43,7 +43,7 @@ test_that("basic arguments give reasonable output when number of measurement poi
   
   B = MakeFPCAInputs(IDs= IDs , tVec=tVec, yVec=yVec)
   
-  expect_equal( unlist(B$Lt), tVec, tolerance = 2*.Machine$double.eps, scale = 1)
+  expect_equal( unname(unlist(B$Lt)), tVec, tolerance = 2*.Machine$double.eps, scale = 1)
   expect_equal( B$Ly[[2]], c(13,14,15), tolerance = 2*.Machine$double.eps, scale = 1)
   expect_true( (length(B$Lid) == length(B$Ly)) && (length(B$Ly) == length(B$Lt)) )
   expect_true( B$Lid[[3]] == IDs[9]  )
