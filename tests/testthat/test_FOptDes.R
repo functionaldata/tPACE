@@ -73,7 +73,7 @@ test_that("trajectory recovery case with p=1 for Brownian Motion on [0,1] return
   n <- 100
   pts <- seq(0, 1, by=0.05)
   sampWiener <- Wiener(n, pts)
-  fpcainput <- MakeFPCAInputs(IDs = rep(1:50,each=length(pts)), tVec = rep(pts, n), 
+  fpcainput <- MakeFPCAInputs(IDs = rep(seq_len(n), each=length(pts)), tVec = rep(pts, n), 
                               yVec = t(sampWiener))
   # global
   res <- FOptDes(Ly=fpcainput$Ly, Lt=fpcainput$Lt, p=1,
