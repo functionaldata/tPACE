@@ -40,7 +40,7 @@ A list containing the following fields:
 Smooth backfitting procedure for nonparametric time-varying additive models
 }
 \details{
-\code{TVAMSBFitting} fits component surface of time-varying additive models for a longitudinal response and a multivariate predictor based on the smooth backfitting algorithm proposed by Mammen et al. (1999) and intensively studied by Mammen and Park (2006), Yu et al. (2008), Lee et al. (2010, 2012) and so on. \code{TVAMSBFitting} only focuses on the local linear smooth backfitting estimator with multivariate predictor case for the purpose of enjoying smooth surface estimation. Support of the multivariate predictor is assumed to be a product of closed intervals. Especially in this development, one can designate an estimation support of additive models when the additive modeling is only allowed over restricted intervals or one is interested in the modeling over the support (see Han et al., 2016). If one puts \code{X} on the argument of estimation points \code{x}, \code{TVAMSBFitting} returns estimated values of conditional mean curve for responses given observed predictors.
+\code{TVAMSBFitting} fits component surface of time-varying additive models for a longitudinal response and a multivariate predictor based on the smooth backfitting algorithm, a simplified model of Zhang et al. (2013). Here, the time-varying additive model stands for \deqn{E(Y(t) | \mathbf{X}) = g_1(t,X_1)+\cdots+ g_d(t,X_d).} \code{TVAMSBFitting} only focuses on the local linear smooth backfitting estimator with multivariate predictor case for the purpose of enjoying smooth surface estimation. Support of the multivariate predictor is assumed to be a product of closed intervals. Especially in this development, one can designate an estimation support of additive models when the additive modeling is only allowed over restricted intervals or one is interested in the modeling over the support (see Han et al., 2016). If one puts \code{X} on the argument of estimation points \code{x}, \code{TVAMSBFitting} returns estimated values of conditional mean curve for responses given observed predictors.
 }
 \examples{
 set.seed(100)
@@ -93,11 +93,11 @@ for (i in 1:M) {
 }
 
 par(mfrow=c(2,2))
-persp(u0,x0,g1Eval,theta=-30,phi=30,lty=2, border=NA, shade=0.5,xlab='t',ylab='x1',zlab='g1Eval')
-persp(u0,x0,g2Eval,theta=20,phi=30,lty=2, border=NA, shade=0.5,xlab='t',ylab='x2',zlab='g2Eval')
+persp(t,x[,1],g1Eval,theta=-30,phi=30,lty=2, border=NA, shade=0.5,xlab='t',ylab='x1',zlab='g1Eval')
+persp(t,x[,2],g2Eval,theta=20,phi=30,lty=2, border=NA, shade=0.5,xlab='t',ylab='x2',zlab='g2Eval')
 
-persp(u0,x0,g1SbfLL,theta=-30,phi=40, lty=2, border=NA, shade=0.5,xlab='t',ylab='x1',zlab='g1Est')
-persp(u0,x0,g2SbfLL,theta=20,phi=40, lty=2, border=NA, shade=0.5,xlab='t',ylab='x2',zlab='g2Est')
+persp(t,x[,1],g1SbfLL,theta=-30,phi=40, lty=2, border=NA, shade=0.5,xlab='t',ylab='x1',zlab='g1Est')
+persp(t,x[,2],g2SbfLL,theta=20,phi=40, lty=2, border=NA, shade=0.5,xlab='t',ylab='x2',zlab='g2Est')
 }
 \references{
 \cite{Mammen, E., Linton, O. and Nielsen, J. (1999), "The existence and asymptotic properties of a backfitting projection algorithm under weak conditions", Annals of Statistics, Vol.27, No.5, p.1443-1490.}
@@ -106,7 +106,7 @@ persp(u0,x0,g2SbfLL,theta=20,phi=40, lty=2, border=NA, shade=0.5,xlab='t',ylab='
 
 \cite{Yu, K., Park, B. U. and Mammen, E. (2008), "Smooth backfitting in generalized additive models", Annals of Statistics, Vol.36, No.1, p.228-260.}
 
-\cite{Lee, Y. K., Mammen, E. and Park., B. U. (2010), "backfitting and smooth backfitting for additive quantile models", Vol.38, No.5, p.2857-2883.}
+\cite{Lee, Y. K., Mammen, E. and Park., B. U. (2010), "backfitting and smooth backfitting for additive quantile models", Annals of Statistics, Vol.38, No.5, p.2857-2883.}
 
 \cite{Lee, Y. K., Mammen, E. and Park., B. U. (2012), "Flexible generalized varying coefficient regression models", Annals of Statistics, Vol.40, No.3, p.1906-1933.}
 
