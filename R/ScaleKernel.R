@@ -30,7 +30,7 @@ ScaleKernel <- function(x, X, h=NULL, K='epan',supp=NULL){
   }
   
   xTmp <- matrix(rep(x,n),nrow=N)
-  XTmp <- matrix(rep(X,N),ncol=n,byrow=T)
+  XTmp <- matrix(rep(X,N),ncol=n,byrow=TRUE)
   
   Tmp <- xTmp-XTmp
   

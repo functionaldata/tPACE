@@ -28,7 +28,7 @@ SBFCompUpdate<-function(f,ind,fNW,Y,X,x,h=NULL,K='epan',supp=NULL,MgnJntDens){
     K<-'epan'
   }
   if (is.null(supp)==TRUE) {
-    supp <- matrix(rep(c(0,1),d),ncol=2,byrow=T)
+    supp <- matrix(rep(c(0,1),d),ncol=2,byrow=TRUE)
   }
   if (is.null(h)==TRUE) {
     h <- rep(0.25*n^(-1/5),d)*(supp[,2]-supp[,1])

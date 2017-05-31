@@ -17,7 +17,7 @@ SBFitting(Y, x, X, h = NULL, K = "epan", supp = NULL)
 
 \item{K}{A \code{function} object representing the kernel to be used in the smooth backfitting (default is 'epan', the the Epanechnikov kernel.).}
 
-\item{supp}{A \emph{d} by 2 matrix whose row vectors consist of the lower and upper limits of estimation intervals for each component function (default is \code{c(0,1)}).}
+\item{supp}{A \emph{d} by 2 matrix whose row vectors consist of the lower and upper limits of estimation intervals for each component function (default is the \emph{d}-dimensional unit rentangle of \emph{[0,1]}).}
 }
 \value{
 A list containing the following fields:
