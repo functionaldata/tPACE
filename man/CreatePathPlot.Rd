@@ -56,3 +56,4 @@ CreatePathPlot(res, 1:20, obsOnly=TRUE, showObs=FALSE)
 CreatePathPlot(inputData=sampWiener, subset=1:20, obsOnly=TRUE)}
 
 }
+

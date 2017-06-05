@@ -38,3 +38,4 @@ res <- FPCA(sampWiener$Ly, sampWiener$Lt)
 res
 
 }
+

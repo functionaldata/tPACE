@@ -26,20 +26,42 @@ test_that("Stringing works perfectly for simulated example without error using c
   simdata = stringing_sim1(SNR = Inf)
   stringingfit = Stringing(simdata$X, disOptns = "correlation")
   # check with simulated data to see if reversal of order is needed
-  diff_norev = sum(abs(simdata$order[stringingfit$stringedPos] - 1:simdata$p))
-  diff_rev = sum(abs(simdata$order[stringingfit$stringedPos] - simdata$p:1))
+  diff_norev = sum(abs(simdata$order[stringingfit$StringingOrder] - 1:simdata$p))
+  diff_rev = sum(abs(simdata$order[stringingfit$StringingOrder] - simdata$p:1))
   if(diff_rev <= diff_norev){
-    stringingfit$stringedPos = rev(stringingfit$stringedPos)
+    stringingfit$StringingOrder = rev(stringingfit$StringingOrder)
     stringingfit$Ly = lapply(stringingfit$Ly, rev)
   }
-  #plot(1:simdata$p, simdata$order[stringingfit$stringedPos], pch=18, 
+  #plot(1:simdata$p, simdata$order[stringingfit$StringingOrder], pch=18, 
   #     xlab="True Order", ylab="Stringed Order")
-  #lines(1:simdata$p, simdata$order[stringingfit$stringedPos])
+  #lines(1:simdata$p, simdata$order[stringingfit$StringingOrder])
   # calculate Relative Order Error (ROE)
   ERp = (simdata$p-1)*(simdata$p+1)/3 # mean error for randomly sampled orders
-  ROE = sum(abs(simdata$order[stringingfit$stringedPos] - 1:simdata$p))/ERp
+  ROE = sum(abs(simdata$order[stringingfit$StringingOrder] - 1:simdata$p))/ERp
   # the stringing function should recover the random ordering perfectly
-  expect_equal(1:simdata$p, simdata$order[stringingfit$stringedPos])
+  expect_equal(1:simdata$p, simdata$order[stringingfit$StringingOrder])
+  expect_equal(ROE, 0)
+})
+
+test_that("Stringing works perfectly for simulated example without error using manhattan metric",{
+  set.seed(1)
+  simdata = stringing_sim1(SNR = Inf)
+  stringingfit = Stringing(simdata$X, disOptns = "manhattan")
+  # check with simulated data to see if reversal of order is needed
+  diff_norev = sum(abs(simdata$order[stringingfit$StringingOrder] - 1:simdata$p))
+  diff_rev = sum(abs(simdata$order[stringingfit$StringingOrder] - simdata$p:1))
+  if(diff_rev <= diff_norev){
+    stringingfit$StringingOrder = rev(stringingfit$StringingOrder)
+    stringingfit$Ly = lapply(stringingfit$Ly, rev)
+  }
+  #plot(1:simdata$p, simdata$order[stringingfit$StringingOrder], pch=18, 
+  #     xlab="True Order", ylab="Stringed Order")
+  #lines(1:simdata$p, simdata$order[stringingfit$StringingOrder])
+  # calculate Relative Order Error (ROE)
+  ERp = (simdata$p-1)*(simdata$p+1)/3 # mean error for randomly sampled orders
+  ROE = sum(abs(simdata$order[stringingfit$StringingOrder] - 1:simdata$p))/ERp
+  # the stringing function should recover the random ordering perfectly
+  expect_equal(1:simdata$p, simdata$order[stringingfit$StringingOrder])
   expect_equal(ROE, 0)
 })
 
@@ -48,17 +70,17 @@ test_that("Stringing works for simulated example with small error using correlat
   simdata = stringing_sim1(SNR = 10)
   stringingfit = Stringing(simdata$X, disOptns = "correlation")
   # check with simulated data to see if reversal of order is needed
-  diff_norev = sum(abs(simdata$order[stringingfit$stringedPos] - 1:simdata$p))
-  diff_rev = sum(abs(simdata$order[stringingfit$stringedPos] - simdata$p:1))
+  diff_norev = sum(abs(simdata$order[stringingfit$StringingOrder] - 1:simdata$p))
+  diff_rev = sum(abs(simdata$order[stringingfit$StringingOrder] - simdata$p:1))
   if(diff_rev <= diff_norev){
-    stringingfit$stringedPos = rev(stringingfit$stringedPos)
+    stringingfit$StringingOrder = rev(stringingfit$StringingOrder)
     stringingfit$Ly = lapply(stringingfit$Ly, rev)
   }
   # calculate Relative Order Error (ROE)
   ERp = (simdata$p-1)*(simdata$p+1)/3 # mean error for randomly sampled orders
-  ROE = sum(abs(simdata$order[stringingfit$stringedPos] - 1:simdata$p))/ERp
+  ROE = sum(abs(simdata$order[stringingfit$StringingOrder] - 1:simdata$p))/ERp
   # the stringing function should recover the random ordering perfectly
-  expect_equal(1:simdata$p, simdata$order[stringingfit$stringedPos])
+  expect_equal(1:simdata$p, simdata$order[stringingfit$StringingOrder])
   expect_equal(ROE, 0)
 })
 
@@ -67,15 +89,15 @@ test_that("Stringing works for simulated example with moderate error using corre
   simdata = stringing_sim1(SNR = 4)
   stringingfit = Stringing(simdata$X, disOptns = "correlation")
   # check with simulated data to see if reversal of order is needed
-  diff_norev = sum(abs(simdata$order[stringingfit$stringedPos] - 1:simdata$p))
-  diff_rev = sum(abs(simdata$order[stringingfit$stringedPos] - simdata$p:1))
+  diff_norev = sum(abs(simdata$order[stringingfit$StringingOrder] - 1:simdata$p))
+  diff_rev = sum(abs(simdata$order[stringingfit$StringingOrder] - simdata$p:1))
   if(diff_rev <= diff_norev){
-    stringingfit$stringedPos = rev(stringingfit$stringedPos)
+    stringingfit$StringingOrder = rev(stringingfit$StringingOrder)
     stringingfit$Ly = lapply(stringingfit$Ly, rev)
   }
   # calculate Relative Order Error (ROE)
   ERp = (simdata$p-1)*(simdata$p+1)/3 # mean error for randomly sampled orders
-  ROE = sum(abs(simdata$order[stringingfit$stringedPos] - 1:simdata$p))/ERp
+  ROE = sum(abs(simdata$order[stringingfit$StringingOrder] - 1:simdata$p))/ERp
   # the stringing function should recover the random ordering perfectly
   expect_lt(ROE, 1e-2)
 })
@@ -85,15 +107,15 @@ test_that("Stringing works for simulated example with moderate error using corre
   simdata = stringing_sim1(SNR = 4)
   stringingfit = Stringing(simdata$X, disOptns = "correlation")
   # check with simulated data to see if reversal of order is needed
-  diff_norev = sum(abs(simdata$order[stringingfit$stringedPos] - 1:simdata$p))
-  diff_rev = sum(abs(simdata$order[stringingfit$stringedPos] - simdata$p:1))
+  diff_norev = sum(abs(simdata$order[stringingfit$StringingOrder] - 1:simdata$p))
+  diff_rev = sum(abs(simdata$order[stringingfit$StringingOrder] - simdata$p:1))
   if(diff_rev <= diff_norev){
-    stringingfit$stringedPos = rev(stringingfit$stringedPos)
+    stringingfit$StringingOrder = rev(stringingfit$StringingOrder)
     stringingfit$Ly = lapply(stringingfit$Ly, rev)
   }
   # calculate Relative Order Error (ROE)
   ERp = (simdata$p-1)*(simdata$p+1)/3 # mean error for randomly sampled orders
-  ROE = sum(abs(simdata$order[stringingfit$stringedPos] - 1:simdata$p))/ERp
+  ROE = sum(abs(simdata$order[stringingfit$StringingOrder] - 1:simdata$p))/ERp
   # the stringing function should recover the random ordering perfectly
   expect_lt(ROE, 1e-2)
 })
@@ -103,15 +125,15 @@ test_that("Stringing works for simulated example with small error using euclidea
   simdata = stringing_sim1(SNR = 10)
   stringingfit = Stringing(simdata$X, disOptns = "euclidean")
   # check with simulated data to see if reversal of order is needed
-  diff_norev = sum(abs(simdata$order[stringingfit$stringedPos] - 1:simdata$p))
-  diff_rev = sum(abs(simdata$order[stringingfit$stringedPos] - simdata$p:1))
+  diff_norev = sum(abs(simdata$order[stringingfit$StringingOrder] - 1:simdata$p))
+  diff_rev = sum(abs(simdata$order[stringingfit$StringingOrder] - simdata$p:1))
   if(diff_rev <= diff_norev){
-    stringingfit$stringedPos = rev(stringingfit$stringedPos)
+    stringingfit$StringingOrder = rev(stringingfit$StringingOrder)
     stringingfit$Ly = lapply(stringingfit$Ly, rev)
   }
   # calculate Relative Order Error (ROE)
   ERp = (simdata$p-1)*(simdata$p+1)/3 # mean error for randomly sampled orders
-  ROE = sum(abs(simdata$order[stringingfit$stringedPos] - 1:simdata$p))/ERp
+  ROE = sum(abs(simdata$order[stringingfit$StringingOrder] - 1:simdata$p))/ERp
   # the stringing function should recover the random ordering perfectly
   expect_lt(ROE, 1e-2)
 })
@@ -121,15 +143,15 @@ test_that("Stringing works for simulated example with small error using euclidea
   simdata = stringing_sim1(SNR = 10)
   stringingfit = Stringing(simdata$X, disOptns = "euclidean", standardize = TRUE)
   # check with simulated data to see if reversal of order is needed
-  diff_norev = sum(abs(simdata$order[stringingfit$stringedPos] - 1:simdata$p))
-  diff_rev = sum(abs(simdata$order[stringingfit$stringedPos] - simdata$p:1))
+  diff_norev = sum(abs(simdata$order[stringingfit$StringingOrder] - 1:simdata$p))
+  diff_rev = sum(abs(simdata$order[stringingfit$StringingOrder] - simdata$p:1))
   if(diff_rev <= diff_norev){
-    stringingfit$stringedPos = rev(stringingfit$stringedPos)
+    stringingfit$StringingOrder = rev(stringingfit$StringingOrder)
     stringingfit$Ly = lapply(stringingfit$Ly, rev)
   }
   # calculate Relative Order Error (ROE)
   ERp = (simdata$p-1)*(simdata$p+1)/3 # mean error for randomly sampled orders
-  ROE = sum(abs(simdata$order[stringingfit$stringedPos] - 1:simdata$p))/ERp
+  ROE = sum(abs(simdata$order[stringingfit$StringingOrder] - 1:simdata$p))/ERp
   # the stringing function should recover the random ordering perfectly
   expect_equal(ROE, 0)
 })
@@ -139,15 +161,15 @@ test_that("Stringing works for simulated example with small error using spearman
   simdata = stringing_sim1(SNR = 10)
   stringingfit = Stringing(simdata$X, disOptns = "spearman")
   # check with simulated data to see if reversal of order is needed
-  diff_norev = sum(abs(simdata$order[stringingfit$stringedPos] - 1:simdata$p))
-  diff_rev = sum(abs(simdata$order[stringingfit$stringedPos] - simdata$p:1))
+  diff_norev = sum(abs(simdata$order[stringingfit$StringingOrder] - 1:simdata$p))
+  diff_rev = sum(abs(simdata$order[stringingfit$StringingOrder] - simdata$p:1))
   if(diff_rev <= diff_norev){
-    stringingfit$stringedPos = rev(stringingfit$stringedPos)
+    stringingfit$StringingOrder = rev(stringingfit$StringingOrder)
     stringingfit$Ly = lapply(stringingfit$Ly, rev)
   }
   # calculate Relative Order Error (ROE)
   ERp = (simdata$p-1)*(simdata$p+1)/3 # mean error for randomly sampled orders
-  ROE = sum(abs(simdata$order[stringingfit$stringedPos] - 1:simdata$p))/ERp
+  ROE = sum(abs(simdata$order[stringingfit$StringingOrder] - 1:simdata$p))/ERp
   # the stringing function should recover the random ordering perfectly
   expect_lt(ROE, 1e-2)
 })

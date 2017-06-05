@@ -25,3 +25,4 @@ basis <- CreateBasis(3, type='fourier')
 head(basis)
 
 }
+

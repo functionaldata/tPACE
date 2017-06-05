@@ -59,3 +59,4 @@ N <- length(unique(medfly25$ID))
 
 \cite{Jeng-Min Chiou and Pai-Ling Li, "Functional clustering and identifying substructures of longitudinal data". Journal of the Royal Statistical Society B 69 (2007): 679-699}
 }
+

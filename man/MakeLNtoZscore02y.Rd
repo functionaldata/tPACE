@@ -19,3 +19,4 @@ A vector of Z-scores of size Q.
 \description{
 Make vector of age and height measurement to z-scores based on WHO standards using mu and sigma (not LMS)
 }
+

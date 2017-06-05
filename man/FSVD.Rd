@@ -62,3 +62,4 @@ Available control options for SVDoptns are:
 \item{dataType2}{The type of design we have for sample 2 (usually distinguishing between sparse or dense functional data); 'Sparse', 'Dense', 'DenseWithMV' - default:  determine automatically based on 'IsRegular'}
 }
 }
+

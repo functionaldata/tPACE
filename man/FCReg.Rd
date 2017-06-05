@@ -78,3 +78,4 @@ withError2D <- FCReg(vars, bw, bw, outGrid)
 
 \cite{Senturk, D., Nguyen, D.V. "Varying Coefficient Models for Sparse Noise-contaminated Longitudinal Data", Statistica Sinica 21(4), (2011): 1831-1856. (Sparse data)}
 }
+

@@ -39,3 +39,4 @@ res1 <- FPCA(sampWiener$Ly, sampWiener$Lt,
             list(dataType='Sparse', error=FALSE, kernel='epan', verbose=FALSE))
 plot(res1)
 }
+
