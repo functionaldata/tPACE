@@ -10,7 +10,7 @@ TVAMSBFitting(Y, t, x, T, X, h0 = NULL, h = NULL, K = "epan",
 \arguments{
 \item{Y}{An \emph{n}-dimensional list whose elements consist of vectors of longitudinal responses.}
 
-\item{t}{An \emph{M} vector of estimation time points for marginal mean curve of \emph{Y(t)}.}
+\item{t}{An \emph{M}-dimensional vector of estimation time points for marginal mean curve of \emph{Y(t)}.}
 
 \item{x}{An \emph{N} by \emph{d} matrix whose column vectors consist of \emph{N} vectors of estimation points for each component surface.}
 
@@ -20,13 +20,13 @@ TVAMSBFitting(Y, t, x, T, X, h0 = NULL, h = NULL, K = "epan",
 
 \item{h0}{A scalar value of bandwidth for kernel smoothing to estimate marginal mean curve of \emph{Y(t)}.}
 
-\item{h}{A \emph{d} vector of bandwidths for kernel smoothing to estimate each component surface.}
+\item{h}{A \emph{d}-dimensional vector of bandwidths for kernel smoothing to estimate each component surface.}
 
 \item{K}{A \code{function} object representing the kernel to be used in the smooth backfitting (default is 'epan', the the Epanechnikov kernel.).}
 
-\item{supp0}{A 2 vector whose elements consist of the lower and upper limit of estimation interval for marginal mean curve (default is the \emph{1}-dimensional unit interval, \emph{[0,1]}).}
+\item{supp0}{A 2-dimensional vector whose elements consist of the lower and upper limit of estimation interval for marginal mean curve (default is the \emph{1}-dimensional unit interval, \emph{[0,1]}).}
 
-\item{supp}{A \emph{d} by 2 matrix whose row vectors consist of the lower and upper limits of estimation intervals for each component function (default is the \emph{d}-dimensional unit rentangle of \emph{[0,1]^d}).}
+\item{supp}{A \emph{d} by 2 matrix whose row vectors consist of the lower and upper limits of estimation intervals for each component function (default is the \emph{d}-dimensional unit rectangle of \emph{[0,1]^d}).}
 }
 \value{
 A list containing the following fields:

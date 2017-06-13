@@ -3,15 +3,15 @@
 #' Smooth backfitting procedure for nonparametric time-varying additive models
 #'
 #' @param Y An \emph{n}-dimensional list whose elements consist of vectors of longitudinal responses.
-#' @param t An \emph{M} vector of estimation time points for marginal mean curve of \emph{Y(t)}.
+#' @param t An \emph{M}-dimensional vector of estimation time points for marginal mean curve of \emph{Y(t)}.
 #' @param x An \emph{N} by \emph{d} matrix whose column vectors consist of \emph{N} vectors of estimation points for each component surface.
 #' @param T An \emph{n}-dimensional list whose elements consist of vectors of time points corresponding to longitudinal responses \emph{Y}.
 #' @param X An \emph{n} by \emph{d} matrix whose row vectors consist of multivariate predictors.
 #' @param h0 A scalar value of bandwidth for kernel smoothing to estimate marginal mean curve of \emph{Y(t)}.
-#' @param h A \emph{d} vector of bandwidths for kernel smoothing to estimate each component surface.
+#' @param h A \emph{d}-dimensional vector of bandwidths for kernel smoothing to estimate each component surface.
 #' @param K A \code{function} object representing the kernel to be used in the smooth backfitting (default is 'epan', the the Epanechnikov kernel.).
-#' @param supp0 A 2 vector whose elements consist of the lower and upper limit of estimation interval for marginal mean curve (default is the \emph{1}-dimensional unit interval, \emph{[0,1]}).
-#' @param supp A \emph{d} by 2 matrix whose row vectors consist of the lower and upper limits of estimation intervals for each component function (default is the \emph{d}-dimensional unit rentangle of \emph{[0,1]^d}).
+#' @param supp0 A 2-dimensional vector whose elements consist of the lower and upper limit of estimation interval for marginal mean curve (default is the \emph{1}-dimensional unit interval, \emph{[0,1]}).
+#' @param supp A \emph{d} by 2 matrix whose row vectors consist of the lower and upper limits of estimation intervals for each component function (default is the \emph{d}-dimensional unit rectangle of \emph{[0,1]^d}).
 #'
 #' @details \code{TVAMSBFitting} fits component surface of time-varying additive models for a longitudinal response and a multivariate predictor based on the smooth backfitting algorithm, a simplified model of Zhang et al. (2013). Here, the time-varying additive model stands for \deqn{E(Y(t) | \mathbf{X}) = g_1(t,X_1)+\cdots+ g_d(t,X_d).} \code{TVAMSBFitting} only focuses on the local linear smooth backfitting estimator with multivariate predictor case for the purpose of enjoying smooth surface estimation. Support of the multivariate predictor is assumed to be a product of closed intervals. Especially in this development, one can designate an estimation support of additive models when the additive modeling is only allowed over restricted intervals or one is interested in the modeling over the support (see Han et al., 2016). If one puts \code{X} on the argument of estimation points \code{x}, \code{TVAMSBFitting} returns estimated values of conditional mean curve for responses given observed predictors.
 #'
@@ -174,7 +174,8 @@ TVAMSBFitting <- function(Y,t,x,T,X,h0=NULL,h=NULL,K='epan',supp0=NULL,supp=NULL
     # 
     # eps <- mean(c(tmp1,tmp2))
     
-    eps <- max(abs(f[,,1,]-f0[,,1,]))
+    #eps <- max(abs(f[,,1,]-f0[,,1,]))
+    eps <- max(sqrt(apply(abs(f[,,1,]-f0[,,1,])^2,2,'mean')))
         
     if (abs(epsTmp-eps)<critEpsDiff) {
       return(list(

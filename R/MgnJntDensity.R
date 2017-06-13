@@ -95,7 +95,7 @@ Pkj <- function(kj, x, X, h=NULL, K='epan', supp=NULL){
   index <- which(tmpIndex==1)
   pHat <- pHatk[,index]%*%t(pHatj[,index])/n
   
-  pHat <- pHat/trapzRcpp(sort(x[,j]),Pj(j,x,X,h)[order(x[,j])])/trapzRcpp(sort(x[,k]),Pj(k,x,X,h)[order(x[,k])])
+  pHat <- pHat/trapzRcpp(sort(x[,j]),Pj(j,x,X,h,K,supp)[order(x[,j])])/trapzRcpp(sort(x[,k]),Pj(k,x,X,h,K,supp)[order(x[,k])])
   
   return(pHat/P0(X,supp))     
 }

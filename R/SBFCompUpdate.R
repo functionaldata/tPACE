@@ -45,7 +45,7 @@ SBFCompUpdate<-function(f,ind,fNW,Y,X,x,h=NULL,K='epan',supp=NULL,MgnJntDens){
   }
   tmpIndex <- which(tmpIndex==1)
   
-  yMean <- sum(Y[tmpIndex])/length(Y)/P0(X)    
+  yMean <- sum(Y[tmpIndex])/length(Y)/P0(X,supp)    
   
   j <- ind
   

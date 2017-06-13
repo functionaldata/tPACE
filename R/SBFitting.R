@@ -2,12 +2,12 @@
 #'
 #' Smooth backfitting procedure for nonparametric additive models
 #'
-#' @param Y An \emph{n} vector whose elements consist of scalar responses.
+#' @param Y An \emph{n}-dimensional vector whose elements consist of scalar responses.
 #' @param x An \emph{N} by \emph{d} matrix whose column vectors consist of \emph{N} vectors of estimation points for each component function.
 #' @param X An \emph{n} by \emph{d} matrix whose row vectors consist of multivariate predictors.
 #' @param h A \emph{d} vector of bandwidths for kernel smoothing to estimate each component function.
 #' @param K A \code{function} object representing the kernel to be used in the smooth backfitting (default is 'epan', the the Epanechnikov kernel.).
-#' @param supp A \emph{d} by 2 matrix whose row vectors consist of the lower and upper limits of estimation intervals for each component function (default is the \emph{d}-dimensional unit rentangle of \emph{[0,1]}).
+#' @param supp A \emph{d} by 2 matrix whose row vectors consist of the lower and upper limits of estimation intervals for each component function (default is the \emph{d}-dimensional unit rectangle of \emph{[0,1]}).
 #'
 #' @details \code{SBFitting} fits component functions of additive models for a scalar response and a multivariate predictor based on the smooth backfitting algorithm proposed by Mammen et al. (1999) and intensively studied by Mammen and Park (2006), Yu et al. (2008), Lee et al. (2010, 2012) and so on. \code{SBFitting} only focuses on the local constant smooth backfitting estimator with multivariate predictor case. In fact, the case of univariate predictor is the same with the local constant kernel regression estimator (Nadaraya-Watson estimator) and the local polynomial version can be extended similarly, so that those are omitted in the development. Support of the multivariate predictor is assumed to be a product of closed intervals. Especially in this development, one can designate an estimation support of additive models when the additive modeling is only allowed over restricted intervals or one is interested in the modeling over the support (see Han et al., 2016). If one puts \code{X} on the argument of estimation points \code{x}, \code{SBFitting} returns estimated values of conditional mean responses given observed predictors.
 #'
@@ -84,9 +84,6 @@ SBFitting <- function(Y,x,X,h=NULL,K='epan',supp=NULL){
   if (is.null(ncol(X))==TRUE) {
     return(message('Observation grid must be multi-dimensional.'))
   }
-  if (length(h)<2) {
-    return(message('Bandwidth must be multi-dimensional.'))
-  }
   
   N <- nrow(x)
   n <- nrow(X)
@@ -101,6 +98,9 @@ SBFitting <- function(Y,x,X,h=NULL,K='epan',supp=NULL){
   }
   if (is.null(h)==TRUE) {
     h <- rep(0.25*n^(-1/5),d)*(supp[,2]-supp[,1])
+  }
+  if (length(h)<2) {
+    return(message('Bandwidth must be multi-dimensional.'))
   }
   
   tmpIndex <- rep(1,n)
