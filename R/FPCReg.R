@@ -4,8 +4,9 @@
 #' @param varsOptns A list of options named by "X1", "X2",..."Y". Each filed specify the paramaters that control the corresponding variables. (default: see details of FPCA())
 #' @param isNewSub A 1*n vector of 0s or 1s, where n is the total count of subjects. 0 denotes the corresponding subject is only used for estimation and 1 denotes the corresponding subject is only used for prediction. (default: 0's)
 #' @param method The method used for selecting the number of principal components of functional predictors X's used in functional regression , including 'AIC', 'BIC' and 'FVE'. (default: "AIC")
-#' @param FVEthreshold A scalar specifying the proportion used for 'FVE'. (default: 0.98)
+#' @param FVEthreshold A scalar specifying the proportion used for 'FVE'. (default: 0.99)
 #' @param alpha A scalar specifying the level of the confidence bands. (default: 0.05)
+#' @param Kx The number of principal components of functional predictors X's used in functional regression.
 #'
 #' @return A list containing the following fields:
 #' \item{estiBeta}{A list with fields of estimated beta_XiY(s,t) defiend on [range(Xi),range(Y)]}
@@ -21,65 +22,104 @@
 #'
 #' @export
 #' @examples
-#' set.seed(100)
+#' set.seed(1000)
 #' #Model: E(Y(t)|X) = int(beta(s,t)*X(s))
 #' n <- 200 #number of subjects
-#' ngrids <- 101 #number of grids in [0,1] for X(s)
-#' ngridt <- 51 #number of grids in [0,1] for Y(t)
+#' ngrids <- 51 #number of grids in [0,1] for X(s)
+#' ngridt <- 101 #number of grids in [0,1] for Y(t)
 #' grids <- seq(0, 1, length.out=ngrids) #regular grids in [0,1] for X(s)
 #' gridt <- seq(0, 1, length.out=ngridt) #regular grids in [0,1] for Y(t)
-#'
+#' 
 #' #generate X
 #' #{1, sqrt(2)*sin(2*pi*s), sqrt(2)*cos(2*pi*t)} are used to generate X.
 #' eigenFun <- list(function(s){1 + 0 * s},function(s){sqrt(2) * sin(2*pi*s)},function(s){sqrt(2) * cos(2*pi*s)})
-#' basisX <- sapply(eigenFun,function(x){x(grids)})
-#' scoreX <- matrix(rnorm(n*3), n, 3) #eigenvalues are assumed to be 1.
-#' latentX <- scoreX %*% t(basisX)
-#' measErrX <- sqrt(0.01) * matrix(rnorm(n * ngrids), n, ngrids) #0.01 is sigma^2.
-#' denseX <- latentX + measErrX
-#'
+#' 
+#' sig <- matrix(c(1.5, 0.0, 0.0, 0.9, -.5, 0.1,
+#'                 0.0, 1.2, 0.0, -.3, 0.8, 0.4,
+#'                 0.0, 0.0, 1.0, 0.4, -.3, 0.7,
+#'                 0.9, -.3, 0.4, 2.0, 0.0, 0.0,
+#'                 -.5, 0.8, -.3, 0.0, 1.5, 0.0,
+#'                 0.1, 0.4, 0.7, 0.0, 0.0, 1.0),
+#'                 nrow=6,ncol=6)
+#' 
+#' scoreX <- mvrnorm(n,mu=rep(0,6),Sigma=sig)
+#' scoreX1 <- scoreX[,1:3]
+#' scoreX2 <- scoreX[,4:6]
+#' 
+#' basisX1 <- sapply(eigenFun,function(x){x(grids)})
+#' latentX1 <- scoreX1 %*% t(basisX1)
+#' measErrX1 <- sqrt(0.03) * matrix(rnorm(n * ngrids), n, ngrids) #0.01 is sigma^2.
+#' denseX1 <- latentX1 + measErrX1
+#' 
+#' basisX2 <- sapply(eigenFun,function(x){x(grids)})
+#' latentX2 <- scoreX2 %*% t(basisX2)
+#' measErrX2 <- sqrt(0.03) * matrix(rnorm(n * ngrids), n, ngrids) #0.01 is sigma^2.
+#' denseX2 <- latentX2 + measErrX2
+#' 
 #' #generate Y
 #' #beta(s, t) <- sin(2 * pi * s)*cos(2 * pi * t)
 #' betaEigen1 <- function(t){f <- function(s){sin(2*pi*s) * cos(2*pi*t) * (1+0*s)};return(f)}
-#' betaEigen2 <- function(t){f <- function(s){sin(2*pi*s) * cos(2*pi*t) * (sqrt(2)*sin(2*pi*s))};return(f)}
-#' betaEigen3 <- function(t){f <- function(s){sin(2*pi*s) * cos(2*pi*t) * (sqrt(2)*cos(2*pi*s))};return(f)}
-#' betaEigen <- list(betaEigen1, betaEigen2, betaEigen3)
+#' betaEigen2 <- function(t){f <- function(s){sin(2*pi*s) * cos(2*pi*t) * (sqrt(2)*sin(2*pi*s))}; return(f)}
+#' betaEigen3 <- function(t){f <- function(s){sin(2*pi*s) * cos(2*pi*t) * (sqrt(2)*cos(2*pi*s))}; return(f)}
+#' betaEigen <- list(betaEigen1, betaEigen2, betaEigen3) 
 #' basisY <- array(0,c(ngridt, 3))
 #' for(i in 1:3){
 #' 	intbetaEigen <- function (t) {integrate(betaEigen[[i]](t), lower = 0, upper = 1)$value}
 #' 	basisY[, i] <- sapply(1:ngridt, function(x){intbetaEigen(gridt[x])})
 #' 	}
-#' latentY <- scoreX %*% t(basisY)
-#' measErrY <- sqrt(0.01) * matrix(rnorm(n*ngridt), n, ngridt) #0.05 is sigma^2
+#' latentY <- scoreX1 %*% t(basisY) - scoreX2 %*% t(basisY)
+#' measErrY <- sqrt(0.01) * matrix(rnorm(n*ngridt), n, ngridt) #0.01 is sigma^2
 #' denseY <- latentY + measErrY
 #' 
-#' #Dense data
+#' #======Dense data===============================================
 #' timeX <- t(matrix(rep(grids, n),length(grids), n))
 #' timeY <- t(matrix(rep(gridt, n),length(gridt), n))
-#' denseVars <- list(X1 = list(Ly = denseX, Lt = timeX),Y=list(Ly = denseY,Lt = timeY))
-#' resuDense <- FPCReg(denseVars) 
+#' denseVars <- list(X1 = list(Ly = denseX1, Lt = timeX),
+#'                   X2 = list(Ly = denseX2, Lt = timeX),
+#'                   Y=list(Ly = denseY,Lt = timeY))
+#' 
+#' resuDense <- FPCReg(denseVars, method="FVE") 
+#' 
+#' par(mfrow=c(1,2))
 #' estiBetaX1Y_Dense <- resuDense$estiBeta$betaX1Y
 #' args1 <- list(xlab = 's', ylab = 't', zlab = 'estiBetaX1Y_Dense(s, t)',lighting = FALSE, phi = 45, theta = 45)
 #' args2 <- list(x = 1:ngrids, y = 1:ngridt, z = estiBetaX1Y_Dense[1:ngrids, 1:ngridt])
 #' do.call(plot3D::persp3D,c(args2, args1))
 #' 
-#' #Sparse data
-#' sparsity = 5:10 
-#' sparseX <- Sparsify(denseX, grids, sparsity)
+#' estiBetaX2Y_Dense <- resuDense$estiBeta$betaX2Y
+#' args1 <- list(xlab = 's', ylab = 't', zlab = 'estiBetaX2Y_Dense(s, t)',lighting = FALSE, phi = 45, theta = 45)
+#' args2 <- list(x = 1:ngrids, y = 1:ngridt, z = estiBetaX2Y_Dense[1:ngrids, 1:ngridt])
+#' do.call(plot3D::persp3D,c(args2, args1))
+#' 
+#' #======Sparse data===============================================
+#' sparsity = 5:8
+#' sparseX1 <- Sparsify(denseX1, grids, sparsity)
+#' sparseX2 <- Sparsify(denseX2, grids, sparsity)
 #' sparseY <- Sparsify(denseY, gridt, sparsity)
-#' sparseVars <- list(X1 = sparseX, Y = sparseY)
-#' resuSparse <- FPCReg(sparseVars) #or resuSparse <- FPCReg(vars = sparseVars,varsOptns = list(X1=list(userBwCov = 0.3)))
+#' sparseVars <- list(X1 = sparseX1, X2 = sparseX2, Y = sparseY)
+#' 
+#' resuSparse <- FPCReg(sparseVars, method="FVE", FVEthreshold=0.98) #or resuSparse <- FPCReg(vars = sparseVars,varsOptns = list(X1=list(userBwCov = 0.03)))
+#' 
+#' par(mfrow=c(1,2))
 #' estiBetaX1Y_Sparse = resuSparse$estiBeta$betaX1Y
 #' args1 = list(xlab = 's', ylab = 't', zlab = 'estiBetaX1Y_Sparse(s,t)', lighting = FALSE, phi = 45,theta = 45)
 #' args2 = list(x = 1:51, y = 1:51, z = estiBetaX1Y_Sparse[1:51, 1:51])
 #' do.call(plot3D::persp3D, c(args2, args1))
-#' i = 25
-#' plot(sparseVars[['Y']]$Lt[[i]], sparseVars[['Y']]$Ly[[i]], xlab = 'time', ylab = 'observations', ylim = c(-1.5, 1.5))
-#' lines(seq(0, 1, length.out = 51), resuSparse$predictY[[i]])
-#' lines(seq(0, 1, length.out = 51), resuSparse$cbandY[[i]][,2], lty = 2)
-#' lines(seq(0, 1, length.out = 51), resuSparse$cbandY[[i]][,1], lty = 2)
+#' 
+#' estiBetaX2Y_Sparse = resuSparse$estiBeta$betaX2Y
+#' args1 = list(xlab = 's', ylab = 't', zlab = 'estiBetaX2Y_Sparse(s,t)', lighting = FALSE, phi = 45,theta = 45)
+#' args2 = list(x = 1:51, y = 1:51, z = estiBetaX2Y_Sparse[1:51, 1:51])
+#' do.call(plot3D::persp3D, c(args2, args1))
+#' 
+#' par(mfrow=c(2,3))
+#' for(i in 1:6){
+#' 	plot(sparseVars[['Y']]$Lt[[i]], sparseVars[['Y']]$Ly[[i]], xlab = 'time', ylab = 'observations', ylim = c(-1.5, 1.5))
+#' 	lines(seq(0, 1, length.out = 51), resuSparse$predictY[[i]])
+#' 	lines(seq(0, 1, length.out = 51), resuSparse$cbandY[[i]][,2], lty = 2)
+#' 	lines(seq(0, 1, length.out = 51), resuSparse$cbandY[[i]][,1], lty = 2)
+#' 	}
 
-FPCReg <- function(vars, varsOptns = NULL, isNewSub = NULL, method = 'AIC', FVEthreshold = 0.98, alpha = 0.05){
+FPCReg <- function(vars, varsOptns = NULL, isNewSub = NULL, method = 'AIC', FVEthreshold = 0.99, alpha = 0.05, Kx = NULL){
 	#===============data checking and manipulation===============
 	p <- length(vars)-1
 	if (p == 0) stop('Too few covariates.')
@@ -195,11 +235,14 @@ FPCReg <- function(vars, varsOptns = NULL, isNewSub = NULL, method = 'AIC', FVEt
 		numposiEigen <- varsCov[['numposiEigen']]
 	    #for sparse data, empute score is estimated in sparseCov()
 		invSigma <- lapply(subCov, function(x){as.matrix(solve(x))})
-		invSigmaY <- mapply(function(X, Y){X %*% Y}, X=invSigma, Y=varsDemean)
+		invSigmaY <- mapply(function(X, Y){X %*% Y}, X=invSigma, Y=varsDemean, SIMPLIFY=FALSE)
 		emputeScore <- mapply(function(X, Y){diag(eigenValue[1:numposiEigen]) %*% X %*% Y}, X = subEigenFun, Y = invSigmaY, SIMPLIFY = FALSE)
 		}
 
-	if (Dense == 0) {Kx <- sparseComp(emputeScore, varsDemean, method, FVEthreshold, eigenValue, numposiEigen, isNewSub, diagSigma2, subEigenFun)} else {Kx <- denseComp(method, varsMatrixDemean, denseScore, eigenFun, eigenValue, isNewSub, diagSigma2, numposiEigen, FVEthreshold)}
+	#if (Dense == 0) {Kx <- sparseComp(emputeScore, varsDemean, method, FVEthreshold, eigenValue, numposiEigen, isNewSub, diagSigma2, subEigenFun)} else {Kx <- denseComp(method, varsMatrixDemean, denseScore, eigenFun, eigenValue, isNewSub, diagSigma2, numposiEigen, FVEthreshold)}
+	if(!is.null(Kx)==1) {Kx <- Kx} else if (Dense == 0) {Kx <- sparseComp(emputeScore, varsDemean, method, FVEthreshold, eigenValue, numposiEigen, isNewSub, diagSigma2, subEigenFun)} else {Kx <- denseComp(method, varsMatrixDemean, denseScore, eigenFun, eigenValue, isNewSub, diagSigma2, numposiEigen, FVEthreshold)}
+
+	
 	#prodedure of FPCA Regression
 	pcaBeta <- array(0, c(dim(croCov)))
 	for (i in 1:Kx) {
@@ -213,7 +256,7 @@ FPCReg <- function(vars, varsOptns = NULL, isNewSub = NULL, method = 'AIC', FVEt
 	names(estiBeta) <- lapply(names(vars)[1:p], function(x){paste("beta", x, "Y", sep = '')})
 
 	intBetaPhi <- innerProd(t(pcaBeta), as.matrix(eigenFun[, 1:Kx]), brkX, intLen)
-	diagYcov <- diag(yCov)
+	diagYcov <- diag(yCov) ; diagYcov[which(diagYcov<0)] <- min(diagYcov[diagYcov>0])
 	varY <- innerProd(t(diagYcov), as.matrix(rep(1, gridNum[p+1])), c(0,gridNum[p+1]), intLen[p+1])
 	varYX <- sum(innerProd(t(intBetaPhi^2), as.matrix(rep(1, gridNum[p+1])),c(0, gridNum[p+1]), intLen[p+1]) * eigenValue[1:Kx])
 
@@ -292,7 +335,7 @@ innerProd <- function(A, B, gridbrk, intlen){
 
 dx <- function(p, intLenX, gridNumX, brkX){    
 	for(i in 1:p){
-		if (i == 1) {dxMatrix <- diag(intLenX[1] / (gridNumX[1] - 1), gridNumX[1])}else{dxMatrix <- Matrix::bdiag(dxMatrix, diag(intLenX[i] / (gridNumX[i]-1), gridNumX[i]))}
+		if (i == 1) {dxMatrix <- diag(intLenX[1] / (gridNumX[1] - 1), gridNumX[1])}else{dxMatrix <- cdiag(dxMatrix, diag(intLenX[i] / (gridNumX[i]-1), gridNumX[i]))}
 		dxMatrix[brkX[i]+1, brkX[i]+1] <- dxMatrix[brkX[i]+1, brkX[i]+1]/2
 		dxMatrix[brkX[i+1], brkX[i+1]] <- dxMatrix[brkX[i+1], brkX[i+1]]/2
 		}
@@ -306,7 +349,7 @@ denseCov <- function(p, varsTrain, brkX, dxMatrix, gridNum, varsOptns){
 	if (p >= 2) {
 		for (i in 2:p) {	
 			indRaw <- varsTrain[[i]]$Ly		
-			if (varsOptns[[i]]$error == 1) {covDense <- GetCovDense(indRaw, optns=varsOptns[[i]]) ; blkCov <- Matrix::bdiag(blkCov, covDense$smoothCov) ; varsSigma2 <- c(varsSigma2, covDense$sigma2)} else {blkCov <- Matrix::bdiag(blkCov, cov(indRaw))}	
+			if (varsOptns[[i]]$error == 1) {covDense <- GetCovDense(indRaw, optns=varsOptns[[i]]) ; blkCov <- cdiag(blkCov, covDense$smoothCov) ; varsSigma2 <- c(varsSigma2, covDense$sigma2)} else {blkCov <- cdiag(blkCov, cov(indRaw))}	
 			}
 
 		for (i in 1:p) {
@@ -365,7 +408,7 @@ sparseCov <- function(p, varsTrain, brkX, varsOptns, vars, muList, gridNum, dxMa
 			mx_temp1 <- rfpca$smoothedCov
 			assign(paste("sigma_", i, sep = ""), rfpca$sigma2)
 			varsSigma2 <- c(varsSigma2, get(paste("sigma_", i, sep = "")))
-			blkCov <- Matrix::bdiag(blkCov, mx_temp1)	
+			blkCov <- cdiag(blkCov, mx_temp1)	
 			varsbwMu[[i]] <- rfpca$bwMu
 			varsbwCov[[i]] <- rfpca$bwCov
 			}
@@ -406,7 +449,7 @@ sparseCov <- function(p, varsTrain, brkX, varsOptns, vars, muList, gridNum, dxMa
 	#==========================
 	for (i in 1:p) {
 		varDemean <- mapply('-',vars[[i]]$Ly, lapply(vars[[i]]$Lt, muList[[i]]), SIMPLIFY = FALSE)
-		if(i==1){varsDemean <- varDemean}else{varsDemean <- mapply(function(X, Y){c(X, Y)}, X = varsDemean, Y = varDemean)}
+		if(i==1){varsDemean <- varDemean}else{varsDemean <- mapply(function(X, Y){c(X, Y)}, X = varsDemean, Y = varDemean, SIMPLIFY = FALSE)}
 		}
 	nZero <- rep(list(0), lengthVarsFPCReg(vars))
 	for (i in 1:p) {
@@ -414,20 +457,21 @@ sparseCov <- function(p, varsTrain, brkX, varsOptns, vars, muList, gridNum, dxMa
 		nZero <- mapply(c, nZero, varPnumber, SIMPLIFY=FALSE)
 		}
 	varsPnumber <- lapply(nZero, cumsum)
-	if(p == 1){diagSigma2 <- lapply(nZero, function(x){C = diag(rep(varsSigma2[1], x[2]))})}else{diagSigma2 <- lapply(nZero, function(x){C = diag(rep(varsSigma2[1], x[2])) ; for (i in 2:p) {C = Matrix::bdiag(C, diag(rep(varsSigma2[i], x[i+1])))} ; return(as.matrix(C))})}
-
+	if(p == 1){diagSigma2 <- lapply(nZero, function(x){if(x[2]==1){sv <- as.matrix(rep(varsSigma2[1], x[2]))}else{sv <- rep(varsSigma2[1], x[2])};C <- diag(sv)})
+		}else{
+		diagSigma2 <- lapply(nZero, function(x){if(x[2]==1){sv <- as.matrix(rep(varsSigma2[1], x[2]))}else{sv <- rep(varsSigma2[1], x[2])}; C <- diag(sv) ; for (i in 2:p) {if(x[i+1]==1){sv <- as.matrix(rep(varsSigma2[i], x[i+1]))}else{sv <- rep(varsSigma2[i], x[i+1])};C <- cdiag(C, diag(sv))} ; return(as.matrix(C))})
+		}
+	
 	a1 <- brkX[1]+1
 	a2 <- brkX[1+1]
-	obj <- list(x = regGrid[[1]], y = regGrid[[1]], z = xCov[a1:a2, a1:a2])
-	subCov <- mapply(function(X, Y){fields::interp.surface.grid(obj, list(x = X, y = Y))}, X = vars[[1]]$Lt, Y = vars[[1]]$Lt)[3, ]
-	assign(paste("subMx_", i, i, sep = ""), subCov)
+	subCov <- lapply(vars[[1]]$Lt,function(x){ConvertSupport(regGrid[[1]],x,Cov= xCov[a1:a2, a1:a2])})
+
 	if (p>=2) {
 		for (i in 2:p) {
 			a1 <- brkX[i]+1
 			a2 <- brkX[i+1]
-			obj <- list(x = regGrid[[i]], y = regGrid[[i]], z = xCov[a1:a2, a1:a2])
-			assign(paste("subMx_", i, i, sep = ""),mapply(function(X, Y){fields::interp.surface.grid(obj, list(x = X, y = Y))}, X = vars[[i]]$Lt, Y = vars[[i]]$Lt)[3, ])
-			subCov <- mapply(function(X, Y){Matrix::bdiag(X, Y)}, subCov, get(paste("subMx_", i, i, sep = "")))	
+			assign(paste("subMx_", i, i, sep = ""),lapply(vars[[i]]$Lt,function(x){ConvertSupport(regGrid[[i]],x,Cov= xCov[a1:a2, a1:a2])}))	
+			subCov <- mapply(function(X, Y){cdiag(X, Y)}, subCov, get(paste("subMx_", i, i, sep = "")),SIMPLIFY=FALSE)	
 			}
 	
 		for (i in 1:p) {
@@ -437,8 +481,7 @@ sparseCov <- function(p, varsTrain, brkX, varsOptns, vars, muList, gridNum, dxMa
 				if (j > i) {
 					gridBrk3 <- brkX[j]+1
 					gridBrk4 <- brkX[j+1]
-					obj <- list(x = regGrid[[i]], y = regGrid[[j]], z = xCov[gridBrk1:gridBrk2, gridBrk3:gridBrk4])
-					assign(paste("subMx_", i, j, sep = ""), mapply(function(X, Y){fields::interp.surface.grid(obj, list(x = X, y = Y))}, X = vars[[i]]$Lt, Y = vars[[j]]$Lt)[3, ])
+					assign(paste("subMx_", i, j, sep = ""), mapply(function(X, Y){gd <- expand.grid(X,Y); matrix(interp2lin(regGrid[[i]], regGrid[[j]], xCov[gridBrk1:gridBrk2, gridBrk3:gridBrk4], gd$Var1, gd$Var2), nrow=length(X))}, X = vars[[i]]$Lt, Y = vars[[j]]$Lt,SIMPLIFY=FALSE))
 					subMxx <- get(paste("subMx_", i, j,sep = ""))
 					subCov <- mapply(function(X, Y, Z){
 						pnumber1 = Z[i] + 1
@@ -448,12 +491,12 @@ sparseCov <- function(p, varsTrain, brkX, varsOptns, vars, muList, gridNum, dxMa
 						X[pnumber1:pnumber2, pnumber3:pnumber4] = Y
 						X[pnumber3:pnumber4, pnumber1:pnumber2] = t(Y)
 						return(X)
-						}, X = subCov, Y = subMxx, Z = varsPnumber)
+						}, X = subCov, Y = subMxx, Z = varsPnumber ,SIMPLIFY=FALSE)
 					}
 				}
 			}
 		}
-	subCov <- mapply('+', subCov, diagSigma2)
+	subCov <- mapply('+', subCov, diagSigma2, SIMPLIFY=FALSE)
 	listEigenFun <- lapply(1:numposiEigen, function(i) eigenFun[,i])
 
 	for (i in 1:p) {
@@ -462,7 +505,8 @@ sparseCov <- function(p, varsTrain, brkX, varsOptns, vars, muList, gridNum, dxMa
 		eigenFunXi <- eigenFun[a1:a2]
 		listEigenFunXi <- lapply(listEigenFun,'[', a1:a2)
 		phimx0 <- lapply(vars[[i]]$Lt,function(Y){t(sapply(listEigenFunXi, function(x){approxfun(regGrid[[i]], x)(Y)}))})
-		if (i == 1) {subEigenFun <- phimx0} else {subEigenFun <- mapply(function(X, Y){cbind(X, Y)}, X = subEigenFun, Y = phimx0)}
+		phimx0 <- lapply(phimx0,function(x){if(dim(x)[1]==1){x <- t(x)}else{x <- x}})
+		if (i == 1) {subEigenFun <- phimx0} else {subEigenFun <- mapply(function(X, Y){cbind(X, Y)}, X = subEigenFun, Y = phimx0 ,SIMPLIFY=FALSE)}
 		if (i == 1) {subMeanX <- muList[[i]](regGrid[[i]])} else {subMeanX <- c(subMeanX, muList[[i]](regGrid[[i]]))}
 		}
 
@@ -495,7 +539,7 @@ sparseComp <- function(emputeScore, varsDemean, method, FVEthreshold, eigenValue
 	if (method == 'AIC') {
 		psuLogli <- array(0, c(numposiEigen))
 		for (i in 1:numposiEigen) {
-			if(i == 1) {psuVec <- mapply(function(X, Y, Z){Z - as.matrix(X[1:i, ]) * Y[1:i]}, X = subEigenFunTrain, Y = emputeScoreTrain, Z = varsDemeanTrain)} else {psuVec <- mapply(function(X, Y, Z){Z - as.matrix(t(X[1:i, ]))%*%as.matrix(Y[1:i])}, X = subEigenFunTrain, Y = emputeScoreTrain, Z = varsDemeanTrain)}		
+			if(i == 1) {psuVec <- mapply(function(X, Y, Z){Z - as.matrix(X[1:i, ]) * Y[1:i]}, X = subEigenFunTrain, Y = emputeScoreTrain, Z = varsDemeanTrain, SIMPLIFY=FALSE)} else {psuVec <- mapply(function(X, Y, Z){Z - as.matrix(t(X[1:i, ]))%*%as.matrix(Y[1:i])}, X = subEigenFunTrain, Y = emputeScoreTrain, Z = varsDemeanTrain, SIMPLIFY=FALSE)}		
 			psuLogli[i] <- sum(mapply(function(X, Y){t(Y) %*% diag(1/diag(X)) %*% Y / 2}, X = diagSigma2Train, Y = psuVec)) + i
 			}
 		diffRatio <- (max(psuLogli) - psuLogli) / diff(range(psuLogli))
@@ -508,7 +552,7 @@ sparseComp <- function(emputeScore, varsDemean, method, FVEthreshold, eigenValue
 	if (method == 'BIC') {
 		psuLogli <- array(0, c(numposiEigen))
 		for (i in 1:numposiEigen) {
-			if (i==1) {psuVec <- mapply(function(X, Y, Z){Z - as.matrix(X[1:i, ]) * Y[1:i]}, X = subEigenFunTrain, Y = emputeScoreTrain, Z = varsDemeanTrain)} else {psuVec <- mapply(function(X, Y, Z){Z - as.matrix(t(X[1:i, ])) %*% as.matrix(Y[1:i])}, X = subEigenFunTrain, Y = emputeScoreTrain, Z = varsDemeanTrain)}		
+			if (i==1) {psuVec <- mapply(function(X, Y, Z){Z - as.matrix(X[1:i, ]) * Y[1:i]}, X = subEigenFunTrain, Y = emputeScoreTrain, Z = varsDemeanTrain, SIMPLIFY=FALSE)} else {psuVec <- mapply(function(X, Y, Z){Z - as.matrix(t(X[1:i, ])) %*% as.matrix(Y[1:i])}, X = subEigenFunTrain, Y = emputeScoreTrain, Z = varsDemeanTrain, SIMPLIFY=FALSE)}		
 			psuLogli[i] <- sum(mapply(function(X, Y){t(Y) %*% diag(1 / diag(X)) %*% Y / 2}, X = diagSigma2Train,Y=psuVec)) + i * log(length(unlist(varsDemeanTrain))) / 2
 			}
 		diffRatio <- (max(psuLogli) - psuLogli)/diff(range(psuLogli))
@@ -553,6 +597,16 @@ denseComp <- function(method, varsMatrixDemean, denseScore, eigenFun, eigenValue
 	return(Kx)
 	}
 
+cdiag <- function(A,B){
+	if(is.matrix(A)==0){A <- as.matrix(A)}
+	if(is.matrix(B)==0){B <- as.matrix(B)}
+	nrow <- dim(A)[1]+dim(B)[1]
+	ncol <- dim(A)[2]+dim(B)[2]
+	C <- array(0,c(nrow,ncol))
+	C[1:dim(A)[1],1:dim(A)[2]] <- A
+	C[(dim(A)[1]+1):(dim(A)[1]+dim(B)[1]),(dim(A)[2]+1):(dim(A)[2]+dim(B)[2])] <- B
+	return(C)
+	}
 
 
 
