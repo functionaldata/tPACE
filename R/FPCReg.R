@@ -42,7 +42,7 @@
 #'                 0.1, 0.4, 0.7, 0.0, 0.0, 1.0),
 #'                 nrow=6,ncol=6)
 #' 
-#' scoreX <- mvrnorm(n,mu=rep(0,6),Sigma=sig)
+#' scoreX <- MASS::mvrnorm(n,mu=rep(0,6),Sigma=sig)
 #' scoreX1 <- scoreX[,1:3]
 #' scoreX2 <- scoreX[,4:6]
 #' 
