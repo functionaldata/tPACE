@@ -1,8 +1,18 @@
-% Source: http://biostat.mc.vanderbilt.edu/wiki/pub/Main/SweaveTemplate/Sweavel.sty
-% Author: Frank Harrell (with slight tweaks by Yihui Xie)
+% Originally from Frank Harrell's group at 
+% <http://biostat.mc.vanderbilt.edu/wiki/Main/SweaveTemplate>. 
+% Some small modifications by Kieran Healy <http://kieranhealy.org>. 
+
+
+% Replaces Sweave.sty
+% Uses Listings package to allow for more flexible formatting of R
+% output in Sweave documents (color backgrounds, etc)
 % Usage: \usepackage{Sweavel}
+
+% This version of Sweavel uses color names specified in the <svgnames>
+% option to the latex xcolor package. See xcolor package
+% documentation Section 4.3 "Colors via svgnames option" for names.
+
 % To change size of R code and output, use e.g.: \def\Sweavesize{\normalsize}
-% To change just the size of output, use e.g.: \def\Routsize{\smaller[2]}
 % To change colors of R code, output, and commands, use e.g.:
 % \def\Rcolor{\color{black}}
 % \def\Routcolor{\color{green}}
@@ -20,21 +30,26 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{Sweavel}{}  % substitute for Sweave.sty using
                              % listings package with relsize
-\RequirePackage{listings,fancyvrb,color,relsize}
+\RequirePackage{graphicx}
+\RequirePackage[svgnames]{xcolor}
+\RequirePackage{listings,fancyvrb,relsize,ae}
+\RequirePackage[T1]{fontenc}
+\IfFileExists{upquote.sty}{\RequirePackage{upquote}}{}
 
 \providecommand{\Sweavesize}{\smaller}
-\providecommand{\Routsize}{\Sweavesize}
 
-\providecommand{\Rcolor}{\color[rgb]{0, 0.5, 0.5}}
-\providecommand{\Routcolor}{\color[rgb]{0.461, 0.039, 0.102}}
+\providecommand{\Rcolor}{\color{Black}}
+\providecommand{\Routcolor}{\color{NavyBlue}}
 \providecommand{\Rcommentcolor}{\color[rgb]{0.101, 0.043, 0.432}}
 
-\providecommand{\Rbackground}{\color[gray]{0.91}}
-\providecommand{\Routbackground}{\color[gray]{0.935}}
+\providecommand{\Rbackground}{\color{White}}
+%\providecommand{\Routbackground}{\color[gray]{0.935}}
+\providecommand{\Routbackground}{\color{White}}
 % Can specify \color[gray]{1} for white background or just \color{white}
 
+
 \lstdefinestyle{Rstyle}{fancyvrb=false,escapechar=`,language=R,%
-                        basicstyle={\Rcolor\Sweavesize},% some want \ttfamily too
+                        basicstyle={\Rcolor\Sweavesize\ttfamily},%
                         backgroundcolor=\Rbackground,%
                         showstringspaces=false,%
                         keywordstyle=\Rcolor,%
@@ -43,18 +58,25 @@
                         alsoother={$},%
                         alsoletter={.<-},%
                         otherkeywords={!,!=,~,$,*,\&,\%/\%,\%*\%,\%\%,<-,<<-,/},%
-                        escapeinside={(*}{*)}}%
+                        escapeinside={(*}{*)},
+                        frame=false,framerule=0.1pt,framesep=1pt,rulecolor=\color{Black},
+                        numbers=left,numberstyle=\tiny,stepnumber=1,numbersep=7pt,
+                        keywordstyle={\Rcolor}}
+
+%
 % Other options of interest:
-% frame=single,framerule=0.1pt,framesep=1pt,rulecolor=\color{blue},
-% numbers=left,numberstyle=\tiny,stepnumber=1,numbersep=7pt,
-% keywordstyle={\bf\Rcolor}
 
 \lstdefinestyle{Routstyle}{fancyvrb=false,literate={~}{{$\sim$}}1{R^2}{{$R^{2}$}}2{^}{{$^{\scriptstyle\wedge}$}}1{R-squared}{{$R^{2}$}}2,%
- frame=single,framerule=0.2pt,framesep=1pt,basicstyle=\Routcolor\Routsize\ttfamily,%
- backgroundcolor=\Routbackground}
+  basicstyle={\Routcolor\Sweavesize\ttfamily},%
+  backgroundcolor=\Routbackground}
 
 \newenvironment{Schunk}{}{}
 \lstnewenvironment{Sinput}{\lstset{style=Rstyle}}{}
 \lstnewenvironment{Scode}{\lstset{style=Rstyle}}{}
 \lstnewenvironment{Soutput}{\lstset{style=Routstyle}}{}
+\lstnewenvironment{Sinputsmall}{%
+ \lstset{style=Rstyle,basicstyle={\color{Rcolor}\small}}}{}
+\lstnewenvironment{Sinputsmaller}{%
+ \lstset{style=Rstyle,basicstyle={\color{Rcolor}\smaller}}}{}
 
+\endinput
