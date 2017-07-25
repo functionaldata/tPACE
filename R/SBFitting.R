@@ -120,9 +120,9 @@ SBFitting <- function(Y,x,X,h=NULL,K='epan',supp=NULL){
   eps <- epsTmp <- 100
   iter <- 1
   
-  critEps <- 1e-6
-  critEpsDiff <- 1e-4
-  critIter <- 100
+  critEps <- 5e-5
+  critEpsDiff <- 5e-4
+  critIter <- 50
   
   while (eps>critEps) {
     
@@ -142,6 +142,7 @@ SBFitting <- function(Y,x,X,h=NULL,K='epan',supp=NULL){
       }
     }
     
+    #eps <- max(abs(f-f0))
     eps <- max(sqrt(apply(abs(f-f0)^2,2,'mean')))
     
     if (abs(epsTmp-eps)<critEpsDiff) {

@@ -141,7 +141,7 @@ TVAMSBFitting <- function(Y,t,x,T,X,h0=NULL,h=NULL,K='epan',supp0=NULL,supp=NULL
   
   critEps <- 5e-4
   critEpsDiff <- 5e-3
-  critIter <- 100
+  critIter <- 50
   
   while (eps>critEps) {
     #print(eps)
