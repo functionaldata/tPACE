@@ -1,4 +1,5 @@
 # devtools::load_all()
+# This is an additional line
 library(testthat)
 
 test_that('noisy dense data, default arguments', {
