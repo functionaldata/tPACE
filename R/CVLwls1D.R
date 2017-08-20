@@ -84,9 +84,10 @@ CVLwls1D <- function(y, t, kernel, npoly, nder, dataType, kFolds = 5, useBW1SE =
         return(Inf)
       })
         
-      cv[j,i] = sum((obs-mu)^2)
-      if(is.na(cv[j,i])){
-        cv[j,i] = Inf;
+      cv[i,j] = sum((obs-mu)^2)
+      # print(cv)
+      if(is.na(cv[i,j])){
+        cv[i,j] = Inf;
       }
       #count[j] = count[j]+1;
     }
@@ -100,9 +101,9 @@ CVLwls1D <- function(y, t, kernel, npoly, nder, dataType, kFolds = 5, useBW1SE =
     # This will pick the bandwidth that is the max but it's average cost is at most
     # 1 standard error of the minimum cost /  I use means so it is more straighforward what the SE is.
     bopt = bw[max(which( 
-      rowMeans(cv) < min(rowMeans(cv)) + apply(cv,2, sd)[which.min(rowMeans(cv))]/sqrt(kFolds)))]
+      colMeans(cv) < min(colMeans(cv)) + apply(cv,2, sd)[which.min(colMeans(cv))]/sqrt(kFolds)))]
   } else {
-    bopt = bw[which.min( rowMeans(cv))];
+    bopt = bw[which.min( colMeans(cv))];
   }
   
   return(bopt)

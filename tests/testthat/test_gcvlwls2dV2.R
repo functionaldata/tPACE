@@ -42,8 +42,8 @@ test_that('getCVscoresV2 works for binning', {
   regGrid <- seq(min(obsGrid), max(obsGrid), length.out=101)
   partition <- CreateFolds(1:nrow(rcov3$tPairs), k=10)
   bpartition <- CreateFolds(seq_along(brcov3$meanVals), k=10)
-  g1 <- getCVscoresV2(partition, 0.35, 'epan', rcov3$tPairs, rcov3$cxxn, regGrid=regGrid)
-  g2 <- getCVscoresV2(bpartition, 0.35, 'epan', brcov3$tPairs, brcov3$meanVals, brcov3$count, regGrid=regGrid, RSS=brcov3$RSS)
+  g1 <- getCVscoresV2(partition, 0.35, 'epan', rcov3$tPairs, rcov3$cxxn, regGrid=regGrid)[1]
+  g2 <- getCVscoresV2(bpartition, 0.35, 'epan', brcov3$tPairs, brcov3$meanVals, brcov3$count, regGrid=regGrid, RSS=brcov3$RSS)[1]
   expect_equal(g1, g2, tolerance=1e-2)
 })
 
