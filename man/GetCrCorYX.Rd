@@ -19,3 +19,4 @@ A cross-correlation matrix between variables X and Y.
 \description{
 Make cross-correlation matrix from  auto- andcross-covariance matrix
 }
+

@@ -95,3 +95,4 @@ CreateCovPlot(res, 'Fitted')
 
 \cite{Castro, P. E., W. H. Lawton, and E. A. Sylvestre. "Principal modes of variation for processes with continuous sample curves." Technometrics 28, no. 4 (1986): 329-337. (Dense data FPCA)}
 }
+

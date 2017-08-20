@@ -26,10 +26,10 @@ test_that("CreateStringingPlot works",{
   simdata = stringing_sim1(SNR = Inf)
   stringingfit = Stringing(simdata$X, disOptns = "correlation")
   # check with simulated data to see if reversal of order is needed
-  diff_norev = sum(abs(simdata$order[stringingfit$stringedPos] - 1:simdata$p))
-  diff_rev = sum(abs(simdata$order[stringingfit$stringedPos] - simdata$p:1))
+  diff_norev = sum(abs(simdata$order[stringingfit$StringingOrder] - 1:simdata$p))
+  diff_rev = sum(abs(simdata$order[stringingfit$StringingOrder] - simdata$p:1))
   if(diff_rev <= diff_norev){
-    stringingfit$stringedPos = rev(stringingfit$stringedPos)
+    stringingfit$StringingOrder = rev(stringingfit$StringingOrder)
     stringingfit$Ly = lapply(stringingfit$Ly, rev)
   }
   CreateStringingPlot(stringingObj = stringingfit, subset = 1:10)
@@ -40,10 +40,10 @@ test_that("CreateStringingPlot works",{
   simdata = stringing_sim1(SNR = Inf)
   stringingfit = Stringing(simdata$X, disOptns = "euclidean", standardize = TRUE)
   # check with simulated data to see if reversal of order is needed
-  diff_norev = sum(abs(simdata$order[stringingfit$stringedPos] - 1:simdata$p))
-  diff_rev = sum(abs(simdata$order[stringingfit$stringedPos] - simdata$p:1))
+  diff_norev = sum(abs(simdata$order[stringingfit$StringingOrder] - 1:simdata$p))
+  diff_rev = sum(abs(simdata$order[stringingfit$StringingOrder] - simdata$p:1))
   if(diff_rev <= diff_norev){
-    stringingfit$stringedPos = rev(stringingfit$stringedPos)
+    stringingfit$StringingOrder = rev(stringingfit$StringingOrder)
     stringingfit$Ly = lapply(stringingfit$Ly, rev)
   }
   CreateStringingPlot(stringingObj = stringingfit, subset = 1:10)

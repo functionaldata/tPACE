@@ -42,3 +42,4 @@ CreateFuncBoxPlot(res, list(addIndx=c(1:3)) )
 \references{
 \cite{P. J. Rousseeuw, I. Ruts, J. W. Tukey (1999): The bagplot: a bivariate boxplot, The American Statistician, vol. 53, no. 4, 382-387}
 }
+
