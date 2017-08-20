@@ -1,4 +1,5 @@
-GCVLwls2DV2 <- function(obsGrid, regGrid, ngrid=NULL, dataType=rcov$dataType, error=rcov$error, kern, rcov, h0=NULL, verbose=FALSE, CV=FALSE, t) {
+GCVLwls2DV2 <- function(obsGrid, regGrid, ngrid=NULL, dataType=rcov$dataType, error=rcov$error, kern, 
+                        rcov, h0=NULL, verbose=FALSE, CV=FALSE, t, useBW1SE = FALSE) {
   
   # TODO:? get the residual values only within truncated regGrid
   
@@ -60,24 +61,25 @@ GCVLwls2DV2 <- function(obsGrid, regGrid, ngrid=NULL, dataType=rcov$dataType, er
       minBW <- bw[1]
     } 
     
-    Scores <- rep(Inf, length(bw))
+    #Scores <- rep(Inf, length(bw))
+    Scores <- matrix(Inf, nrow = length(bw), ncol = 2); colnames(Scores) <- c('SUM','SD');
     # try the bandwidths large to small in order to save time due to sparseness in the windows.
     for (i in rev(seq_along(bw))) {
       h <- bw[i]
       
       if (class(rcov) == 'BinnedRawCov') {
         if (CV == FALSE) # GCV
-          Scores[i] <- getGCVscoresV2(h, kern, rcov$tPairs, rcov$meanVals, win=rcov$count, regGrid=regGrid, RSS=rcov$RSS, verbose=verbose)
+          Scores[i,'SUM'] <- getGCVscoresV2(h, kern, rcov$tPairs, rcov$meanVals, win=rcov$count, regGrid=regGrid, RSS=rcov$RSS, verbose=verbose)
         else # CV
-          Scores[i] <- getCVscoresV2(partition, h, kern, rcov$tPairs, rcov$meanVals, win=rcov$count, regGrid=regGrid, RSS=rcov$RSS, verbose=verbose)
+          Scores[i,] <- getCVscoresV2(partition, h, kern, rcov$tPairs, rcov$meanVals, win=rcov$count, regGrid=regGrid, RSS=rcov$RSS, verbose=verbose)
       } else {
         if (CV == FALSE) # GCV
-          Scores[i] <- getGCVscoresV2(h, kern, rcov$tPairs, rcov$cxxn, regGrid=regGrid, verbose=verbose)
+          Scores[i,'SUM'] <- getGCVscoresV2(h, kern, rcov$tPairs, rcov$cxxn, regGrid=regGrid, verbose=verbose)
         else # CV
-          Scores[i] <- getCVscoresV2(partition, h, kern, rcov$tPairs, rcov$cxxn, regGrid=regGrid, verbose=verbose)
+          Scores[i,] <- getCVscoresV2(partition, h, kern, rcov$tPairs, rcov$cxxn, regGrid=regGrid, verbose=verbose)
       }
       
-      if (is.infinite(Scores[i])) { 
+      if (is.infinite(Scores[i,'SUM'])) { 
         minBWInvalid <- TRUE
         if (i < length(bw)) {
           if (minBWInvalid) {
@@ -93,18 +95,24 @@ GCVLwls2DV2 <- function(obsGrid, regGrid, ngrid=NULL, dataType=rcov$dataType, er
     #opth <- bw[optInd]
     #optgcv <- Scores[optInd]
     
-    if(is.infinite(min(Scores))){
+    if(is.infinite(min(Scores[,'SUM']))){
       opth <- max(bw)
       optgcv <- Inf
-    # } else if( sum(!is.infinite(Scores)) >= 2 ){ # Given we have at least two points we can fit "something"
+      # } else if( sum(!is.infinite(Scores)) >= 2 ){ # Given we have at least two points we can fit "something"
       # nonInf = which(!is.infinite(Scores));
       # costSpline = spline(bw[nonInf], Scores[nonInf])
       # opth = costSpline$x[which.min(costSpline$y)]
       # optgcv = min(costSpline$y)
     } else {
-      ind <- which.min(Scores)
-      opth <- bw[ind]
-      optgcv <- Scores[ind]
+      if(useBW1SE){
+        ind = max(which( (Scores[,'SUM']/fold)  < (min(Scores[,'SUM'])/fold) + Scores[which.min(Scores[,'SUM']),'SD']/sqrt(fold) ))
+        opth <- bw[ind]
+        optgcv <- Scores[ind,'SUM']
+      } else {
+        ind <- which.min(Scores[,'SUM'])
+        opth <- bw[ind]
+        optgcv <- Scores[ind,'SUM']
+      }
     } 
     
     ## Check that what we found is coherent.
@@ -222,7 +230,7 @@ getCVscoresV2 <- function(partition, bw, kern, xin, yin, win=NULL, regGrid, RSS=
     return(tmpSum)
   })
   
-  return(sum(cvSubSum))
+  return(c(sum(cvSubSum), sd(cvSubSum)))
 }
 
 KernelAt0 <- function(kern) {

@@ -309,3 +309,21 @@ test_that('noisy dense data, smooth mu/cov, use IN/CE score', {
   expect_equal(resErrCE$fittedCov, resErrCEMV$fittedCov, tolerance=1e-1)
   expect_equal(resErrIN$xiEst[, 1:4], resErrINMV$xiEst[, 1:4], tolerance=1e-1)
 })
+
+
+test_that('CV/useBW1SE works', {
+  set.seed(1)
+  n <- 100
+  M <- 51
+  pts <- seq(0, 1, length.out=M)
+  mu <- rep(0, length(pts))
+  sampDense <- Wiener(n, pts)
+  samp4 <- Sparsify(sampDense, pts, 10)
+  res5 <- FPCA(samp4$Ly, samp4$Lt, list(methodBwMu = 'CV',methodBwCov = 'CV', useBinnedCov= FALSE))
+  res51 <- FPCA(samp4$Ly, samp4$Lt, list(methodBwMu = 'CV',methodBwCov = 'CV', useBW1SE = TRUE, useBinnedCov= FALSE))
+ 
+  expect_true( res51$bwCov >= res5$bwCov )
+  expect_true( res51$bwMu  >= res5$bwMu  )
+})
+
+
