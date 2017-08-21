@@ -11,5 +11,8 @@ test_that('The binned version is exactly the same as the unbinned version.', {
   resNoBin <- FPCA(y, t, list(dataType='Sparse', useBinnedData='OFF', useBinnedCov=FALSE))
   resBin <- FPCA(y, t, list(dataType='Sparse', useBinnedData='OFF', useBinnedCov=TRUE))
 
+  resBin$timings= NULL;
+  resNoBin$timings=NULL;
+
   expect_equal(resNoBin[names(resNoBin) != 'optns'], resBin[names(resBin) != 'optns'])
 })
