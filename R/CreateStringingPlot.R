@@ -15,10 +15,10 @@
 #' p = ncol(wiener)
 #' rdmorder = sample(size = p, x=1:p, replace = FALSE)
 #' stringingfit = Stringing(X = wiener[,rdmorder], disOptns = "correlation")
-#' diff_norev = sum(abs(rdmorder[stringingfit$stringedPos] - 1:p))
-#' diff_rev = sum(abs(rdmorder[stringingfit$stringedPos] - p:1))
+#' diff_norev = sum(abs(rdmorder[stringingfit$StringingOrder] - 1:p))
+#' diff_rev = sum(abs(rdmorder[stringingfit$StringingOrder] - p:1))
 #' if(diff_rev <= diff_norev){
-#'   stringingfit$stringedPos = rev(stringingfit$stringedPos)
+#'   stringingfit$StringingOrder = rev(stringingfit$StringingOrder)
 #'   stringingfit$Ly = lapply(stringingfit$Ly, rev)
 #' }
 #' CreateStringingPlot(stringingfit, 1:20)
@@ -57,7 +57,7 @@ CreateStringingPlot <- function(stringingObj, subset, ...){
   
   plotx = matrix(rep(seq_len(p), length(subset)), nrow = length(subset), byrow = TRUE)
   ploty1 = X[subset, ,drop = FALSE]
-  ploty2 = X[subset, stringingObj$stringedPos, drop = FALSE]
+  ploty2 = X[subset, stringingObj$StringingOrder, drop = FALSE]
   
   # 1. plot for the original observations
   # Make canvas
@@ -74,7 +74,7 @@ CreateStringingPlot <- function(stringingObj, subset, ...){
   readline("Press enter to continue.")
 
   # 3. plot the stringing function
-  plot(seq_len(ncol(X)), stringingObj$stringedPos, 
+  plot(seq_len(ncol(X)), stringingObj$StringingOrder, 
        xlab="Observed Order", ylab="Stringed Order", pch = 18)
   par(mfrow=c(1,1))
 

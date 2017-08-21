@@ -65,3 +65,4 @@ mean((fitted(DPC) - trueDer)^2)
 \cite{Dai, Xiongtao, Hans-Georg Mueller, and Wenwen Tao. "Derivative Principal Component Analysis for Representing the Time Dynamics of Longitudinal and Functional Data." Submitted (DPC)}
 \cite{Liu, Bitao, and Hans-Georg Mueller. "Estimating derivatives for samples of sparsely observed functions, with application to online auction dynamics." Journal of the American Statistical Association 104, no. 486 (2009): 704-717. (FPC)}
 }
+

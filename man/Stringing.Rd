@@ -14,7 +14,7 @@ Stringing(X, Y = NULL, standardize = FALSE, disOptns = "euclidean",
 
 \item{standardize}{A logical variable indicating whether standardization of the input data matrix is required, with default: FALSE.}
 
-\item{disOptns}{A distance metric to be used, one of the following: "euclidean" (default), "correlation", "spearman", "hamming", "xycor" or "user". If specified as "xycor", the absolute difference of correlation between predictor and response is used. If specified as "user", a dissimilarity matrix for the argument "disMat" must be provided.}
+\item{disOptns}{A distance metric to be used, one of the following: "euclidean" (default), "maximum", "manhattan", "canberra", "binary", "minkowski", "correlation", "spearman", "hamming", "xycor", or "user". If specified as "xycor", the absolute difference of correlation between predictor and response is used. If specified as "user", a dissimilarity matrix for the argument "disMat" must be provided.}
 
 \item{disMat}{A user-specified dissimilarity matrix, only necessary when "disOptns" is "user".}
 }
@@ -22,7 +22,7 @@ Stringing(X, Y = NULL, standardize = FALSE, disOptns = "euclidean",
 A list containing the following fields:
 \item{Ly}{A list of n vectors, which are the random trajectories for all subjects identified by the Stringing method.}
 \item{Lt}{A list of n time points vectors, at which corresponding measurements Ly are taken.}
-\item{stringedPos}{A vector, indicating positions of corresponding predictors after stringing.}
+\item{StringingOrder}{A vector representing the order of the stringing, s.t. using as column index on \code{X} yields recovery of the underlying process.}
 \item{Xin}{A matrix, corresponding to the input data matrix.}
 \item{Xstd}{A matrix, corresponding to the standardized input data matrix. It is NULL if standardize is FALSE.}
 }
@@ -36,15 +36,16 @@ wiener = Wiener(n = n)[,-1]
 p = ncol(wiener)
 rdmorder = sample(size = p, x=1:p, replace = FALSE)
 stringingfit = Stringing(X = wiener[,rdmorder], disOptns = "correlation")
-diff_norev = sum(abs(rdmorder[stringingfit$stringedPos] - 1:p))
-diff_rev = sum(abs(rdmorder[stringingfit$stringedPos] - p:1))
+diff_norev = sum(abs(rdmorder[stringingfit$StringingOrder] - 1:p))
+diff_rev = sum(abs(rdmorder[stringingfit$StringedOrder] - p:1))
 if(diff_rev <= diff_norev){
-  stringingfit$stringedPos = rev(stringingfit$stringedPos)
+  stringingfit$StringingOrder = rev(stringingfit$StringingOrder)
   stringingfit$Ly = lapply(stringingfit$Ly, rev)
 }
-plot(1:p, rdmorder[stringingfit$stringedPos], pch=18); abline(a=0,b=1)
+plot(1:p, rdmorder[stringingfit$StringingOrder], pch=18); abline(a=0,b=1)
 
 }
 \references{
 \cite{Chen, K., Chen, K., Mueller, H. G., and Wang, J. L. (2011). "Stringing high-dimensional data for functional analysis." Journal of the American Statistical Association, 106(493), 275-284.}
 }
+

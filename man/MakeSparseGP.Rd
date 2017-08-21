@@ -33,3 +33,4 @@ TODO
 \description{
 Make a Gaussian process sparse functional data sample of size n
 }
+
