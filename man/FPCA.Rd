@@ -26,6 +26,7 @@ A list containing the following fields:
 \item{smoothedCov}{A nWorkGrid by nWorkGrid matrix of the smoothed covariance surface.}
 \item{fittedCov}{A nWorkGrid by nWorkGrid matrix of the fitted covariance surface, which is guaranteed to be non-negative definite.}
 \item{optns}{A list of actually used options.}
+\item{timings}{A vector with execution times for the basic parts of the FPCA call.}
 \item{bwMu}{The selected (or user specified) bandwidth for smoothing the mean function.}
 \item{bwCov}{The selected (or user specified) bandwidth for smoothing the covariance function.}
 \item{rho}{A regularizing scalar for the measurement error variance estimate.}
