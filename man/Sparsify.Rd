@@ -25,4 +25,3 @@ A list of length 2, containing the following fields:
 \description{
 Given a matrix of densely observed functional data, make a sparsified sample.
 }
-

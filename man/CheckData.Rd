@@ -14,4 +14,3 @@ CheckData(y, t)
 \description{
 Check if there are problems with the form and basic structure of the functional data 'y' and the recorded times 't'.
 }
-

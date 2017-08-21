@@ -30,4 +30,3 @@ Vector of length M with measurement values at the the point speficied by 'xout'
 \description{
 One dimensional local linear kernel smoother for longitudinal data.
 }
-

@@ -28,4 +28,3 @@ Y: X(t_{j}), Yn: noisy observations
 \description{
 Make a Gaussian process dense functional data sample of size n over a [0,1] support.
 }
-

@@ -73,4 +73,3 @@ matplot(x= T, t(sss$aligned), t='l', main = 'Aligned', ylab='Y'); grid()
 
 \cite{Tang, R. and Mueller, H.G. (2009) "Time-synchronized clustering of gene expression trajectories." Biostatistics 10, 32-45}
 }
-

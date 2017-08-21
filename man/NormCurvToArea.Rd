@@ -19,4 +19,3 @@ yNew values of curve at times x such that [\\int{yNew}dx = area]
 \description{
 Normalise a curve such that \\int{yNew}dx = area (according to trapezoid integration)
 }
-

@@ -35,4 +35,3 @@ if(diff_rev <= diff_norev){
 CreateStringingPlot(stringingfit, 1:20)
 
 }
-

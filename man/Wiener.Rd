@@ -28,4 +28,3 @@ The algorithm is based on Karhunen-Loeve expansion.
 \seealso{
 Sparsify
 }
-

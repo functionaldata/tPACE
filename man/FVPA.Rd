@@ -36,4 +36,3 @@ fvpaObj <- FVPA(sampWiener$Ly, sampWiener$Lt)
 \references{
 \cite{Hans-Georg Mueller, Ulrich Stadtmuller and Fang Yao, "Functional variance processes." Journal of the American Statistical Association 101 (2006): 1007-1018}
 }
-

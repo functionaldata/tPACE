@@ -18,4 +18,3 @@ See '?FPCAfor more details. Usually users are not supposed to use this function 
 \description{
 Set the PCA option list
 }
-

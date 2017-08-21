@@ -22,4 +22,3 @@ Input a list of time points Lt, and the number of unique neighbors k and get the
 tinyGrid = list(c(1,7), c(2,3),  6,  c(2,4), c(4,5))
 BwNN(tinyGrid, k = 2) # c(3,2)
 }
-

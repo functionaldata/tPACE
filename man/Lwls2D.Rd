@@ -37,4 +37,3 @@ a p1 by p2 matrix of fitted values if xout is not specified. Otherwise a vector 
 \description{
 Two dimensional local weighted least squares smoother. Only local linear smoother for estimating the original curve is available (no higher order, no derivative).
 }
-

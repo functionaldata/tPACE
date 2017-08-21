@@ -53,4 +53,3 @@ res <- FOptDes(Ly=sampWiener$Ly, Lt=sampWiener$Lt, p=2,
 \references{
 \cite{Ji, H., Mueller, H.G. (2016) "Optimal Designs for Longitudinal and Functional Data" Journal of the Royal Statistical Society: Series B (Statistical Methodology)}
 }
-

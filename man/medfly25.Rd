@@ -23,4 +23,3 @@ are shown. At the end of the recording period all flies were still alive.
 \references{
 {Carey, J.R., Liedo, P., Mueller, H.G., Wang, J.L., Chiou, J.M. (1998). Relationship of age patterns of fecundity to mortality, longevity, and lifetime reproduction in a large cohort of Mediterranean fruit fly females. J. of Gerontology --Biological Sciences 53, 245-251. }
 }
-

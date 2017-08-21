@@ -92,4 +92,3 @@ abline(coef=c(0,1),col=8)
 
 \cite{Han, K., Mueller, H.-G. and Park, B. U. (2016), "Smooth backfitting for additive modeling with small errors-in-variables, with an application to additive functional regression for multiple predictor functions", Bernoulli (accepted).}
 }
-

@@ -36,4 +36,3 @@ sampWiener <- Wiener(n, pts)
 sampWiener <- Sparsify(sampWiener, pts, 10)
 CreateDesignPlot(sampWiener$Lt, sort(unique(unlist(sampWiener$Lt))))
 }
-

@@ -29,4 +29,3 @@ A list including the following two fields:
 Selects number of functional principal components for
 given FPCA output and selection criteria
 }
-

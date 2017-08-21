@@ -48,4 +48,3 @@ plot(1:p, rdmorder[stringingfit$StringingOrder], pch=18); abline(a=0,b=1)
 \references{
 \cite{Chen, K., Chen, K., Mueller, H. G., and Wang, J. L. (2011). "Stringing high-dimensional data for functional analysis." Journal of the American Statistical Association, 106(493), 275-284.}
 }
-
