@@ -234,7 +234,8 @@ FPCA = function(Ly, Lt, optns = list()){
                         scoresObj, truncObsGrid, workGrid, 
                         rho = if (optns$rho != 'no') rho else NULL, 
                         fitLambda=fitLambda, 
-                        timestamps = c(lasttsMu, lasttsCov, lasttsPACE, firsttsFPCA, firsttsMu, firsttsCov, firsttsPACE))
+                        timestamps = c(lasttsMu, lasttsCov, lasttsPACE, firsttsFPCA, firsttsMu, firsttsCov, firsttsPACE),
+                        Ly = Ly, Lt = Lt)
   
   # Plot the results
   if(optns$plot){

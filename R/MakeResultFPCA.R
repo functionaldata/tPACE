@@ -19,7 +19,9 @@
 ##########################################################################
 
 MakeResultFPCA <- function(optns, smcObj, mu, scsObj, eigObj, 
-                           scoresObj, obsGrid, workGrid, rho=NULL, fitLambda=NULL, inputData, timestamps = NULL){
+                           scoresObj, obsGrid, workGrid, 
+                           rho=NULL, fitLambda=NULL, inputData, timestamps = NULL, 
+                           Ly, Lt){
   
   if (optns$methodXi == 'CE') {
     xiEst <- t(do.call(cbind, scoresObj[1, ])) 
