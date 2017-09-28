@@ -67,9 +67,13 @@ CreateModeOfVarPlot <-function(fpcaObj,  k = 1, rainbowPlot = FALSE, colSpectrum
     thisColPalette = colorRampPalette(colSpectrum)(numOfModes)
     
     Qmatrix = (seq(-2 ,2 ,length.out = numOfModes) %*% t(fpcaObj$phi[,k] * sqrt(fpcaObj$lambda[k]))) + 
-      matrix(rep(mu,numOfModes), nrow=numOfModes, byrow = TRUE)  
-    do.call(matplot, c(list(type='l'), list(x=s), list(y=t(Qmatrix)), list(col= thisColPalette), list(lty=1), list(lwd=2), args1))
-    grid()    
-    lines(x=s, y=mu , col= median(thisColPalette)) 
+      matrix(rep(mu,numOfModes), nrow=numOfModes, byrow = TRUE)   
+    
+    do.call(matplot, c(list(type='n'), list(x=s), list(y=t(Qmatrix)), args1))
+    grid()  
+    do.call(matplot, 
+            c(list(type='l'), list(add=TRUE) , list(x=s), list(y=t(Qmatrix)), list(col= thisColPalette), list(lty=1), list(lwd=2)))
+    lines(x=s, y=mu , col= thisColPalette[129]) 
+    
   }
 }
