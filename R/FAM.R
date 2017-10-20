@@ -8,7 +8,7 @@
 #' @param K A \code{function} object representing the kernel to be used in the smooth backfitting (default is 'epan', the the Epanechnikov kernel).
 #' @param FVE The fraction of variance explained of of FPCA for each predictor process (default is 0.95).
 #' @param xi An \emph{N} by \emph{K} matrix whose column vectors consist of \emph{N} vectors of estimation points for each component function.
-#' @param h A \emph{K}-dimensional vector of bandwidths for kernel smoothing to estimate each component function (default is NULL, but it automatically apply shrinkage factor bandwidth selector. See Han et al. (2016)),
+#' @param h A \emph{K}-dimensional vector of bandwidths for kernel smoothing to estimate each component function (default is NULL, but it automatically apply 10-folds cross-validation for each component function. See Mueller and Yao (2005)),
 #'
 #' @details \code{FAM} fits functional additive models for a scalar response and single predictor process proposed by Mueller and Yao (2007) that \deqn{E(Y | \mathbf{X}) = \sum_{k=1}^K g_{k}(\xi_{k}),} where \eqn{\xi_{k}} stand for the k-th FPC score of the the predictor process.
 #'
@@ -21,6 +21,8 @@
 #'set.seed(1000)
 #'
 #'library(MASS)
+#' 
+#' trapzRcpp <- fdapace:::trapzRcpp
 #'
 #'f1 <- function(t) t
 #'f2 <- function(t) 2*cos(2*pi*t/4)

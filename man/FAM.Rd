@@ -19,7 +19,7 @@ FAM(Y, Lx, Lt, K = "epan", FVE = NULL, xi = NULL, h = NULL)
 
 \item{xi}{An \emph{N} by \emph{K} matrix whose column vectors consist of \emph{N} vectors of estimation points for each component function.}
 
-\item{h}{A \emph{K}-dimensional vector of bandwidths for kernel smoothing to estimate each component function (default is NULL, but it automatically apply shrinkage factor bandwidth selector. See Han et al. (2016)),}
+\item{h}{A \emph{K}-dimensional vector of bandwidths for kernel smoothing to estimate each component function (default is NULL, but it automatically apply 10-folds cross-validation for each component function. See Mueller and Yao (2005)),}
 }
 \value{
 A list containing the following fields:
@@ -38,6 +38,8 @@ Functional additive models with multiple predictor processes
 set.seed(1000)
 
 library(MASS)
+
+trapzRcpp <- fdapace:::trapzRcpp
 
 f1 <- function(t) t
 f2 <- function(t) 2*cos(2*pi*t/4)
