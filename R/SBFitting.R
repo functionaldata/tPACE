@@ -109,7 +109,7 @@ SBFitting <- function(Y,x,X,h=NULL,K='epan',supp=NULL){
   }
   tmpIndex <- which(tmpIndex==1)
   
-  yMean <- sum(Y[tmpIndex])/length(Y)/P0(X)   
+  yMean <- sum(Y[tmpIndex])/length(Y)/P0(X,supp=supp)   
   
   MgnJntDens <- MgnJntDensity(x,X,h,K,supp)
   

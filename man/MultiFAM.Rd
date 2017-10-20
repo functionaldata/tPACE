@@ -2,33 +2,32 @@
 % Please edit documentation in R/MultiFAM.R
 \name{MultiFAM}
 \alias{MultiFAM}
-\title{Iterative Smooth Backfitting Algorithm}
+\title{Functional Additive Models with Multiple Predictor Processes}
 \usage{
-MultiFAM(Y, Xi, h = NULL, K = "epan", FVE = NULL, supp = NULL)
+MultiFAM(Y, Xi, K = "epan", FVE = NULL, xi = NULL, h = NULL,
+  supp = NULL)
 }
 \arguments{
 \item{Y}{An \emph{n}-dimensional vector whose elements consist of scalar responses.}
 
-\item{Xi}{A \emph{d}-dimentional list whose components consist of two lists of \emph{n} vectors containing the obervation time and functional predictor values. See \code{FPCA} for detail.}
+\item{Xi}{A \eqn{(K_1 + ... + K_d)}-dimensional list whose components consist of two lists of \emph{n} vectors containing the obervation time and functional predictor values. See \code{FPCA} for detail.}
 
-\item{h}{A \emph{d}-dimensional vector of bandwidths for kernel smoothing to estimate each component function. Common bandwidths are applied for component functions corresponding to the same processes, respectively.}
+\item{K}{A \code{function} object representing the kernel to be used in the smooth backfitting (default is 'epan', the the Epanechnikov kernel).}
 
-\item{K}{A \code{function} object representing the kernel to be used in the smooth backfitting (default is 'epan', the the Epanechnikov kernel.).}
+\item{FVE}{A \emph{d}-dimesional vector whose components consist of the fraction of variance explained of of FPCA for each predictor process (default is 0.95).}
 
-\item{FVE}{A \emph{d}-dimesional vector whose components consist of the fraction of variance explained of of FPCA for each predictor process. (default is 0.95.)}
+\item{xi}{An \emph{N} by \eqn{(K_1 + ... + K_d)} matrix whose column vectors consist of \emph{N} vectors of estimation points for each component function.}
 
-\item{supp}{A \emph{d} by 2 matrix whose row vectors consist of the lower and upper limits of estimation intervals for each component function (default is the \emph{d}-dimensional rectangle of \emph{[-2,2]}).}
+\item{h}{A \eqn{(K_1 + ... + K_d)}-dimensional vector of bandwidths for kernel smoothing to estimate each component function (default is NULL, but it automatically apply shrinkage factor bandwidth selector. See Han et al. (2016)).}
+
+\item{supp}{A \eqn{(K_1 + ... + K_d)} by 2 matrix whose row vectors consist of the lower and upper limits of estimation intervals for each component function (default is the \emph{d}-dimensional rectangle of \emph{[-2,2]}).}
 }
 \value{
 A list containing the following fields:
-\item{xi}{An \emph{N} by \emph{d} matrix whose column vectors consist of FPC score grid vectors that each additive component functional is evluated.}
-\item{SBFit}{An \emph{N} by \emph{d} matrix whose column vectors consist of the smooth backfitting component function estimators at the given estimation points.}
+\item{xi}{An \emph{N} by \eqn{(K_1 + ... + K_d)} matrix whose column vectors consist of FPC score grid vectors that each additive component functional is evluated.}
+\item{SBFit}{An \emph{N} by \eqn{(K_1 + ... + K_d)} matrix whose column vectors consist of the smooth backfitting component function estimators at the given estimation points.}
 \item{mY}{A scalar of centered part of the regression model.}
-\item{NW}{An \emph{N} by \emph{d} matrix whose column vectors consist of the Nadaraya-Watson marginal regression function estimators for each predictor component at the given estimation points.}
-\item{mgnDens}{An \emph{N} by \emph{d} matrix whose column vectors consist of the marginal kernel density estimators for each predictor component at the given estimation points.}
-\item{jntDens}{An \emph{N} by \emph{N} by \emph{d} by \emph{d} array representing the 2-dimensional joint kernel density estimators for all pairs of predictor components at the given estimation grid. For example, \code{[,,j,k]} of the object provides the 2-dimensional joint kernel density estimator of the \code{(j,k)}-component of predictor components at the corresponding \emph{N} by \emph{N} matrix of estimation grid.}
-\item{itemNum}{The iteration number that the smooth backfitting algorithm has stopped.}
-\item{itemErr}{The iteration error of the smooth backfitting algorithm that represents the maximum L2 distance among component functions in the last successive updates.}
+\item{NW}{An \emph{N} by \eqn{(K_1 + ... + K_d)} matrix whose column vectors consist of the Nadaraya-Watson marginal regression function estimators for each predictor component at the given estimation points.}
 }
 \description{
 Smooth backfitting procedure for functional additive models with multiple predictor processes
@@ -42,16 +41,16 @@ set.seed(1000)
 library(MASS)
 
 f11 <- function(t) t
-f12 <- function(t) 4*sin(3/2*pi*t/4)
-f21 <- function(t) 3*atan(2*pi*t/4)
-f22 <- function(t) 4*cos(2*pi*t/4)
+f12 <- function(t) 2*cos(2*pi*t/4)
+f21 <- function(t) 1.5*sin(2*pi*t/4)
+f22 <- function(t) 1.5*atan(2*pi*t/4)
 
-n<-250
+n<-100
 
-sig <- matrix(c(1.5, 0.0, 0.7, -.2,
-                0.0, 1.2, -.3, 0.6,
-                0.7, -.3, 2.0, 0.0,
-                -.2, 0.6, 0.0, 1.5),
+sig <- matrix(c(2.0, 0.0, 0.5, -.2,
+                0.0, 1.2, -.2, 0.3,
+                0.5, -.2, 1.7, 0.0,
+                -.2, 0.3, 0.0, 1.0),
               nrow=4,ncol=4)
 
 scoreX <- mvrnorm(n,mu=rep(0,4),Sigma=sig)
@@ -75,29 +74,38 @@ Xi2 <- list(Ly=Lx2, Lt=Lt)
 
 Xi <- list(Xi1, Xi2)
 
-h <- c(0.5, 0.5)
-mFAMfit <- MultiFAM(Y,Xi,h=h,FVE=NULL)
+xi <- matrix(rep(seq(-2,2,length.out=101),4),nrow=101,ncol=4)
+sbf <- MultiFAM(Y=Y,Xi=Xi,xi=xi)
 
 par(mfrow=c(2,2))
-plot(mFAMfit$xi[,1],f11(mFAMfit$xi[,1]),type='l',lty=4,
-     xlab=expression(xi[11]),ylab='f11',ylim=c(-5,5))
-points(mFAMfit$xi[,1],-mFAMfit$SBFit[,1],type='l',col=2,lwd=2)
-abline(h=0,col=8)
+j <- 1
+p0 <- trapzRcpp(sort(xi[,j]),dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))
+g11 <- f11(sort(xi[,j])) - trapzRcpp(sort(xi[,j]),f11(sort(xi[,j]))*dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))/p0
+tmpSgn <- sign(sum(g11*sbf$SBFit[,j]))
+plot(sort(xi[,j]),g11,type='l',col=2,ylim=c(-2.5,2.5),xlab='xi11')
+points(sort(xi[,j]),tmpSgn*sbf$SBFit[order(xi[,j]),j],type='l')
 
-plot(mFAMfit$xi[,2],f12(mFAMfit$xi[,2]),type='l',lty=4,
-     xlab=expression(xi[12]),ylab='f12',ylim=c(-5,5))
-points(mFAMfit$xi[,2],mFAMfit$SBFit[,2],type='l',col=2,lwd=2)
-abline(h=0,col=8)
+j <- 2
+p0 <- trapzRcpp(sort(xi[,j]),dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))
+g12 <- f12(sort(xi[,j])) - trapzRcpp(sort(xi[,j]),f12(sort(xi[,j]))*dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))/p0
+tmpSgn <- sign(sum(g12*sbf$SBFit[,j]))
+plot(sort(xi[,j]),g12,type='l',col=2,ylim=c(-2.5,2.5),xlab='xi12')
+points(sort(xi[,j]),tmpSgn*sbf$SBFit[order(xi[,j]),j],type='l')
 
-plot(mFAMfit$xi[,3],f21(mFAMfit$xi[,3]),type='l',lty=4,
-     xlab=expression(xi[21]),ylab='f21',ylim=c(-5,5))
-points(mFAMfit$xi[,3],mFAMfit$SBFit[,3],type='l',col=2,lwd=2)
-abline(h=0,col=8)
+j <- 3
+p0 <- trapzRcpp(sort(xi[,j]),dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))
+g21 <- f21(sort(xi[,j])) - trapzRcpp(sort(xi[,j]),f21(sort(xi[,j]))*dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))/p0
+tmpSgn <- sign(sum(g21*sbf$SBFit[,j]))
+plot(sort(xi[,j]),g21,type='l',col=2,ylim=c(-2.5,2.5),xlab='xi21')
+points(sort(xi[,j]),tmpSgn*sbf$SBFit[order(xi[,j]),j],type='l')
 
-plot(mFAMfit$xi[,4],f22(mFAMfit$xi[,4]),type='l',lty=4,
-     xlab=expression(xi[22]),ylab='f22',ylim=c(-5,5))
-points(mFAMfit$xi[,4],mFAMfit$SBFit[,4],type='l',col=2,lwd=2)
-abline(h=0,col=8)
+j <- 4
+p0 <- trapzRcpp(sort(xi[,j]),dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))
+g22 <- f22(sort(xi[,j])) - trapzRcpp(sort(xi[,j]),f22(sort(xi[,j]))*dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))/p0
+tmpSgn <- sign(sum(g22*sbf$SBFit[,j]))
+plot(sort(xi[,j]),g22,type='l',col=2,ylim=c(-2.5,2.5),xlab='xi22')
+points(sort(xi[,j]),tmpSgn*sbf$SBFit[order(xi[,j]),j],type='l')
+
 
 }
 \references{

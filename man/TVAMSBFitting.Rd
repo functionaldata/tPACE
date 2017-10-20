@@ -30,9 +30,9 @@ TVAMSBFitting(Y, t, x, T, X, h0 = NULL, h = NULL, K = "epan",
 }
 \value{
 A list containing the following fields:
-\item{SBFit}{An \emph{N} by \emph{N} by \emph{d} array whose elements consist of the locally linear smooth backfitting component surface estimators at the given estimation points.}
-\item{f0}{An \emph{M} vector whose elements consist of marginal mean curve of \emph{Y(t)}.}
-\item{fj}{An \emph{N} by \emph{N} by \emph{d} array whose elements consist of the locally linear kernel smoothing estimators of marginal component surface.}
+\item{SBFit}{An \emph{M} by \emph{N} by \emph{d} array whose elements consist of the locally linear smooth backfitting component surface estimators at the given estimation points.}
+\item{f0}{An \emph{M} vector whose elements consist of marginal mean curve of \emph{Y(t)} without covariates.}
+\item{fj}{An \emph{M} by \emph{N} by \emph{d} array whose elements consist of the locally linear kernel smoothing estimators of E(Y(t) | X_j).}
 \item{itemNum}{The iteration number that the smooth backfitting algorithm has stopped.}
 \item{itemErr}{The iteration error of the smooth backfitting algorithm that represents the maximum L2 distance among component functions in the last successive updates.}
 }

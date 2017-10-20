@@ -16,9 +16,9 @@
 #' @details \code{TVAMSBFitting} fits component surface of time-varying additive models for a longitudinal response and a multivariate predictor based on the smooth backfitting algorithm, a simplified model of Zhang et al. (2013). Here, the time-varying additive model stands for \deqn{E(Y(t) | \mathbf{X}) = g_1(t,X_1)+\cdots+ g_d(t,X_d).} \code{TVAMSBFitting} only focuses on the local linear smooth backfitting estimator with multivariate predictor case for the purpose of enjoying smooth surface estimation. Support of the multivariate predictor is assumed to be a product of closed intervals. Especially in this development, one can designate an estimation support of additive models when the additive modeling is only allowed over restricted intervals or one is interested in the modeling over the support (see Han et al., 2016). If one puts \code{X} on the argument of estimation points \code{x}, \code{TVAMSBFitting} returns estimated values of conditional mean curve for responses given observed predictors.
 #'
 #' @return A list containing the following fields:
-#' \item{SBFit}{An \emph{N} by \emph{N} by \emph{d} array whose elements consist of the locally linear smooth backfitting component surface estimators at the given estimation points.}
-#' \item{f0}{An \emph{M} vector whose elements consist of marginal mean curve of \emph{Y(t)}.}
-#' \item{fj}{An \emph{N} by \emph{N} by \emph{d} array whose elements consist of the locally linear kernel smoothing estimators of marginal component surface.}
+#' \item{SBFit}{An \emph{M} by \emph{N} by \emph{d} array whose elements consist of the locally linear smooth backfitting component surface estimators at the given estimation points.}
+#' \item{f0}{An \emph{M} vector whose elements consist of marginal mean curve of \emph{Y(t)} without covariates.}
+#' \item{fj}{An \emph{M} by \emph{N} by \emph{d} array whose elements consist of the locally linear kernel smoothing estimators of E(Y(t) | X_j).}
 #' \item{itemNum}{The iteration number that the smooth backfitting algorithm has stopped.}
 #' \item{itemErr}{The iteration error of the smooth backfitting algorithm that represents the maximum L2 distance among component functions in the last successive updates.}
 #' @examples
