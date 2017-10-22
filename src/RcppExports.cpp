@@ -268,3 +268,29 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+
+static const R_CallMethodDef CallEntries[] = {
+    {"fdapace_CPPlwls1d", (DL_FUNC) &fdapace_CPPlwls1d, 8},
+    {"fdapace_cumtrapzRcpp", (DL_FUNC) &fdapace_cumtrapzRcpp, 2},
+    {"fdapace_dropZeroElementsXYWin", (DL_FUNC) &fdapace_dropZeroElementsXYWin, 3},
+    {"fdapace_GetIndCEScoresCPP", (DL_FUNC) &fdapace_GetIndCEScoresCPP, 5},
+    {"fdapace_GetIndCEScoresCPPnewInd", (DL_FUNC) &fdapace_GetIndCEScoresCPPnewInd, 7},
+    {"fdapace_interp2lin", (DL_FUNC) &fdapace_interp2lin, 5},
+    {"fdapace_RCPPmean", (DL_FUNC) &fdapace_RCPPmean, 1},
+    {"fdapace_RcppPseudoApprox", (DL_FUNC) &fdapace_RcppPseudoApprox, 3},
+    {"fdapace_Rcppsort", (DL_FUNC) &fdapace_Rcppsort, 1},
+    {"fdapace_RCPPvar", (DL_FUNC) &fdapace_RCPPvar, 1},
+    {"fdapace_Rmullwlsk", (DL_FUNC) &fdapace_Rmullwlsk, 9},
+    {"fdapace_RmullwlskCC", (DL_FUNC) &fdapace_RmullwlskCC, 8},
+    {"fdapace_RmullwlskCCsort2", (DL_FUNC) &fdapace_RmullwlskCCsort2, 8},
+    {"fdapace_RmullwlskUniversal", (DL_FUNC) &fdapace_RmullwlskUniversal, 9},
+    {"fdapace_RmullwlskUniversalDeriv", (DL_FUNC) &fdapace_RmullwlskUniversalDeriv, 12},
+    {"fdapace_Rrotatedmullwlsk", (DL_FUNC) &fdapace_Rrotatedmullwlsk, 8},
+    {"fdapace_trapzRcpp", (DL_FUNC) &fdapace_trapzRcpp, 2},
+    {NULL, NULL, 0}
+};
+
+RcppExport void R_init_fdapace(DllInfo *dll) {
+    R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
+    R_useDynamicSymbols(dll, FALSE);
+}

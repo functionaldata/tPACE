@@ -142,9 +142,11 @@ WFDA = function(Ly, Lt, optns = list()){
   # mu: the smoothed mean curve evaluated at times 'obsGrid'
   mu <- smcObj$mu
   
-  if(is.null(optns$lambda)){
+  if (is.null(optns$lambda)){
     Vy = sqrt(sum( apply(ymatNormalised,1, function(u) trapzRcpp(obsGrid, (u - mu)^2 ) ) )/(N-1))
     lambda = Vy*10^-4
+  } else {
+    lambda <- optns$lambda
   }
   
   numOfKcurves = min(round(optns$subsetProp * (N-1)))
