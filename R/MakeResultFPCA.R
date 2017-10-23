@@ -12,6 +12,8 @@
 #  workGrid: time grid for smoothed covariance surface
 #  rho: regularization parameter for sigma2
 #  fitLambda: eigenvalues by least squares fit method
+#  timestamps: time-stamps on how much time specific parts of FPCA needed
+#  inputData: input data to return (if lean: FALSE)
 ######
 # Output: 
 ######
@@ -53,22 +55,21 @@ MakeResultFPCA <- function(optns, smcObj, mu, scsObj, eigObj,
     ret$fitLambda <- fitLambda
   }
   
+  ret$inputData <- inputData; # This will be potentially be NULL if `lean`
+  class(ret) <- 'FPCA'
+  
+  # select number of components based on specified criterion # This should be move within MakeResultFPCA
+  selectedK <- SelectK(fpcaObj = ret, criterion = optns$methodSelectK, FVEthreshold = optns$FVEthreshold)  
+  
   if(!optns$lean){
     ret$inputData <- inputData;
   } else {
     ret$inputData <- NULL
   }
-  class(ret) <- 'FPCA'
-  
-  # select number of components based on specified criterion # This should be move within MakeResultFPCA
-  if(ret$optns$lean == TRUE){
-    selectedK <- SelectK(fpcaObj = ret, criterion = optns$methodSelectK, FVEthreshold = optns$FVEthreshold,
-                         Ly = Ly, Lt = Lt)
-  } else {
-    selectedK <- SelectK(fpcaObj = ret, criterion = optns$methodSelectK, FVEthreshold = optns$FVEthreshold)
-  }
+
   ret <- append(ret, list(selectK = selectedK$K, criterionValue = selectedK$criterion))
   class(ret) <- 'FPCA'
+  
   ret <- SubsetFPCA(fpcaObj = ret, K = ret$selectK)
   
   if(is.null(timestamps)) {
