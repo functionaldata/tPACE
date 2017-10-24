@@ -1,4 +1,4 @@
-CVLwls1D <- function(y, t, kernel, npoly, nder, dataType, kFolds = 5 ){
+CVLwls1D <- function(y, t, kernel, npoly, nder, dataType, kFolds = 5, useBW1SE = FALSE ){
 
   # If 'y' and 't' are vectors "cheat" and break them in a list of 10 elements
   if ( is.vector(y) && is.vector(t) && !is.list(t) && !is.list(y) ){
@@ -52,13 +52,13 @@ CVLwls1D <- function(y, t, kernel, npoly, nder, dataType, kFolds = 5 ){
   #  }
   #}
 
-  cv = c();
-  count = c();
+  cv = matrix(0, ncol = length(bw), nrow = kFolds);
+  #count = c();
   theFolds =  CreateFolds(unique(ind), k= kFolds)
 
   for (j in 1:(nbw-1)){
-    cv[j]=0;
-    count[j]=0;
+    # cv[j]=0;
+    # count[j]=0;
     #for (i in 1:ncohort){
     for (i in 1:kFolds){
       
@@ -84,9 +84,10 @@ CVLwls1D <- function(y, t, kernel, npoly, nder, dataType, kFolds = 5 ){
         return(Inf)
       })
         
-      cv[j] = cv[j]+ sum((obs-mu)^2)
-      if(is.na(cv[j])){
-        cv[j] = Inf;
+      cv[i,j] = sum((obs-mu)^2)
+      # print(cv)
+      if(is.na(cv[i,j])){
+        cv[i,j] = Inf;
       }
       #count[j] = count[j]+1;
     }
@@ -96,8 +97,14 @@ CVLwls1D <- function(y, t, kernel, npoly, nder, dataType, kFolds = 5 ){
   if(min(cv) == Inf){
     stop("All bandwidths resulted in infinite CV costs.")
   }
-  
-  bopt = bw[(cv==min(cv))];
+  if( useBW1SE ){
+    # This will pick the bandwidth that is the max but it's average cost is at most
+    # 1 standard error of the minimum cost /  I use means so it is more straighforward what the SE is.
+    bopt = bw[max(which( 
+      colMeans(cv) < min(colMeans(cv)) + apply(cv,2, sd)[which.min(colMeans(cv))]/sqrt(kFolds)))]
+  } else {
+    bopt = bw[which.min( colMeans(cv))];
+  }
   
   return(bopt)
 

@@ -163,6 +163,16 @@ CheckOptions = function(t,optns,n){
   if(!(any(optns[['methodMuCovEst']] == c('smooth', 'cross-sectional')))){
     stop("FPCA is aborted because the argument: methodMuCovEst is invalid!\n");    
   }
+  
+  if(!is.logical(optns[['lean']])){ 
+    # error assumption with measurement error 
+    stop("FPCA is aborted because the lean option is invalid!\n");   
+  }
+  
+  if(!is.logical(optns[['useBW1SE']])){ 
+    # error assumption with measurement error 
+    stop("FPCA is aborted because the useBW1SE option is invalid!\n");   
+  }
 #  if (optns[['methodMuCovEst']] == 'smooth' && optns[['dataType']] == 'DenseWithMV') {
 #    stop('Smoothing method not supported for \'DenseWithMV\' dataType. Use \'Sparse\' dataType instead')
 #  }

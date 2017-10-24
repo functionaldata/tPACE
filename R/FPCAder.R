@@ -5,21 +5,52 @@
 #'
 #' @details Available derivation control options are 
 #' \describe{
-#' \item{method}{The method used for obtaining the derivatives. 'DPC': cite, 'FPC': cite}
-#' \item{p}{The order of the derivatives returned (default: 0, max: 2)}
-#' \item{bw}{Bandwidth for smoothing the derivatives (default: p * 0.1 * S). For 'DPC', bw is used for smoothing G^(1,1)(s,t)}
+#' \item{method}{The method used for obtaining the derivatives (default: 'FPC'). 'DPC': derivatives principal component, with G^(1,1) estimated by first kernel local smoothing G^(1,0), and then apply a 1D smoother on the second direction; 'FPC': functional principal component, based on smoothing the eigenfunctions; 'FPC1': functional principal component, based on smoothing G^(1,0). May produce better estimate than 'FPC' but is slower.}
+#' \item{p}{The order of the derivatives returned (default: 1, max: 2). }
+#' \item{bw}{Bandwidth for the 1D and the 2D smoothers (default: p * 0.1 * S).}
 #' \item{kernelType}{Smoothing kernel choice; same available types are FPCA(). default('epan')}
 #' }
 #'
+#' @references
+#' \cite{Dai, Xiongtao, Hans-Georg Mueller, and Wenwen Tao. "Derivative Principal Component Analysis for Representing the Time Dynamics of Longitudinal and Functional Data." Submitted (DPC)}
+#' \cite{Liu, Bitao, and Hans-Georg Mueller. "Estimating derivatives for samples of sparsely observed functions, with application to online auction dynamics." Journal of the American Statistical Association 104, no. 486 (2009): 704-717. (FPC)}
 #' @examples
+#' 
+#' bw <- 0.2
+#' kern <- 'epan'
 #' set.seed(1)
-#' n <- 20
-#' pts <- seq(0, 1, by=0.05)
-#' sampWiener <- Wiener(n, pts)
-#' sampWiener <- Sparsify(sampWiener, pts, 10)
-#' res <- FPCA(sampWiener$Ly, sampWiener$Lt, 
-#'             list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
-#' derRes <- FPCAder(res)
+#' n <- 100 
+#' M <- 40
+#' pts <- seq(0, 1, length.out=M)
+#' lambdaTrue <- c(1, 0.8, 0.1)^2
+#' sigma2 <- 0.1
+#' 
+#' samp2 <- MakeGPFunctionalData(n, M, pts, K=length(lambdaTrue), 
+#'                               lambda=lambdaTrue, sigma=sqrt(sigma2), basisType='legendre01')
+#' samp2 <- c(samp2, MakeFPCAInputs(tVec=pts, yVec=samp2$Yn))
+#' fpcaObj <- FPCA(samp2$Ly, samp2$Lt, list(methodMuCovEst='smooth',
+#'                 userBwCov=bw, userBwMu=bw, kernel=kern, error=TRUE)) 
+#' CreatePathPlot(fpcaObj, showObs=FALSE)
+#' 
+#' FPCoptn <- list(bw=bw, kernelType=kern, method='FPC')
+#' DPCoptn <- list(bw=bw, kernelType=kern, method='DPC')
+#' FPC <- FPCAder(fpcaObj, FPCoptn)
+#' DPC <- FPCAder(fpcaObj, DPCoptn)
+#' 
+#' CreatePathPlot(FPC, ylim=c(-5, 10))
+#' CreatePathPlot(DPC, ylim=c(-5, 10))
+#' 
+#' # Get the true derivatives
+#' phi <-  CreateBasis(K=3, type='legendre01', pts=pts)
+#' basisDerMat <- apply(phi, 2, function(x) 
+#'                        ConvertSupport(seq(0, 1, length.out=M - 1), pts, diff(x) * (M - 1)))
+#' trueDer <- matrix(1, n, M, byrow=TRUE) + tcrossprod(samp2$xi, basisDerMat)
+#' matplot(t(trueDer), type='l', ylim=c(-5, 10))
+#' 
+#' # DPC is slightly better in terms of RMSE
+#' mean((fitted(FPC) - trueDer)^2)
+#' mean((fitted(DPC) - trueDer)^2)
+#' 
 #' @export
 
 
@@ -52,8 +83,8 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
     stop("The derivative order p should be in {1, 2}!")
   } 
 
-  if (p == 2 && substr(method, 1, 3) == 'DPC') {
-    stop('\'DPC\' method does not support p = 2')
+  if (p == 2 && (substr(method, 1, 3) == 'DPC' || method == 'FPC1')) {
+    stop('Only \'FPC\' supports p = 2')
   }
 
   if (p == 2) {
@@ -75,52 +106,22 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
     rcov <- BinRawCov(GetRawCov(Ly, Lt, obsGrid, muDense, 'Sparse', TRUE))
 
     # Use 1D smoothing on G(s, t) for G^(1,0)(s, t)
-    if (is.null(derOptns[['G10_1D']]) || !derOptns[['G10_1D']]) {
-      cov10 <- Lwls2DDeriv(bwCov, kernelType, xin=rcov$tPairs, yin=rcov$meanVals,
-                           win=rcov$count, xout1=workGrid, xout2=workGrid,
-                           npoly=1L, nder1=1L, nder2=0L)
-    } else {
+    # if (is.null(derOptns[['G10_1D']]) || !derOptns[['G10_1D']]) {
+      # cov10 <- Lwls2DDeriv(bwCov, kernelType, xin=rcov$tPairs, yin=rcov$meanVals,
+                           # win=rcov$count, xout1=workGrid, xout2=workGrid,
+                           # npoly=1L, nder1=1L, nder2=0L)
+    # } else {
       tmpGrid <- seq(min(workGrid), max(workGrid), length=nWorkGrid - 1)
       cov10 <- ConvertSupport(tmpGrid, workGrid, apply(fpcaObj[['smoothedCov']], 2, diff) / gridSize)
-    }
+    # }
 
     if (method == 'DPC') {
-      cov11 <- Lwls2DDeriv(bwCov, kernelType, xin=rcov$tPairs,
-                           yin=rcov$meanVals, win=rcov$count, xout1=workGrid,
-                           xout2=workGrid, npoly=2L, nder1=1L, nder2=1L)
-    } else if (method == 'DPC1') {
       # 1D smooth cov10 to get cov11
       cov11 <- apply(cov10, 1, function(x) 
         Lwls1D(bwCov, kernelType, xin=workGrid, yin=x, xout=workGrid, npoly=2,
                nder=1)
       )
-    } else if (method == 'DPC2') {
-      d <- function(x) diff(x) / gridSize
-      cov11 <- apply(apply(fpcaObj[['smoothedCov']], 2, d), 1, d)
-      cov11 <- ConvertSupport(seq(min(workGrid), max(workGrid),
-                                  length.out=nrow(cov11)),
-                              workGrid, Cov=cov11)
-    } else if (method == 'DPCCE') {
-      # Condition the derivative curves on the observations.
-      CovObs <- ConvertSupport(workGrid, obsGrid, Cov=fittedCov)
-      cov01Obs <- ConvertSupport(workGrid, obsGrid, phi=t(cov10))
-
-      if (!is.null(derOptns[['userSigma2']])) {
-        sigma2 <- derOptns[['userSigma2']]
-      } else {
-        sigma2 <- ifelse(is.null(fpcaObj[['rho']]), fpcaObj[['sigma2']],
-                         max(fpcaObj[['sigma2']], fpcaObj[['rho']]))
-      }
-
-      xi1 <- GetCEScores(Ly, Lt, list(verbose=FALSE), 
-                         muDense, obsGrid, CovObs, 
-                         lambda=rep(1, nWorkGrid), 
-                         phi=cov01Obs, 
-                         sigma2=sigma2)
-      fit <- t(do.call(cbind, xi1['xiEst', ]) + mu1)
-
-      return(fit)
-    }
+    } 
     cov11 <- (cov11 + t(cov11)) / 2
     # } else { # use true values
       # muDense <- rep(0, length(obsGrid))
@@ -165,12 +166,8 @@ FPCAder <-  function (fpcaObj, derOptns = list(p=1)) {
     phiObs <- ConvertSupport(workGrid, obsGrid, phi=phi)
 
     # conditional expectation
-    if (!is.null(derOptns[['userSigma2']])) {
-      sigma2 <- derOptns[['userSigma2']]
-    } else {
-      sigma2 <- ifelse(is.null(fpcaObj[['rho']]), fpcaObj[['sigma2']],
-                       max(fpcaObj[['sigma2']], fpcaObj[['rho']]))
-    }
+    sigma2 <- ifelse(is.null(fpcaObj[['rho']]), fpcaObj[['sigma2']],
+                     max(fpcaObj[['sigma2']], fpcaObj[['rho']]))
 
     # browser()
 

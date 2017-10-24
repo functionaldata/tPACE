@@ -1,11 +1,19 @@
-# Create an orthogonal basis of K functions in [0, 1], with nGrid points.
-# type: a string in 'sin', 'cos', 'fourier', 'legendre01'
-# Output: a K by nGrid matrix, each column containing an basis function.
-CreateBasis <- function(K, pts=seq(0, 1, length.out=50), type='sin') {
+#' Create an orthogonal basis of K functions in [0, 1], with nGrid points.
+#'
+#' @param K A positive integer specifying the number of eigenfunctions to generate.
+#' @param pts A vector specifying the time points to evaluate the basis functions.
+#' @param type A string for the type of orthogonal basis.
+#' @return A K by nGrid matrix, each column containing an basis function.
+#'
+#' @examples
+#' basis <- CreateBasis(3, type='fourier')
+#' head(basis)
+#'
+#' @export
+CreateBasis <- function(K, pts=seq(0, 1, length.out=50), type=c('cos', 'sin', 'fourier', 'legendre01', 'poly')) {
 
   nGrid <- length(pts)
-  possibleTypes <- c('cos', 'sin', 'fourier', 'legendre01', 'poly', 'unknown')
-  type <- possibleTypes[pmatch(type, possibleTypes, nomatch=length(possibleTypes))]
+  type <- match.arg(type)
   
   stopifnot(is.numeric(K) && length(K) == 1 && K > 0)
   
@@ -47,11 +55,19 @@ CreateBasis <- function(K, pts=seq(0, 1, length.out=50), type='sin') {
       res <- xMat %*% coefMat
       # browser()
     }
+
+    if (K >= 25) {
+      warning('Numeric unstability may occur. Use K < 25.')
+    }
   } else if (type == 'poly') {
     if (K == 1) {
       res <- matrix(1, length(pts), 1)
     } else if (K > 1) {
      res <- cbind(1, stats::poly(pts, K - 1, raw=TRUE))
+    }
+
+    if (K >= 25) {
+      warning('Numeric unstability may occur. Use K < 25.')
     }
   } else if (type == 'unknown') {
     stop('unknown basis type')

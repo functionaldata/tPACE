@@ -41,6 +41,10 @@ GetCovDense <- function(ymat, mu, optns) {
       K = cov(ymat, use = 'pairwise.complete.obs') # sample variance using non-missing data
     }
     K = 0.5 * (K + t(K)) # ensure that K is symmetric
+
+    if (any(is.na(K))) {
+      stop("Data is too sparse to be considered DenseWithMV. Remove sparse observations or specify dataType='Sparse' for FPCA") 
+    }
   
     if (optns[['error']] == TRUE) {
       # 2nd order difference method for finding sigma2

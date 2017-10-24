@@ -39,6 +39,7 @@
 #' \item{userMu}{The user-defined smoothed mean function; list of two numerical vector 't' and 'mu' of equal size, 't' must cover the support defined 'Ly' - default: NULL}
 ##' \item{userSigma2}{The user-defined measurement error variance. A positive scalar. If specified then no regularization is used (rho is set to 'no', unless specified otherwise). Default to `NULL`}
 #' \item{userRho}{The user-defined measurement truncation threshold used for the calculation of functional principal components scores. A positive scalar. Default to `NULL`}
+#' \item{useBW1SE}{Pick the largest bandwidth such that CV-error is within one Standard Error from the minimum CV-error, relevant only if methodBwMu ='CV' and/or methodBwCov ='CV'; logical - default: FALSE}
 #' \item{verbose}{Display diagnostic messages; logical - default: FALSE}
 #' }
 #' @return A list containing the following fields:
@@ -53,6 +54,7 @@
 #' \item{smoothedCov}{A nWorkGrid by nWorkGrid matrix of the smoothed covariance surface.}
 #' \item{fittedCov}{A nWorkGrid by nWorkGrid matrix of the fitted covariance surface, which is guaranteed to be non-negative definite.}
 #' \item{optns}{A list of actually used options.}
+#' \item{timings}{A vector with execution times for the basic parts of the FPCA call.}
 #' \item{bwMu}{The selected (or user specified) bandwidth for smoothing the mean function.}
 #' \item{bwCov}{The selected (or user specified) bandwidth for smoothing the covariance function.}
 #' \item{rho}{A regularizing scalar for the measurement error variance estimate.}
@@ -82,6 +84,7 @@
 
 FPCA = function(Ly, Lt, optns = list()){
   
+  firsttsFPCA <- Sys.time() #First time-stamp for FPCA
   # Check the data validity for further analysis
   CheckData(Ly,Lt)
   
@@ -136,6 +139,7 @@ FPCA = function(Ly, Lt, optns = list()){
 
   ## Mean function
   # If the user provided a mean function use it
+  firsttsMu <- Sys.time() #First time-stamp for calculation of the mean
   userMu <- optns$userMu
   if ( is.list(userMu) && (length(userMu$mu) == length(userMu$t))){
     smcObj <- GetUserMeanCurve(optns, obsGrid, regGrid, buff)
@@ -147,7 +151,10 @@ FPCA = function(Ly, Lt, optns = list()){
   }
 # mu: the smoothed mean curve evaluated at times 'obsGrid'
   mu <- smcObj$mu
-
+  lasttsMu <- Sys.time()
+  
+  
+  firsttsCov <- Sys.time() #First time-stamp for calculation of the covariance
 ## Covariance function and sigma2
   if (!is.null(optns$userCov) && optns$methodMuCovEst != 'smooth') { 
       scsObj <- GetUserCov(optns, obsGrid, cutRegGrid, buff, ymat)
@@ -164,6 +171,8 @@ FPCA = function(Ly, Lt, optns = list()){
     scsObj$outGrid <- cutRegGrid
   }
   sigma2 <- scsObj[['sigma2']]
+  lasttsCov <- Sys.time()
+  firsttsPACE <- Sys.time() #First time-stamp for calculation of PACE
   # workGrid: possibly truncated version of the regGrid
   workGrid <- scsObj$outGrid
 
@@ -217,25 +226,15 @@ FPCA = function(Ly, Lt, optns = list()){
   } else {
     fitLambda <- NULL
   }
-
+  
+  lasttsPACE <- Sys.time()
   # Make the return object by MakeResultFPCA
   ret <- MakeResultFPCA(optns, smcObj, muObs, scsObj, eigObj, 
                         inputData = inputData, 
                         scoresObj, truncObsGrid, workGrid, 
                         rho = if (optns$rho != 'no') rho else NULL, 
-                        fitLambda=fitLambda)
-  
-  # select number of components based on specified criterion
-  if(ret$optns$lean == TRUE){
-    selectedK <- SelectK(fpcaObj = ret, criterion = optns$methodSelectK, FVEthreshold = optns$FVEthreshold,
-                         Ly = Ly, Lt = Lt)
-  } else {
-    selectedK <- SelectK(fpcaObj = ret, criterion = optns$methodSelectK, FVEthreshold = optns$FVEthreshold)
-  }
-  
-  ret <- append(ret, list(selectK = selectedK$K, criterionValue = selectedK$criterion))
-  class(ret) <- 'FPCA'
-  ret <- SubsetFPCA(fpcaObj = ret, K = ret$selectK)
+                        fitLambda=fitLambda, 
+                        timestamps = c(lasttsMu, lasttsCov, lasttsPACE, firsttsFPCA, firsttsMu, firsttsCov, firsttsPACE) )
   
   # Plot the results
   if(optns$plot){

@@ -3,13 +3,13 @@
 #' @param X A matrix (n by p) of data, where X[i,] is the row vector of measurements for the ith subject.
 #' @param Y A vector (n by 1), where Y[i] is the reponse associated with X[i,]
 #' @param standardize A logical variable indicating whether standardization of the input data matrix is required, with default: FALSE.
-#' @param disOptns A distance metric to be used, one of the following: "euclidean" (default), "correlation", "spearman", "hamming", "xycor" or "user". If specified as "xycor", the absolute difference of correlation between predictor and response is used. If specified as "user", a dissimilarity matrix for the argument "disMat" must be provided.
+#' @param disOptns A distance metric to be used, one of the following: "euclidean" (default), "maximum", "manhattan", "canberra", "binary", "minkowski", "correlation", "spearman", "hamming", "xycor", or "user". If specified as "xycor", the absolute difference of correlation between predictor and response is used. If specified as "user", a dissimilarity matrix for the argument "disMat" must be provided.
 #' @param disMat A user-specified dissimilarity matrix, only necessary when "disOptns" is "user".
 #' 
 #' @return A list containing the following fields:
 #' \item{Ly}{A list of n vectors, which are the random trajectories for all subjects identified by the Stringing method.}
 #' \item{Lt}{A list of n time points vectors, at which corresponding measurements Ly are taken.}
-#' \item{stringedPos}{A vector, indicating positions of corresponding predictors after stringing.}
+#' \item{StringingOrder}{A vector representing the order of the stringing, s.t. using as column index on \code{X} yields recovery of the underlying process.}
 #' \item{Xin}{A matrix, corresponding to the input data matrix.}
 #' \item{Xstd}{A matrix, corresponding to the standardized input data matrix. It is NULL if standardize is FALSE.}
 #' @examples
@@ -19,13 +19,13 @@
 #' p = ncol(wiener)
 #' rdmorder = sample(size = p, x=1:p, replace = FALSE)
 #' stringingfit = Stringing(X = wiener[,rdmorder], disOptns = "correlation")
-#' diff_norev = sum(abs(rdmorder[stringingfit$stringedPos] - 1:p))
-#' diff_rev = sum(abs(rdmorder[stringingfit$stringedPos] - p:1))
+#' diff_norev = sum(abs(rdmorder[stringingfit$StringingOrder] - 1:p))
+#' diff_rev = sum(abs(rdmorder[stringingfit$StringedOrder] - p:1))
 #' if(diff_rev <= diff_norev){
-#'   stringingfit$stringedPos = rev(stringingfit$stringedPos)
+#'   stringingfit$StringingOrder = rev(stringingfit$StringingOrder)
 #'   stringingfit$Ly = lapply(stringingfit$Ly, rev)
 #' }
-#' plot(1:p, rdmorder[stringingfit$stringedPos], pch=18); abline(a=0,b=1)
+#' plot(1:p, rdmorder[stringingfit$StringingOrder], pch=18); abline(a=0,b=1)
 #' 
 #' @references
 #' \cite{Chen, K., Chen, K., Mueller, H. G., and Wang, J. L. (2011). "Stringing high-dimensional data for functional analysis." Journal of the American Statistical Association, 106(493), 275-284.}
@@ -36,7 +36,8 @@ Stringing = function(X, Y = NULL, standardize = FALSE, disOptns = "euclidean", d
   if(!(is.numeric(X) && is.matrix(X))){
     stop('Incorrect format for input data matrix X! Check if it is a matrix.')
   }
-  if(!(disOptns %in% c("euclidean", "correlation", "spearman", "hamming", "xycor", "user"))){
+  if(!(disOptns %in% c("euclidean", "maximum", "manhattan", "canberra", "binary", "minkowski",
+                       "correlation", "spearman", "hamming", "xycor", "user"))){
     stop('Invalid distance option specified! Need to be one of "euclidean", "correlation", "spearman", "hamming" and "user".')
   }
   if(disOptns == "user" && is.na(disMat)){
@@ -76,16 +77,16 @@ Stringing = function(X, Y = NULL, standardize = FALSE, disOptns = "euclidean", d
   # UDS
   uds = MASS::isoMDS(d = disMat, k = 1, trace = FALSE)
   pts = uds$points
-  stringedPos = order( (pts - min(pts))/diff(range(pts)) )
+  StringingOrder = order( (pts - min(pts))/diff(range(pts)) )
 
   # obtain stringed data
-  stringedX = X[,stringedPos]
+  stringedX = X[,StringingOrder]
   stringedTime = 1:p
   fpcainput = MakeFPCAInputs(IDs = rep(seq_len(n),times=p), tVec = rep(stringedTime, each=n),
                              yVec = c(stringedX))
   Ly = fpcainput$Ly
   Lt = fpcainput$Lt
-  stringingObj <- list(Ly = Ly, Lt = Lt, stringedPos = stringedPos, Xin = Xin, Xstd = Xstd)
+  stringingObj <- list(Ly = Ly, Lt = Lt, StringingOrder = StringingOrder, Xin = Xin, Xstd = Xstd)
   class(stringingObj) <- "Stringing"
   return(stringingObj)
 }
@@ -94,8 +95,8 @@ Stringing = function(X, Y = NULL, standardize = FALSE, disOptns = "euclidean", d
 # function to get dissimilarity matrix for given data matrix
 GetDisMatrix = function(X, disOptns = "euclidean", Y){
   p = ncol(X); n = nrow(X);
-  if(disOptns == "euclidean"){
-    disMat = dist(x = t(X), method = "euclidean")
+  if(disOptns %in% c("euclidean","maximum","manhattan","canberra","binary","minkowski")){
+    disMat = dist(x = t(X), method = disOptns)
   } else if(disOptns == "correlation"){
     disMat = sqrt(2*(1 - cor(X)))
   } else if(disOptns == "spearman"){

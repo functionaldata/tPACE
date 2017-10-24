@@ -12,6 +12,8 @@
 #  workGrid: time grid for smoothed covariance surface
 #  rho: regularization parameter for sigma2
 #  fitLambda: eigenvalues by least squares fit method
+#  timestamps: time-stamps on how much time specific parts of FPCA needed
+#  inputData: input data to return (if lean: FALSE)
 ######
 # Output: 
 ######
@@ -19,8 +21,8 @@
 ##########################################################################
 
 MakeResultFPCA <- function(optns, smcObj, mu, scsObj, eigObj, 
-                           scoresObj, obsGrid, workGrid, rho=NULL, fitLambda=NULL, inputData){
-
+                           scoresObj, obsGrid, workGrid, rho=NULL, fitLambda=NULL, inputData, timestamps = NULL){
+  
   if (optns$methodXi == 'CE') {
     xiEst <- t(do.call(cbind, scoresObj[1, ])) 
     xiVar <- scoresObj[2, ]
@@ -28,6 +30,7 @@ MakeResultFPCA <- function(optns, smcObj, mu, scsObj, eigObj,
     xiEst <- scoresObj$xiEst
     xiVar <- scoresObj$xiVar
   }
+  
   ret <- list(sigma2 = scsObj$sigma2, 
               lambda = eigObj$lambda, 
               phi = eigObj$phi, 
@@ -43,20 +46,40 @@ MakeResultFPCA <- function(optns, smcObj, mu, scsObj, eigObj,
               optns = optns, 
               bwMu = smcObj$bw_mu, 
               bwCov = scsObj$bwCov)
-
+  
   if (optns$methodXi == 'CE') {
     ret$rho <- rho
   }
-
+  
   if (optns$fitEigenValues) {
     ret$fitLambda <- fitLambda
   }
+  
+  ret$inputData <- inputData; # This will be potentially be NULL if `lean`
+  class(ret) <- 'FPCA'
+  
+  # select number of components based on specified criterion # This should be move within MakeResultFPCA
+  selectedK <- SelectK(fpcaObj = ret, criterion = optns$methodSelectK, FVEthreshold = optns$FVEthreshold)  
   
   if(!optns$lean){
     ret$inputData <- inputData;
   } else {
     ret$inputData <- NULL
   }
+
+  ret <- append(ret, list(selectK = selectedK$K, criterionValue = selectedK$criterion))
   class(ret) <- 'FPCA'
+  
+  ret <- SubsetFPCA(fpcaObj = ret, K = ret$selectK)
+  
+  if(is.null(timestamps)) {
+    timings = NULL;
+  } else {
+    timestamps = c(Sys.time(), timestamps)
+    timings = round(digits=3, timestamps[1:4]-timestamps[5:8]);
+    names(timings) <- c('total','mu','cov','pace')
+  }
+  ret$timings = timings;
+  
   return(ret)
 }

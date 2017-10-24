@@ -26,6 +26,7 @@ A list containing the following fields:
 \item{smoothedCov}{A nWorkGrid by nWorkGrid matrix of the smoothed covariance surface.}
 \item{fittedCov}{A nWorkGrid by nWorkGrid matrix of the fitted covariance surface, which is guaranteed to be non-negative definite.}
 \item{optns}{A list of actually used options.}
+\item{timings}{A vector with execution times for the basic parts of the FPCA call.}
 \item{bwMu}{The selected (or user specified) bandwidth for smoothing the mean function.}
 \item{bwCov}{The selected (or user specified) bandwidth for smoothing the covariance function.}
 \item{rho}{A regularizing scalar for the measurement error variance estimate.}
@@ -71,6 +72,7 @@ Available control options are
 \item{userMu}{The user-defined smoothed mean function; list of two numerical vector 't' and 'mu' of equal size, 't' must cover the support defined 'Ly' - default: NULL}
 \item{userSigma2}{The user-defined measurement error variance. A positive scalar. If specified then no regularization is used (rho is set to 'no', unless specified otherwise). Default to `NULL`}
 \item{userRho}{The user-defined measurement truncation threshold used for the calculation of functional principal components scores. A positive scalar. Default to `NULL`}
+\item{useBW1SE}{Pick the largest bandwidth such that CV-error is within one Standard Error from the minimum CV-error, relevant only if methodBwMu ='CV' and/or methodBwCov ='CV'; logical - default: FALSE}
 \item{verbose}{Display diagnostic messages; logical - default: FALSE}
 }
 }
