@@ -4,30 +4,30 @@
 \alias{MultiFAM}
 \title{Functional Additive Models with Multiple Predictor Processes}
 \usage{
-MultiFAM(Y, Xi, K = "epan", FVE = NULL, xi = NULL, h = NULL,
-  supp = NULL)
+MultiFAM(Y, X, ker = "epan", nEval = 51, alpha = 0.5, supp = c(-2, 2),
+  optnsList = NULL)
 }
 \arguments{
 \item{Y}{An \emph{n}-dimensional vector whose elements consist of scalar responses.}
 
-\item{Xi}{A \eqn{(K_1 + ... + K_d)}-dimensional list whose components consist of two lists of \emph{n} vectors containing the obervation time and functional predictor values. See \code{FPCA} for detail.}
+\item{X}{A \emph{d}-dimensional list whose components consist of two lists of \emph{Ly} and \emph{Lt} containing obervation times and functional covariate values for each predictor component, respectively. For details of \emph{Ly} and \emph{Lt}, see \code{FPCA} for detail.}
 
-\item{K}{A \code{function} object representing the kernel to be used in the smooth backfitting (default is 'epan', the the Epanechnikov kernel).}
+\item{ker}{A \code{function} object representing the base kernel to be used in the smooth backfitting algorithm (default is 'epan' which is the only option supported currently).}
 
-\item{FVE}{A \emph{d}-dimesional vector whose components consist of the fraction of variance explained of of FPCA for each predictor process (default is 0.95).}
+\item{nEval}{The number of evaluation grid points for kernel smoothing (default is 51. If it is specified as 0, then estimated FPC scores are used for evaluation grid instead of equal grid).}
 
-\item{xi}{An \emph{N} by \eqn{(K_1 + ... + K_d)} matrix whose column vectors consist of \emph{N} vectors of estimation points for each component function.}
+\item{alpha}{The shrinkage factor (positive number) for bandwidth selection. See Han et al. (2016) (default is 0.5).}
 
-\item{h}{A \eqn{(K_1 + ... + K_d)}-dimensional vector of bandwidths for kernel smoothing to estimate each component function (default is NULL, but it automatically apply shrinkage factor bandwidth selector. See Han et al. (2016)).}
+\item{supp}{The lower and upper limits of kernel smoothing domain for studentized FPC scores (default is [-2,2]).}
 
-\item{supp}{A \eqn{(K_1 + ... + K_d)} by 2 matrix whose row vectors consist of the lower and upper limits of estimation intervals for each component function (default is the \emph{d}-dimensional rectangle of \emph{[-2,2]}).}
+\item{optnsList}{A \emph{d}-dimensional list whose components consist of \emph{optns} for each predictor component, respectively. (default is NULL which assigns the same default \emph{optns} uased in \code{FPCA}).}
 }
 \value{
 A list containing the following fields:
 \item{xi}{An \emph{N} by \eqn{(K_1 + ... + K_d)} matrix whose column vectors consist of FPC score grid vectors that each additive component functional is evluated.}
+\item{mu}{A scalar of centered part of the regression model.}
 \item{SBFit}{An \emph{N} by \eqn{(K_1 + ... + K_d)} matrix whose column vectors consist of the smooth backfitting component function estimators at the given estimation points.}
-\item{mY}{A scalar of centered part of the regression model.}
-\item{NW}{An \emph{N} by \eqn{(K_1 + ... + K_d)} matrix whose column vectors consist of the Nadaraya-Watson marginal regression function estimators for each predictor component at the given estimation points.}
+\item{bw}{A \eqn{(K_1 + ... + K_d)}-dimensional bandwidth vector.}
 }
 \description{
 Smooth backfitting procedure for functional additive models with multiple predictor processes
@@ -40,8 +40,6 @@ set.seed(1000)
 
 library(MASS)
 
-trapzRcpp <- fdapace:::trapzRcpp
-
 f11 <- function(t) t
 f12 <- function(t) 2*cos(2*pi*t/4)
 f21 <- function(t) 1.5*sin(2*pi*t/4)
@@ -50,10 +48,10 @@ f22 <- function(t) 1.5*atan(2*pi*t/4)
 n<-100
 
 sig <- matrix(c(2.0, 0.0, 0.5, -.2,
-                0.0, 1.2, -.2, 0.3,
-                0.5, -.2, 1.7, 0.0,
-                -.2, 0.3, 0.0, 1.0),
-              nrow=4,ncol=4)
+               0.0, 1.2, -.2, 0.3,
+               0.5, -.2, 1.7, 0.0,
+               -.2, 0.3, 0.0, 1.0),
+             nrow=4,ncol=4)
 
 scoreX <- mvrnorm(n,mu=rep(0,4),Sigma=sig)
 Y <- f11(scoreX[,1]) + f12(scoreX[,2]) + f21(scoreX[,3]) + f22(scoreX[,4]) + rnorm(n,0,0.5)
@@ -63,21 +61,23 @@ phi12 <- function(t) sqrt(2)*sin(4*pi*t)
 phi21 <- function(t) sqrt(2)*cos(2*pi*t)
 phi22 <- function(t) sqrt(2)*cos(4*pi*t)
 
-grid <- seq(0,1,length.out=51)
+grid <- seq(0,1,length.out=21)
 Lt <- Lx1 <- Lx2 <- list()
 for (i in 1:n) {
-  Lt[[i]] <- grid
-  Lx1[[i]] <- scoreX[i,1]*phi11(grid) + scoreX[i,2]*phi12(grid)
-  Lx2[[i]] <- scoreX[i,3]*phi21(grid) + scoreX[i,4]*phi22(grid)
+ Lt[[i]] <- grid
+ Lx1[[i]] <- scoreX[i,1]*phi11(grid) + scoreX[i,2]*phi12(grid)
+ Lx2[[i]] <- scoreX[i,3]*phi21(grid) + scoreX[i,4]*phi22(grid)
 }
 
-Xi1 <- list(Ly=Lx1, Lt=Lt)
-Xi2 <- list(Ly=Lx2, Lt=Lt)
+X1 <- list(Ly=Lx1, Lt=Lt)
+X2 <- list(Ly=Lx2, Lt=Lt)
 
-Xi <- list(Xi1, Xi2)
+X <- list(X1, X2)
 
-xi <- matrix(rep(seq(-2,2,length.out=101),4),nrow=101,ncol=4)
-sbf <- MultiFAM(Y=Y,Xi=Xi,xi=xi)
+# estimation
+sbf <- MultiFAM(Y=Y,X=X)
+
+xi <- sbf$xi
 
 par(mfrow=c(2,2))
 j <- 1
@@ -108,6 +108,18 @@ tmpSgn <- sign(sum(g22*sbf$SBFit[,j]))
 plot(sort(xi[,j]),g22,type='l',col=2,ylim=c(-2.5,2.5),xlab='xi22')
 points(sort(xi[,j]),tmpSgn*sbf$SBFit[order(xi[,j]),j],type='l')
 
+
+# fitting
+sbf <- MultiFAM(Y=Y,X=X,nEval=0)
+yHat <- sbf$mu+apply(sbf$SBFit,1,'sum')
+par(mfrow=c(1,1))
+plot(yHat,Y)
+abline(coef=c(0,1),col=2)
+
+
+# R^2
+R2 <- 1-sum((Y-yHat)^2)/sum((Y-mean(Y))^2)
+R2
 
 }
 \references{

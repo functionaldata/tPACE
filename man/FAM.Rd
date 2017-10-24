@@ -4,7 +4,8 @@
 \alias{FAM}
 \title{Functional Additive Models}
 \usage{
-FAM(Y, Lx, Lt, K = "epan", FVE = NULL, xi = NULL, h = NULL)
+FAM(Y, Lx, Lt, nEval = 51, bwMethod = 5, supp = c(-2, 2),
+  optns = list())
 }
 \arguments{
 \item{Y}{An \emph{n}-dimensional vector whose elements consist of scalar responses.}
@@ -13,19 +14,20 @@ FAM(Y, Lx, Lt, K = "epan", FVE = NULL, xi = NULL, h = NULL)
 
 \item{Lt}{A list of \emph{n} vectors containing the observation time points for each individual corresponding to y. Each vector should be sorted in ascending order. See \code{FPCA} for detail.}
 
-\item{K}{A \code{function} object representing the kernel to be used in the smooth backfitting (default is 'epan', the the Epanechnikov kernel).}
+\item{nEval}{The number of evaluation grid points for kernel smoothing (default is 51. If it is specified as 0, then estimated FPC scores are used for evaluation grid instead of equal grid).}
 
-\item{FVE}{The fraction of variance explained of of FPCA for each predictor process (default is 0.95).}
+\item{bwMethod}{The method of bandwidth selection for kernel smoothing, a positive value for designating K-fold cross-validtaion and zero for GCV (default is 5)}
 
-\item{xi}{An \emph{N} by \emph{K} matrix whose column vectors consist of \emph{N} vectors of estimation points for each component function.}
+\item{supp}{The lower and upper limits of kernel smoothing domain for studentized FPC scores (default is [-2,2]).}
 
-\item{h}{A \emph{K}-dimensional vector of bandwidths for kernel smoothing to estimate each component function (default is NULL, but it automatically apply 10-folds cross-validation for each component function. See Mueller and Yao (2005)),}
+\item{optns}{A list of options control parameters specified by list(name=value). See \code{FPCA}.}
 }
 \value{
 A list containing the following fields:
+\item{xi}{An \emph{N} by \emph{K} matrix whose column vectors consist of \emph{N} vectors of estimation points for each component function.}
 \item{mu}{Mean estimator of \eqn{EY}}
 \item{fam}{A \emph{N} by \emph{K} matrix whose column vectors consist of the component function estimators at the given estimation points.}
-\item{xi}{An \emph{N} by \emph{K} matrix whose column vectors consist of \emph{N} vectors of estimation points for each component function.}
+\item{bw}{A \emph{K}-dimensional bandwidth vector.}
 }
 \description{
 Functional additive models with multiple predictor processes
@@ -35,18 +37,18 @@ Functional additive models with multiple predictor processes
 }
 \examples{
 
-set.seed(1000)
+set.seed(500)
 
 library(MASS)
 
 trapzRcpp <- fdapace:::trapzRcpp
 
-f1 <- function(t) t
+f1 <- function(t) 0.5*t
 f2 <- function(t) 2*cos(2*pi*t/4)
-f3 <- function(t) 1.5*sin(2*pi*t/4)
-f4 <- function(t) 1.5*atan(2*pi*t/4)
+f3 <- function(t) 2*sin(2*pi*t/4)
+f4 <- function(t) 2*atan(2*pi*t/4)
 
-n<-1000
+n<-100
 
 sig <- diag(c(4.0,2.0,1.5,1.2))
 
@@ -65,9 +67,11 @@ for (i in 1:n) {
  Lx[[i]] <- scoreX[i,1]*phi1(grid) + scoreX[i,2]*phi2(grid) + scoreX[i,3]*phi3(grid) + scoreX[i,4]*phi4(grid)
 }
 
-N <- 101
-xi <- matrix(rep(seq(-2,2,length.out=N),4),nrow=N,ncol=4)
-fit <- FAM(Y=Y,Lx=Lx,Lt=Lt,xi=xi)
+
+# estimation
+fit <- FAM(Y=Y,Lx=Lx,Lt=Lt)
+
+xi <- fit$xi
 
 par(mfrow=c(2,2))
 j <- 1
@@ -93,6 +97,19 @@ g4 <- f4(sort(xi[,j])) - trapzRcpp(sort(xi[,j]),f4(sort(xi[,j]))*dnorm(sort(xi[,
 tmpSgn <- sign(sum(g4*fit$fam[,j]))
 plot(sort(xi[,j]),g4,type='l',col=2,ylim=c(-2.5,2.5),xlab='xi4')
 points(sort(xi[,j]),tmpSgn*fit$fam[order(xi[,j]),j],type='l')
+
+
+# fitting
+fit <- FAM(Y=Y,Lx=Lx,Lt=Lt,nEval=0)
+yHat <- fit$mu+apply(fit$fam,1,'sum')
+par(mfrow=c(1,1))
+plot(yHat,Y)
+abline(coef=c(0,1),col=2)
+
+
+# R^2
+R2 <- 1-sum((Y-yHat)^2)/sum((Y-mean(Y))^2)
+R2
 
 
 }
