@@ -8,7 +8,7 @@
 #' @param nEval The number of evaluation grid points for kernel smoothing (default is 51. If it is specified as 0, then estimated FPC scores are used for evaluation grid instead of equal grid).
 #' @param alpha The shrinkage factor (positive number) for bandwidth selection. See Han et al. (2016) (default is 0.5).
 #' @param supp The lower and upper limits of kernel smoothing domain for studentized FPC scores (default is [-2,2]).
-#' @param optnsList A \emph{d}-dimensional list whose components consist of \emph{optns} for each predictor component, respectively. (default is NULL which assigns the same default \emph{optns} uased in \code{FPCA}).
+#' @param optnsList A \emph{d}-dimensional list whose components consist of \emph{optns} for each predictor component, respectively. (default is NULL which assigns the same default \emph{optns} for all components as in \code{FPCA}).
 #'
 #' @details \code{MultiFAM} fits functional additive models for a scalar response and multiple predictor processes based on the smooth backfitting algorithm proposed by Han et al. (2016) that \deqn{E(Y | \mathbf{X}) = \sum_{j=1}^d \sum_{k=1}^{K_j} g_{jk}(\xi_{jk}),} where \eqn{\xi_{jk}} stand for the k-th FPC score of the j-th predictor process. \code{MultiFAM} only focuses on mutiple predictor processes case. In fact, the case of univariate predictor is the same with functional additive model proposed by Mueller and Yao (2008). Especially in this development, one can designate an estimation support of additive models when the additive modeling is only allowed over restricted intervals or one is interested in the modeling over the support (see Han et al., 2016).
 #'
@@ -63,29 +63,29 @@
 #'
 #'par(mfrow=c(2,2))
 #'j <- 1
-#'p0 <- trapzRcpp(sort(xi[,j]),dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))
-#'g11 <- f11(sort(xi[,j])) - trapzRcpp(sort(xi[,j]),f11(sort(xi[,j]))*dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))/p0
+#'p0 <- fdapace:::trapzRcpp(sort(xi[,j]),dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))
+#'g11 <- f11(sort(xi[,j])) - fdapace:::trapzRcpp(sort(xi[,j]),f11(sort(xi[,j]))*dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))/p0
 #'tmpSgn <- sign(sum(g11*sbf$SBFit[,j]))
 #'plot(sort(xi[,j]),g11,type='l',col=2,ylim=c(-2.5,2.5),xlab='xi11')
 #'points(sort(xi[,j]),tmpSgn*sbf$SBFit[order(xi[,j]),j],type='l')
 #'
 #'j <- 2
-#'p0 <- trapzRcpp(sort(xi[,j]),dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))
-#'g12 <- f12(sort(xi[,j])) - trapzRcpp(sort(xi[,j]),f12(sort(xi[,j]))*dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))/p0
+#'p0 <- fdapace:::trapzRcpp(sort(xi[,j]),dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))
+#'g12 <- f12(sort(xi[,j])) - fdapace:::trapzRcpp(sort(xi[,j]),f12(sort(xi[,j]))*dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))/p0
 #'tmpSgn <- sign(sum(g12*sbf$SBFit[,j]))
 #'plot(sort(xi[,j]),g12,type='l',col=2,ylim=c(-2.5,2.5),xlab='xi12')
 #'points(sort(xi[,j]),tmpSgn*sbf$SBFit[order(xi[,j]),j],type='l')
 #'
 #'j <- 3
-#'p0 <- trapzRcpp(sort(xi[,j]),dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))
-#'g21 <- f21(sort(xi[,j])) - trapzRcpp(sort(xi[,j]),f21(sort(xi[,j]))*dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))/p0
+#'p0 <- fdapace:::trapzRcpp(sort(xi[,j]),dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))
+#'g21 <- f21(sort(xi[,j])) - fdapace:::trapzRcpp(sort(xi[,j]),f21(sort(xi[,j]))*dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))/p0
 #'tmpSgn <- sign(sum(g21*sbf$SBFit[,j]))
 #'plot(sort(xi[,j]),g21,type='l',col=2,ylim=c(-2.5,2.5),xlab='xi21')
 #'points(sort(xi[,j]),tmpSgn*sbf$SBFit[order(xi[,j]),j],type='l')
 #'
 #'j <- 4
-#'p0 <- trapzRcpp(sort(xi[,j]),dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))
-#'g22 <- f22(sort(xi[,j])) - trapzRcpp(sort(xi[,j]),f22(sort(xi[,j]))*dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))/p0
+#'p0 <- fdapace:::trapzRcpp(sort(xi[,j]),dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))
+#'g22 <- f22(sort(xi[,j])) - fdapace:::trapzRcpp(sort(xi[,j]),f22(sort(xi[,j]))*dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))/p0
 #'tmpSgn <- sign(sum(g22*sbf$SBFit[,j]))
 #'plot(sort(xi[,j]),g22,type='l',col=2,ylim=c(-2.5,2.5),xlab='xi22')
 #'points(sort(xi[,j]),tmpSgn*sbf$SBFit[order(xi[,j]),j],type='l')

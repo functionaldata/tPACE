@@ -30,7 +30,7 @@ A list containing the following fields:
 \item{bw}{A \emph{K}-dimensional bandwidth vector.}
 }
 \description{
-Functional additive models with multiple predictor processes
+Functional additive models with a single predictor process
 }
 \details{
 \code{FAM} fits functional additive models for a scalar response and single predictor process proposed by Mueller and Yao (2007) that \deqn{E(Y | \mathbf{X}) = \sum_{k=1}^K g_{k}(\xi_{k}),} where \eqn{\xi_{k}} stand for the k-th FPC score of the the predictor process.

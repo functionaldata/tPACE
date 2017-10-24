@@ -20,7 +20,7 @@ MultiFAM(Y, X, ker = "epan", nEval = 51, alpha = 0.5, supp = c(-2, 2),
 
 \item{supp}{The lower and upper limits of kernel smoothing domain for studentized FPC scores (default is [-2,2]).}
 
-\item{optnsList}{A \emph{d}-dimensional list whose components consist of \emph{optns} for each predictor component, respectively. (default is NULL which assigns the same default \emph{optns} uased in \code{FPCA}).}
+\item{optnsList}{A \emph{d}-dimensional list whose components consist of \emph{optns} for each predictor component, respectively. (default is NULL which assigns the same default \emph{optns} for all components as in \code{FPCA}).}
 }
 \value{
 A list containing the following fields:
