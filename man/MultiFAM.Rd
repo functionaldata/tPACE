@@ -81,29 +81,29 @@ xi <- sbf$xi
 
 par(mfrow=c(2,2))
 j <- 1
-p0 <- trapzRcpp(sort(xi[,j]),dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))
-g11 <- f11(sort(xi[,j])) - trapzRcpp(sort(xi[,j]),f11(sort(xi[,j]))*dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))/p0
+p0 <- fdapace:::trapzRcpp(sort(xi[,j]),dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))
+g11 <- f11(sort(xi[,j])) - fdapace:::trapzRcpp(sort(xi[,j]),f11(sort(xi[,j]))*dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))/p0
 tmpSgn <- sign(sum(g11*sbf$SBFit[,j]))
 plot(sort(xi[,j]),g11,type='l',col=2,ylim=c(-2.5,2.5),xlab='xi11')
 points(sort(xi[,j]),tmpSgn*sbf$SBFit[order(xi[,j]),j],type='l')
 
 j <- 2
-p0 <- trapzRcpp(sort(xi[,j]),dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))
-g12 <- f12(sort(xi[,j])) - trapzRcpp(sort(xi[,j]),f12(sort(xi[,j]))*dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))/p0
+p0 <- fdapace:::trapzRcpp(sort(xi[,j]),dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))
+g12 <- f12(sort(xi[,j])) - fdapace:::trapzRcpp(sort(xi[,j]),f12(sort(xi[,j]))*dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))/p0
 tmpSgn <- sign(sum(g12*sbf$SBFit[,j]))
 plot(sort(xi[,j]),g12,type='l',col=2,ylim=c(-2.5,2.5),xlab='xi12')
 points(sort(xi[,j]),tmpSgn*sbf$SBFit[order(xi[,j]),j],type='l')
 
 j <- 3
-p0 <- trapzRcpp(sort(xi[,j]),dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))
-g21 <- f21(sort(xi[,j])) - trapzRcpp(sort(xi[,j]),f21(sort(xi[,j]))*dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))/p0
+p0 <- fdapace:::trapzRcpp(sort(xi[,j]),dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))
+g21 <- f21(sort(xi[,j])) - fdapace:::trapzRcpp(sort(xi[,j]),f21(sort(xi[,j]))*dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))/p0
 tmpSgn <- sign(sum(g21*sbf$SBFit[,j]))
 plot(sort(xi[,j]),g21,type='l',col=2,ylim=c(-2.5,2.5),xlab='xi21')
 points(sort(xi[,j]),tmpSgn*sbf$SBFit[order(xi[,j]),j],type='l')
 
 j <- 4
-p0 <- trapzRcpp(sort(xi[,j]),dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))
-g22 <- f22(sort(xi[,j])) - trapzRcpp(sort(xi[,j]),f22(sort(xi[,j]))*dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))/p0
+p0 <- fdapace:::trapzRcpp(sort(xi[,j]),dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))
+g22 <- f22(sort(xi[,j])) - fdapace:::trapzRcpp(sort(xi[,j]),f22(sort(xi[,j]))*dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))/p0
 tmpSgn <- sign(sum(g22*sbf$SBFit[,j]))
 plot(sort(xi[,j]),g22,type='l',col=2,ylim=c(-2.5,2.5),xlab='xi22')
 points(sort(xi[,j]),tmpSgn*sbf$SBFit[order(xi[,j]),j],type='l')

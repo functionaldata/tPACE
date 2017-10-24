@@ -23,8 +23,6 @@
 #'
 #'library(MASS)
 #'
-#'trapzRcpp <- fdapace:::trapzRcpp
-#'
 #'f1 <- function(t) 0.5*t
 #'f2 <- function(t) 2*cos(2*pi*t/4)
 #'f3 <- function(t) 2*sin(2*pi*t/4)

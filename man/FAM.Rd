@@ -41,8 +41,6 @@ set.seed(500)
 
 library(MASS)
 
-trapzRcpp <- fdapace:::trapzRcpp
-
 f1 <- function(t) 0.5*t
 f2 <- function(t) 2*cos(2*pi*t/4)
 f3 <- function(t) 2*sin(2*pi*t/4)
@@ -75,25 +73,25 @@ xi <- fit$xi
 
 par(mfrow=c(2,2))
 j <- 1
-g1 <- f1(sort(xi[,j])) - trapzRcpp(sort(xi[,j]),f1(sort(xi[,j]))*dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))
+g1 <- f1(sort(xi[,j])) - fdapace:::trapzRcpp(sort(xi[,j]),f1(sort(xi[,j]))*dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))
 tmpSgn <- sign(sum(g1*fit$fam[,j]))
 plot(sort(xi[,j]),g1,type='l',col=2,ylim=c(-2.5,2.5),xlab='xi1')
 points(sort(xi[,j]),tmpSgn*fit$fam[order(xi[,j]),j],type='l')
 
 j <- 2
-g2 <- f2(sort(xi[,j])) - trapzRcpp(sort(xi[,j]),f2(sort(xi[,j]))*dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))
+g2 <- f2(sort(xi[,j])) - fdapace:::trapzRcpp(sort(xi[,j]),f2(sort(xi[,j]))*dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))
 tmpSgn <- sign(sum(g2*fit$fam[,j]))
 plot(sort(xi[,j]),g2,type='l',col=2,ylim=c(-2.5,2.5),xlab='xi2')
 points(sort(xi[,j]),tmpSgn*fit$fam[order(xi[,j]),j],type='l')
 
 j <- 3
-g3 <- f3(sort(xi[,j])) - trapzRcpp(sort(xi[,j]),f3(sort(xi[,j]))*dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))
+g3 <- f3(sort(xi[,j])) - fdapace:::trapzRcpp(sort(xi[,j]),f3(sort(xi[,j]))*dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))
 tmpSgn <- sign(sum(g3*fit$fam[,j]))
 plot(sort(xi[,j]),g3,type='l',col=2,ylim=c(-2.5,2.5),xlab='xi3')
 points(sort(xi[,j]),tmpSgn*fit$fam[order(xi[,j]),j],type='l')
 
 j <- 4
-g4 <- f4(sort(xi[,j])) - trapzRcpp(sort(xi[,j]),f4(sort(xi[,j]))*dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))
+g4 <- f4(sort(xi[,j])) - fdapace:::trapzRcpp(sort(xi[,j]),f4(sort(xi[,j]))*dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))
 tmpSgn <- sign(sum(g4*fit$fam[,j]))
 plot(sort(xi[,j]),g4,type='l',col=2,ylim=c(-2.5,2.5),xlab='xi4')
 points(sort(xi[,j]),tmpSgn*fit$fam[order(xi[,j]),j],type='l')
