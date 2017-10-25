@@ -130,7 +130,7 @@ R2
 
 # prediction
 fit <- FAM(Y=Y,Lx=Lx,Lt=Lt,newLx=LxTest,newLt=LtTest)
-yHat <- sbf$mu+apply(fit$fam,1,'sum')
+yHat <- fit$mu+apply(fit$fam,1,'sum')
 par(mfrow=c(1,1))
 plot(yHat,YTest,xlim=c(-10,10))
 abline(coef=c(0,1),col=2)
