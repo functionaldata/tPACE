@@ -42,7 +42,8 @@
 #' scoreXTest <- mvrnorm(N,mu=rep(0,4),Sigma=sig)
 #' 
 #' Y <- f1(scoreX[,1]) + f2(scoreX[,2]) + f3(scoreX[,3]) + f4(scoreX[,4]) + rnorm(n,0,0.1)
-#' YTest <- f1(scoreXTest[,1]) + f2(scoreXTest[,2]) + f3(scoreXTest[,3]) + f4(scoreXTest[,4]) + rnorm(N,0,0.1)
+#' YTest <- f1(scoreXTest[,1]) + f2(scoreXTest[,2]) + 
+#' f3(scoreXTest[,3]) + f4(scoreXTest[,4]) + rnorm(N,0,0.1)
 #' 
 #' phi1 <- function(t) sqrt(2)*sin(2*pi*t)
 #' phi2 <- function(t) sqrt(2)*sin(4*pi*t)
@@ -53,13 +54,15 @@
 #' Lt <- Lx <- list()
 #' for (i in 1:n) {
 #'   Lt[[i]] <- grid
-#'   Lx[[i]] <- scoreX[i,1]*phi1(grid) + scoreX[i,2]*phi2(grid) + scoreX[i,3]*phi3(grid) + scoreX[i,4]*phi4(grid) + rnorm(1,0,0.01)
+#'   Lx[[i]] <- scoreX[i,1]*phi1(grid) + scoreX[i,2]*phi2(grid) + 
+#'   scoreX[i,3]*phi3(grid) + scoreX[i,4]*phi4(grid) + rnorm(1,0,0.01)
 #' }
 #' 
 #' LtTest <- LxTest <- list()
 #' for (i in 1:N) {
 #'   LtTest[[i]] <- grid
-#'   LxTest[[i]] <- scoreXTest[i,1]*phi1(grid) + scoreXTest[i,2]*phi2(grid) + scoreXTest[i,3]*phi3(grid) + scoreXTest[i,4]*phi4(grid) + rnorm(1,0,0.01)
+#'   LxTest[[i]] <- scoreXTest[i,1]*phi1(grid) + scoreXTest[i,2]*phi2(grid) + 
+#'   scoreXTest[i,3]*phi3(grid) + scoreXTest[i,4]*phi4(grid) + rnorm(1,0,0.01)
 #' }
 #' 
 #' 

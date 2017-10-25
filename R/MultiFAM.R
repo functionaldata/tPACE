@@ -45,7 +45,8 @@
 #' scoreXTest <- mvrnorm(N,mu=rep(0,4),Sigma=sig)
 #' 
 #' Y <- f11(scoreX[,1]) + f12(scoreX[,2]) + f21(scoreX[,3]) + f22(scoreX[,4]) + rnorm(n,0,0.5)
-#' YTest <- f11(scoreXTest[,1]) + f12(scoreXTest[,2]) + f21(scoreXTest[,3]) + f22(scoreXTest[,4]) + rnorm(N,0,0.5)
+#' YTest <- f11(scoreXTest[,1]) + f12(scoreXTest[,2]) + 
+#' f21(scoreXTest[,3]) + f22(scoreXTest[,4]) + rnorm(N,0,0.5)
 #' 
 #' phi11 <- function(t) sqrt(2)*sin(2*pi*t)
 #' phi12 <- function(t) sqrt(2)*sin(4*pi*t)
@@ -84,7 +85,8 @@
 #' par(mfrow=c(2,2))
 #' j <- 1
 #' p0 <- fdapace:::trapzRcpp(sort(xi[,j]),dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))
-#' g11 <- f11(sort(xi[,j])) - fdapace:::trapzRcpp(sort(xi[,j]),f11(sort(xi[,j]))*dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))/p0
+#' g11 <- f11(sort(xi[,j])) - 
+#' fdapace:::trapzRcpp(sort(xi[,j]),f11(sort(xi[,j]))*dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))/p0
 #' tmpSgn <- sign(sum(g11*sbf$SBFit[,j]))
 #' plot(sort(xi[,j]),g11,type='l',col=2,ylim=c(-2.5,2.5),xlab='xi11')
 #' points(sort(xi[,j]),tmpSgn*sbf$SBFit[order(xi[,j]),j],type='l')
@@ -92,7 +94,8 @@
 #' 
 #' j <- 2
 #' p0 <- fdapace:::trapzRcpp(sort(xi[,j]),dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))
-#' g12 <- f12(sort(xi[,j])) - fdapace:::trapzRcpp(sort(xi[,j]),f12(sort(xi[,j]))*dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))/p0
+#' g12 <- f12(sort(xi[,j])) - 
+#' fdapace:::trapzRcpp(sort(xi[,j]),f12(sort(xi[,j]))*dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))/p0
 #' tmpSgn <- sign(sum(g12*sbf$SBFit[,j]))
 #' plot(sort(xi[,j]),g12,type='l',col=2,ylim=c(-2.5,2.5),xlab='xi12')
 #' points(sort(xi[,j]),tmpSgn*sbf$SBFit[order(xi[,j]),j],type='l')
@@ -100,7 +103,8 @@
 #' 
 #' j <- 3
 #' p0 <- fdapace:::trapzRcpp(sort(xi[,j]),dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))
-#' g21 <- f21(sort(xi[,j])) - fdapace:::trapzRcpp(sort(xi[,j]),f21(sort(xi[,j]))*dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))/p0
+#' g21 <- f21(sort(xi[,j])) - 
+#' fdapace:::trapzRcpp(sort(xi[,j]),f21(sort(xi[,j]))*dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))/p0
 #' tmpSgn <- sign(sum(g21*sbf$SBFit[,j]))
 #' plot(sort(xi[,j]),g21,type='l',col=2,ylim=c(-2.5,2.5),xlab='xi21')
 #' points(sort(xi[,j]),tmpSgn*sbf$SBFit[order(xi[,j]),j],type='l')
@@ -108,7 +112,8 @@
 #' 
 #' j <- 4
 #' p0 <- fdapace:::trapzRcpp(sort(xi[,j]),dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))
-#' g22 <- f22(sort(xi[,j])) - fdapace:::trapzRcpp(sort(xi[,j]),f22(sort(xi[,j]))*dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))/p0
+#' g22 <- f22(sort(xi[,j])) - 
+#' fdapace:::trapzRcpp(sort(xi[,j]),f22(sort(xi[,j]))*dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))/p0
 #' tmpSgn <- sign(sum(g22*sbf$SBFit[,j]))
 #' plot(sort(xi[,j]),g22,type='l',col=2,ylim=c(-2.5,2.5),xlab='xi22')
 #' points(sort(xi[,j]),tmpSgn*sbf$SBFit[order(xi[,j]),j],type='l')
