@@ -1,7 +1,4 @@
-devtools::install_github("functionaldata/tPACE")
-WFDA
 library(testthat)
-
 test_that('noisy dense data, default arguments', {
   
   N = 44;
