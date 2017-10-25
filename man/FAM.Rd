@@ -5,7 +5,7 @@
 \title{Functional Additive Models}
 \usage{
 FAM(Y, Lx, Lt, nEval = 51, newLx = NULL, newLt = NULL, bwMethod = 0,
-  alpha = 0.6, supp = c(-2, 2), optns = NULL)
+  alpha = 0.7, supp = c(-2, 2), optns = NULL)
 }
 \arguments{
 \item{Y}{An \emph{n}-dimensional vector whose elements consist of scalar responses.}
@@ -22,7 +22,7 @@ FAM(Y, Lx, Lt, nEval = 51, newLx = NULL, newLt = NULL, bwMethod = 0,
 
 \item{bwMethod}{The method of bandwidth selection for kernel smoothing, a positive value for designating K-fold cross-validtaion and zero for GCV (default is 50)}
 
-\item{alpha}{The shrinkage factor (positive number) for bandwidth selection. See Han et al. (2016) (default is 0.6).}
+\item{alpha}{The shrinkage factor (positive number) for bandwidth selection. See Han et al. (2016) (default is 0.7).}
 
 \item{supp}{The lower and upper limits of kernel smoothing domain for studentized FPC scores, which FPC scores are divided by the square roots of eigenvalues (default is [-2,2]).}
 
@@ -52,10 +52,10 @@ library(MASS)
 f1 <- function(t) 0.5*t
 f2 <- function(t) 2*cos(2*pi*t/4)
 f3 <- function(t) 1.5*sin(2*pi*t/4)
-f4 <- function(t) atan(2*pi*t/4)
+f4 <- function(t) 2*atan(2*pi*t/4)
 
-n<-200
-N<-400
+n<-250
+N<-500
 
 sig <- diag(c(4.0,2.0,1.5,1.2))
 
@@ -64,7 +64,7 @@ scoreXTest <- mvrnorm(N,mu=rep(0,4),Sigma=sig)
 
 Y <- f1(scoreX[,1]) + f2(scoreX[,2]) + f3(scoreX[,3]) + f4(scoreX[,4]) + rnorm(n,0,0.1)
 YTest <- f1(scoreXTest[,1]) + f2(scoreXTest[,2]) + 
-f3(scoreXTest[,3]) + f4(scoreXTest[,4]) + rnorm(N,0,0.1)
+  f3(scoreXTest[,3]) + f4(scoreXTest[,4]) + rnorm(N,0,0.1)
 
 phi1 <- function(t) sqrt(2)*sin(2*pi*t)
 phi2 <- function(t) sqrt(2)*sin(4*pi*t)
@@ -76,14 +76,14 @@ Lt <- Lx <- list()
 for (i in 1:n) {
   Lt[[i]] <- grid
   Lx[[i]] <- scoreX[i,1]*phi1(grid) + scoreX[i,2]*phi2(grid) + 
-  scoreX[i,3]*phi3(grid) + scoreX[i,4]*phi4(grid) + rnorm(1,0,0.01)
+    scoreX[i,3]*phi3(grid) + scoreX[i,4]*phi4(grid) + rnorm(1,0,0.01)
 }
 
 LtTest <- LxTest <- list()
 for (i in 1:N) {
   LtTest[[i]] <- grid
   LxTest[[i]] <- scoreXTest[i,1]*phi1(grid) + scoreXTest[i,2]*phi2(grid) + 
-  scoreXTest[i,3]*phi3(grid) + scoreXTest[i,4]*phi4(grid) + rnorm(1,0,0.01)
+    scoreXTest[i,3]*phi3(grid) + scoreXTest[i,4]*phi4(grid) + rnorm(1,0,0.01)
 }
 
 
