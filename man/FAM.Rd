@@ -55,7 +55,7 @@ f3 <- function(t) 1.5*sin(2*pi*t/4)
 f4 <- function(t) atan(2*pi*t/4)
 
 n<-200
-N<-500
+N<-400
 
 sig <- diag(c(4.0,2.0,1.5,1.2))
 

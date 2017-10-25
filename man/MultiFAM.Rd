@@ -53,7 +53,7 @@ f21 <- function(t) 1.5*sin(2*pi*t/4)
 f22 <- function(t) 1.5*atan(2*pi*t/4)
 
 n<-100
-N<-500
+N<-200
 
 sig <- matrix(c(2.0, 0.0, 0.5, -.2,
                 0.0, 1.2, -.2, 0.3,
