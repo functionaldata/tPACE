@@ -1,4 +1,5 @@
-# devtools::load_all()
+devtools::install_github("functionaldata/tPACE")
+WFDA
 library(testthat)
 
 test_that('noisy dense data, default arguments', {
@@ -175,7 +176,7 @@ test_that('returns expected outputs', {
   
   sss =  WFDA(Ly = Y, Lt = X )
   
-  returntype <- list(lambda = NA, h = array(dim = c(N, M)), hInv = array(dim = c(N, M)), aligned = array(dim = c(N, M)), 
+  returntype <- list(optns = list(), lambda = NA, h = array(dim = c(N, M)), hInv = array(dim = c(N, M)), aligned = array(dim = c(N, M)), 
                      costs = vector(length=min(round(0.5 * (N - 1)))), timing = Sys.time())
   class(returntype) <- "WFDA"
   
@@ -184,3 +185,4 @@ test_that('returns expected outputs', {
   
   
 })
+
