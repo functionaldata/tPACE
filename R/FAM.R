@@ -122,7 +122,7 @@ FAM <- function(Y,Lx,Lt,nEval=51,newLx=NULL,newLt=NULL,bwMethod=0,alpha=0.6,supp
   
   
   
-  if (is.null(optnsList)==TRUE) {
+  if (is.null(optns)==TRUE) {
       optns <- list() 
   }
   
