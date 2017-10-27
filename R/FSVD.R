@@ -127,7 +127,7 @@ FSVD <- function(Ly1, Lt1, Ly2, Lt2, FPCAoptns1 = NULL, FPCAoptns2 = NULL, SVDop
   sValues<- SVDObj$d
   sValues<- sValues[sValues>0] # pick only positive singular values
   if(length(sValues) > SVDoptns$maxK){ # reset number of singular component as maxK
-    sValues<- sValues[1:SVDoptns$maxK]
+    sValues<- sValues[seq_len(SVDoptns$maxK)]
   }
   # determine number of singular component retained
   if(is.numeric(SVDoptns$methodSelectK)){ # user specified number of singular components
@@ -141,11 +141,11 @@ FSVD <- function(Ly1, Lt1, Ly2, Lt2, FPCAoptns1 = NULL, FPCAoptns2 = NULL, SVDop
     nsvd <- min(which(cumsum(sValues^2)/sum(sValues^2) >= SVDoptns$FVEthreshold), SVDoptns$maxK)
   }
   
-  FVE <- sum(sValues[1:nsvd]^2)/sum(sValues^2) # fraction of variation explained
-  sValues<- sValues[1:nsvd]
+  FVE <- sum(sValues[seq_len(nsvd)]^2)/sum(sValues^2) # fraction of variation explained
+  sValues<- sValues[seq_len(nsvd)]
   # singular functions
-  sfun1 <- SVDObj$u[,1:nsvd]
-  sfun2 <- SVDObj$v[,1:nsvd]
+  sfun1 <- SVDObj$u[,seq_len(nsvd)]
+  sfun2 <- SVDObj$v[,seq_len(nsvd)]
   # normalizing singular functions
   sFun1 <- apply(sfun1, 2, function(x) {
     x <- x / sqrt(trapzRcpp(grid1, x^2))   
@@ -160,7 +160,7 @@ FSVD <- function(Ly1, Lt1, Ly2, Lt2, FPCAoptns1 = NULL, FPCAoptns2 = NULL, SVDop
   
   ### calculate canonical correlations
   canCorr = rep(0, nsvd)
-  for(i in 1:nsvd){
+  for(i in seq_len(nsvd)){
     canCorr[i] = sValues[i] * (gridSize1^2 * t(sFun1[,i]) %*% FPCAObj1$fittedCov %*% (sFun1[,i]))^(-0.5) * 
       (gridSize2^2 * t(sFun2[,i]) %*% FPCAObj2$fittedCov %*% (sFun2[,i]))^(-0.5)
   }
@@ -214,17 +214,17 @@ FSVD <- function(Ly1, Lt1, Ly2, Lt2, FPCAoptns1 = NULL, FPCAoptns2 = NULL, SVDop
       # declare singular components
       sScores1 = matrix(0, nrow = numOfCurves, ncol = nsvd)
       sScores2 = matrix(0, nrow = numOfCurves, ncol = nsvd)
-      for(i in 1:numOfCurves){ # calculate singular component for each obs pair
+      for(i in seq_len(numOfCurves)){ # calculate singular component for each obs pair
         Pim[[i]] = matrix(0, nrow=length(lt1[[i]]), ncol=nsvd)
         Qik[[i]] = matrix(0, nrow=length(lt2[[i]]), ncol=nsvd)
         Tind1 = which(FPCAObj1$obsGrid %in% lt1[[i]])
         Tind2 = which(FPCAObj2$obsGrid %in% lt2[[i]])
         Tind12 = c(Tind1, length(FPCAObj1$obsGrid) + Tind2)
-        for(j in 1:nsvd){
-          Pim[[i]][,j] = apply(fittedCovObs1[,Tind1], 2, function(x){
+        for(j in seq_len(nsvd)){
+          Pim[[i]][,j] = apply(fittedCovObs1[,Tind1, drop=FALSE], 2, function(x){
             pij = trapzRcpp(X = FPCAObj1$obsGrid, Y = x*sfObs1[,j])
           })
-          Qik[[i]][,j] = apply(fittedCovObs2[,Tind2], 2, function(x){
+          Qik[[i]][,j] = apply(fittedCovObs2[,Tind2, drop=FALSE], 2, function(x){
             qij = trapzRcpp(X = FPCAObj2$obsGrid, Y = x*sfObs2[,j])
           }) 
         }
