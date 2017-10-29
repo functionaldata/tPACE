@@ -50,7 +50,7 @@ plot.FPCA <- function(x, openNewDev = FALSE, addLegend=TRUE, ...){
     par(mfrow=c(2,2))
     
     ## Make Design plot
-    CreateDesignPlot(t, addLegend=addLegend)
+    CreateDesignPlot(t, addLegend=addLegend, noDiagonal=fpcaObj$optns$error)
     
     ## Make Mean trajectory plot
     plot( workGrid, mu, type='l', xlab='s',ylab='', main='Mean Function', panel.first = grid())   
