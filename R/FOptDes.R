@@ -118,8 +118,7 @@ FOptDes <- function(Ly, Lt, Resp, p = 3, optns = list(),
     y1 <- list()
     for(subj in 1:length(y)){y1[[subj]] = y[[subj]]*Resp[subj]}
     FPCACC <- FPCA(y1, t, optns)
-    CCovtemp <- FPCACC$mu - mean(Resp)*mu
-    CCov <- ConvertSupport(fromGrid = TrainFPCA$obsGrid, toGrid = TrainFPCA$workGrid, mu = CCovtemp)
+    CCov <- FPCACC$mu - mean(Resp)*mu
     BestDesSR <- BestDes_SR(p=p, ridge=optridge, workGrid=TrainFPCA$workGrid,
                             Cov=TrainFPCA$fittedCov, CCov=CCov, isSequential=isSequential)$best
     R2Y <- (var(Resp) - CCov[BestDesSR] %*% solve(ridgeCov[BestDesSR,BestDesSR]) %*% CCov[BestDesSR])/var(Resp)
