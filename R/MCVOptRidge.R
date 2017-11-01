@@ -36,7 +36,7 @@ MCVOptRidge <- function(y, t, Resp, p, RidgeCand, isDense = FALSE,
             DesPoolB <- cbind(DesPoolB, subidxj)
           } 
           if(length(subidxj) > 1 && length(subidxj) >= p){
-            DesPoolB <- cbind(DesPoolB, combn(subidxj,p))
+            DesPoolB <- cbind(DesPoolB, utils::combn(subidxj,p))
           }
         }
       }

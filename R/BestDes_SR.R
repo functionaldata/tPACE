@@ -1,6 +1,12 @@
 # Find optimal designs for scalar response prediction
 BestDes_SR <- function(p, ridge, workGrid, Cov, CCov, isSequential=FALSE){
   # select optimal designs for regression case, sequential method available
+  if(length(workGrid) < p){
+    stop("workGrid has less support points than desired number of design points! Redo with specified number of grid points.")
+  }
+  if(length(workGrid) == 1){
+    stop("workGrid only has one point. Redo with specified number of grid points.")
+  }
   if(isSequential == FALSE){
     comblist <- utils::combn(1:length(workGrid), p)
     temps <- rep(0,ncol(comblist))

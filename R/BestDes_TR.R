@@ -1,6 +1,12 @@
 # Find optimal designs for trajectory recovery
 BestDes_TR <- function(p, ridge, workGrid, Cov, isSequential=FALSE){
   # select optimal designs for trajectory recovery case, sequential method available
+  if(length(workGrid) < p){
+    stop("workGrid has less support points than desired number of design points! Redo with specified number of grid points.")
+  }
+  if(length(workGrid) == 1){
+    stop("workGrid only has one point. Redo with specified number of grid points.")
+  }
   if(isSequential == FALSE){ # Global Selection
     comblist <- utils::combn(1:length(workGrid),p)
     temps <- rep(0,ncol(comblist))
