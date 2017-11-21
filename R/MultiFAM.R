@@ -153,10 +153,17 @@ MultiFAM <- function(Y,X,ker='epan',nEval=51,XTest=NULL,bwMethod=0,alpha=0.7,sup
   
   n <- length(Y)
   d0 <- length(X)
-
+  
   if (is.null(optnsList)==TRUE) {
     for (j in 1:d0) {
       optnsList[[j]] <- list() 
+    }
+  }
+  
+  if (length(optnsList)==1) {
+    
+    for (j in 1:d0) {
+      optnsList <- rep(optnsList,d0)
     }
   }
   
@@ -170,7 +177,7 @@ MultiFAM <- function(Y,X,ker='epan',nEval=51,XTest=NULL,bwMethod=0,alpha=0.7,sup
     tmpLy <- X[[j]]$Ly
     tmpLt <- X[[j]]$Lt
     
-    tmpFPCA <- FPCA(tmpLy, tmpLt, optns = optnsList[[j]])
+    tmpFPCA <- FPCA(tmpLy, tmpLt, optns = optnsList[j])
     
     XijStd <- t(t(tmpFPCA$xiEst)/sqrt(tmpFPCA$lambda))
     dj[j] <- length(tmpFPCA$lambda)
@@ -201,6 +208,10 @@ MultiFAM <- function(Y,X,ker='epan',nEval=51,XTest=NULL,bwMethod=0,alpha=0.7,sup
     
   }
   d <- sum(dj)
+  
+  if (d > n) {
+    stop('Too many FPC scores in the model. Try first two FPC scores by imposing optnsList=list(maxK=2)')
+  }
   
   if (ker!='epan') {
     stop('Epanechnikov kernel is only supported currently. It uses Epanechnikov kernel automatically')
