@@ -2,12 +2,12 @@
 #'
 #' Smooth backfitting procedure for nonparametric additive models
 #'
-#' @param Y An \emph{n} vector whose elements consist of scalar responses.
+#' @param Y An \emph{n}-dimensional vector whose elements consist of scalar responses.
 #' @param x An \emph{N} by \emph{d} matrix whose column vectors consist of \emph{N} vectors of estimation points for each component function.
 #' @param X An \emph{n} by \emph{d} matrix whose row vectors consist of multivariate predictors.
 #' @param h A \emph{d} vector of bandwidths for kernel smoothing to estimate each component function.
 #' @param K A \code{function} object representing the kernel to be used in the smooth backfitting (default is 'epan', the the Epanechnikov kernel.).
-#' @param supp A \emph{d} by 2 matrix whose row vectors consist of the lower and upper limits of estimation intervals for each component function (default is \code{c(0,1)}).
+#' @param supp A \emph{d} by 2 matrix whose row vectors consist of the lower and upper limits of estimation intervals for each component function (default is the \emph{d}-dimensional unit rectangle of \emph{[0,1]}).
 #'
 #' @details \code{SBFitting} fits component functions of additive models for a scalar response and a multivariate predictor based on the smooth backfitting algorithm proposed by Mammen et al. (1999) and intensively studied by Mammen and Park (2006), Yu et al. (2008), Lee et al. (2010, 2012) and so on. \code{SBFitting} only focuses on the local constant smooth backfitting estimator with multivariate predictor case. In fact, the case of univariate predictor is the same with the local constant kernel regression estimator (Nadaraya-Watson estimator) and the local polynomial version can be extended similarly, so that those are omitted in the development. Support of the multivariate predictor is assumed to be a product of closed intervals. Especially in this development, one can designate an estimation support of additive models when the additive modeling is only allowed over restricted intervals or one is interested in the modeling over the support (see Han et al., 2016). If one puts \code{X} on the argument of estimation points \code{x}, \code{SBFitting} returns estimated values of conditional mean responses given observed predictors.
 #'
@@ -84,9 +84,6 @@ SBFitting <- function(Y,x,X,h=NULL,K='epan',supp=NULL){
   if (is.null(ncol(X))==TRUE) {
     return(message('Observation grid must be multi-dimensional.'))
   }
-  if (length(h)<2) {
-    return(message('Bandwidth must be multi-dimensional.'))
-  }
   
   N <- nrow(x)
   n <- nrow(X)
@@ -97,10 +94,13 @@ SBFitting <- function(Y,x,X,h=NULL,K='epan',supp=NULL){
     K<-'epan'
   }
   if (is.null(supp)==TRUE) {
-    supp <- matrix(rep(c(0,1),d),ncol=2,byrow=T)
+    supp <- matrix(rep(c(0,1),d),ncol=2,byrow=TRUE)
   }
   if (is.null(h)==TRUE) {
     h <- rep(0.25*n^(-1/5),d)*(supp[,2]-supp[,1])
+  }
+  if (length(h)<2) {
+    return(message('Bandwidth must be multi-dimensional.'))
   }
   
   tmpIndex <- rep(1,n)
@@ -109,7 +109,7 @@ SBFitting <- function(Y,x,X,h=NULL,K='epan',supp=NULL){
   }
   tmpIndex <- which(tmpIndex==1)
   
-  yMean <- sum(Y[tmpIndex])/length(Y)/P0(X)   
+  yMean <- sum(Y[tmpIndex])/length(Y)/P0(X,supp=supp)   
   
   MgnJntDens <- MgnJntDensity(x,X,h,K,supp)
   
@@ -120,23 +120,29 @@ SBFitting <- function(Y,x,X,h=NULL,K='epan',supp=NULL){
   eps <- epsTmp <- 100
   iter <- 1
   
-  critEps <- 1e-6
-  critEpsDiff <- 1e-4
-  critIter <- 100
+  critEps <- 5e-5
+  critEpsDiff <- 5e-4
+  critIter <- 50
   
   while (eps>critEps) {
     
     epsTmp <- eps
-    
     f0 <- f
     
-    for(j in seq_len(d)){
+    for (j in 1:d) {
       f[,j] <- SBFCompUpdate(f,j,fNW,Y,X,x,h,K,supp,MgnJntDens)[,j]
-      if(sum(f[,j]*f0[,j])<0){
+      
+      if (sum(is.nan(f[,j])==TRUE)>0) {
+        f[which(is.nan(f[,j])==TRUE),j] <- 0
+      }
+      
+      
+      if (sum(f[,j]*f0[,j])<0) {
         f[,j] <- -f[,j]
       }
     }
     
+    #eps <- max(abs(f-f0))
     eps <- max(sqrt(apply(abs(f-f0)^2,2,'mean')))
     
     if (abs(epsTmp-eps)<critEpsDiff) {

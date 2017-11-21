@@ -44,7 +44,7 @@ NormKernel <- function(x, X, h=NULL, K='epan', supp=NULL){
   
   ind2 <- which(denom==0)
   
-  NormKernelTmp <- numer/matrix(rep(denom,N),nrow=N,byrow=T)
+  NormKernelTmp <- numer/matrix(rep(denom,N),nrow=N,byrow=TRUE)
   NormKernelTmp[,ind2] <- 0
   
   if (min(nrow(NormKernelTmp),ncol(NormKernelTmp))==1) {

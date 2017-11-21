@@ -23,7 +23,7 @@ P0 <- function(X, supp=NULL){
   d <- ncol(X)
   
   if (is.null(supp)==TRUE) {
-    supp <- matrix(rep(c(0,1),d),ncol=2,byrow=T)
+    supp <- matrix(rep(c(0,1),d),ncol=2,byrow=TRUE)
   }
   
   tmp <- rep(1,n)
@@ -46,7 +46,7 @@ Pj <- function(j, x, X, h=NULL, K='epan', supp=NULL){
     K<-'epan'
   }
   if (is.null(supp)==TRUE) {
-    supp <- matrix(rep(c(0,1),d),ncol=2,byrow=T)
+    supp <- matrix(rep(c(0,1),d),ncol=2,byrow=TRUE)
   }
   if (is.null(h)==TRUE) {
     h <- rep(0.25*n^(-1/5),d)*(supp[,2]-supp[,1])
@@ -76,7 +76,7 @@ Pkj <- function(kj, x, X, h=NULL, K='epan', supp=NULL){
     K<-'epan'
   }
   if (is.null(supp)==TRUE) {
-    supp <- matrix(rep(c(0,1),d),ncol=2,byrow=T)
+    supp <- matrix(rep(c(0,1),d),ncol=2,byrow=TRUE)
   }
   if (is.null(h)==TRUE) {
     h <- rep(0.25*n^(-1/5),d)*(supp[,2]-supp[,1])
@@ -95,7 +95,7 @@ Pkj <- function(kj, x, X, h=NULL, K='epan', supp=NULL){
   index <- which(tmpIndex==1)
   pHat <- pHatk[,index]%*%t(pHatj[,index])/n
   
-  pHat <- pHat/trapzRcpp(sort(x[,j]),Pj(j,x,X,h)[order(x[,j])])/trapzRcpp(sort(x[,k]),Pj(k,x,X,h)[order(x[,k])])
+  pHat <- pHat/trapzRcpp(sort(x[,j]),Pj(j,x,X,h,K,supp)[order(x[,j])])/trapzRcpp(sort(x[,k]),Pj(k,x,X,h,K,supp)[order(x[,k])])
   
   return(pHat/P0(X,supp))     
 }
@@ -112,7 +112,7 @@ MgnJntDensity <- function(x, X, h=NULL, K='epan', supp=NULL){
     K<-'epan'
   }
   if (is.null(supp)==TRUE) {
-    supp <- matrix(rep(c(0,1),d),ncol=2,byrow=T)
+    supp <- matrix(rep(c(0,1),d),ncol=2,byrow=TRUE)
   }
   if (is.null(h)==TRUE) {
     h <- rep(0.25*n^(-1/5),d)*(supp[,2]-supp[,1])
@@ -129,7 +129,8 @@ MgnJntDensity <- function(x, X, h=NULL, K='epan', supp=NULL){
     for (k in j:d) { 
       #print(k)
       if (k==j) {
-        pArrJnt[,,k,j] <- diag(Pj(j,x,X,h,K,supp))
+        #pArrJnt[,,k,j] <- diag(Pj(j,x,X,h,K,supp))
+        pArrJnt[,,k,j] <- diag(pMatMgn[,j])
       } else {
         pArrJnt[,,k,j] <- Pkj(c(k,j),x,X,h,K,supp)
         pArrJnt[,,j,k] <- t(pArrJnt[,,k,j])

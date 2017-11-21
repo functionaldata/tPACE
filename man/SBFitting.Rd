@@ -7,7 +7,7 @@
 SBFitting(Y, x, X, h = NULL, K = "epan", supp = NULL)
 }
 \arguments{
-\item{Y}{An \emph{n} vector whose elements consist of scalar responses.}
+\item{Y}{An \emph{n}-dimensional vector whose elements consist of scalar responses.}
 
 \item{x}{An \emph{N} by \emph{d} matrix whose column vectors consist of \emph{N} vectors of estimation points for each component function.}
 
@@ -17,7 +17,7 @@ SBFitting(Y, x, X, h = NULL, K = "epan", supp = NULL)
 
 \item{K}{A \code{function} object representing the kernel to be used in the smooth backfitting (default is 'epan', the the Epanechnikov kernel.).}
 
-\item{supp}{A \emph{d} by 2 matrix whose row vectors consist of the lower and upper limits of estimation intervals for each component function (default is \code{c(0,1)}).}
+\item{supp}{A \emph{d} by 2 matrix whose row vectors consist of the lower and upper limits of estimation intervals for each component function (default is the \emph{d}-dimensional unit rectangle of \emph{[0,1]}).}
 }
 \value{
 A list containing the following fields:
