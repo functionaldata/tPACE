@@ -1,6 +1,16 @@
 Current version
 =============
 New functionality:
+* Added functional additive models (MultiFAM, TVAMSBFitting, SBFitting).
+* Added stringing (Stringing).
+
+Changes:
+* Dropped argument `k` from SelectK.
+* Vignette in HTML.
+
+fdapace v0.3.0 (Release date: 25-Jan-2017)
+=============
+New functionality:
 * Added obsOnly option to CreatePathPlot.
 * Added derivative estimators (FPCAder, fitted.FPCAder)
 * Added functional concurrent correlation (FCCor).
