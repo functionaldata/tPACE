@@ -41,7 +41,7 @@ GetEigenAnalysisResults <- function(smoothCov, regGrid, optns, muWork = NULL) {
   
   phi <- apply(eigenV, 2, function(x) {
                     x <- x / sqrt(trapzRcpp(regGrid, x^2)) 
-                    if ( 0 <= cov(x, muWork) )
+                    if ( 0 <= fastTrapz(x = 1:nrow(smoothCov), y = x*muWork) )
                       return(x)
                     else
                       return(-x)
