@@ -62,17 +62,20 @@
 #                    X2 = list(Ly = denseX2, Lt = timeX),
 #                    Y= denseY)
  
-#  resuDense <- FPCRegD(denseVars) 
+#  resuDense <- FPCRegS(denseVars) 
 #  #======Sparse data===============================================
 #  sparsity = 5:8
 #  sparseX1 <- Sparsify(denseX1, grids, sparsity)
 #  sparseX2 <- Sparsify(denseX2, grids, sparsity)
 #  sparseVars <- list(X1 = sparseX1, X2 = sparseX2, Y = Y)
  
-#  resuSparse <- FPCRegD(sparseVars, methodSelect=list(method = "FVE",FVEThreshold = 0.9)) #or resuSparse <- FPCReg(vars = sparseVars,varsOptns = list(X1=list(userBwCov = 0.03)))
+#  resuSparse <- FPCRegS(sparseVars, methodSelect=list(method = "FVE",FVEThreshold = 0.9)) #or resuSparse <- FPCReg(vars = sparseVars,varsOptns = list(X1=list(userBwCov = 0.03)))
+#  MixedVars <- list(X1 = sparseX1, X2 = list(Ly = denseX2, Lt = timeX), Y = denseY)
+#  TestRes3 = FPCRegS(MixedVars)
  
 
-FPCRegD <- function(vars, varsOptns = NULL, isNewSub = NULL, methodSelect = list(method = "FVE",FVEThreshold = 0.9,
+
+FPCRegS <- function(vars, varsOptns = NULL, isNewSub = NULL, methodSelect = list(method = "FVE",FVEThreshold = 0.9,
 	NumberOfBasis = NULL) ,interval = c(0,1)){
 	#===============data checking and manipulation===============
 	p <- length(vars)-1
@@ -80,6 +83,7 @@ FPCRegD <- function(vars, varsOptns = NULL, isNewSub = NULL, methodSelect = list
 	if (!'Y' %in% names(vars)|"" %in% names(vars)) stop('Missing name of the response which should be "Y".')
 	if (!'X1' %in% names(vars)|"" %in% names(vars)) stop('Missing name of preictors which should be "X1","X2",...')
 	if (anyDuplicated(names(vars)) > 0) stop('Duplicated Names.')
+	## separate Y and covariates
 	if ('Y' %in% names(vars)) {
 		Y = vars['Y']
 		vars <- vars[names(vars) != 'Y'] 
@@ -93,19 +97,21 @@ FPCRegD <- function(vars, varsOptns = NULL, isNewSub = NULL, methodSelect = list
 			vars[[i]]$Lt <- t(matrix(rep(seq(0, 1, length.out = n2), n1), n2, n1))
 		}
 	}
-	#Dense==1 iff all covariates and response are Matrix
-	if (sum(sapply(vars, function(x){is.matrix(x$Ly)}) * sapply(vars, function(x){is.matrix(x$Lt)}))) {Dense <- 1} else {Dense <- 0} 
 	#set options 
 	#varsOptnsDef is the default
 	#specific default setting for optns now and output grids for sparse is fixed at 51 now due to the cross-cov.
-	if (Dense == 1) {optns <- list(dataType = "Dense",error = TRUE, kernel='gauss', nRegGrid=51, useBinnedData='OFF')} else {optns <- list(dataType = "Sparse", error = TRUE, kernel = 'gauss' ,nRegGrid = 51, useBinnedData = 'OFF')} 
-	for (i in 1:(p)) {
-		if (i == 1) {varsOptnsDef <- list(optns)} else {varsOptnsDef <- c(varsOptnsDef, list(optns))}
-	}
-	names(varsOptnsDef) <- names(vars)
-	if (is.null(varsOptns)) {varsOptns <- varsOptnsDef} else if (!is.list(varsOptns)) {stop('wrong input of varsOptns.')}
+	if (is.null(varsOptns)) {
+		for(i in 1:p){
+				Dense = ifelse(is.matrix(vars[[i]]$Ly)&is.matrix(vars[[i]]$Lt),1,0)
+				if (Dense == 1) {optns <- list(dataType = "Dense",error = TRUE, kernel='gauss', nRegGrid=51, useBinnedData='OFF')} else {optns <- list(dataType = "Sparse", error = TRUE, kernel = 'gauss' ,nRegGrid = 51, useBinnedData = 'OFF')} 	
+				if (i == 1) {varsOptnsDef <- list(optns)} else {varsOptnsDef <- c(varsOptnsDef, list(optns))}
+		}
+		names(varsOptnsDef) <- names(vars)
+		varsOptns <- varsOptnsDef
+		} else if (!is.list(varsOptns)) {stop('wrong input of varsOptns.')}
 	if (!sum(names(varsOptns) %in% names(vars)) == length(names(varsOptns))) stop('Check names of varsOptns which should be X1,X2..Y.')
 	for (i in 1:(p)) {
+		Dense = ifelse(is.matrix(vars[[i]]$Ly)&is.matrix(vars[[i]]$Lt),1,0)
 		name1=names(varsOptns)
 		if (!names(vars)[i]%in%names(varsOptns)) {varsOptns <- c(varsOptns, list(optns)); names(varsOptns) = c(name1, names(vars)[i])}
 		if (is.null(varsOptns[names(vars)[i]]$dataType) & Dense == 0) {varsOptns[[names(vars)[i]]] <- c(varsOptns[[names(vars)[i]]], dataType = "Sparse")}else if(is.null(varsOptns[names(vars)[i]]$dataType) & Dense==1){varsOptns[[names(vars)[i]]] <- c(varsOptns[[names(vars)[i]]], dataType = "Dense")}
@@ -114,8 +120,9 @@ FPCRegD <- function(vars, varsOptns = NULL, isNewSub = NULL, methodSelect = list
 		if (Dense == 1) {varsOptns[[names(vars)[i]]]$nRegGrid <- ncol(vars[[i]]$Ly)}
 		}
 	varsOptns <- varsOptns[names(vars)]
+
 	#nRegGrids determine the numbers of ouput grids 
-	if (Dense == 0) {nRegGrids <- sapply(varsOptns, function(x){x$nRegGrid})}
+	#if (Dense == 0) {nRegGrids <- sapply(varsOptns, function(x){x$nRegGrid})}
 	for ( i in 1:(p)) {
 		if (!'Ly' %in% names(vars[[i]])) stop('Insert the name "Ly" for the predictors and response to indicate time of data.')
 		if (!'Lt' %in% names(vars[[i]])) stop('Insert the name "Lt" for the predictors and response to indicate time of data.')
@@ -137,11 +144,11 @@ FPCRegD <- function(vars, varsOptns = NULL, isNewSub = NULL, methodSelect = list
 		varsTrain[[i]]$Lt <- vars[[i]]$Lt[which(isNewSub == 0)]
 		varsTrain[[i]]$Ly <- vars[[i]]$Ly[which(isNewSub == 0)]
 		}
+	Y_Train = unlist(Y)[which(isNewSub == 0)]
 	#===============population parameters===============	
 	demeanedRes <- demeanFuc(p-1, varsTrain, kern='gauss', varsOptns) #Centered predictors. Using gauss for demeanFuc, but may be relaxed.
 	varsTrain <- demeanedRes[['xList']]
 	muList <- demeanedRes[['muList']]
-
 	#### make list
 	TPlist<-NULL
 	XList<-NULL
@@ -154,11 +161,17 @@ FPCRegD <- function(vars, varsOptns = NULL, isNewSub = NULL, methodSelect = list
 				XList = append(XList,list(varsTrain[[i]]$Ly))
 			}
 	}
-	GetMatrixInfo = CrWholeMat(unlist(Y),XList,TPlist,varsOptns,AICcompute = (methodSelect$method == "AIC"))
+	GetMatrixInfo = CrWholeMat(Y_Train,XList,TPlist,varsOptns)
 	TimePoint = GetMatrixInfo$FPCAlist[[1]]$workGrid
 
 	Eigen_Decompose = eigen(GetMatrixInfo$MultiCrXY)
 	Eigen_Value = Eigen_Decompose$values[Eigen_Decompose$values>0]
+	Eigen_fun = Eigen_Decompose$vectors[,Eigen_Decompose$values>0]
+	AdjForInt = apply(Eigen_fun,2,function(x){MultiNorm(x^2,p,TimePoint,interval)})
+	Eigen_Value = Eigen_Value/AdjForInt
+	for(i in 1:length(AdjForInt)){
+		Eigen_fun[,i] = Eigen_fun[,i]/AdjForInt[i]
+	}
 		if(methodSelect$method == "FVE"){
 			if(is.null(methodSelect$FVEThreshold)){stop("FVEThreshold is needed for method FVE")}
 			Ratio = cumsum(Eigen_Value)/sum(Eigen_Value)
@@ -172,13 +185,12 @@ FPCRegD <- function(vars, varsOptns = NULL, isNewSub = NULL, methodSelect = list
 		}else{
 			stop('no such method select method implemented.')
 		}
-
 		beta = 0
 		score = rep(0,L)
 		for(i in 1:L){
-			nominater = FakeInt(unlist(GetMatrixInfo$MultiCrYZ) * Eigen_Decompose$vectors[,i],TimePoint,interval)
-			score[i] = nominater/Eigen_Decompose$values[i]
-			beta = beta + score[i]*Eigen_Decompose$vectors[,i]
+			nominater = MultiNorm(unlist(GetMatrixInfo$MultiCrYZ) * Eigen_fun[,i] , p, TimePoint,interval)
+			score[i] = nominater/Eigen_Value[i]
+			beta = beta + score[i]*Eigen_fun[,i]
 		}
 		###Split beta
 		Beta = list()
@@ -190,9 +202,41 @@ FPCRegD <- function(vars, varsOptns = NULL, isNewSub = NULL, methodSelect = list
 	Betalist = list(list(Beta),list(TimePoint),list(score))
 	names(Betalist) = c("estiBeta","TimePoint","b_score")
 	#####R2 score
-	R2 = sum(score^2*Eigen_Decompose$values[1:L])/var(Y)
+	R2 = sum(score^2*Eigen_Decompose$values[1:L])/var(unlist(Y_Train))
 	#####predictions
-	returnList = list(Betalist,R2)
-	names(returnList) = c("Betalist","R2")
+	###so far we use int(X1beta1)+int(X2beta2)+... 
+	if(sum(isNewSub) != 0){
+		if(varsOptns$X1$dataType == "Dense"){
+			##for dense case, use numerical integration directly
+			varsPred <- vars
+			for (i in 1:(p)) {
+			varsPred[[i]]$Lt <- vars[[i]]$Lt[which(isNewSub == 1)]
+			varsPred[[i]]$Ly <- vars[[i]]$Ly[which(isNewSub == 1)]
+			for(j in 1:sum(isNewSub == 1)){
+				YPred = mapply(function(x,y){FakeInt(x*y$Ly[[j]],TimePoint,interval)},x = Beta,y = varsPred)	
+				}
+			}
+		}else{
+			varsPred <- vars
+			for (i in 1:(p)) {
+			varsPred[[i]]$Lt <- vars[[i]]$Lt[which(isNewSub == 1)]
+			varsPred[[i]]$Ly <- vars[[i]]$Ly[which(isNewSub == 1)]
+			PredScore = mapply(function(x,y){predict.FPCA(x,newLy = y$Ly,newLt = y$Lt,xiMethod = 'CE',K = L)},x = GetMatrixInfo$FPCAlist,y = varsPred,SIMPLIFY= FALSE )
+			X_Imp = mapply(function(x,y){x$phi[,1:L]%*%t(y)},x = GetMatrixInfo$FPCAlist,y = PredScore,SIMPLIFY= FALSE)
+			Y_Pred = apply(mapply(function(x,y,z){apply(x,2,function(s)FakeInt(s*y,z$workGrid,interval ) )},x = X_Imp,y = Beta, z =  GetMatrixInfo$FPCAlist),1,sum)
+			}
+		}
+		returnList = list(Betalist,R2,Y_Pred,L,Eigen_Value)
+	names(returnList) = c("Betalist","R2","predictions","NOC","Eigen")
+	returnList		
+	}else{
+		Y_Pred = NULL
+		returnList = list(Betalist,R2,Y_Pred,L,Eigen_Value)
+	names(returnList) = c("Betalist","R2","predictions","NOC","Eigen")
 	returnList
+	}
+	
 }
+
+
+
