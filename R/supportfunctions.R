@@ -99,6 +99,18 @@ cdiag <- function(A,B){
 ##						CrMat: The whole Covariance matrix of list X
 ##						CrMatYZ: a list of the cross covariance matrices of X,Y 
 ########################
+
+########################
+##function CrWholeMat
+##Input: scalar response Y
+##       multiple functional process list X
+##		 Recorded timePoint tPoint
+##		 FPCA settings options
+##Output:  Returnlist: a list consists of 
+##						FPCAlist: a list of the FPCA results of each X
+##						CrMat: The whole Covariance matrix of list X
+##						CrMatYZ: a list of the cross covariance matrices of X,Y 
+########################
 CrWholeMat<-function(Y,X,tPoint,options){
 	nsubj = length(X)
 	##doing FPCA separately
@@ -130,10 +142,10 @@ CrWholeMat<-function(Y,X,tPoint,options){
 						PCARes_A = get(paste0("PCARes_",i))
 						PCARes_B = get(paste0("PCARes_",j))
 						CrCovBlock = GetCrCovYX(bw1 = 0.1, Ly1 = X[[i]], Lt1 = tPoint[[i]],
-					 				Ymu1 = approx(x = PCARes_A$workGrid,y = PCARes_A$mu,xout = PCARes_A$workGrid,rule = 2 )$y
+					 				Ymu1 = approx(x = PCARes_A$workGrid,y = PCARes_A$mu,xout = sort(unique(unlist(tPoint[[i]]))),rule = 2 )$y
 					 				, bw2 = 0.1, Ly2 = X[[j]],
 				  	 				Lt2 = tPoint[[j]], 
-				  	 				Ymu2 =approx(x = PCARes_B$workGrid,y = PCARes_B$mu,xout = PCARes_A$workGrid,rule = 2 )$y)
+				  	 				Ymu2 =approx(x = PCARes_B$workGrid,y = PCARes_B$mu,xout = sort(unique(unlist(tPoint[[j]]))),rule = 2 )$y)
 						tmp_row = ((i-1)*TPlength+1) : (i*TPlength)
 						tmp_col = ((j-1)*TPlength+1) : (j*TPlength)
 						CrMat[tmp_row,tmp_col] = CrCovBlock$smoothedCC
@@ -149,25 +161,25 @@ CrWholeMat<-function(Y,X,tPoint,options){
 		}
 		CrMatYZ = list()
 		for(i in 1:nsubj){
-			if(varsOptns[[1]]$dataType == "Dense"){
+			if(options[[1]]$dataType == "Dense"){
 				##under dense case, directly use matrix calculation
 				g_hat = 0
-				for(j in 1:n){
+				for(j in 1:length(Y)){
 		  			g_hat = g_hat+(Y[j]-mean(Y))*(X[[i]][[j]])/n
 				}
 				CrMatYZ = append(CrMatYZ,list( g_hat ) )
 				## warning: if X have missing values involved or not observed on same time point for different curves
 				## our method cannot be used here.
-			}else if(varsOptns[[1]]$dataType == "Sparse"){
+			}else if(options[[1]]$dataType == "Sparse"){
 				##under sparse case
 				mu_imputed = approx(x = get(paste0("PCARes_",i))$workGrid,y = get(paste0("PCARes_",i))$mu,xout = sort(unique(unlist(tPoint))),rule = 2)$y
-				CrCovInfo = GetCrCovYZ(bw = 0.1, Y, Zmu = mean(Y), X[[i]], Lt = tPoint, Ymu = mu_imputed,
+				CrCovInfo = GetCrCovYZ(bw = 0.1, Y, Zmu = mean(Y), X[[i]], Lt = tPoint[[i]], Ymu = mu_imputed,
 							support = get(paste0("PCARes_",i))$workGrid,kern = "gauss")
 				CrMatYZ = append(CrMatYZ,list( CrCovInfo$smoothedCC ) )
 			}
 		}
 		Returnlist = list(FPCAlist,CrMat,CrMatYZ)
 		names(Returnlist) = c("FPCAlist","MultiCrXY","MultiCrYZ")
-			return(Returnlist)	
+		return(Returnlist)	
 }
 

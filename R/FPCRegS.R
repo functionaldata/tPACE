@@ -213,7 +213,7 @@ FPCRegS <- function(vars, varsOptns = NULL, isNewSub = NULL, methodSelect = list
 			varsPred[[i]]$Lt <- vars[[i]]$Lt[which(isNewSub == 1)]
 			varsPred[[i]]$Ly <- vars[[i]]$Ly[which(isNewSub == 1)]
 			for(j in 1:sum(isNewSub == 1)){
-				YPred = mapply(function(x,y){FakeInt(x*y$Ly[[j]],TimePoint,interval)},x = Beta,y = varsPred)	
+				Y_Pred = mapply(function(x,y){FakeInt(x*y$Ly[[j]],TimePoint,interval)},x = Beta,y = varsPred)	
 				}
 			}
 		}else{
