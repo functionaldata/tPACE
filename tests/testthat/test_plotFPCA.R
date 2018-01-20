@@ -1,7 +1,7 @@
 # devtools::load_all()
 
 viewPdf <- FALSE
-set.seed(1)
+set.seed(2)
 n <- 100
 M <- 51
 pts <- seq(0, 1, length.out=M)
