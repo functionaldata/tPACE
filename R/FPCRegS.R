@@ -14,68 +14,68 @@
 #' \cite{Yao, F., Mueller, H.G., Wang, J.L. "Functional Linear Regression Analysis for Longitudinal Data." Annals of Statistics 33, (2005): 2873-2903.}
 #' @export
 #' @examples 
-# set.seed(1000)
-#  #Model: E(Y(t)|X) = int(beta(s,t)*X(s))
-#  n <- 200 #number of subjects
-#  ngrids <- 51 #number of grids in [0,1] for X(s)
-#  ngridt <- 101 #number of grids in [0,1] for Y(t)
-#  grids <- seq(0, 1, length.out=ngrids) #regular grids in [0,1] for X(s)
-#  gridt <- seq(0, 1, length.out=ngridt) #regular grids in [0,1] for Y(t)
+#' set.seed(1000)
+#' #Model: E(Y(t)|X) = int(beta(s,t)*X(s))
+#' n <- 200 #number of subjects
+#' ngrids <- 51 #number of grids in [0,1] for X(s)
+#' ngridt <- 101 #number of grids in [0,1] for Y(t)
+#' grids <- seq(0, 1, length.out=ngrids) #regular grids in [0,1] for X(s)
+#' gridt <- seq(0, 1, length.out=ngridt) #regular grids in [0,1] for Y(t)
  
-#  #generate X
-#  #{1, sqrt(2)*sin(2*pi*s), sqrt(2)*cos(2*pi*t)} are used to generate X.
-#  eigenFun <- list(function(s){1 + 0 * s},function(s){sqrt(2) * sin(2*pi*s)},function(s){sqrt(2) * cos(2*pi*s)})
+#' #generate X
+#' #{1, sqrt(2)*sin(2*pi*s), sqrt(2)*cos(2*pi*t)} are used to generate X.
+#' eigenFun <- list(function(s){1 + 0 * s},function(s){sqrt(2) * sin(2*pi*s)},function(s){sqrt(2) * cos(2*pi*s)})
  
-#  sig <- matrix(c(1.5, 0.0, 0.0, 0.9, -.5, 0.1,
-#                  0.0, 1.2, 0.0, -.3, 0.8, 0.4,
-#                  0.0, 0.0, 1.0, 0.4, -.3, 0.7,
-#                  0.9, -.3, 0.4, 2.0, 0.0, 0.0,
-#                  -.5, 0.8, -.3, 0.0, 1.5, 0.0,
-#                  0.1, 0.4, 0.7, 0.0, 0.0, 1.0),
-#                  nrow=6,ncol=6)
+#' sig <- matrix(c(1.5, 0.0, 0.0, 0.9, -.5, 0.1,
+#'                 0.0, 1.2, 0.0, -.3, 0.8, 0.4,
+#'                 0.0, 0.0, 1.0, 0.4, -.3, 0.7,
+#'                 0.9, -.3, 0.4, 2.0, 0.0, 0.0,
+#'                 -.5, 0.8, -.3, 0.0, 1.5, 0.0,
+#'                 0.1, 0.4, 0.7, 0.0, 0.0, 1.0),
+#'                 nrow=6,ncol=6)
  
-#  scoreX <- MASS::mvrnorm(n,mu=rep(0,6),Sigma=sig)
-#  scoreX1 <- scoreX[,1:3]
-#  scoreX2 <- scoreX[,4:6]
+#' scoreX <- MASS::mvrnorm(n,mu=rep(0,6),Sigma=sig)
+#' scoreX1 <- scoreX[,1:3]
+#' scoreX2 <- scoreX[,4:6]
  
-#  basisX1 <- sapply(eigenFun,function(x){x(grids)})
-#  latentX1 <- scoreX1 %*% t(basisX1)
-#  measErrX1 <- sqrt(0.03) * matrix(rnorm(n * ngrids), n, ngrids) #0.01 is sigma^2.
-#  denseX1 <- latentX1 + measErrX1
+#' basisX1 <- sapply(eigenFun,function(x){x(grids)})
+#' latentX1 <- scoreX1 %*% t(basisX1)
+#' measErrX1 <- sqrt(0.03) * matrix(rnorm(n * ngrids), n, ngrids) #0.01 is sigma^2.
+#' denseX1 <- latentX1 + measErrX1
  
-#  basisX2 <- sapply(eigenFun,function(x){x(grids)})
-#  latentX2 <- scoreX2 %*% t(basisX2)
-#  measErrX2 <- sqrt(0.03) * matrix(rnorm(n * ngrids), n, ngrids) #0.01 is sigma^2.
-#  denseX2 <- latentX2 + measErrX2
+#' basisX2 <- sapply(eigenFun,function(x){x(grids)})
+#' latentX2 <- scoreX2 %*% t(basisX2)
+#' measErrX2 <- sqrt(0.03) * matrix(rnorm(n * ngrids), n, ngrids) #0.01 is sigma^2.
+#' denseX2 <- latentX2 + measErrX2
  
-#  #generate Y
-#  #beta(s, t) <- sin(2 * pi * s)*cos(2 * pi * t)
-#  betaEigen <- list(function(s){1 + 0 * s},function(s){sqrt(2) * sin(2*pi*s)},function(s){sqrt(2) * cos(2*pi*s)})
-#  basisY <- c(1,0.1,0.01)
-#  latentY <- scoreX1 %*% basisY + scoreX2 %*% basisY
-#  measErrY <- sqrt(0.01) * rnorm(n) #0.01 is sigma^2
-#  denseY <- latentY + measErrY
+#' #generate Y
+#' #beta(s, t) <- sin(2 * pi * s)*cos(2 * pi * t)
+#' betaEigen <- list(function(s){1 + 0 * s},function(s){sqrt(2) * sin(2*pi*s)},function(s){sqrt(2) * cos(2*pi*s)})
+#' basisY <- c(1,0.1,0.01)
+#' latentY <- scoreX1 %*% basisY + scoreX2 %*% basisY
+#' measErrY <- sqrt(0.01) * rnorm(n) #0.01 is sigma^2
+#' denseY <- latentY + measErrY
  
-#  #======Dense data===============================================
-#  timeX <- t(matrix(rep(grids, n),length(grids), n))
-#  denseVars <- list(X1 = list(Ly = denseX1, Lt = timeX),
-#                    X2 = list(Ly = denseX2, Lt = timeX),
-#                    Y= denseY)
+#' #======Dense data===============================================
+#' timeX <- t(matrix(rep(grids, n),length(grids), n))
+#' denseVars <- list(X1 = list(Ly = denseX1, Lt = timeX),
+#'                   X2 = list(Ly = denseX2, Lt = timeX),
+#'                   Y= denseY)
  
-#  resuDense <- FPCRegS(denseVars) 
-#  #======Sparse data===============================================
-#  sparsity = 5:8
-#  sparseX1 <- Sparsify(denseX1, grids, sparsity)
-#  sparseX2 <- Sparsify(denseX2, grids, sparsity)
-#  sparseVars <- list(X1 = sparseX1, X2 = sparseX2, Y = Y)
+#' resuDense <- FPCRegS(denseVars) 
+#' #======Sparse data===============================================
+#' sparsity = 5:8
+#' sparseX1 <- Sparsify(denseX1, grids, sparsity)
+#' sparseX2 <- Sparsify(denseX2, grids, sparsity)
+#' sparseVars <- list(X1 = sparseX1, X2 = sparseX2, Y = Y)
  
-#  resuSparse <- FPCRegS(sparseVars, methodSelect=list(method = "FVE",FVEThreshold = 0.9)) #or resuSparse <- FPCReg(vars = sparseVars,varsOptns = list(X1=list(userBwCov = 0.03)))
-#  MixedVars <- list(X1 = sparseX1, X2 = list(Ly = denseX2, Lt = timeX), Y = denseY)
-#  TestRes3 = FPCRegS(MixedVars)
+#' resuSparse <- FPCRegS(sparseVars, methodSelect=list(method = "FVE",FVEThreshold = 0.9)) #or resuSparse <- FPCReg(vars = sparseVars,varsOptns = list(X1=list(userBwCov = 0.03)))
+#' MixedVars <- list(X1 = sparseX1, X2 = list(Ly = denseX2, Lt = timeX), Y = denseY)
+#' TestRes3 = FPCRegS(MixedVars)
  
 
 
-FPCRegS <- function(vars, varsOptns = NULL, isNewSub = NULL, methodSelect = list(method = "FVE",FVEThreshold = 0.9,
+FPCRegS <- function(vars, varsOptns = NULL, isNewSub = NULL, methodSelect = list(method = "FVE",FVEThreshold = 0.95,
 	NumberOfBasis = NULL) ,interval = c(0,1)){
 	#===============data checking and manipulation===============
 	p <- length(vars)-1
@@ -103,6 +103,8 @@ FPCRegS <- function(vars, varsOptns = NULL, isNewSub = NULL, methodSelect = list
 	if (is.null(varsOptns)) {
 		for(i in 1:p){
 				Dense = ifelse(is.matrix(vars[[i]]$Ly)&is.matrix(vars[[i]]$Lt),1,0)
+				## For the case with regular design, also think as dense
+				if( sum(unlist(lapply(vars[[i]]$Lt,function(x){ if(length(x) == length(vars[[i]]$Lt[[1]])) sum(x - vars[[i]]$Lt[[1]]) }))) == 0  ){Dense = 1}
 				if (Dense == 1) {optns <- list(dataType = "Dense",error = TRUE, kernel='gauss', nRegGrid=51, useBinnedData='OFF')} else {optns <- list(dataType = "Sparse", error = TRUE, kernel = 'gauss' ,nRegGrid = 51, useBinnedData = 'OFF')} 	
 				if (i == 1) {varsOptnsDef <- list(optns)} else {varsOptnsDef <- c(varsOptnsDef, list(optns))}
 		}
@@ -163,19 +165,18 @@ FPCRegS <- function(vars, varsOptns = NULL, isNewSub = NULL, methodSelect = list
 	}
 	GetMatrixInfo = CrWholeMat(Y_Train,XList,TPlist,varsOptns)
 	TimePoint = GetMatrixInfo$FPCAlist[[1]]$workGrid
-
-	Eigen_Decompose = eigen(GetMatrixInfo$MultiCrXY)
+	Eigen_Decompose = eigen(GetMatrixInfo$MultiCrXY * (TimePoint[2]-TimePoint[1]))
 	Eigen_Value = Eigen_Decompose$values[Eigen_Decompose$values>0]
 	Eigen_fun = Eigen_Decompose$vectors[,Eigen_Decompose$values>0]
 	AdjForInt = apply(Eigen_fun,2,function(x){MultiNorm(x^2,p,TimePoint,interval)})
-	Eigen_Value = Eigen_Value/AdjForInt
-	for(i in 1:length(AdjForInt)){
-		Eigen_fun[,i] = Eigen_fun[,i]/AdjForInt[i]
-	}
+	#Eigen_Value = Eigen_Value*AdjForInt
+	 for(i in 1:length(AdjForInt)){
+	 	Eigen_fun[,i] = Eigen_fun[,i]/sqrt(TimePoint[2]-TimePoint[1])
+	 }
 		if(methodSelect$method == "FVE"){
 			if(is.null(methodSelect$FVEThreshold)){stop("FVEThreshold is needed for method FVE")}
 			Ratio = cumsum(Eigen_Value)/sum(Eigen_Value)
-			L = sum(Ratio < methodSelect$FVEThreshold)
+			L = sum(Ratio < methodSelect$FVEThreshold)+1
 		}else if(methodSelect$method == "Basis"){
 			L = methodSelect$NumberOfBasis
 		}else if(methodSelect$method == "AIC"){
@@ -202,41 +203,37 @@ FPCRegS <- function(vars, varsOptns = NULL, isNewSub = NULL, methodSelect = list
 	Betalist = list(list(Beta),list(TimePoint),list(score))
 	names(Betalist) = c("estiBeta","TimePoint","b_score")
 	#####R2 score
-	R2 = sum(score^2*Eigen_Decompose$values[1:L])/var(unlist(Y_Train))
+	R2 = sum( score^2*Eigen_Value[1:L] ) / var(unlist(Y_Train))
+	R2 = min(R2,1)
 	#####predictions
 	###so far we use int(X1beta1)+int(X2beta2)+... 
 	if(sum(isNewSub) != 0){
-		if(varsOptns$X1$dataType == "Dense"){
-			##for dense case, use numerical integration directly
-			varsPred <- vars
-			for (i in 1:(p)) {
+		varsPred <- vars
+		Y_Pred = mean(Y_Train)
+		for(i in 1:p){
 			varsPred[[i]]$Lt <- vars[[i]]$Lt[which(isNewSub == 1)]
 			varsPred[[i]]$Ly <- vars[[i]]$Ly[which(isNewSub == 1)]
-			for(j in 1:sum(isNewSub == 1)){
-				Y_Pred = mapply(function(x,y){FakeInt(x*y$Ly[[j]],TimePoint,interval)},x = Beta,y = varsPred)	
+			Dense = ifelse(is.matrix(varsPred[[i]]$Ly)&is.matrix(varsPred[[i]]$Lt),1,0)
+			## For the case with regular design, also think as dense
+			if( sum(unlist(lapply(varsPred[[i]]$Lt,function(x){ if(length(x) == length(varsPred[[i]]$Lt[[1]])) sum(x - varsPred[[i]]$Lt[[1]]) }))) == 0  ){Dense = 1}
+			if( Dense == 1){
+					Y_Pred = Y_Pred + unlist(lapply(varsPred[[i]]$Ly, y<-function(y) {FakeInt(Beta[[i]]*approx(x = varsPred[[i]]$Lt[[1]],y = y,xout = GetMatrixInfo$FPCAlist[[i]]$workGrid ,rule = 2)$y,TimePoint,interval)}))
+				}else{
+					Kt = min(floor(L/2),length(GetMatrixInfo$FPCAlist[[i]]$workGrid))
+					PredScore = predict.FPCA(GetMatrixInfo$FPCAlist[[i]],newLy = varsPred[[i]]$Ly,newLt = varsPred[[i]]$Lt,xiMethod = 'CE',K = Kt)
+					X_Imp = GetMatrixInfo$FPCAlist[[i]]$phi[,1:Kt]%*%t(PredScore)
+					Y_Pred = Y_Pred + apply( X_Imp ,2,function(x) FakeInt(x*Beta[[i]], GetMatrixInfo$FPCAlist[[i]]$workGrid,interval)   )
 				}
-			}
-		}else{
-			varsPred <- vars
-			for (i in 1:(p)) {
-			varsPred[[i]]$Lt <- vars[[i]]$Lt[which(isNewSub == 1)]
-			varsPred[[i]]$Ly <- vars[[i]]$Ly[which(isNewSub == 1)]
-			PredScore = mapply(function(x,y){predict.FPCA(x,newLy = y$Ly,newLt = y$Lt,xiMethod = 'CE',K = L)},x = GetMatrixInfo$FPCAlist,y = varsPred,SIMPLIFY= FALSE )
-			X_Imp = mapply(function(x,y){x$phi[,1:L]%*%t(y)},x = GetMatrixInfo$FPCAlist,y = PredScore,SIMPLIFY= FALSE)
-			Y_Pred = apply(mapply(function(x,y,z){apply(x,2,function(s)FakeInt(s*y,z$workGrid,interval ) )},x = X_Imp,y = Beta, z =  GetMatrixInfo$FPCAlist),1,sum)
-			}
 		}
-		returnList = list(Betalist,R2,Y_Pred,L,Eigen_Value)
-	names(returnList) = c("Betalist","R2","predictions","NOC","Eigen")
+		returnList = list(Betalist,R2,Y_Pred,L,Eigen_Value[1:L],Eigen_fun[,1:L])
+	names(returnList) = c("Betalist","R2","predictions","NOC","EigenV","EigenF")
 	returnList		
 	}else{
 		Y_Pred = NULL
-		returnList = list(Betalist,R2,Y_Pred,L,Eigen_Value)
-	names(returnList) = c("Betalist","R2","predictions","NOC","Eigen")
-	returnList
+		returnList = list(Betalist,R2,Y_Pred,L,Eigen_Value[1:L],Eigen_fun[,1:L])
+		names(returnList) = c("Betalist","R2","predictions","NOC","EigenV","EigenF")
+		returnList
 	}
-	
 }
-
 
 
