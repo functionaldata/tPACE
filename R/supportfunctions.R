@@ -96,3 +96,104 @@ CrWholeMat<-function(Y,X,tPoint,options){
 		return(Returnlist)	
 }
 
+
+##############################################
+##integrate a dense data on certain interval,trival version
+# f: value of function to be int on timepoint tp
+# tp:time point
+# interval
+FakeInt<-function(f,tp,interval){
+	n = length(tp)
+	Block = rep(0,n)
+	sum = 0
+	for(i in 1:n ){
+		if(i == 1){
+		Block[i] = tp[i] -  interval[1]	
+		sum = sum + f[i]*Block[i]/2
+		}
+		else{
+			Block[i] = tp[i]-tp[i-1]
+		sum = sum + (f[i]+f[i-1])*Block[i]/2
+		}
+	}
+	sum = sum + f[n]*(interval[2]-tp[n])/2
+ sum
+}
+
+##############################################
+##Calculate the prediction scores
+# v: the curve to be predicted, a list
+# tp: the timepoint of predited curve, a list corresponding to v
+# MatrixInfo: the info list get from function CrWholeMat
+# Lambda: eigen value,vector
+# Phi: eigen function, matrix form
+
+GetCE_Mul<-function(v,tp,MatrixInfo,Lambda,Phi){
+	p = length(v)
+	TP = MatrixInfo$FPCAlist[[1]]$workGrid
+	TPlength = length(TP)
+	Sigma = MatrixInfo$MultiCrXY
+	tplength = length(unlist(tp))
+	tpBlock = cumsum(unlist(lapply(tp,length)))
+	SigmaU = matrix(0,tplength,tplength)
+	for(i in 1:p){
+		for(j in (i):p){
+			if(i == j){
+				tmp = ((i-1)*TPlength+1) : (i*TPlength)
+				if(i == 1){
+					blk = 1:tpBlock[1]
+					}else{
+					blk = (tpBlock[i-1]+1):tpBlock[i]
+					}
+				Grid1 = expand.grid(TP,TP)
+				Grid2 = expand.grid(tp[[i]],tp[[i]])
+				SigmaU[blk,blk]  = matrix(interp2lin(xin = TP,yin =TP ,zin = Sigma[tmp,tmp],xou = Grid2$Var1,you = Grid2$Var2),nrow = length(blk)) + GetMatrixInfo$FPCAlist[[i]]$sigma2 *diag(length(blk))
+			}else{
+				tmp_row = ((i-1)*TPlength+1) : (i*TPlength)
+				tmp_col = ((j-1)*TPlength+1) : (j*TPlength)
+				if(i == 1){
+					blk_row = 1:tpBlock[1]
+					}else{
+					blk_row = (tpBlock[i-1]+1):tpBlock[i]
+					}
+				if(j == 1){
+					blk_col = 1:tpBlock[1]
+					}else{
+					blk_col = (tpBlock[j-1]+1):tpBlock[j]
+					}
+				Grid2 = expand.grid(tp[[i]],tp[[j]])
+				SigmaU[blk_row,blk_col] = matrix(interp2lin(xin = TP,yin = TP,zin = Sigma[tmp_row,tmp_col],xou = Grid2$Var1,you = Grid2$Var2), nrow = length(blk_row))
+				SigmaU[blk_col,blk_row] = t(SigmaU[blk_row,blk_col])
+			}
+		}
+	}
+	Mu = rep(0,tplength)
+	L = ncol(Phi)
+	Phi_P = matrix(0,tplength,L)
+	for(i in 1:p){
+		if(i == 1){
+					blk = 1:tpBlock[1]
+			}else{
+					blk = (tpBlock[i-1]+1):tpBlock[i]
+		}
+		Mu[blk] = approx(x = TP ,y = MatrixInfo$FPCAlist[[i]]$mu,xout = tp[[i]], rule = 2 )$y
+		tmp = ((i-1)*TPlength+1) : (i*TPlength)
+		for(j in 1:L){
+			Phi_P[blk,j] = approx(x = TP ,y = Phi[tmp,j] ,xout = tp[[i]], rule = 2 )$y	
+		}	
+	}
+	score = Lambda * t(Phi_P) %*% ginv(SigmaU) %*% (unlist(v) - Mu)
+	return(score)
+}
+
+
+#lapply(varsPred,function(x){x$Ly[[1]]})
+
+
+
+
+
+
+
+
+
