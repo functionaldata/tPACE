@@ -5,6 +5,12 @@ CPPlwls1d <- function(bw, kernel_type, win, xin, yin, xout, npoly = 1L, nder = 0
     .Call('_fdapace_CPPlwls1d', PACKAGE = 'fdapace', bw, kernel_type, win, xin, yin, xout, npoly, nder)
 }
 
+#' Cumulative Trapezoid Rule Numerical Integration
+#' 
+#' Cumulative Trapezoid Rule Numerical Integration using Rcpp
+#' @param X Sorted vector of X values
+#' @param Y Vector of Y values.
+#' 
 cumtrapzRcpp <- function(X, Y) {
     .Call('_fdapace_cumtrapzRcpp', PACKAGE = 'fdapace', X, Y)
 }
@@ -65,6 +71,12 @@ Rrotatedmullwlsk <- function(bw, kernel_type, tPairs, cxxn, win, xygrid, npoly, 
     .Call('_fdapace_Rrotatedmullwlsk', PACKAGE = 'fdapace', bw, kernel_type, tPairs, cxxn, win, xygrid, npoly, bwCheck)
 }
 
+#' Trapezoid Rule Numerical Integration
+#' 
+#' Trapezoid Rule Numerical Integration using Rcpp
+#' @param X Sorted vector of X values
+#' @param Y Vector of Y values.
+#' 
 trapzRcpp <- function(X, Y) {
     .Call('_fdapace_trapzRcpp', PACKAGE = 'fdapace', X, Y)
 }
