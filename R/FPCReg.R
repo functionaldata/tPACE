@@ -121,7 +121,7 @@
 
 FPCReg <- function(vars, varsOptns = NULL, isNewSub = NULL, method = 'AIC', FVEthreshold = 0.99, alpha = 0.05, Kx = NULL){
 	#===============data checking and manipulation===============
-	p <- length(vars)-1
+	p <- length(vars) - 1
 	if (p == 0) stop('Too few covariates.')
 	if (!'Y' %in% names(vars)|"" %in% names(vars)) stop('Missing name of the response which should be "Y".')
 	if (!'X1' %in% names(vars)|"" %in% names(vars)) stop('Missing name of preictors which should be "X1","X2",...')
@@ -134,8 +134,8 @@ FPCReg <- function(vars, varsOptns = NULL, isNewSub = NULL, method = 'AIC', FVEt
 			n1 <- dim(vars[[i]]$Ly)[1]
 			n2 <- dim(vars[[i]]$Ly)[2]
 			vars[[i]]$Lt <- t(matrix(rep(seq(0, 1, length.out = n2), n1), n2, n1))
-			}
 		}
+	}
 	
 	#Dense==1 iff all covariates and response are Matrix
 	if (sum(sapply(vars, function(x){is.matrix(x$Ly)}) * sapply(vars, function(x){is.matrix(x$Lt)}))) {Dense <- 1} else {Dense <- 0} 
@@ -146,18 +146,21 @@ FPCReg <- function(vars, varsOptns = NULL, isNewSub = NULL, method = 'AIC', FVEt
 	if (Dense == 1) {optns <- list(dataType = "Dense" ,error = 1, kernel='gauss', nRegGrid=51, useBinnedData='OFF')} else {optns <- list(dataType = "Sparse", error = TRUE, kernel = 'gauss' ,nRegGrid = 51, useBinnedData = 'OFF')} 
 	for (i in 1:(p+1)) {
 		if (i == 1) {varsOptnsDef <- list(optns)} else {varsOptnsDef <- c(varsOptnsDef, list(optns))}
-		}
+	}
 	names(varsOptnsDef) <- names(vars)
 	if (is.null(varsOptns)) {varsOptns <- varsOptnsDef} else if (!is.list(varsOptns)) {stop('wrong inpiut of varsOptns.')}
 	if (!sum(names(varsOptns) %in% names(vars)) == length(names(varsOptns))) stop('Check names of varsOptns which should be X1,X2..Y.')
 	for (i in 1:(p+1)) {
 		name1=names(varsOptns)
 		if (!names(vars)[i]%in%names(varsOptns)) {varsOptns <- c(varsOptns, list(optns)); names(varsOptns) = c(name1, names(vars)[i])}
-		if (is.null(varsOptns[names(vars)[i]]$dataType) & Dense == 0) {varsOptns[[names(vars)[i]]] <- c(varsOptns[[names(vars)[i]]], dataType = "Sparse")}else if(is.null(varsOptns[names(vars)[i]]$dataType) & Dense==1){varsOptns[[names(vars)[i]]] <- c(varsOptns[[names(vars)[i]]], dataType = "Dense")}
+		if (is.null(varsOptns[names(vars)[i]]$dataType) & Dense == 0) {varsOptns[[names(vars)[i]]] <- c(varsOptns[[names(vars)[i]]], dataType = "Sparse")
+		}else if(is.null(varsOptns[names(vars)[i]]$dataType) & Dense==1){
+		varsOptns[[names(vars)[i]]] <- c(varsOptns[[names(vars)[i]]], dataType = "Dense")
+		}
 		if (is.null(varsOptns[names(vars)[i]]$nRegGrid) & Dense == 0) {varsOptns[[names(vars)[i]]] <- c(varsOptns[[names(vars)[i]]], nRegGrid = 51)}
 		if (is.null(varsOptns[names(vars)[i]]$error)) {varsOptns[[names(vars)[i]]] <- c(varsOptns[[names(vars)[i]]], error = TRUE)}
 		if (Dense == 1) {varsOptns[[names(vars)[i]]]$nRegGrid <- dim(vars[[i]]$Ly)[2]}
-		}
+	}
 	varsOptns <- varsOptns[names(vars)]
 	
 	#nRegGrids determine the numbers of ouput grids 
@@ -167,35 +170,36 @@ FPCReg <- function(vars, varsOptns = NULL, isNewSub = NULL, method = 'AIC', FVEt
 		if (!'Ly' %in% names(vars[[i]])) stop('Insert the name "Ly" for the predictors and response to indicate time of data.')
 		if (!'Lt' %in% names(vars[[i]])) stop('Insert the name "Lt" for the predictors and response to indicate time of data.')
       	if (! length(names(vars[[i]])) == 2) stop('Check data.')
-		}
+	}
 
 	#list dense data for using HandleNumericsAndNAN and demeanFuc func.
 	for (i in 1:(p+1)) {
 		if (is.list(vars[[i]]$Lt) == 0) {vars[[i]]$Lt <- lapply(1:nrow(vars[[i]]$Lt), function(j) vars[[i]]$Lt[j, ])}
 		if (is.list(vars[[i]]$Ly) == 0) {vars[[i]]$Ly <- lapply(1:nrow(vars[[i]]$Ly), function(j) vars[[i]]$Ly[j, ])}
-		}
-	vars[sapply(vars, is.list)]<-lapply(vars[sapply(vars, is.list)], function(v) HandleNumericsAndNAN(v[['Ly']], v[['Lt']]))
+	}
+	vars[sapply(vars, is.list)] <- lapply(vars[sapply(vars, is.list)], function(v) HandleNumericsAndNAN(v[['Ly']], v[['Lt']]))
 
 	if (is.null(isNewSub)) {isNewSub <- rep(0, length(vars[[1]]$Lt))}
 	varsTrain <- vars
 	for (i in 1:(p+1)) {
 		varsTrain[[i]]$Lt <- vars[[i]]$Lt[which(isNewSub == 0)]
 		varsTrain[[i]]$Ly <- vars[[i]]$Ly[which(isNewSub == 0)]	
-		}
+	}
 
 	#===============population parameters===============
 	demeanedRes <- demeanFuc(p, varsTrain, kern='gauss', varsOptns) #Centered predictors. Using gauss for demeanFuc, but may be relaxed.
 	varsTrain <- demeanedRes[['xList']]
 	muList <- demeanedRes[['muList']]
-	intLen <- array(0, p+1); #lengthes of time window 
-	gridNum <- array(0, p+1); #number of grids for varss
-	regGrid <- list(); varsMean <- list()
+	intLen <- array(0, p+1) #lengthes of time window 
+	gridNum <- array(0, p+1) #number of grids for varss
+	regGrid <- list()
+	varsMean <- list()
 	for (i in 1:(p+1)) {
 		intLen[i] <- max(c(unlist(varsTrain[[i]]$Lt)))-min(c(unlist(varsTrain[[i]]$Lt)))	
 		gridNum[i] <- if (Dense==1) {length(varsTrain[[i]]$Ly[[1]])} else {nRegGrids[i]}      #sparse output grids is fixed to be 51 so far.
 		regGrid[[i]] <- seq(min(unlist(varsTrain[[i]]$Lt)), max(unlist(varsTrain[[i]]$Lt)), length.out=gridNum[i]) #time grids for output mean and beta. 
 		varsMean[[i]] <- muList[[i]](regGrid[[i]]) 
-		}
+	}
 	brkX <- c(0, cumsum(gridNum[1:p]))      #break points for matrix products
 	dxMatrix <- dx(p, intLen[1:p], gridNum[1:p], brkX) #generate the inner product for multivariate predictors
 	
@@ -204,8 +208,8 @@ FPCReg <- function(vars, varsOptns = NULL, isNewSub = NULL, method = 'AIC', FVEt
 		for (i in 1:(p+1)) {
 			varsTrain[[i]]$Lt <- do.call(rbind, varsTrain[[i]]$Lt)
 			varsTrain[[i]]$Ly <- do.call(rbind, varsTrain[[i]]$Ly)
-			}
 		}
+	}
 
 	varsCov <- if (Dense == 1) {denseCov(p, varsTrain, brkX, dxMatrix, gridNum, varsOptns)} else {sparseCov(p, varsTrain, brkX, varsOptns, vars, muList, gridNum, dxMatrix, regGrid)}
 	xCov <- varsCov[['xCov']]
@@ -222,7 +226,7 @@ FPCReg <- function(vars, varsOptns = NULL, isNewSub = NULL, method = 'AIC', FVEt
 		for (i in 1:p) {
 			if (i == 1) {varsMatrix <- t(sapply(vars[[1]]$Ly, c))}else{varsMatrix <- cbind(varsMatrix, t(sapply(vars[[i]]$Ly, c)))}
 			if (i == 1) {muListX <- muList[[1]](regGrid[[i]])}else{muListX <- c(muListX, muList[[i]](regGrid[[i]]))}
-			}
+		}
 		varsMatrixDemean <- apply(varsMatrix,1, '-', muListX)
 		varsMatrixDemean <- t(varsMatrixDemean)
 		denseScore <- innerProd(varsMatrixDemean, eigenFun, brkX, intLen[1:p]) #for dense data, he score is directly estimated by integral(x,ei)
@@ -237,7 +241,7 @@ FPCReg <- function(vars, varsOptns = NULL, isNewSub = NULL, method = 'AIC', FVEt
 		invSigma <- lapply(subCov, function(x){as.matrix(solve(x))})
 		invSigmaY <- mapply(function(X, Y){X %*% Y}, X=invSigma, Y=varsDemean, SIMPLIFY=FALSE)
 		emputeScore <- mapply(function(X, Y){diag(eigenValue[1:numposiEigen]) %*% X %*% Y}, X = subEigenFun, Y = invSigmaY, SIMPLIFY = FALSE)
-		}
+	}
 
 	#if (Dense == 0) {Kx <- sparseComp(emputeScore, varsDemean, method, FVEthreshold, eigenValue, numposiEigen, isNewSub, diagSigma2, subEigenFun)} else {Kx <- denseComp(method, varsMatrixDemean, denseScore, eigenFun, eigenValue, isNewSub, diagSigma2, numposiEigen, FVEthreshold)}
 	if(!is.null(Kx)==1) {Kx <- Kx} else if (Dense == 0) {Kx <- sparseComp(emputeScore, varsDemean, method, FVEthreshold, eigenValue, numposiEigen, isNewSub, diagSigma2, subEigenFun)} else {Kx <- denseComp(method, varsMatrixDemean, denseScore, eigenFun, eigenValue, isNewSub, diagSigma2, numposiEigen, FVEthreshold)}
@@ -247,12 +251,12 @@ FPCReg <- function(vars, varsOptns = NULL, isNewSub = NULL, method = 'AIC', FVEt
 	pcaBeta <- array(0, c(dim(croCov)))
 	for (i in 1:Kx) {
 		pcaBeta <- pcaBeta + (1/eigenValue[i]) * eigenFun[, i] %*% innerProd(t(eigenFun[, i]), croCov, brkX, intLen)
-		}
+	}
 	estiBeta <- list()
 	#divide beta for output
 	for (i in 1:p) {
 		estiBeta[[i]] <- pcaBeta[(brkX[i]+1):brkX[i+1],]
-		}
+	}
 	names(estiBeta) <- lapply(names(vars)[1:p], function(x){paste("beta", x, "Y", sep = '')})
 
 	intBetaPhi <- innerProd(t(pcaBeta), as.matrix(eigenFun[, 1:Kx]), brkX, intLen)
@@ -275,8 +279,11 @@ FPCReg <- function(vars, varsOptns = NULL, isNewSub = NULL, method = 'AIC', FVEt
 		diageValue <- diag(eigenValue[1:Kx])
 		for (i in 1:p) {
 			if (i == 1) {
-				diagSigma2 <- c(rep(varsSigma2[1], gridNum[1]))}else{diagSigma2 = c(diagSigma2, rep(varsSigma2[i],gridNum[i]))}
+				diagSigma2 <- c(rep(varsSigma2[1], gridNum[1]))
+			}else{
+				diagSigma2 = c(diagSigma2, rep(varsSigma2[i],gridNum[i]))
 			}
+		}
 		SigmaY <- xCov + diag(diagSigma2)  #This part may be considered to use raw cov
 		Omega <- diageValue - diageValue %*% t(eigenFun[, 1:Kx]) %*% solve(SigmaY) %*% eigenFun[, 1:Kx] %*% t(diageValue)
 		pwVar <- diag(intBetaPhi %*% Omega %*% t(intBetaPhi))
@@ -297,29 +304,29 @@ FPCReg <- function(vars, varsOptns = NULL, isNewSub = NULL, method = 'AIC', FVEt
 		upCI <- mapply(function(X, Y){X + stats::qnorm(1 - alpha / 2)*sqrt(Y)}, X = predictY, Y = pwVar)
 		lwCI <- mapply(function(X, Y){X - stats::qnorm(1 - alpha / 2)*sqrt(Y)}, X = predictY, Y = pwVar)
 		cbandY <- lapply(1:dim(lwCI)[2], function(x){CI = cbind(lwCI[, x], upCI[, x]) ; colnames(CI) = c('lwCI', 'upCI') ; return(CI)})
-		}
+	}
 
 	res <- list(estiBeta = estiBeta, predictY = predictY, cbandY = cbandY, Q = Q, r2 = r2, Kx = Kx, varsMean = varsMean)
 	res
-	}
+}
 
 demeanFuc <- function(p, varsTrain, kern, varsOptns) {
 	for (i in 1:(p+1)) {
 	    userBwMuXi <- SetOptions(varsTrain[[i]]$Ly, varsTrain[[i]]$Lt, varsOptns[[i]])$userBwMu
 		varsTrain[[i]] <- list(Lt = varsTrain[[i]]$Lt, Ly = varsTrain[[i]]$Ly, userBwMu = userBwMuXi)
-		}
+	}
 	tmp <- lapply(varsTrain, function(x) {
 		Tin <- sort(unique(unlist(x[['Lt']])))
 		xmu <- GetSmoothedMeanCurve(x[['Ly']], x[['Lt']], Tin, Tin[1], list(userBwMu = x[['userBwMu']], kernel=kern))[['mu']]
 		muFun<-approxfun(Tin, xmu)
 		x[['Ly']] <- lapply(1:length(x[['Ly']]), function(i) x[['Ly']][[i]] - muFun(x[['Lt']][[i]]))
 		xmu <- muFun
-    		list(x = x, mu = xmu)
-  		})
+		list(x = x, mu = xmu)
+  	})
   	xList <- lapply(tmp, `[[`, 'x')
   	muList <- lapply(tmp, `[[`, 'mu')
   	list(xList = xList, muList = muList)
-	}
+}
 
 innerProd <- function(A, B, gridbrk, intlen){      
 	brkX <- gridbrk
@@ -329,19 +336,19 @@ innerProd <- function(A, B, gridbrk, intlen){
 		a2 <- brkX[i + 1]
 		A[,a1] <- A[, a1] / 2 ; A[, a2] = A[, a2] / 2
 		oupmat <- oupmat + A[, a1:a2] %*% B[a1:a2, ] * intlen[i] / (a2 - a1)
-		}
-	return(oupmat)
 	}
+	return(oupmat)
+}
 
 dx <- function(p, intLenX, gridNumX, brkX){    
 	for(i in 1:p){
 		if (i == 1) {dxMatrix <- diag(intLenX[1] / (gridNumX[1] - 1), gridNumX[1])}else{dxMatrix <- cdiag(dxMatrix, diag(intLenX[i] / (gridNumX[i]-1), gridNumX[i]))}
 		dxMatrix[brkX[i]+1, brkX[i]+1] <- dxMatrix[brkX[i]+1, brkX[i]+1]/2
 		dxMatrix[brkX[i+1], brkX[i+1]] <- dxMatrix[brkX[i+1], brkX[i+1]]/2
-		}
+	}
 	dxMatrix <- sqrt(as.matrix(dxMatrix))
 	return(dxMatrix)
-	}
+}
 
 denseCov <- function(p, varsTrain, brkX, dxMatrix, gridNum, varsOptns){
 	indRaw <- varsTrain[[1]]$Ly
@@ -350,7 +357,7 @@ denseCov <- function(p, varsTrain, brkX, dxMatrix, gridNum, varsOptns){
 		for (i in 2:p) {	
 			indRaw <- varsTrain[[i]]$Ly		
 			if (varsOptns[[i]]$error == 1) {covDense <- GetCovDense(indRaw, optns=varsOptns[[i]]) ; blkCov <- cdiag(blkCov, covDense$smoothCov) ; varsSigma2 <- c(varsSigma2, covDense$sigma2)} else {blkCov <- cdiag(blkCov, cov(indRaw))}	
-			}
+		}
 
 		for (i in 1:p) {
 			gridBrk1 <- brkX[i]+1
@@ -361,10 +368,10 @@ denseCov <- function(p, varsTrain, brkX, dxMatrix, gridNum, varsOptns){
 					gridBrk4 <- brkX[j+1]
 					blkCov[gridBrk1:gridBrk2, gridBrk3:gridBrk4] <- cov(varsTrain[[i]]$Ly, varsTrain[[j]]$Ly)
 					blkCov[gridBrk3:gridBrk4, gridBrk1:gridBrk2] <- t(as.matrix(blkCov[gridBrk1:gridBrk2, gridBrk3:gridBrk4]))
-					}
 				}
 			}
 		}
+	}
 	xCov <- as.matrix(blkCov)
 	adjxCov <- eigen(dxMatrix %*% xCov %*% dxMatrix)
 	eigenValue <- adjxCov$value
@@ -375,14 +382,14 @@ denseCov <- function(p, varsTrain, brkX, dxMatrix, gridNum, varsOptns){
 
 	for (i in 1:p) {
 		if(i==1) {croCov <- cov(varsTrain[[i]]$Ly, varsTrain[[p+1]]$Ly)} else {croCov <- rbind(croCov, cov(varsTrain[[i]]$Ly, varsTrain[[p+1]]$Ly))}
-		}
+	}
 	indRaw <- varsTrain[[p+1]]$Ly
 	if (varsOptns[[p+1]]$error == 1) {yCov <- GetCovDense(indRaw, optns = varsOptns[[p+1]])$smoothCov} else {yCov <- cov(indRaw)}
 	for (i in 1:p) {
 		if(i == 1){diagSigma2 <- c(rep(varsSigma2[1], gridNum[1]))}else{diagSigma2 <- c(diagSigma2, rep(varsSigma2[i], gridNum[i]))}
-		}
-	return(list(xCov = xCov, croCov = croCov, yCov = yCov, varsSigma2 = varsSigma2, eigenValue = eigenValue, eigenFun = eigenFun, diagSigma2 = diagSigma2, numposiEigen = numposiEigen))
 	}
+	return(list(xCov = xCov, croCov = croCov, yCov = yCov, varsSigma2 = varsSigma2, eigenValue = eigenValue, eigenFun = eigenFun, diagSigma2 = diagSigma2, numposiEigen = numposiEigen))
+}
 
 #gridNum may be used in the future to generalize the output grids, not restricted by 51.
 sparseCov <- function(p, varsTrain, brkX, varsOptns, vars, muList, gridNum, dxMatrix, regGrid){
@@ -411,7 +418,7 @@ sparseCov <- function(p, varsTrain, brkX, varsOptns, vars, muList, gridNum, dxMa
 			blkCov <- cdiag(blkCov, mx_temp1)	
 			varsbwMu[[i]] <- rfpca$bwMu
 			varsbwCov[[i]] <- rfpca$bwCov
-			}
+		}
 
 		for (i in 1:p) {
 			gridBrk1 <- brkX[i]+1
@@ -422,10 +429,10 @@ sparseCov <- function(p, varsTrain, brkX, varsOptns, vars, muList, gridNum, dxMa
 					gridBrk4 <- brkX[j+1]
 					blkCov[gridBrk1:gridBrk2, gridBrk3:gridBrk4] <- GetCrCovYX(bw1 = varsbwCov[[i]], bw2 = varsbwCov[[j]], Ly1 = varsTrain[[i]]$Ly, Lt1 = varsTrain[[i]]$Lt, Ymu1 = meanCrAll[[i]], Ly2 = varsTrain[[j]]$Ly, Lt2 = varsTrain[[j]]$Lt, Ymu2 = meanCrAll[[j]])$smoothedCC
 					blkCov[gridBrk3:gridBrk4, gridBrk1:gridBrk2] <- t(as.matrix(blkCov[gridBrk1:gridBrk2, gridBrk3:gridBrk4]))
-					}
 				}
 			}
 		}
+	}
 	xCov <- as.matrix(blkCov)
 	adjxCov <- eigen(dxMatrix %*% xCov %*% dxMatrix)
 	eigenValue <- adjxCov$value
@@ -443,24 +450,26 @@ sparseCov <- function(p, varsTrain, brkX, varsOptns, vars, muList, gridNum, dxMa
 	varsbwCov[[p+1]] <- yfpca$bwCov
 	meanCrY <- array(0, c(length(obsGrid)))
 	for(i in 1:p){
-		if (i==1) {croCov <- GetCrCovYX(bw1 = varsbwCov[[i]], bw2 = varsbwCov[[p+1]], Ly1 = varsTrain[[i]]$Ly, Lt1 = varsTrain[[i]]$Lt, Ymu1 = meanCrAll[[i]], Ly2 = varsTrain[[p+1]]$Ly, Lt2 = varsTrain[[p+1]]$Lt, Ymu2 = meanCrY)$smoothedCC}
-		else {croCov <- rbind(croCov,GetCrCovYX(bw1 = varsbwCov[[i]], bw2 = varsbwCov[[p+1]], Ly1 = varsTrain[[i]]$Ly, Lt1 = varsTrain[[i]]$Lt, Ymu1 = meanCrAll[[i]], Ly2 = varsTrain[[p+1]]$Ly, Lt2 = varsTrain[[p+1]]$Lt, Ymu2 = meanCrY)$smoothedCC)}
+		if (i==1) {croCov <- GetCrCovYX(bw1 = varsbwCov[[i]], bw2 = varsbwCov[[p+1]], Ly1 = varsTrain[[i]]$Ly, Lt1 = varsTrain[[i]]$Lt, Ymu1 = meanCrAll[[i]], Ly2 = varsTrain[[p+1]]$Ly, Lt2 = varsTrain[[p+1]]$Lt, Ymu2 = meanCrY)$smoothedCC
+		}else {
+		croCov <- rbind(croCov,GetCrCovYX(bw1 = varsbwCov[[i]], bw2 = varsbwCov[[p+1]], Ly1 = varsTrain[[i]]$Ly, Lt1 = varsTrain[[i]]$Lt, Ymu1 = meanCrAll[[i]], Ly2 = varsTrain[[p+1]]$Ly, Lt2 = varsTrain[[p+1]]$Lt, Ymu2 = meanCrY)$smoothedCC)
 		}
+	}
 	#==========================
 	for (i in 1:p) {
 		varDemean <- mapply('-',vars[[i]]$Ly, lapply(vars[[i]]$Lt, muList[[i]]), SIMPLIFY = FALSE)
 		if(i==1){varsDemean <- varDemean}else{varsDemean <- mapply(function(X, Y){c(X, Y)}, X = varsDemean, Y = varDemean, SIMPLIFY = FALSE)}
-		}
+	}
 	nZero <- rep(list(0), lengthVarsFPCReg(vars))
 	for (i in 1:p) {
 		varPnumber <- sapply(vars[[i]]$Lt, length)
 		nZero <- mapply(c, nZero, varPnumber, SIMPLIFY=FALSE)
-		}
+	}
 	varsPnumber <- lapply(nZero, cumsum)
 	if(p == 1){diagSigma2 <- lapply(nZero, function(x){if(x[2]==1){sv <- as.matrix(rep(varsSigma2[1], x[2]))}else{sv <- rep(varsSigma2[1], x[2])};C <- diag(sv)})
-		}else{
+	}else{
 		diagSigma2 <- lapply(nZero, function(x){if(x[2]==1){sv <- as.matrix(rep(varsSigma2[1], x[2]))}else{sv <- rep(varsSigma2[1], x[2])}; C <- diag(sv) ; for (i in 2:p) {if(x[i+1]==1){sv <- as.matrix(rep(varsSigma2[i], x[i+1]))}else{sv <- rep(varsSigma2[i], x[i+1])};C <- cdiag(C, diag(sv))} ; return(as.matrix(C))})
-		}
+	}
 	
 	a1 <- brkX[1]+1
 	a2 <- brkX[1+1]
@@ -491,11 +500,11 @@ sparseCov <- function(p, varsTrain, brkX, varsOptns, vars, muList, gridNum, dxMa
 						X[pnumber1:pnumber2, pnumber3:pnumber4] = Y
 						X[pnumber3:pnumber4, pnumber1:pnumber2] = t(Y)
 						return(X)
-						}, X = subCov, Y = subMxx, Z = varsPnumber ,SIMPLIFY=FALSE)
-					}
+					}, X = subCov, Y = subMxx, Z = varsPnumber ,SIMPLIFY=FALSE)
 				}
 			}
 		}
+	}
 	subCov <- mapply('+', subCov, diagSigma2, SIMPLIFY=FALSE)
 	listEigenFun <- lapply(1:numposiEigen, function(i) eigenFun[,i])
 
@@ -508,10 +517,10 @@ sparseCov <- function(p, varsTrain, brkX, varsOptns, vars, muList, gridNum, dxMa
 		phimx0 <- lapply(phimx0,function(x){if(dim(x)[1]==1){x <- t(x)}else{x <- x}})
 		if (i == 1) {subEigenFun <- phimx0} else {subEigenFun <- mapply(function(X, Y){cbind(X, Y)}, X = subEigenFun, Y = phimx0 ,SIMPLIFY=FALSE)}
 		if (i == 1) {subMeanX <- muList[[i]](regGrid[[i]])} else {subMeanX <- c(subMeanX, muList[[i]](regGrid[[i]]))}
-		}
+	}
 
 	return(list(xCov = xCov, croCov = croCov, varsSigma2 = varsSigma2, yCov = yCov, varsbwMu = varsbwMu, varsbwCov = varsbwCov, varsDemean = varsDemean, subCov = subCov, subEigenFun = subEigenFun, subMeanX = subMeanX, numposiEigen = numposiEigen, diagSigma2 = diagSigma2, eigenValue = eigenValue, eigenFun = eigenFun))
-	}
+}
 
 lengthVarsFPCReg <- function(varsTrain, subset) {
 	lenEach <- sapply(varsTrain, function(x) {
@@ -526,9 +535,9 @@ lengthVarsFPCReg <- function(varsTrain, subset) {
   	len <- unique(unlist(lenEach))
   	if (length(len) != 1) {
 		stop('Length of variables are not the same!')
-		}
-	return(len)
 	}
+	return(len)
+}
 
 sparseComp <- function(emputeScore, varsDemean, method, FVEthreshold, eigenValue, numposiEigen, isNewSub, diagSigma2, subEigenFun){
 	if (length(which(isNewSub == 1)) == 0) {varsDemeanTrain <- varsDemean}else{varsDemeanTrain <- varsDemean[-which(isNewSub == 1)]}
@@ -540,29 +549,31 @@ sparseComp <- function(emputeScore, varsDemean, method, FVEthreshold, eigenValue
 		psuLogli <- array(0, c(numposiEigen))
 		for (i in 1:numposiEigen) {
 			if(i == 1) {psuVec <- mapply(function(X, Y, Z){Z - as.matrix(X[1:i, ]) * Y[1:i]}, X = subEigenFunTrain, Y = emputeScoreTrain, Z = varsDemeanTrain, SIMPLIFY=FALSE)} else {psuVec <- mapply(function(X, Y, Z){Z - as.matrix(t(X[1:i, ]))%*%as.matrix(Y[1:i])}, X = subEigenFunTrain, Y = emputeScoreTrain, Z = varsDemeanTrain, SIMPLIFY=FALSE)}		
-			psuLogli[i] <- sum(mapply(function(X, Y){t(Y) %*% diag(1/diag(X)) %*% Y / 2}, X = diagSigma2Train, Y = psuVec)) + i
-			}
+			#psuLogli[i] <- sum(mapply(function(X, Y){t(Y) %*% diag(1/diag(X)) %*% Y / 2}, X = diagSigma2Train, Y = psuVec)) + i
+			psuLogli[i] <- sum(mapply(function(X, Y){t(Y) %*% solve(X) %*% Y / 2}, X = diagSigma2Train, Y = psuVec)) + i
+		}
 		diffRatio <- (max(psuLogli) - psuLogli) / diff(range(psuLogli))
 		Kx <- min(which(diffRatio > 0.95))
 		#diffRatio=abs(psuLogli/min(psuLogli))
 		#Kx=min(which(diffRatio<1.2))
 		#Kx=which.min(psuLogli>min(psuLogli)*1.1)
-		}
+	}
 
 	if (method == 'BIC') {
 		psuLogli <- array(0, c(numposiEigen))
 		for (i in 1:numposiEigen) {
 			if (i==1) {psuVec <- mapply(function(X, Y, Z){Z - as.matrix(X[1:i, ]) * Y[1:i]}, X = subEigenFunTrain, Y = emputeScoreTrain, Z = varsDemeanTrain, SIMPLIFY=FALSE)} else {psuVec <- mapply(function(X, Y, Z){Z - as.matrix(t(X[1:i, ])) %*% as.matrix(Y[1:i])}, X = subEigenFunTrain, Y = emputeScoreTrain, Z = varsDemeanTrain, SIMPLIFY=FALSE)}		
-			psuLogli[i] <- sum(mapply(function(X, Y){t(Y) %*% diag(1 / diag(X)) %*% Y / 2}, X = diagSigma2Train,Y=psuVec)) + i * log(length(unlist(varsDemeanTrain))) / 2
-			}
+			#psuLogli[i] <- sum(mapply(function(X, Y){t(Y) %*% diag(1 / diag(X)) %*% Y / 2}, X = diagSigma2Train,Y=psuVec)) + i * log(length(unlist(varsDemeanTrain))) / 2
+			psuLogli[i] <- sum(mapply(function(X, Y){t(Y) %*% solve(X) %*% Y / 2}, X = diagSigma2Train,Y=psuVec)) + i * log(length(unlist(varsDemeanTrain))) / 2
+		}
 		diffRatio <- (max(psuLogli) - psuLogli)/diff(range(psuLogli))
 		Kx <- min(which(diffRatio > 0.95))
 		#diffRatio=abs(psuLogli/min(psuLogli))
 		#Kx=min(which(diffRatio<1.2))
 		#Kx=which.min(psuLogli>min(psuLogli)*1.2)
-		}
-	Kx
 	}
+	Kx
+}
 
 
 denseComp <- function(method, varsMatrixDemean, denseScore, eigenFun, eigenValue, isNewSub, diagSigma2, numposiEigen, FVEthreshold){
@@ -579,7 +590,7 @@ denseComp <- function(method, varsMatrixDemean, denseScore, eigenFun, eigenValue
 		Kx <- min(which(diffRatio > 0.95))
 		#diffRatio=abs(psuLogli/min(psuLogli))
 		#Kx=min(which(diffRatio<1.3))
-		}
+	}
 	if (method == 'BIC') {
 		if (length(which(isNewSub == 1)) == 0) {varsMatrixDemeanTrain <- varsMatrixDemean} else {varsMatrixDemeanTrain <- varsMatrixDemean[-which(isNewSub == 1), ]}
 		if (length(which(isNewSub == 1)) == 0) {denseScoreTrain <- denseScore} else {denseScoreTrain <- denseScore[-which(isNewSub == 1), ]}
@@ -593,9 +604,9 @@ denseComp <- function(method, varsMatrixDemean, denseScore, eigenFun, eigenValue
 		Kx <- min(which(diffRatio > 0.95))
 		#diffRatio=abs(psuLogli/min(psuLogli))
 		#Kx=min(which(diffRatio<1.3))
-		}
-	return(Kx)
 	}
+	return(Kx)
+}
 
 cdiag <- function(A,B){
 	if(is.matrix(A)==0){A <- as.matrix(A)}
@@ -606,7 +617,7 @@ cdiag <- function(A,B){
 	C[1:dim(A)[1],1:dim(A)[2]] <- A
 	C[(dim(A)[1]+1):(dim(A)[1]+dim(B)[1]),(dim(A)[2]+1):(dim(A)[2]+dim(B)[2])] <- B
 	return(C)
-	}
+}
 
 
 
