@@ -56,7 +56,6 @@ expect_equal(mean((estiBetaX1Y_Sparse - trueBetaX1Y)^2)/mean(trueBetaX1Y^2), 0, 
 
 
 #test for two predictors X1 and X2 
-rm(list=ls())
 set.seed(1000)
 #Model: E(Y(t)|X) = int(beta(s,t)*X(s))
 n <- 300 #number of subjects
