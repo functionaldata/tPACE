@@ -4,7 +4,7 @@
 \alias{FClust}
 \title{Functional clustering and identifying substructures of longitudinal data}
 \usage{
-FClust(Ly, Lt, k = 3, cmethod = "Rmixmod", optnsFPCA = NULL,
+FClust(Ly, Lt, k = 3, cmethod = "EMCluster", optnsFPCA = NULL,
   optnsCS = NULL, seed = 123)
 }
 \arguments{
@@ -14,15 +14,13 @@ FClust(Ly, Lt, k = 3, cmethod = "Rmixmod", optnsFPCA = NULL,
 
 \item{k}{A scalar defining the number of clusters to define; default 3.}
 
-\item{cmethod}{A string specifying the clusterig method to use ('Rmixmod' or 'kCFC'); default: 'Rmixmod'.}
+\item{cmethod}{A string specifying the clusterig method to use ('EMCluster' or 'kCFC'); default: 'EMCluster'.}
 
 \item{optnsFPCA}{A list of options control parameters specified by \code{list(name=value)} to be used for by FPCA on the sample y; by default: 
 "list( methodMuCovEst ='smooth', FVEthreshold= 0.90, methodBwCov = 'GCV', methodBwMu = 'GCV' )". See `Details in ?FPCA'.}
 
 \item{optnsCS}{A list of options control parameters specified by \code{list(name=value)} to be used for cluster-specific FPCA from kCFC; by default:
 "list( methodMuCovEst ='smooth', FVEthreshold= 0.70, methodBwCov = 'GCV', methodBwMu = 'GCV' )". See `Details in ?FPCA' and '?kCFC'. This is not used by Rmixmod!}
-
-\item{seed}{A positive integer defining the seed of the random number generator, see ?Rmixmod::mixmodStrategy for details; default: 123.}
 }
 \value{
 A list containing the following fields:
@@ -32,11 +30,11 @@ A list containing the following fields:
 }
 \description{
 By default the function will cluster the data using the functional principal component (FPC) scores from the data's 
-FPC analysis using Rmixmod (Biernacki etl al., 2006) or directly clustering the functional data using kCFC (Chiou and Li, 2007).
+FPC analysis using EMCluster (Chen and Maitra, 2015) or directly clustering the functional data using kCFC (Chiou and Li, 2007).
 }
 \details{
-Within Rmixmod we examine the models under the configuration: "Rmixmod::mixmodGaussianModel( equal.proportions = FALSE, free.proportions = TRUE, family = 'general')"
-and return the optimal model based on 'NEC'. See ?Rmixmod::mixmodGaussianModel for details.
+Within EMCluster we examine the model initiated "EMCluster::em.EM" and return the optimal model based on 'EMCluster::emcluster'. 
+See ?EMCluster::emcluster for details.
 }
 \examples{
 data(medfly25)

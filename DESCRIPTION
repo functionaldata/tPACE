@@ -45,7 +45,7 @@ Suggests:
     ks,
     gtools,
     knitr,
-    Rmixmod,
+    EMCluster,
     minqa,
     testthat
 NeedsCompilation: yes
