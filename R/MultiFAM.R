@@ -221,7 +221,7 @@ MultiFAM <- function(Y,X,ker='epan',nEval=51,XTest=NULL,bwMethod=0,alpha=0.7,sup
   for (j in 1:d) {
     if (bwMethod>0) {
       options(warn = -1) 
-      h0 <- CVLwls1D(yy=Y,tt=XiStd[,j],kernel='epan',npoly=0,nder=0,dataType='Sparse',kFolds=bwMethod)
+      h0 <- CVLwls1D(y=Y,t=XiStd[,j],kernel='epan',npoly=0,nder=0,dataType='Sparse',kFolds=bwMethod)
       options(warn = 0) 
     } else {
       options(warn = -1) 
