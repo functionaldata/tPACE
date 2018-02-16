@@ -26,7 +26,7 @@ FClust(Ly, Lt, k = 3, cmethod = "EMCluster", optnsFPCA = NULL,
 A list containing the following fields:
 \item{cluster}{A vector of levels 1:k, indicating the cluster to which each curve is allocated.} 
 \item{fpca}{An FPCA object derived from the sample used by Rmixmod, otherwise NULL.} 
-\item{clusterObj}{Either a MixmodCluster object or kCFC object.}
+\item{clusterObj}{Either a EMCluster object or kCFC object.}
 }
 \description{
 By default the function will cluster the data using the functional principal component (FPC) scores from the data's 
@@ -51,7 +51,7 @@ N <- length(unique(medfly25$ID))
 (correctRate <- sum( (1 + veryLowCount) ==  newClust$cluster) / N) # 99.6\%
 }
 \references{
-\cite{Christophe Biernacki, Gilles Celeux, Gerard Govaert and Florent Langrognet, "Model-Based Cluster and Discriminant Analysis with the MIXMOD Software". Computational Statistics and Data Analysis 51 (2007): 587-600}
+\cite{Wei-Chen Chen and Ranjan Maitra, “EMCluster: EM Algorithm for Model-Based Clusttering   of Finite Mixture Gaussian Distribution”. (2015)}
 
 \cite{Julien Jacques and Cristian Preda, "Funclust: A curves clustering method using functional random variables density approximation". Neurocomputing 112 (2013): 164-171}
 
