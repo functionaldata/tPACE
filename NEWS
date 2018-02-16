@@ -3,6 +3,7 @@ Current version
 New functionality:
 * Added functional additive models (MultiFAM, TVAMSBFitting, SBFitting).
 * Added stringing (Stringing).
+* Added functonal linear regression with functional response (FPCReg).
 
 Changes:
 * Dropped argument `k` from SelectK.
