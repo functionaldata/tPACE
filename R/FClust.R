@@ -34,14 +34,14 @@
 #' N <- length(unique(medfly25$ID))
 #' (correctRate <- sum( (1 + veryLowCount) ==  newClust$cluster) / N) # 99.6%
 #' @references
-#' \cite{Wei-Chen Chen and Ranjan Maitra, “EMCluster: EM Algorithm for Model-Based Clusttering   of Finite Mixture Gaussian Distribution”. (2015)}
+#' \cite{Wei-Chen Chen and Ranjan Maitra, "EMCluster: EM Algorithm for Model-Based Clusttering of Finite Mixture Gaussian Distribution". (2015)}
 #'
 #' \cite{Julien Jacques and Cristian Preda, "Funclust: A curves clustering method using functional random variables density approximation". Neurocomputing 112 (2013): 164-171}
 #' 
 #' \cite{Jeng-Min Chiou and Pai-Ling Li, "Functional clustering and identifying substructures of longitudinal data". Journal of the Royal Statistical Society B 69 (2007): 679-699}
 #' @export
 
-FClust = function(Ly, Lt, k = 3, cmethod = 'EMCluster', optnsFPCA = NULL, optnsCS = NULL, seed=123){ 
+FClust = function(Ly, Lt, k = 3, cmethod = 'EMCluster', optnsFPCA = NULL, optnsCS = NULL){ 
   
   if(is.null(optnsFPCA)){
      optnsFPCA = list( methodMuCovEst = 'smooth', FVEthreshold = 0.90, methodBwCov = 'GCV', methodBwMu = 'GCV')

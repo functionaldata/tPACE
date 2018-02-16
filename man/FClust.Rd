@@ -5,7 +5,7 @@
 \title{Functional clustering and identifying substructures of longitudinal data}
 \usage{
 FClust(Ly, Lt, k = 3, cmethod = "EMCluster", optnsFPCA = NULL,
-  optnsCS = NULL, seed = 123)
+  optnsCS = NULL)
 }
 \arguments{
 \item{Ly}{A list of \emph{n} vectors containing the observed values for each individual. Missing values specified by \code{NA}s are supported for dense case (\code{dataType='dense'}).}
@@ -51,7 +51,7 @@ N <- length(unique(medfly25$ID))
 (correctRate <- sum( (1 + veryLowCount) ==  newClust$cluster) / N) # 99.6\%
 }
 \references{
-\cite{Wei-Chen Chen and Ranjan Maitra, “EMCluster: EM Algorithm for Model-Based Clusttering   of Finite Mixture Gaussian Distribution”. (2015)}
+\cite{Wei-Chen Chen and Ranjan Maitra, "EMCluster: EM Algorithm for Model-Based Clusttering of Finite Mixture Gaussian Distribution". (2015)}
 
 \cite{Julien Jacques and Cristian Preda, "Funclust: A curves clustering method using functional random variables density approximation". Neurocomputing 112 (2013): 164-171}
 
