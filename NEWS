@@ -8,6 +8,8 @@ New functionality:
 Changes:
 * Dropped argument `k` from SelectK.
 * Vignette in HTML.
+* FClust functionality uses `EMCluster` instead `Rmixmod`.
+* Multiple minor bug fixes.
 
 fdapace v0.3.0 (Release date: 25-Jan-2017)
 =============
