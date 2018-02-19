@@ -1,3 +1,4 @@
+
 #include <Rcpp.h> 
 using namespace Rcpp;
 
@@ -12,7 +13,12 @@ template <class ForwardIterator> bool is_sorted (ForwardIterator first, ForwardI
   }
   return true;
 }
-
+//' Cumulative Trapezoid Rule Numerical Integration
+//' 
+//' Cumulative Trapezoid Rule Numerical Integration using Rcpp
+//' @param X Sorted vector of X values
+//' @param Y Vector of Y values.
+//' @export 
 // [[Rcpp::export]]
 Rcpp::NumericVector cumtrapzRcpp(const Rcpp::NumericVector X,const Rcpp::NumericVector Y){   
 

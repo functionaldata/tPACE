@@ -3,14 +3,15 @@ Type: Package
 Title: Functional Data Analysis and Empirical Dynamics
 URL: https://github.com/functionaldata/tPACE
 BugReports: https://github.com/functionaldata/tPACE/issues
-Version: 0.3.1
-Date: 2017-01-24,
-Author: Xiongtao Dai,
-    Pantelis Z. Hadjipantelis,
-    Kyunghee Han,
-    Hao Ji,
-    Hans-Georg Mueller,
-    Jane-Ling Wang
+Version: 0.4.0
+Date: 2018-02-15,
+Authors@R: c(person("Xiongtao","Dai", role=c("aut")),
+    person("Pantelis Z.","Hadjipantelis", email="pantelis@ucdavis.edu", role=c("aut","cre")),
+    person("Kynghee","Han", role="aut"),
+    person("Hao","Ji", role=c("aut")),
+    person("Shu-Chin", "Lin", role="ctb"),
+    person("Hans-Georg", "Mueller", role=c("cph","ths")),
+    person("Jane-Ling", "Wang", role=c("cph","ths"))) 
 Maintainer: Pantelis Z. Hadjipantelis <pantelis@ucdavis.edu>
 Description: Provides implementation of various methods of Functional Data
     Analysis (FDA) and Empirical Dynamics. The core of this package is Functional
@@ -44,7 +45,7 @@ Suggests:
     ks,
     gtools,
     knitr,
-    Rmixmod,
+    EMCluster,
     minqa,
     testthat
 NeedsCompilation: yes

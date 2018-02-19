@@ -84,36 +84,36 @@
 #' 
 #' par(mfrow=c(2,2))
 #' j <- 1
-#' p0 <- fdapace:::trapzRcpp(sort(xi[,j]),dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))
+#' p0 <- trapzRcpp(sort(xi[,j]),dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))
 #' g11 <- f11(sort(xi[,j])) - 
-#' fdapace:::trapzRcpp(sort(xi[,j]),f11(sort(xi[,j]))*dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))/p0
+#' trapzRcpp(sort(xi[,j]),f11(sort(xi[,j]))*dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))/p0
 #' tmpSgn <- sign(sum(g11*sbf$SBFit[,j]))
 #' plot(sort(xi[,j]),g11,type='l',col=2,ylim=c(-2.5,2.5),xlab='xi11')
 #' points(sort(xi[,j]),tmpSgn*sbf$SBFit[order(xi[,j]),j],type='l')
 #' legend('top',c('true','SBF'),col=c(2,1),lwd=2,bty='n',horiz=TRUE)
 #' 
 #' j <- 2
-#' p0 <- fdapace:::trapzRcpp(sort(xi[,j]),dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))
+#' p0 <- trapzRcpp(sort(xi[,j]),dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))
 #' g12 <- f12(sort(xi[,j])) - 
-#' fdapace:::trapzRcpp(sort(xi[,j]),f12(sort(xi[,j]))*dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))/p0
+#' trapzRcpp(sort(xi[,j]),f12(sort(xi[,j]))*dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))/p0
 #' tmpSgn <- sign(sum(g12*sbf$SBFit[,j]))
 #' plot(sort(xi[,j]),g12,type='l',col=2,ylim=c(-2.5,2.5),xlab='xi12')
 #' points(sort(xi[,j]),tmpSgn*sbf$SBFit[order(xi[,j]),j],type='l')
 #' legend('top',c('true','SBF'),col=c(2,1),lwd=2,bty='n',horiz=TRUE)
 #' 
 #' j <- 3
-#' p0 <- fdapace:::trapzRcpp(sort(xi[,j]),dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))
+#' p0 <- trapzRcpp(sort(xi[,j]),dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))
 #' g21 <- f21(sort(xi[,j])) - 
-#' fdapace:::trapzRcpp(sort(xi[,j]),f21(sort(xi[,j]))*dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))/p0
+#' trapzRcpp(sort(xi[,j]),f21(sort(xi[,j]))*dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))/p0
 #' tmpSgn <- sign(sum(g21*sbf$SBFit[,j]))
 #' plot(sort(xi[,j]),g21,type='l',col=2,ylim=c(-2.5,2.5),xlab='xi21')
 #' points(sort(xi[,j]),tmpSgn*sbf$SBFit[order(xi[,j]),j],type='l')
 #' legend('top',c('true','SBF'),col=c(2,1),lwd=2,bty='n',horiz=TRUE)
 #' 
 #' j <- 4
-#' p0 <- fdapace:::trapzRcpp(sort(xi[,j]),dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))
+#' p0 <- trapzRcpp(sort(xi[,j]),dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))
 #' g22 <- f22(sort(xi[,j])) - 
-#' fdapace:::trapzRcpp(sort(xi[,j]),f22(sort(xi[,j]))*dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))/p0
+#' trapzRcpp(sort(xi[,j]),f22(sort(xi[,j]))*dnorm(sort(xi[,j]),0,sqrt(sig[j,j])))/p0
 #' tmpSgn <- sign(sum(g22*sbf$SBFit[,j]))
 #' plot(sort(xi[,j]),g22,type='l',col=2,ylim=c(-2.5,2.5),xlab='xi22')
 #' points(sort(xi[,j]),tmpSgn*sbf$SBFit[order(xi[,j]),j],type='l')
@@ -221,11 +221,11 @@ MultiFAM <- function(Y,X,ker='epan',nEval=51,XTest=NULL,bwMethod=0,alpha=0.7,sup
   for (j in 1:d) {
     if (bwMethod>0) {
       options(warn = -1) 
-      h0 <- fdapace:::CVLwls1D(y=Y,t=XiStd[,j],kernel='epan',npoly=0,nder=0,dataType='Sparse',kFolds=bwMethod)
+      h0 <- CVLwls1D(y=Y,t=XiStd[,j],kernel='epan',npoly=0,nder=0,dataType='Sparse',kFolds=bwMethod)
       options(warn = 0) 
     } else {
       options(warn = -1) 
-      h0 <- fdapace:::GCVLwls1D1(y=Y,t=XiStd[,j],kernel='epan',npoly=0,nder=0,dataType='Sparse')$bOpt
+      h0 <- GCVLwls1D1(yy=Y,tt=XiStd[,j],kernel='epan',npoly=0,nder=0,dataType='Sparse')$bOpt
       options(warn = 0) 
     }
     h[j] <- alpha*h0

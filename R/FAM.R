@@ -160,11 +160,11 @@ FAM <- function(Y,Lx,Lt,nEval=51,newLx=NULL,newLt=NULL,bwMethod=0,alpha=0.7,supp
   for (j in 1:d) {
     if (bwMethod>0) {
       options(warn = -1) 
-      h[j] <- fdapace:::CVLwls1D(y=(Y-mean(Y)),t=XiStd[,j],kernel='epan',npoly=1,nder=0,dataType='Sparse',kFolds=bwMethod)
+      h[j] <- CVLwls1D(y=(Y-mean(Y)),t=XiStd[,j],kernel='epan',npoly=1,nder=0,dataType='Sparse',kFolds=bwMethod)
       options(warn = 0) 
     } else {
       options(warn = -1) 
-      h[j] <- fdapace:::GCVLwls1D1(y=(Y-mean(Y)),t=XiStd[,j],kernel='epan',npoly=1,nder=0,dataType='Sparse')$bOpt
+      h[j] <- GCVLwls1D1(yy=(Y-mean(Y)),tt=XiStd[,j],kernel='epan',npoly=1,nder=0,dataType='Sparse')$bOpt
       options(warn = 0) 
     }
   } 
@@ -174,7 +174,7 @@ FAM <- function(Y,Lx,Lt,nEval=51,newLx=NULL,newLt=NULL,bwMethod=0,alpha=0.7,supp
   fam <- matrix(nrow=N,ncol=d)
   for (j in 1:d) {
     xiTmp <- sort(xiStdGrid[,j])
-    fitTmp <- fdapace:::Lwls1D(bw=h[j],kernel_type='epan',xin=sort(XiStd[,j]),yin=(Y[order(XiStd[,j])]-mean(Y)),xout=xiTmp,npoly=1,nder=0)
+    fitTmp <- Lwls1D(bw=h[j],kernel_type='epan',xin=sort(XiStd[,j]),yin=(Y[order(XiStd[,j])]-mean(Y)),xout=xiTmp,npoly=1,nder=0)
     fam[,j] <- fitTmp[match(xiStdGrid[,j],xiTmp)]
     
     fam[,j] <- fam[,j] - mean(fam[,j])
