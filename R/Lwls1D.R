@@ -18,6 +18,10 @@
 
 Lwls1D <- function( bw, kernel_type, win=rep(1L, length(xin)), xin, yin, xout, npoly = 1L, nder = 0L){
 
+  if(is.unsorted(xin)){
+    stop('`xin` needs to be sorted in increasing order')
+  }
+
   if(is.unsorted(xout)){
     stop('`xout` needs to be sorted in increasing order')
   }
