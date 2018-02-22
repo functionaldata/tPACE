@@ -32,7 +32,9 @@
 #' 
 #' #generate X
 #' #{1, sqrt(2)*sin(2*pi*s), sqrt(2)*cos(2*pi*t)} are used to generate X.
-#' eigenFun <- list(function(s){1 + 0 * s},function(s){sqrt(2) * sin(2*pi*s)},function(s){sqrt(2) * cos(2*pi*s)})
+#' eigenFun <- list( function(s){1 + 0 * s}, 
+#'                   function(s){sqrt(2) * sin(2*pi*s)},
+#'                   function(s){sqrt(2) * cos(2*pi*s)})
 #' 
 #' sig <- matrix(c(1.5, 0.0, 0.0, 0.9, -.5, 0.1,
 #'                 0.0, 1.2, 0.0, -.3, 0.8, 0.4,
@@ -58,9 +60,12 @@
 #' 
 #' #generate Y
 #' #beta(s, t) <- sin(2 * pi * s)*cos(2 * pi * t)
-#' betaEigen1 <- function(t){f <- function(s){sin(2*pi*s) * cos(2*pi*t) * (1+0*s)};return(f)}
-#' betaEigen2 <- function(t){f <- function(s){sin(2*pi*s) * cos(2*pi*t) * (sqrt(2)*sin(2*pi*s))}; return(f)}
-#' betaEigen3 <- function(t){f <- function(s){sin(2*pi*s) * cos(2*pi*t) * (sqrt(2)*cos(2*pi*s))}; return(f)}
+#' betaEigen1 <- function(t){f <- function(s){
+#'                             sin(2*pi*s) * cos(2*pi*t) * (1+0*s)}; return(f)}
+#' betaEigen2 <- function(t){f <- function(s){
+#'                             sin(2*pi*s) * cos(2*pi*t) * (sqrt(2)*sin(2*pi*s))}; return(f)}
+#' betaEigen3 <- function(t){f <- function(s){
+#'                             sin(2*pi*s) * cos(2*pi*t) * (sqrt(2)*cos(2*pi*s))}; return(f)}
 #' betaEigen <- list(betaEigen1, betaEigen2, betaEigen3) 
 #' basisY <- array(0,c(ngridt, 3))
 #' for(i in 1:3){
@@ -82,12 +87,14 @@
 #' 
 #' par(mfrow=c(1,2))
 #' estiBetaX1Y_Dense <- resuDense$estiBeta$betaX1Y
-#' args1 <- list(xlab = 's', ylab = 't', zlab = 'estiBetaX1Y_Dense(s, t)',lighting = FALSE, phi = 45, theta = 45)
+#' args1 <- list(xlab = 's', ylab = 't', zlab = 'estiBetaX1Y_Dense(s, t)',
+#'               lighting = FALSE, phi = 45, theta = 45)
 #' args2 <- list(x = 1:ngrids, y = 1:ngridt, z = estiBetaX1Y_Dense[1:ngrids, 1:ngridt])
 #' do.call(plot3D::persp3D,c(args2, args1))
 #' 
 #' estiBetaX2Y_Dense <- resuDense$estiBeta$betaX2Y
-#' args1 <- list(xlab = 's', ylab = 't', zlab = 'estiBetaX2Y_Dense(s, t)',lighting = FALSE, phi = 45, theta = 45)
+#' args1 <- list(xlab = 's', ylab = 't', zlab = 'estiBetaX2Y_Dense(s, t)',
+#'              lighting = FALSE, phi = 45, theta = 45)
 #' args2 <- list(x = 1:ngrids, y = 1:ngridt, z = estiBetaX2Y_Dense[1:ngrids, 1:ngridt])
 #' do.call(plot3D::persp3D,c(args2, args1))
 #' 
@@ -98,22 +105,27 @@
 #' sparseY <- Sparsify(denseY, gridt, sparsity)
 #' sparseVars <- list(X1 = sparseX1, X2 = sparseX2, Y = sparseY)
 #' 
-#' resuSparse <- FPCReg(sparseVars, method="FVE", FVEthreshold=0.98) #or resuSparse <- FPCReg(vars = sparseVars,varsOptns = list(X1=list(userBwCov = 0.03)))
+#' resuSparse <- FPCReg(sparseVars, method="FVE", FVEthreshold=0.98) 
+#' #or resuSparse <- FPCReg(vars = sparseVars,
+#'                          varsOptns = list(X1=list(userBwCov = 0.03)))
 #' 
 #' par(mfrow=c(1,2))
 #' estiBetaX1Y_Sparse = resuSparse$estiBeta$betaX1Y
-#' args1 = list(xlab = 's', ylab = 't', zlab = 'estiBetaX1Y_Sparse(s,t)', lighting = FALSE, phi = 45,theta = 45)
+#' args1 = list(xlab = 's', ylab = 't', zlab = 'estiBetaX1Y_Sparse(s,t)', 
+#'              lighting = FALSE, phi = 45,theta = 45)
 #' args2 = list(x = 1:51, y = 1:51, z = estiBetaX1Y_Sparse[1:51, 1:51])
 #' do.call(plot3D::persp3D, c(args2, args1))
 #' 
 #' estiBetaX2Y_Sparse = resuSparse$estiBeta$betaX2Y
-#' args1 = list(xlab = 's', ylab = 't', zlab = 'estiBetaX2Y_Sparse(s,t)', lighting = FALSE, phi = 45,theta = 45)
+#' args1 = list(xlab = 's', ylab = 't', zlab = 'estiBetaX2Y_Sparse(s,t)', 
+#'              lighting = FALSE, phi = 45,theta = 45)
 #' args2 = list(x = 1:51, y = 1:51, z = estiBetaX2Y_Sparse[1:51, 1:51])
 #' do.call(plot3D::persp3D, c(args2, args1))
 #' 
 #' par(mfrow=c(2,3))
 #' for(i in 1:6){
-#' 	plot(sparseVars[['Y']]$Lt[[i]], sparseVars[['Y']]$Ly[[i]], xlab = 'time', ylab = 'observations', ylim = c(-1.5, 1.5))
+#' 	plot(sparseVars[['Y']]$Lt[[i]], sparseVars[['Y']]$Ly[[i]], 
+#' 	xlab = 'time', ylab = 'observations', ylim = c(-1.5, 1.5))
 #' 	lines(seq(0, 1, length.out = 51), resuSparse$predictY[[i]])
 #' 	lines(seq(0, 1, length.out = 51), resuSparse$cbandY[[i]][,2], lty = 2)
 #' 	lines(seq(0, 1, length.out = 51), resuSparse$cbandY[[i]][,1], lty = 2)
