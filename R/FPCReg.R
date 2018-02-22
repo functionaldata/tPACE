@@ -107,7 +107,7 @@
 #' 
 #' resuSparse <- FPCReg(sparseVars, method="FVE", FVEthreshold=0.98) 
 #' #or resuSparse <- FPCReg(vars = sparseVars,
-#'                          varsOptns = list(X1=list(userBwCov = 0.03)))
+#' #                        varsOptns = list(X1=list(userBwCov = 0.03)))
 #' 
 #' par(mfrow=c(1,2))
 #' estiBetaX1Y_Sparse = resuSparse$estiBeta$betaX1Y
