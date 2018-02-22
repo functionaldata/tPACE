@@ -133,7 +133,7 @@ CreatePathPlot( FPCAsparseMuBW5, subset = 1:3, main = "User-defined bandwidth", 
 
 ```{r,eval=TRUE, echo=TRUE}
 SelectK( FPCAsparse, criterion = 'FVE', FVEthreshold = 0.95) # K = 2
-SelectK( FPCAsparse, criterion = 'AIC') # K = 6
+SelectK( FPCAsparse, criterion = 'AIC') # K = 2
 ```
 When working with functional data (usually not very sparse) the estimation of derivatives is often of interest. Using \texttt{fitted.FPCA} one can directly obtain numerical derivatives by defining the appropriate order  <tt>`p`</tt>;  <tt>`fdapace`</tt> provides for the first two derivatives ( <tt>`p =1`</tt>  or <tt>`2`</tt>). Because the numerically differentiated data are smoothed the user can define smoothing specific arguments (see <tt>`?fitted.FPCA`</tt> for more information); the derivation is done by using the derivative of the linear fit. Similarly using the function   <tt>`FPCAder`</tt> , one can augment an  <tt>`FPCA`</tt> object with functional derivatives of a sample's mean function and eigenfunctions.
 

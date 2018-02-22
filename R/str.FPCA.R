@@ -1,7 +1,7 @@
 #' Compactly display the structure of an FPCA object
 #'
-#' object An FPCA object
-#' ... Not used
+#' @param object An FPCA object
+#' @param ... Not used
 #'
 #' @export
 str.FPCA <- function(object, ...) {

@@ -6,7 +6,11 @@
 \usage{
 \method{str}{FPCA}(object, ...)
 }
+\arguments{
+\item{object}{An FPCA object}
+
+\item{...}{Not used}
+}
 \description{
-object An FPCA object
-... Not used
+Compactly display the structure of an FPCA object
 }
