@@ -4,6 +4,10 @@ author: "Hadjipantelis, Dai, Ji, Han, Muller & Wang - UC Davis, USA"
 date: "1 December 2017"
 bibliography: roxygen.bib
 output: html_document
+vignette: >
+  %\VignetteIndexEntry{Introduction to fdapace}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include=FALSE}
