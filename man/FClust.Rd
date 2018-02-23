@@ -37,6 +37,7 @@ Within EMCluster we examine the model initiated "EMCluster::em.EM" and return th
 See ?EMCluster::emcluster for details.
 }
 \examples{
+\dontrun{
 data(medfly25)
 Flies <- MakeFPCAInputs(medfly25$ID, medfly25$Days, medfly25$nEggs) 
 newClust <- FClust(Flies$Ly, Flies$Lt, k = 2, optnsFPCA = 
@@ -49,6 +50,7 @@ veryLowCount = ifelse( sapply( unique(medfly25$ID), function(u)
                    sum( medfly25$nEggs[medfly25$ID == u] )) < 25, 0, 1)
 N <- length(unique(medfly25$ID))
 (correctRate <- sum( (1 + veryLowCount) ==  newClust$cluster) / N) # 99.6\%
+}
 }
 \references{
 \cite{Wei-Chen Chen and Ranjan Maitra, "EMCluster: EM Algorithm for Model-Based Clusttering of Finite Mixture Gaussian Distribution". (2015)}

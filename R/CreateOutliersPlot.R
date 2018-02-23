@@ -22,6 +22,7 @@
 #' @return An (temporarily) invisible copy of a list containing the labels associated with each of sample curves. 
 #'
 #' @examples
+#' \dontrun{
 #' set.seed(1)
 #' n <- 420
 #' pts <- seq(0, 1, by=0.05)
@@ -30,6 +31,7 @@
 #' res <- FPCA(sampWiener$Ly, sampWiener$Lt, 
 #'             list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
 #' CreateOutliersPlot(res)
+#' }
 #' @references
 #' \cite{P. J. Rousseeuw, I. Ruts, J. W. Tukey (1999): The bagplot: a bivariate boxplot, The American Statistician, vol. 53, no. 4, 382-387}
 #' \cite{R. J. Hyndman and H. L. Shang. (2010) Rainbow plots, bagplots, and boxplots for functional data, Journal of Computational and Graphical Statistics, 19(1), 29-45}

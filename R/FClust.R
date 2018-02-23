@@ -21,6 +21,7 @@
 #' \item{clusterObj}{Either a EMCluster object or kCFC object.} 
 #' 
 #' @examples
+#' \dontrun{
 #' data(medfly25)
 #' Flies <- MakeFPCAInputs(medfly25$ID, medfly25$Days, medfly25$nEggs) 
 #' newClust <- FClust(Flies$Ly, Flies$Lt, k = 2, optnsFPCA = 
@@ -33,6 +34,7 @@
 #'                    sum( medfly25$nEggs[medfly25$ID == u] )) < 25, 0, 1)
 #' N <- length(unique(medfly25$ID))
 #' (correctRate <- sum( (1 + veryLowCount) ==  newClust$cluster) / N) # 99.6%
+#' }
 #' @references
 #' \cite{Wei-Chen Chen and Ranjan Maitra, "EMCluster: EM Algorithm for Model-Based Clusttering of Finite Mixture Gaussian Distribution". (2015)}
 #'

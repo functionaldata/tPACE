@@ -34,6 +34,7 @@ Available control options are
 }
 }
 \examples{
+\dontrun{
 set.seed(1)
 n <- 420
 pts <- seq(0, 1, by=0.05)
@@ -42,6 +43,7 @@ sampWiener <- Sparsify(sampWiener, pts, 10)
 res <- FPCA(sampWiener$Ly, sampWiener$Lt, 
             list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
 CreateOutliersPlot(res)
+}
 }
 \references{
 \cite{P. J. Rousseeuw, I. Ruts, J. W. Tukey (1999): The bagplot: a bivariate boxplot, The American Statistician, vol. 53, no. 4, 382-387}

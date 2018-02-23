@@ -96,9 +96,10 @@
 #' args1 <- list(xlab = 's', ylab = 't', zlab = 'estiBetaX2Y_Dense(s, t)',
 #'              lighting = FALSE, phi = 45, theta = 45)
 #' args2 <- list(x = 1:ngrids, y = 1:ngridt, z = estiBetaX2Y_Dense[1:ngrids, 1:ngridt])
-#' do.call(plot3D::persp3D,c(args2, args1))
+#'  # do.call(plot3D::persp3D,c(args2, args1))
 #' 
 #' #======Sparse data===============================================
+#' \dontrun{
 #' sparsity = 5:8
 #' sparseX1 <- Sparsify(denseX1, grids, sparsity)
 #' sparseX2 <- Sparsify(denseX2, grids, sparsity)
@@ -129,6 +130,7 @@
 #' 	lines(seq(0, 1, length.out = 51), resuSparse$predictY[[i]])
 #' 	lines(seq(0, 1, length.out = 51), resuSparse$cbandY[[i]][,2], lty = 2)
 #' 	lines(seq(0, 1, length.out = 51), resuSparse$cbandY[[i]][,1], lty = 2)
+#' 	}
 #' 	}
 
 FPCReg <- function(vars, varsOptns = NULL, isNewSub = NULL, method = 'AIC', FVEthreshold = 0.99, alpha = 0.05, Kx = NULL){

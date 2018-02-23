@@ -119,7 +119,7 @@
 #' points(sort(xi[,j]),tmpSgn*sbf$SBFit[order(xi[,j]),j],type='l')
 #' legend('top',c('true','SBF'),col=c(2,1),lwd=2,bty='n',horiz=TRUE)
 #' 
-#' 
+#' \dontrun{
 #' # fitting
 #' sbf <- MultiFAM(Y=Y,X=X,nEval=0)
 #' yHat <- sbf$mu+apply(sbf$SBFit,1,'sum')
@@ -139,6 +139,7 @@
 #' par(mfrow=c(1,1))
 #' plot(yHat,YTest)
 #' abline(coef=c(0,1),col=2)
+#' }
 #' @references
 #' \cite{Mammen, E., Linton, O. and Nielsen, J. (1999), "The existence and asymptotic properties of a backfitting projection algorithm under weak conditions", Annals of Statistics, Vol.27, No.5, p.1443-1490.}
 #'
