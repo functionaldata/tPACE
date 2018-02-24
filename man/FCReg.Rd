@@ -42,8 +42,8 @@ If measurement error is assumed, the diagonal elements of the raw covariance wil
 
 # Settings
 set.seed(1)
-n <- 100
-nGridIn <- 200
+n <- 75
+nGridIn <- 150
 sparsity <- 5:10 # Sparse data sparsity
 T <- round(seq(0, 1, length.out=nGridIn), 4) # Functional data support
 bw <- 0.1
