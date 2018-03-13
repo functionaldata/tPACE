@@ -22,7 +22,7 @@ CrWholeMat<-function(Y,X,tPoint,options){
 		## fill in the holes
 		for (i in 1:nsubj) {
 			tmp = ((i-1)*TPlength+1) : (i*TPlength)
-			CrMat[tmp,tmp] = get(paste0("PCARes_",i))$smoothedCov
+			CrMat[tmp,tmp] = get(paste0("PCARes_",i))$fittedCov
 		}
 		##calculate the cross cov
 		for(i in 1:nsubj){
@@ -91,6 +91,7 @@ CrWholeMat<-function(Y,X,tPoint,options){
 				CrMatYZ = append(CrMatYZ,list( CrCovInfo$smoothedCC ) )
 			}
 		}
+		##adjust diag
 		Returnlist = list(FPCAlist,CrMat,CrMatYZ)
 		names(Returnlist) = c("FPCAlist","MultiCrXY","MultiCrYZ")
 		return(Returnlist)	

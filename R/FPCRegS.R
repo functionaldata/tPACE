@@ -24,11 +24,9 @@
 #' ngridt <- 101 #number of grids in [0,1] for Y(t)
 #' grids <- seq(0, 1, length.out=ngrids) #regular grids in [0,1] for X(s)
 #' gridt <- seq(0, 1, length.out=ngridt) #regular grids in [0,1] for Y(t)
-#'
 #' #generate X
 #' #{1, sqrt(2)*sin(2*pi*s), sqrt(2)*cos(2*pi*t)} are used to generate X.
 #' eigenFun <- list(function(s){1 + 0 * s},function(s){sqrt(2) * sin(2*pi*s)},function(s){sqrt(2) * cos(2*pi*s)})
-#'
 #' sig <- matrix(c(1.5, 0.0, 0.0, 0.9, -.5, 0.1,
 #'                 0.0, 1.2, 0.0, -.3, 0.8, 0.4,
 #'                 0.0, 0.0, 1.0, 0.4, -.3, 0.7,
@@ -36,7 +34,6 @@
 #'                 -.5, 0.8, -.3, 0.0, 1.5, 0.0,
 #'                 0.1, 0.4, 0.7, 0.0, 0.0, 1.0),
 #'                 nrow=6,ncol=6)
-#'
 #' scoreX <- MASS::mvrnorm(n,mu=rep(0,6),Sigma=sig)
 #' scoreX1 <- scoreX[,1:3]
 #' scoreX2 <- scoreX[,4:6]
@@ -45,6 +42,36 @@
 #' latentX1 <- scoreX1 %*% t(basisX1)
 #' measErrX1 <- sqrt(0.03) * matrix(rnorm(n * ngrids), n, ngrids) #0.01 is sigma^2.
 #' denseX1 <- latentX1 + measErrX1
+ 
+#' basisX2 <- sapply(eigenFun,function(x){x(grids)})
+#' latentX2 <- scoreX2 %*% t(basisX2)
+#' measErrX2 <- sqrt(0.03) * matrix(rnorm(n * ngrids), n, ngrids) #0.01 is sigma^2.
+#' denseX2 <- latentX2 + measErrX2
+ 
+#' #generate Y
+#' #beta(s, t) <- sin(2 * pi * s)*cos(2 * pi * t)
+#' betaEigen <- list(function(s){1 + 0 * s},function(s){sqrt(2) * sin(2*pi*s)},function(s){sqrt(2) * cos(2*pi*s)})
+#' basisY <- c(1,0.1,0.01)
+#' latentY <- scoreX1 %*% basisY + scoreX2 %*% basisY
+#' measErrY <- sqrt(0.01) * rnorm(n) #0.01 is sigma^2
+#' denseY <- latentY + measErrY
+ 
+#' #======Dense data===============================================
+#' timeX <- t(matrix(rep(grids, n),length(grids), n))
+#' denseVars <- list(X1 = list(Ly = denseX1, Lt = timeX),
+#'                   X2 = list(Ly = denseX2, Lt = timeX),
+#'                   Y= denseY)
+ 
+#' resuDense <- FPCRegS(denseVars) 
+#' #======Sparse data===============================================
+#' sparsity = 5:8
+#' sparseX1 <- Sparsify(denseX1, grids, sparsity)
+#' sparseX2 <- Sparsify(denseX2, grids, sparsity)
+#' sparseVars <- list(X1 = sparseX1, X2 = sparseX2, Y = Y)
+ 
+#' resuSparse <- FPCRegS(sparseVars, methodSelect=list(method = "FVE",FVEThreshold = 0.9)) #or resuSparse <- FPCReg(vars = sparseVars,varsOptns = list(X1=list(userBwCov = 0.03)))
+#' MixedVars <- list(X1 = sparseX1, X2 = list(Ly = denseX2, Lt = timeX), Y = denseY)
+#' TestRes3 = FPCRegS(MixedVars)
  
 #' basisX2 <- sapply(eigenFun,function(x){x(grids)})
 #' latentX2 <- scoreX2 %*% t(basisX2)
@@ -207,6 +234,7 @@ FPCRegS <- function(vars, varsOptns = NULL, isNewSub = NULL, methodSelect = list
 	names(Betalist) = c("estiBeta","TimePoint","b_score")
 	#####R2 score
 	R2 = sum( score^2*Eigen_Value[1:L] ) / (sum( score^2*Eigen_Value[1:L] )+ sum(unlist(lapply(GetMatrixInfo$FPCAlist,function(x){x$sigma2}))) )
+
 	#####predictions
 	###so far we use int(X1beta1)+int(X2beta2)+... 
 	if(sum(isNewSub) != 0){
@@ -218,29 +246,30 @@ FPCRegS <- function(vars, varsOptns = NULL, isNewSub = NULL, methodSelect = list
 			Dense = ifelse(is.matrix(varsPred[[i]]$Ly)&is.matrix(varsPred[[i]]$Lt),1,0)
 			## For the case with regular design, also think as dense
 			if( sum(unlist(lapply(varsPred[[i]]$Lt,function(x){ if(length(x) == length(varsPred[[i]]$Lt[[1]])) sum(x - varsPred[[i]]$Lt[[1]]) }))) == 0  ){Dense = 1}
-			if( Dense == 1){
-					Y_Pred = Y_Pred + unlist(lapply(varsPred[[i]]$Ly, y<-function(y) {FakeInt(Beta[[i]]*approx(x = varsPred[[i]]$Lt[[1]],y = y,xout = GetMatrixInfo$FPCAlist[[i]]$workGrid ,rule = 2)$y,TimePoint,interval)}))
-				}else{
+		}
+		if( Dense == 1){
+			for(i in 1:p){
+				Y_Pred = Y_Pred + unlist(lapply(varsPred[[i]]$Ly, y<-function(y) {FakeInt(Beta[[i]]*approx(x = varsPred[[i]]$Lt[[1]],y = y,xout = GetMatrixInfo$FPCAlist[[i]]$workGrid ,rule = 2)$y,TimePoint,interval)}))	
+			}}else{
 					Kt = min(floor(L/2),length(GetMatrixInfo$FPCAlist[[i]]$workGrid))
 					#PredScore = predict.FPCA(GetMatrixInfo$FPCAlist[[i]],newLy = varsPred[[i]]$Ly,newLt = varsPred[[i]]$Lt,xiMethod = 'CE',K = Kt)
 					#X_Imp = GetMatrixInfo$FPCAlist[[i]]$phi[,1:Kt]%*%t(PredScore)
 					CEscore = matrix(0,length(varsPred[[1]]$Ly),length(Eigen_Value))
-					for(i in 1:length(varsPred[[1]]$Ly)){
-					  CEscore[i,] = GetCE_Mul(v = lapply(varsPred,function(x){x$Ly[[i]]}) ,tp = lapply(varsPred,function(x){x$Lt[[i]]}),MatrixInfo = GetMatrixInfo,Lambda = Eigen_Value,Phi = Eigen_fun)
+					for(j in 1:length(varsPred[[1]]$Ly)){
+					  CEscore[j,] = GetCE_Mul(v = lapply(varsPred,function(x){x$Ly[[j]]}) ,tp = lapply(varsPred,function(x){x$Lt[[j]]}),MatrixInfo = GetMatrixInfo,Lambda = Eigen_Value,Phi = Eigen_fun)
 					}
 					#Y_Pred = Y_Pred + apply( X_Imp ,2,function(x) FakeInt(x*Beta[[i]], GetMatrixInfo$FPCAlist[[i]]$workGrid,interval)   )
 					Y_Pred = Y_Pred + apply(CEscore,1,function(x) sum(x[1:L]*score[1:L]) ) 
 				}
-		}
 		returnList = list(Betalist,R2,Y_Pred,L,Eigen_Value[1:L],Eigen_fun[,1:L])
 	names(returnList) = c("Betalist","R2","predictions","NOC","EigenV","EigenF")
 	returnList		
 	}else{
 		Y_Pred = NULL
-		returnList = list(Betalist,R2,Y_Pred,L,Eigen_Value[1:L],Eigen_fun[,1:L])
-		names(returnList) = c("Betalist","R2","predictions","NOC","EigenV","EigenF")
-		returnList
 	}
+		returnList = list(Betalist,R2,Y_Pred,L,Eigen_Value)
+		names(returnList) = c("Betalist","R2","predictions","NOC","Eigen")
+		returnList
 }
 
 
