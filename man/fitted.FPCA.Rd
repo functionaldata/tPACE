@@ -4,7 +4,8 @@
 \alias{fitted.FPCA}
 \title{Fitted functional sample from FPCA object}
 \usage{
-\method{fitted}{FPCA}(object, K = NULL, derOptns = list(p = 0), ...)
+\method{fitted}{FPCA}(object, K = NULL, derOptns = list(p = 0),
+  ciOptns = list(alpha = NULL, cvgMethod = NULL), ...)
 }
 \arguments{
 \item{object}{A object of class FPCA returned by the function FPCA().}
@@ -13,10 +14,16 @@
 
 \item{derOptns}{A list of options to control the derivation parameters specified by \code{list(name=value)}. See `Details'. (default = NULL)}
 
+\item{ciOptns}{A list of options to control the confidence interval/band specified by \code{list(name=value)}. See `Details'. (default = NULL)}
+
 \item{...}{Additional arguments}
 }
 \value{
-An \code{n} by \code{length(workGrid)} matrix, each row of which contains a sample.
+If \code{alpha} is \code{NULL} or functional observations are dense, an \code{n} by \code{length(workGrid)} matrix, each row of which contains a sample. Otherwise, it returns a list which consists of the following items:
+\item{workGrid}{An evaluation grid for fitted values.}
+\item{fitted}{An n by length(workGrid) matrix, each row of which contains a sample.}
+\item{cvgUpper}{An n by length(workGrid) matrix, each row of which contains the upper \code{alpha}-coverage limit}
+\item{cvgLower}{An n by length(workGrid) matrix, each row of which contains the lower \code{alpha}-coverage limit}
 }
 \description{
 Combine the zero-meaned fitted values and the interpolated mean to get the fitted values for the trajectories or the derivatives of these trajectories.
@@ -30,16 +37,37 @@ Available derivation control options are
 \item{bw}{Bandwidth for smoothing the derivatives (default: p * 0.10 * S)}
 \item{kernelType}{Smoothing kernel choice; same available types are FPCA(). default('epan')}
 }
+
+Available confidence interval/band control options are 
+\describe{
+\item{alpha}{Significant level for confidence interval/band for trajectory coverage. default=0.05 (currently only work when p=0)}
+\item{cvgMethod}{Option for trajectory coverage method beween 'interval' and 'band'. default='band'}
+}
 }
 \examples{
 set.seed(1)
-n <- 20
+n <- 100
 pts <- seq(0, 1, by=0.05)
 sampWiener <- Wiener(n, pts)
-sampWiener <- Sparsify(sampWiener, pts, 10)
+sampWiener <- Sparsify(sampWiener, pts, 10:20)
 res <- FPCA(sampWiener$Ly, sampWiener$Lt, 
             list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
-fittedY <- fitted(res)
+fittedY <- fitted.FPCA(res, ciOptns = list(alpha=0.05))
+
+workGrid <- res$workGrid
+cvgUpper <- fittedY$cvgUpper
+cvgLower <- fittedY$cvgLower
+
+par(mfrow=c(2,3))
+ind <- sample(1:n,6)
+for (i in 1:6) {
+ j <- ind[i]
+ plot(workGrid,cvgUpper[j,],type='l',ylim=c(min(cvgLower[j,]),max(cvgUpper[j,])),col=4,lty=2,
+   xlab='t', ylab='X(t)', main=paste(j,'-th subject',sep=''))
+ points(workGrid,cvgLower[j,],type='l',col=4,lty=2)
+ points(res$inputData$Lt[[j]],res$inputData$Ly[[j]])
+}
+    
 }
 \references{
 \cite{Liu, Bitao, and Hans-Georg Mueller. "Estimating derivatives for samples of sparsely observed functions, with application to online auction dynamics." Journal of the American Statistical Association 104, no. 486 (2009): 704-717. (Sparse data FPCA)}

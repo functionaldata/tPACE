@@ -6,8 +6,13 @@
 #' @param object A object of class FPCA returned by the function FPCA().   
 #' @param K The integer number of the first K components used for the representation. (default: length(fpcaObj$lambda ))
 #' @param derOptns A list of options to control the derivation parameters specified by \code{list(name=value)}. See `Details'. (default = NULL)
+#' @param ciOptns A list of options to control the confidence interval/band specified by \code{list(name=value)}. See `Details'. (default = NULL)
 #'
-#' @return An \code{n} by \code{length(workGrid)} matrix, each row of which contains a sample.
+#' @return If \code{alpha} is \code{NULL} or functional observations are dense, an \code{n} by \code{length(workGrid)} matrix, each row of which contains a sample. Otherwise, it returns a list which consists of the following items:
+#' \item{workGrid}{An evaluation grid for fitted values.}
+#' \item{fitted}{An n by length(workGrid) matrix, each row of which contains a sample.}
+#' \item{cvgUpper}{An n by length(workGrid) matrix, each row of which contains the upper \code{alpha}-coverage limit}
+#' \item{cvgLower}{An n by length(workGrid) matrix, each row of which contains the lower \code{alpha}-coverage limit}
 #' @details Available derivation control options are 
 #' \describe{
 #' \item{p}{The order of the derivatives returned (default: 0, max: 2)}
@@ -15,23 +20,42 @@
 #' \item{bw}{Bandwidth for smoothing the derivatives (default: p * 0.10 * S)}
 #' \item{kernelType}{Smoothing kernel choice; same available types are FPCA(). default('epan')}
 #' }
+#' @details Available confidence interval/band control options are 
+#' \describe{
+#' \item{alpha}{Significant level for confidence interval/band for trajectory coverage. default=0.05 (currently only work when p=0)}
+#' \item{cvgMethod}{Option for trajectory coverage method beween 'interval' and 'band'. default='band'}
+#' }
 #' @param ... Additional arguments
 #'
 #' @examples
 #' set.seed(1)
-#' n <- 20
+#' n <- 100
 #' pts <- seq(0, 1, by=0.05)
 #' sampWiener <- Wiener(n, pts)
-#' sampWiener <- Sparsify(sampWiener, pts, 10)
+#' sampWiener <- Sparsify(sampWiener, pts, 10:20)
 #' res <- FPCA(sampWiener$Ly, sampWiener$Lt, 
 #'             list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
-#' fittedY <- fitted(res)
+#' fittedY <- fitted.FPCA(res, ciOptns = list(alpha=0.05))
+#' 
+#' workGrid <- res$workGrid
+#' cvgUpper <- fittedY$cvgUpper
+#' cvgLower <- fittedY$cvgLower
+#' 
+#' par(mfrow=c(2,3))
+#' ind <- sample(1:n,6)
+#' for (i in 1:6) {
+#'  j <- ind[i]
+#'  plot(workGrid,cvgUpper[j,],type='l',ylim=c(min(cvgLower[j,]),max(cvgUpper[j,])),col=4,lty=2,
+#'    xlab='t', ylab='X(t)', main=paste(j,'-th subject',sep=''))
+#'  points(workGrid,cvgLower[j,],type='l',col=4,lty=2)
+#'  points(res$inputData$Lt[[j]],res$inputData$Ly[[j]])
+#' }
+#'     
 #' @references
 #' \cite{Liu, Bitao, and Hans-Georg Mueller. "Estimating derivatives for samples of sparsely observed functions, with application to online auction dynamics." Journal of the American Statistical Association 104, no. 486 (2009): 704-717. (Sparse data FPCA)}
 #' @export
 
-
-fitted.FPCA <-  function (object, K = NULL, derOptns = list(p=0), ...) {
+fitted.FPCA <-  function (object, K = NULL, derOptns = list(p=0), ciOptns = list(alpha=NULL, cvgMethod=NULL), ...) {
   ddd <- list(...)
   if (!is.null(ddd[['k']])) {
     K <- ddd[['k']]
@@ -44,6 +68,18 @@ fitted.FPCA <-  function (object, K = NULL, derOptns = list(p=0), ...) {
   bw <-  derOptns[['bw']] # 
   kernelType <- derOptns[['kernelType']]
 
+  alpha <- ciOptns[['alpha']]
+  if (is.null(alpha)==FALSE) {
+    if (alpha <= 0 || alpha >= 1) {
+      stop("'fitted.FPCA()' is requested to use a significant level between 0 and 1.")
+    }
+  }
+  
+  cvgMethod <- ciOptns[['cvgMethod']]
+  if (is.null(cvgMethod)==TRUE) {
+    cvgMethod <- 'band'
+  } 
+  
   fpcaObj <- object
   # if (class(fpcaObj) != 'FPCA'){
     # stop("fitted.FPCA() requires an FPCA class object as basic input")
@@ -64,9 +100,72 @@ fitted.FPCA <-  function (object, K = NULL, derOptns = list(p=0), ...) {
   } 
 
   if( p < 1 ){  
+    
     ZMFV = fpcaObj$xiEst[, seq_len(K), drop = FALSE] %*% t(fpcaObj$phi[, seq_len(K), drop = FALSE]);   
     IM = fpcaObj$mu 
-    return( t(apply( ZMFV, 1, function(x) x + IM))) 
+    
+    if (is.null(alpha)==TRUE || fpcaObj$optns$dataType=='Dense') {
+      return( t(apply( ZMFV, 1, function(x) x + IM))) 
+    } else {
+      
+      bwMu <- fpcaObj$bwMu
+      mu = fpcaObj$mu
+      phi = fpcaObj$phi
+      obsGrid = fpcaObj$obsGrid
+      workGrid = fpcaObj$workGrid
+      lambda = fpcaObj$lambda
+      # covSmooth <- fpcaObj$smoothedCov
+      
+      cvgUpper <- cvgLower <- matrix(nrow=nrow(fpcaObj$xiEst), ncol=length(workGrid))
+      for (i in 1:nrow(fpcaObj$xiEst)) {
+        xHat <- mu + ZMFV[i,]
+        
+        muObs <- Lwls1D(bw = bwMu, kernelType, win = rep(1,length(workGrid)),
+                        xin = workGrid, yin = mu, xout = (fpcaObj$inputData)$Lt[[i]])
+        
+        phiObs <- apply(phi, 2, function(phiI) Lwls1D(bw = bwMu, kernelType, win = rep(1, length(workGrid)), 
+                                                      xin = workGrid, yin = phiI, xout = (fpcaObj$inputData)$Lt[[i]]))
+        # HI <- diag(lambda)%*%t(phiObs)
+        # 
+        # indI <- match(fpcaObj$inputData$Lt[[i]],obsGrid)
+        # covObsI <- covSmooth[indI,indI]
+        # 
+        # if (is.null(fpcaObj$sigma2)==TRUE || fpcaObj$sigma2==0) {
+        #   tmpSigma2 <- max(c(0.01,abs(min(diag(covObsI)))))
+        #   covObsI <- covObsI + tmpSigma2*diag(1,nrow=nrow(covObsI),ncol=ncol(covObsI))
+        # } else {
+        #   covObsI <- covObsI + fpcaObj$sigma2*diag(1,nrow=nrow(covObsI),ncol=ncol(covObsI))
+        # }
+        # 
+        # omegaI <- diag(lambda) - HI%*%solve(covObsI)%*%t(HI)
+        
+        omegaI <- fpcaObj$xiVar[[i]]
+        
+        tmp <- eigen(omegaI)
+        tmpA <- Re(tmp$vectors)
+        tmpB <- Re(tmp$values)
+        tmpB[which(tmpB<0)] <- 0
+        
+        omegaI <- tmpA%*%diag(tmpB)%*%t(tmpA)
+        
+        if (cvgMethod=='interval') {
+          cvgUpper[i,] <- xHat + qnorm(1-alpha/2)*sqrt(diag(phi%*%omegaI%*%t(phi)))
+          cvgLower[i,] <- xHat + qnorm(alpha/2)*sqrt(diag(phi%*%omegaI%*%t(phi)))
+        } else {
+          cvgUpper[i,] <- xHat + sqrt(qchisq(1-alpha,K)*diag(phi%*%omegaI%*%t(phi)))
+          cvgLower[i,] <- xHat - sqrt(qchisq(1-alpha,K)*diag(phi%*%omegaI%*%t(phi)))
+        }
+      }
+      
+      return(list(
+        workGrid = workGrid,
+        fitted = t(apply( ZMFV, 1, function(x) x + IM)),
+        cvgUpper = cvgUpper,
+        cvgLower = cvgLower
+        )
+      )
+      
+    }
   } else { #Derivative is not zero
  
     if( K > SelectK( fpcaObj, FVEthreshold=0.95, criterion='FVE')$K ){
