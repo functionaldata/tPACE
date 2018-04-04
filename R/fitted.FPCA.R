@@ -35,7 +35,7 @@
 #' sampWiener <- Sparsify(sampWiener, pts, 10:20)
 #' res <- FPCA(sampWiener$Ly, sampWiener$Lt, 
 #'             list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
-#' fittedY <- fitted.FPCA(res, ciOptns = list(alpha=0.05))
+#' fittedY <- fitted(res, ciOptns = list(alpha=0.05))
 #' 
 #' workGrid <- res$workGrid
 #' cvgUpper <- fittedY$cvgUpper
@@ -55,7 +55,7 @@
 #' \cite{Liu, Bitao, and Hans-Georg Mueller. "Estimating derivatives for samples of sparsely observed functions, with application to online auction dynamics." Journal of the American Statistical Association 104, no. 486 (2009): 704-717. (Sparse data FPCA)}
 #' @export
 
-fitted.FPCA <-  function (object, K = NULL, derOptns = list(p=0), ciOptns = list(alpha=NULL, cvgMethod=NULL), ...) {
+fitted.FPCA <-function (object, K = NULL, derOptns = list(p=0), ciOptns = list(alpha=NULL, cvgMethod=NULL), ...) {
   ddd <- list(...)
   if (!is.null(ddd[['k']])) {
     K <- ddd[['k']]

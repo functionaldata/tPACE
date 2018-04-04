@@ -52,7 +52,7 @@ sampWiener <- Wiener(n, pts)
 sampWiener <- Sparsify(sampWiener, pts, 10:20)
 res <- FPCA(sampWiener$Ly, sampWiener$Lt, 
             list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
-fittedY <- fitted.FPCA(res, ciOptns = list(alpha=0.05))
+fittedY <- fitted(res, ciOptns = list(alpha=0.05))
 
 workGrid <- res$workGrid
 cvgUpper <- fittedY$cvgUpper
