@@ -149,11 +149,11 @@ fitted.FPCA <-  function (object, K = NULL, derOptns = list(p=0), ciOptns = list
         omegaI <- tmpA%*%diag(tmpB)%*%t(tmpA)
         
         if (cvgMethod=='interval') {
-          cvgUpper[i,] <- xHat + qnorm(1-alpha/2)*sqrt(diag(phi%*%omegaI%*%t(phi)))
-          cvgLower[i,] <- xHat + qnorm(alpha/2)*sqrt(diag(phi%*%omegaI%*%t(phi)))
+          cvgUpper[i,] <- xHat + stats::qnorm(1-alpha/2)*sqrt(diag(phi%*%omegaI%*%t(phi)))
+          cvgLower[i,] <- xHat + stats::qnorm(alpha/2)*sqrt(diag(phi%*%omegaI%*%t(phi)))
         } else {
-          cvgUpper[i,] <- xHat + sqrt(qchisq(1-alpha,K)*diag(phi%*%omegaI%*%t(phi)))
-          cvgLower[i,] <- xHat - sqrt(qchisq(1-alpha,K)*diag(phi%*%omegaI%*%t(phi)))
+          cvgUpper[i,] <- xHat + sqrt(stats::qchisq(1-alpha,K)*diag(phi%*%omegaI%*%t(phi)))
+          cvgLower[i,] <- xHat - sqrt(stats::qchisq(1-alpha,K)*diag(phi%*%omegaI%*%t(phi)))
         }
       }
       
