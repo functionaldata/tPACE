@@ -135,7 +135,7 @@ FPCRegS <- function(vars, varsOptns = NULL, isNewSub = NULL, methodSelect = list
 				Dense = ifelse(is.matrix(vars[[i]]$Ly)&is.matrix(vars[[i]]$Lt),1,0)
 				## For the case with regular design, also think as dense
 				if( sum(unlist(lapply(vars[[i]]$Lt,function(x){ if(length(x) == length(vars[[i]]$Lt[[1]])) sum(x - vars[[i]]$Lt[[1]]) }))) == 0  ){Dense = 1}
-				if (Dense == 1) {optns <- list(dataType = "Dense",error = TRUE, kernel='gauss', nRegGrid=51, useBinnedData='OFF')} else {optns <- list(dataType = "Sparse", error = TRUE, kernel = 'gauss' ,nRegGrid = 51, useBinnedData = 'OFF')} 	
+				if (Dense == 1) {optns <- list(dataType = "Dense",error = TRUE, kernel='gauss', nRegGrid=51, useBinnedData='OFF')} else {optns <- list(dataType = "Sparse", error = TRUE, kernel = 'gauss' ,nRegGrid = 51, useBinnedData = 'OFF',methodBwCov = 'GMeanAndGCV')} 	
 				if (i == 1) {varsOptnsDef <- list(optns)} else {varsOptnsDef <- c(varsOptnsDef, list(optns))}
 		}
 		names(varsOptnsDef) <- names(vars)
