@@ -1,14 +1,14 @@
 #' Fitted functional sample from FPCA object
 #' 
 #' Combine the zero-meaned fitted values and the interpolated mean to get the fitted values for the trajectories or the derivatives of these trajectories.
-#' Estimates are given on the work-grid, not on the observation grid. Use ConvertSupport to map the estimates to your desired domain.
+#' Estimates are given on the work-grid, not on the observation grid. Use ConvertSupport to map the estimates to your desired domain. \code{100*(1-alpha)}-percentage coverage intervals, or bands, for trajectory estimates (not derivatives) are provided. See details in example.
 #' 
 #' @param object A object of class FPCA returned by the function FPCA().   
 #' @param K The integer number of the first K components used for the representation. (default: length(fpcaObj$lambda ))
 #' @param derOptns A list of options to control the derivation parameters specified by \code{list(name=value)}. See `Details'. (default = NULL)
 #' @param ciOptns A list of options to control the confidence interval/band specified by \code{list(name=value)}. See `Details'. (default = NULL)
 #'
-#' @return If \code{alpha} is \code{NULL} or functional observations are dense, an \code{n} by \code{length(workGrid)} matrix, each row of which contains a sample. Otherwise, it returns a list which consists of the following items:
+#' @return If \code{alpha} is \code{NULL}, \code{p>1} or functional observations are dense, an \code{n} by \code{length(workGrid)} matrix, each row of which contains a sample. Otherwise, it returns a list which consists of the following items:
 #' \item{workGrid}{An evaluation grid for fitted values.}
 #' \item{fitted}{An n by length(workGrid) matrix, each row of which contains a sample.}
 #' \item{cvgUpper}{An n by length(workGrid) matrix, each row of which contains the upper \code{alpha}-coverage limit}
@@ -32,7 +32,7 @@
 #' n <- 100
 #' pts <- seq(0, 1, by=0.05)
 #' sampWiener <- Wiener(n, pts)
-#' sampWiener <- Sparsify(sampWiener, pts, 10:20)
+#' sampWiener <- Sparsify(sampWiener, pts, 5:10)
 #' res <- FPCA(sampWiener$Ly, sampWiener$Lt, 
 #'             list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
 #' fittedY <- fitted(res, ciOptns = list(alpha=0.05))
@@ -52,6 +52,8 @@
 #' }
 #'     
 #' @references
+#' \cite{Yao, F., Mueller, H.-G. and Wang, J.-L. "Functional data analysis for sparse longitudinal data", Journal of the American Statistical Association, vol.100, No. 470 (2005): 577-590.}
+#' 
 #' \cite{Liu, Bitao, and Hans-Georg Mueller. "Estimating derivatives for samples of sparsely observed functions, with application to online auction dynamics." Journal of the American Statistical Association 104, no. 486 (2009): 704-717. (Sparse data FPCA)}
 #' @export
 
@@ -146,7 +148,12 @@ fitted.FPCA <-function (object, K = NULL, derOptns = list(p=0), ciOptns = list(a
         tmpB <- Re(tmp$values)
         tmpB[which(tmpB<0)] <- 0
         
-        omegaI <- tmpA%*%diag(tmpB)%*%t(tmpA)
+        if (length(tmpB)==1) {
+          omegaI <- tmpA*tmpB*t(tmpA)
+        } else {
+          omegaI <- tmpA%*%diag(tmpB)%*%t(tmpA)
+        }
+        
         
         if (cvgMethod=='interval') {
           cvgUpper[i,] <- xHat + stats::qnorm(1-alpha/2)*sqrt(diag(phi%*%omegaI%*%t(phi)))
