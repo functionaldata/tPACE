@@ -20,7 +20,7 @@ FClust(Ly, Lt, k = 3, cmethod = "EMCluster", optnsFPCA = NULL,
 "list( methodMuCovEst ='smooth', FVEthreshold= 0.90, methodBwCov = 'GCV', methodBwMu = 'GCV' )". See `Details in ?FPCA'.}
 
 \item{optnsCS}{A list of options control parameters specified by \code{list(name=value)} to be used for cluster-specific FPCA from kCFC; by default:
-"list( methodMuCovEst ='smooth', FVEthreshold= 0.70, methodBwCov = 'GCV', methodBwMu = 'GCV' )". See `Details in ?FPCA' and '?kCFC'. This is not used by Rmixmod!}
+"list( methodMuCovEst ='smooth', FVEthreshold= 0.70, methodBwCov = 'GCV', methodBwMu = 'GCV' )". See `Details in ?FPCA' and '?kCFC'.}
 }
 \value{
 A list containing the following fields:
