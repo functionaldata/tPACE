@@ -67,7 +67,7 @@ kCFC = function(y, t, k = 3, kSeed = 123, maxIter = 125,
     
     # Check that clustering progressed reasonably 
     #ie. Still having k clster AND the minimum cluster size is reasonable 
-    if( (length(unique(clustConf[[j]])) < k) || any( min(summary(clustConf[[j]])) < c(0.01 * N,3))){
+    if( (length(unique(clustConf[[j]])) < k) || any( min(summary(clustConf[[j]])) <= c(0.01 * N,3))){
       convInfo <- ifelse( length(unique(clustConf[[j]])) < k , "LostCluster", "TinyCluster")
       break;
     }
