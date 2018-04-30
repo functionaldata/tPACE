@@ -26,3 +26,17 @@ test_that('the growth example works.', {
    }
 })
 
+test_that('the k-means initialisation error occurs normally.', {
+  
+  set.seed(1)
+  n <- 100
+  p <- 101
+  pts <- seq(0, 1, length.out=p)
+  sigma2 <- 0.1
+  mu <- pts
+  sampTrue <- Wiener(n, pts) + matrix(pts, n, p, byrow=TRUE)
+  samp <- sampTrue + rnorm(n * length(pts), sd=sqrt(sigma2))
+  tmp <- MakeFPCAInputs(tVec=pts, yVec=samp)
+  expect_error(FClust(tmp$Ly, tmp$Lt, k = 14, cmethod = "kCFC",  optnsFPCA = list(userBwCov= 2, FVEthreshold = 0.90)) )
+  
+})

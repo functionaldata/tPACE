@@ -13,7 +13,7 @@
 #' @param optnsFPCA A list of options control parameters specified by \code{list(name=value)} to be used for by FPCA on the sample y; by default: 
 #' "list( methodMuCovEst ='smooth', FVEthreshold= 0.90, methodBwCov = 'GCV', methodBwMu = 'GCV' )". See `Details in ?FPCA'.
 #' @param optnsCS A list of options control parameters specified by \code{list(name=value)} to be used for cluster-specific FPCA from kCFC; by default:  
-#' "list( methodMuCovEst ='smooth', FVEthreshold= 0.70, methodBwCov = 'GCV', methodBwMu = 'GCV' )". See `Details in ?FPCA' and '?kCFC'. This is not used by Rmixmod!
+#' "list( methodMuCovEst ='smooth', FVEthreshold= 0.70, methodBwCov = 'GCV', methodBwMu = 'GCV' )". See `Details in ?FPCA' and '?kCFC'. 
 #'
 #' @return A list containing the following fields:
 #' \item{cluster}{A vector of levels 1:k, indicating the cluster to which each curve is allocated.} 
