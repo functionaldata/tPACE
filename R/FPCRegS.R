@@ -37,17 +37,14 @@
 #' scoreX <- MASS::mvrnorm(n,mu=rep(0,6),Sigma=sig)
 #' scoreX1 <- scoreX[,1:3]
 #' scoreX2 <- scoreX[,4:6]
- 
 #' basisX1 <- sapply(eigenFun,function(x){x(grids)})
 #' latentX1 <- scoreX1 %*% t(basisX1)
 #' measErrX1 <- sqrt(0.03) * matrix(rnorm(n * ngrids), n, ngrids) #0.01 is sigma^2.
 #' denseX1 <- latentX1 + measErrX1
- 
 #' basisX2 <- sapply(eigenFun,function(x){x(grids)})
 #' latentX2 <- scoreX2 %*% t(basisX2)
 #' measErrX2 <- sqrt(0.03) * matrix(rnorm(n * ngrids), n, ngrids) #0.01 is sigma^2.
 #' denseX2 <- latentX2 + measErrX2
- 
 #' #generate Y
 #' #beta(s, t) <- sin(2 * pi * s)*cos(2 * pi * t)
 #' betaEigen <- list(function(s){1 + 0 * s},function(s){sqrt(2) * sin(2*pi*s)},function(s){sqrt(2) * cos(2*pi*s)})
@@ -55,7 +52,6 @@
 #' latentY <- scoreX1 %*% basisY + scoreX2 %*% basisY
 #' measErrY <- sqrt(0.01) * rnorm(n) #0.01 is sigma^2
 #' denseY <- latentY + measErrY
- 
 #' #======Dense data===============================================
 #' timeX <- t(matrix(rep(grids, n),length(grids), n))
 #' denseVars <- list(X1 = list(Ly = denseX1, Lt = timeX),
@@ -67,7 +63,7 @@
 #' sparsity = 5:8
 #' sparseX1 <- Sparsify(denseX1, grids, sparsity)
 #' sparseX2 <- Sparsify(denseX2, grids, sparsity)
-#' sparseVars <- list(X1 = sparseX1, X2 = sparseX2, Y = Y)
+#' sparseVars <- list(X1 = sparseX1, X2 = sparseX2, Y = denseY)
  
 #' resuSparse <- FPCRegS(sparseVars, methodSelect=list(method = "FVE",FVEThreshold = 0.9)) #or resuSparse <- FPCReg(vars = sparseVars,varsOptns = list(X1=list(userBwCov = 0.03)))
 #' MixedVars <- list(X1 = sparseX1, X2 = list(Ly = denseX2, Lt = timeX), Y = denseY)

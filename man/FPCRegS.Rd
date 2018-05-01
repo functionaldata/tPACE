@@ -77,7 +77,7 @@ resuDense <- FPCRegS(denseVars)
 sparsity = 5:8
 sparseX1 <- Sparsify(denseX1, grids, sparsity)
 sparseX2 <- Sparsify(denseX2, grids, sparsity)
-sparseVars <- list(X1 = sparseX1, X2 = sparseX2, Y = Y)
+sparseVars <- list(X1 = sparseX1, X2 = sparseX2, Y = denseY)
 resuSparse <- FPCRegS(sparseVars, methodSelect=list(method = "FVE",FVEThreshold = 0.9)) #or resuSparse <- FPCReg(vars = sparseVars,varsOptns = list(X1=list(userBwCov = 0.03)))
 MixedVars <- list(X1 = sparseX1, X2 = list(Ly = denseX2, Lt = timeX), Y = denseY)
 TestRes3 = FPCRegS(MixedVars)
