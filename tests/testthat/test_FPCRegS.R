@@ -56,7 +56,7 @@ test_that ('Simple Dense and Sparse Case works', {
 
 	expect_equal(mean((result_DS$predictions - YTest)^2)/var(YTest), 0, tol = 1e-2)
 	expect_equal(mean((resultSS$predictions - YTest)^2)/var(YTest), 0, tol = 0.1)
-}
+})
 
 
 ####################################
@@ -158,7 +158,7 @@ test_that ('Multiple Dense and Sparse Case works', {
 
 	expect_equal(mean((result_DM$predictions - YTest)^2)/var(YTest), 0, tol = 0.05)
 	expect_equal(mean((result_SM$predictions - YTest)^2)/var(YTest), 0, tol = 0.5)
-}
+})
 
 
 test_that ('eigen decomposition of Cov works',{
