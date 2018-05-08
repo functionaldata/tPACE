@@ -2,20 +2,20 @@
 % Please edit documentation in R/FPCRegS.R
 \name{FPCRegS}
 \alias{FPCRegS}
-\title{Function for performing functonal linear regression where the covariates are functions X1(t1),X2(t2),.. and the response is a function Y(t_y).}
+\title{Function for performing functonal linear regression where the covariates are functions X1(t1),X2(t2),.. and the response is a scalar Y.}
 \usage{
 FPCRegS(vars, varsOptns = NULL, isNewSub = NULL,
   methodSelect = list(method = "FVE", FVEThreshold = 0.95, NumberOfBasis =
   NULL), interval = c(0, 1))
 }
 \arguments{
-\item{vars}{A list of input functional covariates with name of "X1", "X2",.. and a functional response with name "Y". Each field should have two fields: 'Lt', a list (sparse) or a matrix (Dense) specifying the time of observations, and 'Ly', a list (Sparse) or a matrix (Dense) of the observations.}
+\item{vars}{A list of input functional covariates with name of "X1", "X2",.. and a scalar response with name "Y". Each field should have two fields: 'Lt', a list (sparse) or a matrix (Dense) specifying the time of observations, and 'Ly', a vetor stand for the observations.}
 
-\item{varsOptns}{A list of options named by "X1", "X2",..."Y". Each filed specify the paramaters that control the corresponding variables. (default: see details of FPCA())}
+\item{varsOptns}{A list of options named by "X1", "X2",... Each filed specify the paramaters that control the corresponding variables. (default: see details of FPCA())}
 
 \item{isNewSub}{A 1*n vector of 0s or 1s, where n is the total count of subjects. 0 denotes the corresponding subject is only used for estimation and 1 denotes the corresponding subject is only used for prediction. (default: 0's)}
 
-\item{methodSelect}{The method used for selecting the number of principal components of functional predictors X's used in functional regression , including 'AIC', 'BIC' and 'FVE'. (default: "AIC")}
+\item{methodSelect}{The method used for selecting the number of principal components of functional predictors X's used in functional regression , method optns including 'AIC', 'BIC','Basis' and 'FVE'. (default: "FVE") If choose 'FVE' method, parameter 'FVEThreshold' should be implement here. If choose 'Basis' method, 'NumberOfBasis' should be fill in.}
 
 \item{interval}{A length 2 vector indicate the support grid of the functional covariate, default to be c(0,1)}
 }
@@ -29,7 +29,7 @@ A list containing the following fields:
 \item{EigenF}{FPC eigen function (generated from large function)}
 }
 \description{
-Function for performing functonal linear regression where the covariates are functions X1(t1),X2(t2),.. and the response is a function Y(t_y).
+Function for performing functonal linear regression where the covariates are functions X1(t1),X2(t2),.. and the response is a scalar Y.
 }
 \examples{
 set.seed(1000)

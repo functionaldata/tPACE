@@ -1,9 +1,9 @@
-#' Function for performing functonal linear regression where the covariates are functions X1(t1),X2(t2),.. and the response is a function Y(t_y).
+#' Function for performing functonal linear regression where the covariates are functions X1(t1),X2(t2),.. and the response is a scalar Y.
 #'
-#' @param vars A list of input functional covariates with name of "X1", "X2",.. and a functional response with name "Y". Each field should have two fields: 'Lt', a list (sparse) or a matrix (Dense) specifying the time of observations, and 'Ly', a list (Sparse) or a matrix (Dense) of the observations.
-#' @param varsOptns A list of options named by "X1", "X2",..."Y". Each filed specify the paramaters that control the corresponding variables. (default: see details of FPCA())
+#' @param vars A list of input functional covariates with name of "X1", "X2",.. and a scalar response with name "Y". Each field should have two fields: 'Lt', a list (sparse) or a matrix (Dense) specifying the time of observations, and 'Ly', a vetor stand for the observations.
+#' @param varsOptns A list of options named by "X1", "X2",... Each filed specify the paramaters that control the corresponding variables. (default: see details of FPCA())
 #' @param isNewSub A 1*n vector of 0s or 1s, where n is the total count of subjects. 0 denotes the corresponding subject is only used for estimation and 1 denotes the corresponding subject is only used for prediction. (default: 0's)
-#' @param methodSelect The method used for selecting the number of principal components of functional predictors X's used in functional regression , including 'AIC', 'BIC' and 'FVE'. (default: "AIC")
+#' @param methodSelect The method used for selecting the number of principal components of functional predictors X's used in functional regression , method optns including 'AIC', 'BIC','Basis' and 'FVE'. (default: "FVE") If choose 'FVE' method, parameter 'FVEThreshold' should be implement here. If choose 'Basis' method, 'NumberOfBasis' should be fill in.
 #' @param interval A length 2 vector indicate the support grid of the functional covariate, default to be c(0,1)
 #'
 #' @return A list containing the following fields:
