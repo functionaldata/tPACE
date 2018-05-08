@@ -77,7 +77,7 @@ CrWholeMat<-function(Y,X,tPoint,options){
 				##under dense case, directly use matrix calculation
 				g_hat = 0
 				for(j in 1:length(Y)){
-		  			g_hat = g_hat+(Y[j]-mean(Y))*(X[[i]][[j]])/n
+		  			g_hat = g_hat+(Y[j]-mean(Y))*(X[[i]][[j]])/length(Y)
 				}
 				if(length(g_hat) != length(PCARes_1$workGrid) ){g_hat = approx(x = tPoint[[i]][[1]],y = g_hat,xout = PCARes_1$workGrid,rule = 2)$y}
 				CrMatYZ = append(CrMatYZ,list( g_hat ) )
