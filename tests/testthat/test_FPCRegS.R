@@ -162,7 +162,7 @@ test_that ('Multiple Dense and Sparse Case works', {
 
 
 test_that ('eigen decomposition of Cov works',{
-expect_equal( abs(result_DM$Eigen[1] - diag(sig)[1])/abs(diag(sig)[1]), 0, tol = 0.1)
+expect_equal( abs(result_DM$Eigen[1] - diag(sig)[1])/abs(diag(sig)[1]), 0, tol = 0.3)
 expect_equal( sum(abs(result_DM$Eigen[1:4] - diag(sig))/sum(diag(sig))), 0, tol = 0.3)
 })
 
