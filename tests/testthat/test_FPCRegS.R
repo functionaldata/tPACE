@@ -61,7 +61,7 @@ test_that ('Simple Dense and Sparse Case works', {
 
 ####################################
 ##Multiple predictor X1 and X2
-#set.seed(1000)
+set.seed(1000)
 
 n<-500
 N<-200 
@@ -149,7 +149,7 @@ vars4 = list(X1=list(Ly = append(X1.SP$Ly,X1Test.SP$Ly),Lt = append(X1.SP$Lt,X1T
              Y = Y)
 isNewSub_SM = c(rep(0,length(X1.SP$Lt)),rep(1,length(X1Test.SP$Lt )))
 #result6.1 <- FPCRegS(vars6,isNewSub = isNewSub.6,varsOptns = list(list(methodBwCov = 'GMeanAndGCV'),list(methodBwCov = 'GMeanAndGCV')))
-result_SM <- FPCRegS(vars6,isNewSub = isNewSub_SM)
+result_SM <- FPCRegS(vars4,isNewSub = isNewSub_SM)
 
 
 
