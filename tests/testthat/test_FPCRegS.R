@@ -61,7 +61,7 @@ test_that ('Simple Dense and Sparse Case works', {
 
 ####################################
 ##Multiple predictor X1 and X2
-set.seed(1000)
+#set.seed(1000)
 
 n<-500
 N<-200 
