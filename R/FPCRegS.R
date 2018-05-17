@@ -258,7 +258,18 @@ FPCRegS <- function(vars, varsOptns = NULL, isNewSub = NULL, methodSelect = list
 					}
 					#Y_Pred = Y_Pred + apply( X_Imp ,2,function(x) FakeInt(x*Beta[[i]], GetMatrixInfo$FPCAlist[[i]]$workGrid,interval)   )
 					Y_Pred = Y_Pred + apply(CEscore,1,function(x) sum(x[1:L]*score[1:L]) ) 
-				}
+					##Trim to guarantee the pred did not diverge too risk
+					mu = mean(Y_Pred)
+					sigma = sd(Y_Pred)
+					if(any(Y_Pred > mu+2*sigma)){
+						TrimInd = which(Y_Pred > mu + 2*sigma)
+						Y_Pred[TrimInd] = mu + 2*sigma
+					}
+					if(any(Y_Pred < mu-2*sigma)){
+						TrimInd = which(Y_Pred < mu - 2*sigma)
+						Y_Pred[TrimInd] = mu - 2*sigma
+					}
+					}
 		returnList = list(Betalist,R2,Y_Pred,L,Eigen_Value[1:L],Eigen_fun[,1:L])
 	names(returnList) = c("Betalist","R2","predictions","NOC","EigenV","EigenF")
 	returnList		

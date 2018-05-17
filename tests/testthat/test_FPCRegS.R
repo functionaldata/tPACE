@@ -55,7 +55,7 @@ resultSS = FPCRegS(vars2,isNewSub = isNewSub_SS,methodSelect = list(method = "Ba
 test_that ('Simple Dense and Sparse Case works', {
 
 	expect_equal(mean((result_DS$predictions - YTest)^2)/var(YTest), 0, tol = 1e-2)
-	expect_equal(mean((resultSS$predictions - YTest)^2)/var(YTest), 0, tol = 0.1)
+	expect_equal(mean((resultSS$predictions - YTest)^2)/var(YTest), 0, tol = 0.3)
 })
 
 
@@ -148,7 +148,7 @@ vars4 = list(X1=list(Ly = append(X1.SP$Ly,X1Test.SP$Ly),Lt = append(X1.SP$Lt,X1T
              X2=list(Ly = append(X2.SP$Ly,X2Test.SP$Ly),Lt = append(X2.SP$Lt,X2Test.SP$Lt)), 
              Y = Y)
 isNewSub_SM = c(rep(0,length(X1.SP$Lt)),rep(1,length(X1Test.SP$Lt )))
-#result6.1 <- FPCRegS(vars6,isNewSub = isNewSub.6,varsOptns = list(list(methodBwCov = 'GMeanAndGCV'),list(methodBwCov = 'GMeanAndGCV')))
+#result_SM <- FPCRegS(vars4,isNewSub = isNewSub_SM,varsOptns = list(list(methodBwCov = 'GMeanAndGCV'),list(methodBwCov = 'GMeanAndGCV')))
 result_SM <- FPCRegS(vars4,isNewSub = isNewSub_SM)
 
 
