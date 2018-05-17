@@ -166,6 +166,61 @@ expect_equal( abs(result_DM$Eigen[1] - diag(sig)[1])/abs(diag(sig)[1]), 0, tol =
 expect_equal( sum(abs(result_DM$Eigen[1:4] - diag(sig))/sum(diag(sig))), 0, tol = 0.3)
 })
 
+####################################
+##Single predictor X1
+set.seed(1000)
+n = 300
+N = 100
+# eigenfunctions
+phi11 <- function(t) sqrt(2)*sin(2*pi*t)
+phi12 <- function(t) sqrt(2)*cos(2*pi*t)
+sig <- diag(c(2,1.2))
+scoreX <- mvrnorm(n,mu=rep(0,2),Sigma=sig)
+scoreXTest <- mvrnorm(N,mu=rep(0,2),Sigma=sig)
+# training set
+gridX <- seq(0,1,length.out=21)
+Lt <- Lx1 <- list()
+# Lt <- Lx1 <- Lx2 <- list()
+for (i in 1:n) {
+  Lt[[i]] <- gridX
+  Lx1[[i]] <- scoreX[i,1]*phi11(gridX) + scoreX[i,2]*phi12(gridX) + rnorm(1,0,0.01)
+}
+# test set
+LtTest <- Lx1Test <- list()
+for (i in 1:N) {
+  LtTest[[i]] <- gridX
+  Lx1Test[[i]] <- scoreXTest[i,1]*phi11(gridX) + scoreXTest[i,2]*phi12(gridX) + rnorm(1,0,0.01)
+}
+# dense observations
+denseX1 <- matrix(nrow=n,ncol=length(gridX))
+for (i in 1:n) {
+  denseX1[i,] <- Lx1[[i]]
+}
+denseX1Test <- matrix(nrow=N,ncol=length(gridX))
+for (i in 1:N) {
+  denseX1Test[i,] <- Lx1Test[[i]]
+}
+denseX1Full <- rbind(denseX1,denseX1Test)
+sig0 <- 0.2
+betaCoef <- c(0,0)
+Y <- c(scoreX%*%betaCoef) + rnorm(n,0,sig0)
+YTest <- c(scoreXTest%*%betaCoef) + rnorm(N,0,sig0)
+YFull <- c(Y,YTest)
+
+vars = list( X1 = list(Ly = append(Lx1,Lx1Test),Lt = append(Lt,LtTest) ), Y = Y)
+isNewSub_DS = c(rep(0,length(Lx1)) ,rep(1,length(Lx1Test)))
+result_DS = FPCRegS(vars,isNewSub = isNewSub_DS)
+
+tmp1 = Sparsify(denseX1, gridX, 3:5)
+tmp2 = Sparsify(denseX1Test, gridX, 3:5)
+vars2 = list( X1 = list(Ly = append( tmp1$Ly,tmp2$Ly ),Lt = append(tmp1$Lt, tmp2$Lt) ), Y = Y)
+isNewSub_SS = c(rep(0,length(tmp1$Ly)) ,rep(1,length(tmp2$Lt )))
+resultSS = FPCRegS(vars2,isNewSub = isNewSub_SS,methodSelect = list(method = "Basis",NumberOfBasis = 2))
+
+test_that ('Simple Dense and Sparse Case works', {
+   expect_true(  mean(abs(unlist(result_DS$Betalist$estiBeta)^2)) < 0.001 )
+   expect_true(  mean(abs(unlist(resultSS$Betalist$estiBeta)^2)) < 0.001 )
+})
 
 
 
