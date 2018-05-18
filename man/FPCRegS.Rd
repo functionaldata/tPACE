@@ -9,7 +9,7 @@ FPCRegS(vars, varsOptns = NULL, isNewSub = NULL,
   NULL), interval = c(0, 1))
 }
 \arguments{
-\item{vars}{A list of input functional covariates with name of "X1", "X2",.. and a scalar response with name "Y". Each field should have two fields: 'Lt', a list (sparse) or a matrix (Dense) specifying the time of observations, and 'Ly', a vetor stand for the observations.}
+\item{vars}{A list of input functional covariates with name of "X1", "X2",.. and a scalar response with name "Y". Except the 'Y' a scalar stand for the observations, each other field should have two fields: 'Lt', a list (sparse) or a matrix (Dense) specifying the time of observations, and 'Ly', a list of function values.}
 
 \item{varsOptns}{A list of options named by "X1", "X2",... Each filed specify the paramaters that control the corresponding variables. (default: see details of FPCA())}
 
@@ -29,7 +29,7 @@ A list containing the following fields:
 \item{EigenF}{FPC eigen function (generated from large function)}
 }
 \description{
-Function for performing functonal linear regression where the covariates are functions X1(t1),X2(t2),.. and the response is a scalar Y.
+Function linear regression with dense or sparse functional data as covariate and a scalar response.
 }
 \examples{
 set.seed(1000)
@@ -112,5 +112,7 @@ MixedVars <- list(X1 = sparseX1, X2 = list(Ly = denseX2, Lt = timeX), Y = denseY
 TestRes3 = FPCRegS(MixedVars)
 }
 \references{
-\cite{Yao, F., Mueller, H.G., Wang, J.L. "Functional Linear Regression Analysis for Longitudinal Data." Annals of Statistics 33, (2005): 2873-2903.}
+\cite{Cai, T. Tony, and Peter Hall. "Prediction in functional linear regression." The Annals of Statistics 34.5 (2006): 2159-2179.}
+
+\cite{Hall, Peter, and Joel L. Horowitz. "Methodology and convergence rates for functional linear regression." The Annals of Statistics 35.1 (2007): 70-91.}
 }
