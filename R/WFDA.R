@@ -1,4 +1,4 @@
-#' Warped Functional DAta Analysis
+#' Warped Functional Data Analysis
 #' 
 #' Pairwise curve synchronization for functional data
 #' 
@@ -224,7 +224,7 @@ WFDA = function(Ly, Lt, optns = list()){
     }
     
     if(optns$choice == 'weighted'){
-      hMat[i,] = apply(hikMat[, ,i] , 2, weighted.mean, distMat[i,])
+      hMat[i,] = apply(hikMat[, ,i] , 2, weighted.mean, 1/distMat[i,])
     } else {
       hMat[i,] = apply(hikMat[  (distMat[i,] <= quantile( distMat[i,], p=0.90) ),  ,i] , 2, mean)
     }
