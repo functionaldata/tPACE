@@ -25,8 +25,6 @@
 
 CreateModeOfVarPlot <-function(fpcaObj,  k = 1, rainbowPlot = FALSE, colSpectrum = NULL, ...){ 
   
-  args1 <- list( main="Default Title", xlab='s', ylab='')  
-  inargs <- list(...)
   
   if(k> length(fpcaObj$lambda) ){
     stop("You are asking to plot a mode of variation that is incomputable.")
@@ -37,6 +35,8 @@ CreateModeOfVarPlot <-function(fpcaObj,  k = 1, rainbowPlot = FALSE, colSpectrum
   } 
   
   
+  args1 <- list( main=paste( collapse=" ", "Variation associated with FPC", k,":", round(digits= 2, fpcaObj$cumFVE[k]), "%" ), xlab='s', ylab='')  
+  inargs <- list(...)
   
   obsGrid = fpcaObj$obsGrid      
   s = fpcaObj$workGrid
