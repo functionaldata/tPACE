@@ -12,8 +12,8 @@
 #'@param optns_x A list of options for predictor x with control parameters specified by list(name=value) with default NA. See function FPCA for details.
 #'@param isNewSub A 1*n vector of 0s or 1s, where n is the total count of subjects. 0 denotes the corresponding subject is only used for training and 1 denotes the corresponding subject is only used for prediction. (default: 0's)
 
-#'@return predQ: a matrix of n*length(outQ) where the the first nn (number of 0s in isNewSub) rows containing fitted  conditional quantiles of Y corresponding to the trainning subjects, and the last n-nn rows containing predicted conditional quantiles of Y corresponding to the subjects isNewSub ==1.
-#'predF: a matrix of n*100. The ith row contains the fitted or predicted conditional distribution function F(y|X_i), evaluated at an equally spaced grid of 100 points.
+#'@return pred_quantile: a matrix of n*length(outQ) where the the first nn (number of 0s in isNewSub) rows containing fitted  conditional quantiles of Y corresponding to the trainning subjects, and the last n-nn rows containing predicted conditional quantiles of Y corresponding to the subjects isNewSub ==1.
+#'pred_CDF: a matrix of n*100. The ith row contains the fitted or predicted conditional distribution function F(y|X_i), evaluated at an equally spaced grid of 100 points.
 #'b: a matrix of 50*(K+1) contains the coefficient functions, defined as F(y|X) = g(\sum_(k=0)^K b_k(y)\xi_k), see equation (5) in the paper for details, where K is the number of components selected to expand the predictor functions X, and \xi_k is the kth principal component score.
 
 #'@references Chen, K., M\"uller, H.G. (2011). Conditional quantile analysis when covariates are functions, with application to growth data. J. Royal Statistical Society B.
@@ -95,5 +95,5 @@ FPCquantile = function(Lx,Lt_x,y,outQ=c(0.1,0.25,0.5,0.75,0.9),optns_x = NULL,is
       }
     }
   }
-  return(list(out_quantile = outQ,out_CDF = outF,betas = b, pred_quantile = predQ,pred_CDF = predF))
+  return(list(pred_quantile = predQ,pred_CDF = predF,beta = b))
 }
