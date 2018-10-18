@@ -4,9 +4,9 @@
 \alias{MakeSparseGP}
 \title{Make Gaussian Process Sparse Functional Data sample}
 \usage{
-MakeSparseGP(n, rdist = runif, sparsity = 2:9, muFun = function(x) rep(0,
-  length(x)), K = 2, lambda = rep(1, K), sigma = 0, basisType = "cos",
-  CovFun = NULL)
+MakeSparseGP(n, rdist = runif, sparsity = 2:9, muFun = function(x)
+  rep(0, length(x)), K = 2, lambda = rep(1, K), sigma = 0,
+  basisType = "cos", CovFun = NULL)
 }
 \arguments{
 \item{n}{number of samples to generate.}

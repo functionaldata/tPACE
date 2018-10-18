@@ -21,8 +21,6 @@ A list containing the normalised sample 'y' at times 't'
 }
 \description{
 Normalise sparse functional sample given in an FPCA object
-
-\code{GetNormalizedSample} is an alias of \code{GetNormalizedSample}
 }
 \examples{
 set.seed(1)
