@@ -1,6 +1,6 @@
 #' Create the design plot of the functional data.
 #'
-#' This function will open a new device if not instructed otherwise.
+#' Display the scatter plot of \eqn{\{(T_{ij}, T_{il}\}_{i \le n,\, j,l \le n_i }}{{(T_{ij}, T_{il}}}, which is used to diagnose whether the design time points are sufficiently dense in the domain of interest so that the 2D smoothed covariance estimate is feasible. See Figure 2 of Yao et al (2005). This function will open a new device if not instructed otherwise.
 #'
 #' @param Lt a list of observed time points for functional data
 #' @param obsGrid a vector of sorted observed time points. Default to the 
@@ -13,6 +13,8 @@
 #'                   FALSE:  do not remove diagonal time pairs
 #' @param addLegend Logical, default TRUE
 #' @param ... Other arguments passed into \code{plot()}. 
+#' @references
+#' \cite{Yao, Fang, Hans-Georg Mueller, and Jane-Ling Wang. "Functional data analysis for sparse longitudinal data." Journal of the American Statistical Association 100, no. 470 (2005): 577-590.}
 #'
 #' @examples
 #' set.seed(1)

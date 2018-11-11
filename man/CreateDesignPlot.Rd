@@ -26,7 +26,7 @@ FALSE:  do not remove diagonal time pairs}
 \item{...}{Other arguments passed into \code{plot()}.}
 }
 \description{
-This function will open a new device if not instructed otherwise.
+Display the scatter plot of \eqn{\{(T_{ij}, T_{il}\}_{i \le n,\, j,l \le n_i }}{{(T_{ij}, T_{il}}}, which is used to diagnose whether the design time points are sufficiently dense in the domain of interest so that the 2D smoothed covariance estimate is feasible. See Figure 2 of Yao et al (2005). This function will open a new device if not instructed otherwise.
 }
 \examples{
 set.seed(1)
@@ -35,4 +35,7 @@ pts <- seq(0, 1, by=0.05)
 sampWiener <- Wiener(n, pts)
 sampWiener <- Sparsify(sampWiener, pts, 10)
 CreateDesignPlot(sampWiener$Lt, sort(unique(unlist(sampWiener$Lt))))
+}
+\references{
+\cite{Yao, Fang, Hans-Georg Mueller, and Jane-Ling Wang. "Functional data analysis for sparse longitudinal data." Journal of the American Statistical Association 100, no. 470 (2005): 577-590.}
 }
