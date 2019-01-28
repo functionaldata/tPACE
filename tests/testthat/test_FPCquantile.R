@@ -81,7 +81,8 @@ test_that('test when output quantiles are not in [0,1]', {
   
   outQ = c(-0.1,0.25,0.5,0.75,0.9,0.95)
   isNewsub = c(rep(0,n-npred),rep(1,npred))
-  qtreg = FPCquantile(x, t_x, y, outQ,optns_x = NULL,isNewsub) 
+  expect_error(FPCquantile(x, t_x, y, outQ,optns_x = NULL,isNewsub) )
+  #qtreg = FPCquantile(x, t_x, y, outQ,optns_x = NULL,isNewsub) 
 })
 
 # negative test 2
@@ -101,5 +102,6 @@ test_that('test when y and Lx does not have same length', {
   
   outQ = c(0.1,0.25,0.5,0.75,0.9,0.95)
   isNewsub = c(rep(0,n-npred),rep(1,npred))
-  qtreg = FPCquantile(x, t_x, y, outQ,optns_x = NULL,isNewsub) 
+  expect_error(FPCquantile(x, t_x, y, outQ,optns_x = NULL,isNewsub) )
+  #qtreg = FPCquantile(x, t_x, y, outQ,optns_x = NULL,isNewsub) 
 })
