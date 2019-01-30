@@ -11,6 +11,7 @@
 #'mu_quad_x=8*t^2-4*t+5
 #'mu_quad_y=8*t^2-12*t+6
 #'fun=rbind(rep(1,length(t)),-t,t^2)
+#'set.seed(1)
 #'z1=mvrnorm(n,rep(0,3),diag(c(2,16/3,4)))
 #'x1_quad_error=y1_quad_error=matrix(0,nrow=n,ncol=length(t))
 #'for (i in 1:n){
