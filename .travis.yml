@@ -15,8 +15,8 @@ r_packages:
 addons:
   apt:
     packages:
-      - tcl-dev
-      - tk-dev
+      - tcl8.5-dev # - tcl-dev
+      - tk8.5-dev  # - tk-dev
       - texlive-latex-extra
       
 warnings_are_errors: false
