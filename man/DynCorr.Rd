@@ -32,8 +32,8 @@ z1[,2]=rnorm(n,0,16/3)
 z1[,3]=rnorm(n,0,4)
 x1_quad_error=y1_quad_error=matrix(0,nrow=n,ncol=length(t))
 for (i in 1:n){
- x1_quad_error[i,]=mu_quad_x+z1[i,]\%*\%fun+rnorm(length(t),0,0.01)
- y1_quad_error[i,]=mu_quad_y+2*z1[i,]\%*\%fun +rnorm(length(t),0,0.01)
+  x1_quad_error[i,]=mu_quad_x+z1[i,]\%*\%fun+rnorm(length(t),0,0.01)
+  y1_quad_error[i,]=mu_quad_y+2*z1[i,]\%*\%fun +rnorm(length(t),0,0.01)
 }
 dyn1_quad=DynCorr(x1_quad_error,y1_quad_error,t) 
 }

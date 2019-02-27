@@ -4,8 +4,8 @@
 \alias{MakeGPFunctionalData}
 \title{Make Gaussian Process Dense Functional Data sample}
 \usage{
-MakeGPFunctionalData(n, M = 100, mu = rep(0, M), K = 2, lambda = rep(1,
-  K), sigma = 0, basisType = "cos")
+MakeGPFunctionalData(n, M = 100, mu = rep(0, M), K = 2,
+  lambda = rep(1, K), sigma = 0, basisType = "cos")
 }
 \arguments{
 \item{n}{number of samples to generate}
