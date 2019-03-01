@@ -49,9 +49,5 @@ Suggests:
     minqa,
     testthat
 NeedsCompilation: yes
-<<<<<<< HEAD
-RoxygenNote: 6.1.0
-=======
 RoxygenNote: 6.1.1
->>>>>>> DynCorr
 VignetteBuilder: knitr
