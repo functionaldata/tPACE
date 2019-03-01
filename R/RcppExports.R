@@ -5,20 +5,6 @@ CPPlwls1d <- function(bw, kernel_type, win, xin, yin, xout, npoly = 1L, nder = 0
     .Call('_fdapace_CPPlwls1d', PACKAGE = 'fdapace', bw, kernel_type, win, xin, yin, xout, npoly, nder)
 }
 
-#' Cumulative Trapezoid Rule Numerical Integration
-#' 
-#' Cumulative Trapezoid Rule Numerical Integration using Rcpp
-#' @param X Sorted vector of X values
-#' @param Y Vector of Y values.
-#' @export 
-cumtrapzRcpp <- function(X, Y) {
-    .Call('_fdapace_cumtrapzRcpp', PACKAGE = 'fdapace', X, Y)
-}
-
-dropZeroElementsXYWin <- function(win, xin, yin) {
-    .Call('_fdapace_dropZeroElementsXYWin', PACKAGE = 'fdapace', win, xin, yin)
-}
-
 GetIndCEScoresCPP <- function(yVec, muVec, lamVec, phiMat, SigmaYi) {
     .Call('_fdapace_GetIndCEScoresCPP', PACKAGE = 'fdapace', yVec, muVec, lamVec, phiMat, SigmaYi)
 }
@@ -27,12 +13,12 @@ GetIndCEScoresCPPnewInd <- function(yVec, muVec, lamVec, phiMat, SigmaYi, newPhi
     .Call('_fdapace_GetIndCEScoresCPPnewInd', PACKAGE = 'fdapace', yVec, muVec, lamVec, phiMat, SigmaYi, newPhi, newMu)
 }
 
-interp2lin <- function(xin, yin, zin, xou, you) {
-    .Call('_fdapace_interp2lin', PACKAGE = 'fdapace', xin, yin, zin, xou, you)
-}
-
 RCPPmean <- function(X) {
     .Call('_fdapace_RCPPmean', PACKAGE = 'fdapace', X)
+}
+
+RCPPvar <- function(X) {
+    .Call('_fdapace_RCPPvar', PACKAGE = 'fdapace', X)
 }
 
 RcppPseudoApprox <- function(X, Y, X_target) {
@@ -41,10 +27,6 @@ RcppPseudoApprox <- function(X, Y, X_target) {
 
 Rcppsort <- function(v) {
     .Call('_fdapace_Rcppsort', PACKAGE = 'fdapace', v)
-}
-
-RCPPvar <- function(X) {
-    .Call('_fdapace_RCPPvar', PACKAGE = 'fdapace', X)
 }
 
 Rmullwlsk <- function(bw, kernel_type, tPairs, cxxn, win, xgrid, ygrid, bwCheck, transp = TRUE) {
@@ -69,6 +51,24 @@ RmullwlskUniversalDeriv <- function(bw, kernel_type, tPairs, cxxn, win, xgrid, y
 
 Rrotatedmullwlsk <- function(bw, kernel_type, tPairs, cxxn, win, xygrid, npoly, bwCheck) {
     .Call('_fdapace_Rrotatedmullwlsk', PACKAGE = 'fdapace', bw, kernel_type, tPairs, cxxn, win, xygrid, npoly, bwCheck)
+}
+
+#' Cumulative Trapezoid Rule Numerical Integration
+#' 
+#' Cumulative Trapezoid Rule Numerical Integration using Rcpp
+#' @param X Sorted vector of X values
+#' @param Y Vector of Y values.
+#' @export 
+cumtrapzRcpp <- function(X, Y) {
+    .Call('_fdapace_cumtrapzRcpp', PACKAGE = 'fdapace', X, Y)
+}
+
+dropZeroElementsXYWin <- function(win, xin, yin) {
+    .Call('_fdapace_dropZeroElementsXYWin', PACKAGE = 'fdapace', win, xin, yin)
+}
+
+interp2lin <- function(xin, yin, zin, xou, you) {
+    .Call('_fdapace_interp2lin', PACKAGE = 'fdapace', xin, yin, zin, xou, you)
 }
 
 #' Trapezoid Rule Numerical Integration

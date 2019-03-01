@@ -4,8 +4,8 @@
 \alias{GetCrCovYX}
 \title{Functional Cross Covariance between longitudinal variable Y and longitudinal variable X}
 \usage{
-GetCrCovYX(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL, Ly2,
-  Lt2 = NULL, Ymu2 = NULL, useGAM = FALSE, rmDiag = FALSE,
+GetCrCovYX(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL,
+  Ly2, Lt2 = NULL, Ymu2 = NULL, useGAM = FALSE, rmDiag = FALSE,
   kern = "gauss", bwRoutine = "l-bfgs-b")
 }
 \arguments{

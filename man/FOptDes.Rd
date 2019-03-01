@@ -6,7 +6,8 @@
 for Trajectory Recovery or Scalar Response Prediction}
 \usage{
 FOptDes(Ly, Lt, Resp, p = 3, optns = list(),
-  isRegression = !missing(Resp), isSequential = FALSE, RidgeCand = NULL)
+  isRegression = !missing(Resp), isSequential = FALSE,
+  RidgeCand = NULL)
 }
 \arguments{
 \item{Ly}{A list of \emph{n} vectors containing the observed values for each individual. Missing values specified by \code{NA}s are supported for dense case (\code{dataType='dense'}).}

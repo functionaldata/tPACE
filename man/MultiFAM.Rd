@@ -4,8 +4,8 @@
 \alias{MultiFAM}
 \title{Functional Additive Models with Multiple Predictor Processes}
 \usage{
-MultiFAM(Y, X, ker = "epan", nEval = 51, XTest = NULL, bwMethod = 0,
-  alpha = 0.7, supp = c(-2, 2), optnsList = NULL)
+MultiFAM(Y, X, ker = "epan", nEval = 51, XTest = NULL,
+  bwMethod = 0, alpha = 0.7, supp = c(-2, 2), optnsList = NULL)
 }
 \arguments{
 \item{Y}{An \emph{n}-dimensional vector whose elements consist of scalar responses.}

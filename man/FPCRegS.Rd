@@ -5,8 +5,8 @@
 \title{Function for performing functonal linear regression where the covariates are functions X1(t1),X2(t2),.. and the response is a scalar Y.}
 \usage{
 FPCRegS(vars, varsOptns = NULL, isNewSub = NULL,
-  methodSelect = list(method = "FVE", FVEThreshold = 0.95, NumberOfBasis =
-  NULL), interval = c(0, 1))
+  methodSelect = list(method = "FVE", FVEThreshold = 0.95, NumberOfBasis
+  = NULL), interval = c(0, 1))
 }
 \arguments{
 \item{vars}{A list of input functional covariates with name of "X1", "X2",.. and a scalar response with name "Y". Except the 'Y' a scalar stand for the observations, each other field should have two fields: 'Lt', a list (sparse) or a matrix (Dense) specifying the time of observations, and 'Ly', a list of function values.}
