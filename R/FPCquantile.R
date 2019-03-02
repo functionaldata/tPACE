@@ -27,6 +27,7 @@
 #'
 #'x=list()
 #'t_x=list()
+#'y=numeric(n)
 #'for(i in 1:n){
 #'  t_x = c(t_x,list(0:m/m))
 #'  x = c(x,list(xi[i,]))
