@@ -19,7 +19,7 @@ knitr::opts_chunk$set(echo = TRUE)
 The basic work-flow behind the PACE approach for sparse functional data is as follows (see eg. [@Yao05; @Liu09] for more information):
  
 1. Calculate the smoothed mean $\hat{\mu}$ (using local linear smoothing) aggregating all the available readings together.
-2. Calculate for each curve seperately its own raw covariance and then aggregate all these raw covariances to generate the sample raw covariance.
+2. Calculate for each curve separately its own raw covariance and then aggregate all these raw covariances to generate the sample raw covariance.
 3. Use the off-diagonal elements of the sample raw covariance to estimate the smooth covariance.
 4. Perform eigenanalysis on the smoothed covariance to obtain the estimated eigenfunctions $\hat{\phi}$ and eigenvalues $\hat{\lambda}$, then project that smoothed covariance on a positive semi-definite surface [@Hall2008].
 5. Use Conditional Expectation (PACE step) to estimate the corresponding scores $\hat{\xi}$.
