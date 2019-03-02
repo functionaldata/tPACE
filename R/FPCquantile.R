@@ -14,8 +14,8 @@
 #'
 #'@return A list of the following
 #'\item{pred_quantile: a matrix of n*length(outQ) where the the first nn (number of 0s in isNewSub) rows containing fitted  conditional quantiles of Y corresponding to the trainning subjects, and the last n-nn rows containing predicted conditional quantiles of Y corresponding to the subjects isNewSub ==1.}
-#'\item{pred_CDF: a matrix of n*100. The ith row contains the fitted or predicted conditional distribution function F(y|X_i), evaluated at an equally spaced grid of 100 points.}
-#'\item{b: a matrix of 50*(K+1) contains the coefficient functions, defined as F(y|X) = g(\sum_(k=0)^K b_k(y)\xi_k), see equation (5) in the paper for details, where K is the number of components selected to expand the predictor functions X, and \xi_k is the kth principal component score.}
+#'\item{pred_CDF: a matrix of n*100. The ith row contains the fitted or predicted conditional distribution function \eqn{F(y|X_i)}, evaluated at an equally spaced grid of 100 points.}
+#'\item{b: a matrix of 50*(K+1) contains the coefficient functions, defined as \eqn{F(y|X) = g(\sum_(k=0)^K b_k(y)\xi_k)}, see equation (5) in the paper for details, where K is the number of components selected to expand the predictor functions X, and \eqn{\xi_k} is the kth principal component score.}
 #'
 #'@examples
 #'set.seed(10)
