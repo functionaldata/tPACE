@@ -78,6 +78,9 @@ test_that('Low noise is better medium noise is better than high noise', {
     tvam <- TVAM(Lt,Ly,LLx,gridT=gridT,x=x,ht=ht,hx=hx,K='epan')
     return(tvam)
   }
+  
+  gridT <- seq(0,1,length.out=41)
+  x0 <- seq(0,1,length.out=51)
 
   tvamVeryNoisy <- changeNoise(sigma2=0.5)
   tvamNoisy <- changeNoise(sigma2=0.2)
