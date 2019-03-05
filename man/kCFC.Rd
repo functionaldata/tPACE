@@ -5,9 +5,9 @@
 \title{Functional clustering and identifying substructures of longitudinal data using kCFC.}
 \usage{
 kCFC(y, t, k = 3, kSeed = 123, maxIter = 125,
-  optnsSW = list(methodMuCovEst = "smooth", FVEthreshold = 0.9, methodBwCov =
-  "GCV", methodBwMu = "GCV"), optnsCS = list(methodMuCovEst = "smooth",
-  FVEthreshold = 0.7, methodBwCov = "GCV", methodBwMu = "GCV"))
+  optnsSW = list(methodMuCovEst = "smooth", FVEthreshold = 0.9,
+  methodBwCov = "GCV", methodBwMu = "GCV"), optnsCS = list(methodMuCovEst
+  = "smooth", FVEthreshold = 0.7, methodBwCov = "GCV", methodBwMu = "GCV"))
 }
 \arguments{
 \item{y}{A list of \emph{n} vectors containing the observed values for each individual. Missing values specified by \code{NA}s are supported for dense case (\code{dataType='dense'}).}
