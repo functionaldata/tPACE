@@ -164,7 +164,7 @@ FPCA = function(Ly, Lt, optns = list()){
                                      optns$useBinnedCov) 
   } else if (optns$methodMuCovEst == 'cross-sectional') {
     scsObj = GetCovDense(ymat, mu, optns)
-    if (length(obsGrid) != cutRegGrid || !all.equal(obsGrid, cutRegGrid)) {
+    if ( length(obsGrid) != length(cutRegGrid) || !all.equal(obsGrid, cutRegGrid)) {
       scsObj$smoothCov = ConvertSupport(obsGrid, cutRegGrid, Cov =
                                         scsObj$smoothCov)
     }
