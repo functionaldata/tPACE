@@ -24,9 +24,9 @@ TVAM(Lt, Ly, LLx, gridT = NULL, x = NULL, ht = NULL, hx = NULL,
 
 \item{K}{A \code{function} object representing the kernel to be used in the smooth backfitting (default is 'epan', the the Epanechnikov kernel.).}
 
-\item{suppt}{A 2-dimensional vector consists of the lower and upper limits of estimation intervals for time component (default is \emph{[0,1]}).}
+\item{suppT}{A 2-dimensional vector consists of the lower and upper limits of estimation intervals for time component (default is \emph{[0,1]}).}
 
-\item{suppx}{A \emph{d} by 2 matrix whose row vectors consist of the lower and upper limits of estimation intervals for each component function (default is the \emph{d}-dimensional unit rectangle of \emph{[0,1]}).}
+\item{suppX}{A \emph{d} by 2 matrix whose row vectors consist of the lower and upper limits of estimation intervals for each component function (default is the \emph{d}-dimensional unit rectangle of \emph{[0,1]}).}
 }
 \value{
 A list containing the following fields:
