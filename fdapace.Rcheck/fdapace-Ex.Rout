@@ -1,0 +1,201 @@
+
+R version 3.5.2 (2018-12-20) -- "Eggshell Igloo"
+Copyright (C) 2018 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> pkgname <- "fdapace"
+> source(file.path(R.home("share"), "R", "examples-header.R"))
+> options(warn = 1)
+> base::assign(".ExTimings", "fdapace-Ex.timings", pos = 'CheckExEnv')
+> base::cat("name\tuser\tsystem\telapsed\n", file=base::get(".ExTimings", pos = 'CheckExEnv'))
+> base::assign(".format_ptime",
++ function(x) {
++   if(!is.na(x[4L])) x[1L] <- x[1L] + x[4L]
++   if(!is.na(x[5L])) x[2L] <- x[2L] + x[5L]
++   options(OutDec = '.')
++   format(x[1L:3L], digits = 7L)
++ },
++ pos = 'CheckExEnv')
+> 
+> ### * </HEADER>
+> library('fdapace')
+> 
+> base::assign(".oldSearch", base::search(), pos = 'CheckExEnv')
+> base::assign(".old_wd", base::getwd(), pos = 'CheckExEnv')
+> cleanEx()
+> nameEx("BwNN")
+> ### * BwNN
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: BwNN
+> ### Title: Minimum bandwidth based on kNN criterion.
+> ### Aliases: BwNN
+> 
+> ### ** Examples
+> 
+> tinyGrid = list(c(1,7), c(2,3),  6,  c(2,4), c(4,5))
+> BwNN(tinyGrid, k = 2) # c(3,2)
+cov  mu 
+  3   2 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("BwNN", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("CreateBWPlot")
+> ### * CreateBWPlot
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: CreateBWPlot
+> ### Title: Functional Principal Component Analysis Bandwidth Diagnostics
+> ###   plot
+> ### Aliases: CreateBWPlot
+> 
+> ### ** Examples
+> 
+> set.seed(1)
+> n <- 25
+> pts <- seq(0, 1, by=0.05)
+> sampWiener <- Wiener(n, pts)
+> sampWiener <- Sparsify(sampWiener, pts, 10)
+> res1 <- FPCA(sampWiener$Ly, sampWiener$Lt, 
++             list(dataType='Sparse', error=FALSE, kernel='epan', verbose=FALSE))
+> CreateBWPlot(res1)
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("CreateBWPlot", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("CreateBasis")
+> ### * CreateBasis
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: CreateBasis
+> ### Title: Create an orthogonal basis of K functions in [0, 1], with nGrid
+> ###   points.
+> ### Aliases: CreateBasis
+> 
+> ### ** Examples
+> 
+> basis <- CreateBasis(3, type='fourier')
+> head(basis)
+     [,1]      [,2]     [,3]
+[1,]    1 0.0000000 1.414214
+[2,]    1 0.1808456 1.402603
+[3,]    1 0.3587218 1.367962
+[4,]    1 0.5307077 1.310858
+[5,]    1 0.6939794 1.232231
+[6,]    1 0.8458560 1.133370
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("CreateBasis", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("CreateCovPlot")
+> ### * CreateCovPlot
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: CreateCovPlot
+> ### Title: Create the covariance surface plot based on the results from
+> ###   FPCA() or FPCder().
+> ### Aliases: CreateCovPlot
+> 
+> ### ** Examples
+> 
+> set.seed(1)
+> n <- 20
+> pts <- seq(0, 1, by=0.05)
+> sampWiener <- Wiener(n, pts)
+> sampWiener <- Sparsify(sampWiener, pts, 10)
+> res <- FPCA(sampWiener$Ly, sampWiener$Lt, 
++             list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
+Median of niis no more than 20! No binning is performed!
+
+At most 28 number of PC can be selected, thresholded by `maxK` = 18. 
+
+> CreateCovPlot(res)
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("CreateCovPlot", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("CreateDesignPlot")
+> ### * CreateDesignPlot
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: CreateDesignPlot
+> ### Title: Create the design plot of the functional data.
+> ### Aliases: CreateDesignPlot
+> 
+> ### ** Examples
+> 
+> set.seed(1)
+> n <- 20
+> pts <- seq(0, 1, by=0.05)
+> sampWiener <- Wiener(n, pts)
+> sampWiener <- Sparsify(sampWiener, pts, 10)
+> CreateDesignPlot(sampWiener$Lt, sort(unique(unlist(sampWiener$Lt))))
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("CreateDesignPlot", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("CreateFuncBoxPlot")
+> ### * CreateFuncBoxPlot
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: CreateFuncBoxPlot
+> ### Title: Create functional boxplot using 'bagplot', 'KDE' or 'pointwise'
+> ###   methodology
+> ### Aliases: CreateFuncBoxPlot
+> 
+> ### ** Examples
+> 
+> set.seed(1)
+> n <- 20
+> pts <- seq(0, 1, by=0.05)
+> sampWiener <- Wiener(n, pts)
+> sampWiener <- Sparsify(sampWiener, pts, 10)
+> res <- FPCA(sampWiener$Ly, sampWiener$Lt, 
++             list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
+Median of niis no more than 20! No binning is performed!
+
+At most 28 number of PC can be selected, thresholded by `maxK` = 18. 
+
+> CreateFuncBoxPlot(res, list(addIndx=c(1:3)) )
+Error: .onLoad failed in loadNamespace() for 'tcltk', details:
+  call: fun(libname, pkgname)
+  error: X11 library is missing: install XQuartz from xquartz.macosforge.org
+Execution halted
