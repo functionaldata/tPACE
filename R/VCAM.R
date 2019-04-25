@@ -1,6 +1,6 @@
 #' Sieve estimation 
 #'
-#' B-spline based estimation procedure for time-varying additive models.
+#' B-spline based estimation procedure for time-varying additive models
 #'
 #' @param Lt An \emph{n}-dimensional list of \emph{N_i}-dimensional vectors whose elements consist of longitudial time points for each \emph{i}-th subject.
 #' @param Ly An \emph{n}-dimensional list of \emph{N_i}-dimensional vectors whose elements consist of longitudial response observations of each \emph{i}-subject corresponding to \emph{Lt}.
