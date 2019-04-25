@@ -28,7 +28,7 @@ A list containing the following fields:
 \item{gridT}{The same with input  given by \emph{optnVc$grid}}
 }
 \description{
-B-spline based estimation procedure for time-varying additive models.
+B-spline based estimation procedure for time-varying additive models
 }
 \details{
 \code{VCAM} provides a simple algorithm based on B-spline basis to estimate its nonparametric additive and varying-coefficient components.
