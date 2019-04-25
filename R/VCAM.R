@@ -1,12 +1,12 @@
 #' Sieve estimation 
 #'
-#' B-spline based estimation procedure for time-varying additive models
+#' B-spline based estimation procedure for time-varying additive models.
 #'
 #' @param Lt An \emph{n}-dimensional list of \emph{N_i}-dimensional vectors whose elements consist of longitudial time points for each \emph{i}-th subject.
 #' @param Ly An \emph{n}-dimensional list of \emph{N_i}-dimensional vectors whose elements consist of longitudial response observations of each \emph{i}-subject corresponding to \emph{Lt}.
 #' @param X An \emph{n} by \emph{d} matrix whose row vectors consist of covariate vector of additive components for each subject.
-#' @param optnAdd A list of options controls B-spline parameters for additive components, specified by list(name=value). See ‘Details’.
-#' @param optnVc A list of options controls B-spline parameters for varying-coefficient components, specified by list(name=value). See ‘Details’.
+#' @param optnAdd A list of options controls B-spline parameters for additive components, specified by list(name=value). See 'Details'.
+#' @param optnVc A list of options controls B-spline parameters for varying-coefficient components, specified by list(name=value). See 'Details'.
 #'
 #' @details \code{VCAM} provides a simple algorithm based on B-spline basis to estimate its nonparametric additive and varying-coefficient components.
 #' 

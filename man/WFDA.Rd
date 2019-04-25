@@ -2,7 +2,7 @@
 % Please edit documentation in R/WFDA.R
 \name{WFDA}
 \alias{WFDA}
-\title{Warped Functional DAta Analysis}
+\title{Warped Functional Data Analysis}
 \usage{
 WFDA(Ly, Lt, optns = list())
 }

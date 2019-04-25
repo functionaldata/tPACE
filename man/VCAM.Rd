@@ -13,9 +13,9 @@ VCAM(Lt, Ly, X, optnAdd = list(), optnVc = list())
 
 \item{X}{An \emph{n} by \emph{d} matrix whose row vectors consist of covariate vector of additive components for each subject.}
 
-\item{optnAdd}{A list of options controls B-spline parameters for additive components, specified by list(name=value). See ‘Details’.}
+\item{optnAdd}{A list of options controls B-spline parameters for additive components, specified by list(name=value). See 'Details'.}
 
-\item{optnVc}{A list of options controls B-spline parameters for varying-coefficient components, specified by list(name=value). See ‘Details’.}
+\item{optnVc}{A list of options controls B-spline parameters for varying-coefficient components, specified by list(name=value). See 'Details'.}
 }
 \value{
 A list containing the following fields:
@@ -28,7 +28,7 @@ A list containing the following fields:
 \item{gridT}{The same with input  given by \emph{optnVc$grid}}
 }
 \description{
-B-spline based estimation procedure for time-varying additive models
+B-spline based estimation procedure for time-varying additive models.
 }
 \details{
 \code{VCAM} provides a simple algorithm based on B-spline basis to estimate its nonparametric additive and varying-coefficient components.

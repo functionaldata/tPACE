@@ -1,9 +1,8 @@
-library(devtools)
 library(testthat)
-setwd("/Users/sitenghao/Documents/GitHub/tPACE/R")
-devtools::load_all()
+#devtools::load_all()
 require(library(MASS))||install.packages(library(MASS))
 require(copula)||install.packages(copula)
+
 MISE<-function(est,beta,timepoint){
   res<-0
   for(i in 2:length(timepoint)){
