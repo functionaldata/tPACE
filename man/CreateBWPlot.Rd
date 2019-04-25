@@ -22,7 +22,7 @@ differentiated mean and first two principal modes of variations for 50%, 75%, 10
 }
 \examples{
 set.seed(1)
-n <- 20
+n <- 25
 pts <- seq(0, 1, by=0.05)
 sampWiener <- Wiener(n, pts)
 sampWiener <- Sparsify(sampWiener, pts, 10)

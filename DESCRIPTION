@@ -4,7 +4,7 @@ Title: Functional Data Analysis and Empirical Dynamics
 URL: https://github.com/functionaldata/tPACE
 BugReports: https://github.com/functionaldata/tPACE/issues
 Version: 0.5.0
-Date: 2018-02-15,
+Date: 2019-03-20,
 Authors@R: c(person("Xiongtao","Dai", role=c("aut")),
     person("Pantelis Z.","Hadjipantelis", email="pantelis@ucdavis.edu", role=c("aut","cre")),
     person("Kynghee","Han", role="aut"),

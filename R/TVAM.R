@@ -10,8 +10,8 @@
 #' @param ht A bandwidth for kernel smoothing in time component.
 #' @param hx A \emph{d} vector of bandwidths for kernel smoothing covariate components, respectively.
 #' @param K A \code{function} object representing the kernel to be used in the smooth backfitting (default is 'epan', the the Epanechnikov kernel.).
-#' @param suppt A 2-dimensional vector consists of the lower and upper limits of estimation intervals for time component (default is \emph{[0,1]}).
-#' @param suppx A \emph{d} by 2 matrix whose row vectors consist of the lower and upper limits of estimation intervals for each component function (default is the \emph{d}-dimensional unit rectangle of \emph{[0,1]}).
+#' @param suppT A 2-dimensional vector consists of the lower and upper limits of estimation intervals for time component (default is \emph{[0,1]}).
+#' @param suppX A \emph{d} by 2 matrix whose row vectors consist of the lower and upper limits of estimation intervals for each component function (default is the \emph{d}-dimensional unit rectangle of \emph{[0,1]}).
 #'
 #' @details \code{TVAM} estimates component surfaces of time-varying additive models for londitudinal observations based on the smooth backfitting algorithm proposed by Zhang et al. (2013). \code{TVAM} only focuses on the local constant smooth backfitting in contrast to the original development as in Zhang et al. (2013). However, the local polynomial version can be extended similarly, so that those are omitted in the development. Especially in this development, one can designate an estimation support of additive surfaces when the additive modeling is only allowed over restricted intervals or one is interested in the modeling over the support (see Han et al., 2016).
 #'
@@ -63,6 +63,7 @@
 #' \cite{Zhang, X., Park, B. U. and Wang, J.-L. (2013), "Time-varying additive models for longitudinal data", Journal of the American Statistical Association, Vol.108, No.503, p.983-998.}
 #'
 #' \cite{Han, K., Mueller, H.-G. and Park, B. U. (2018), "Smooth backfitting for additive modeling with small errors-in-variables, with an application to additive functional regression for multiple predictor functions", Bernoulli, Vol.24, No.2, p.1233-1265.}
+#'
 #' @export
 
 TVAM <- function(Lt,Ly,LLx,gridT=NULL,x=NULL,ht=NULL,hx=NULL,K='epan',suppT=NULL,suppX=NULL){
@@ -157,6 +158,7 @@ TVAM <- function(Lt,Ly,LLx,gridT=NULL,x=NULL,ht=NULL,hx=NULL,K='epan',suppT=NULL
   
   return(list(tvamComp=gjSbf,tvamMean=g0Sbf))
   
+  #
 }
 
 
