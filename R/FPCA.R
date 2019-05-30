@@ -140,36 +140,15 @@ FPCA = function(Ly, Lt, optns = list()){
   ## Mean function
   # If the user provided a mean function use it
   firsttsMu <- Sys.time() #First time-stamp for calculation of the mean
-  userMu <- optns$userMu
-  if ( is.list(userMu) && (length(userMu$mu) == length(userMu$t))){
-    smcObj <- GetUserMeanCurve(optns, obsGrid, regGrid, buff)
-    smcObj$muDense = ConvertSupport(obsGrid, regGrid, mu = smcObj$mu)
-  } else if (optns$methodMuCovEst == 'smooth') { # smooth mean
-    smcObj = GetSmoothedMeanCurve(Ly, Lt, obsGrid, regGrid, optns)
-  } else if (optns$methodMuCovEst == 'cross-sectional') { # cross-sectional mean
-    smcObj = GetMeanDense(ymat, obsGrid, optns)
-  }
-# mu: the smoothed mean curve evaluated at times 'obsGrid'
+  smcObj <- GetSmcObj(Ly, Lt, optns)
+  # mu: the smoothed mean curve evaluated at times 'obsGrid'
   mu <- smcObj$mu
   lasttsMu <- Sys.time()
   
   
   firsttsCov <- Sys.time() #First time-stamp for calculation of the covariance
 ## Covariance function and sigma2
-  if (!is.null(optns$userCov) && optns$methodMuCovEst != 'smooth') { 
-      scsObj <- GetUserCov(optns, obsGrid, cutRegGrid, buff, ymat)
-  } else if (optns$methodMuCovEst == 'smooth') {
-# smooth cov and/or sigma2
-    scsObj = GetSmoothedCovarSurface(Ly, Lt, mu, obsGrid, regGrid, optns,
-                                     optns$useBinnedCov) 
-  } else if (optns$methodMuCovEst == 'cross-sectional') {
-    scsObj = GetCovDense(ymat, mu, optns)
-    if (length(obsGrid) != length(cutRegGrid) || !all.equal(obsGrid, cutRegGrid)) {
-      scsObj$smoothCov = ConvertSupport(obsGrid, cutRegGrid, Cov =
-                                        scsObj$smoothCov)
-    }
-    scsObj$outGrid <- cutRegGrid
-  }
+  scsObj  <- GetScsObj(Ly, Lt, optns)
   sigma2 <- scsObj[['sigma2']]
   lasttsCov <- Sys.time()
   firsttsPACE <- Sys.time() #First time-stamp for calculation of PACE
