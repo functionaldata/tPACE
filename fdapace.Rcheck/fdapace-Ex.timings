@@ -1,6 +1,0 @@
-name	user	system	elapsed
-BwNN	0.018	0.001	0.020	
-CreateBWPlot	0.124	0.010	0.134	
-CreateBasis	0.001	0.000	0.001	
-CreateCovPlot	0.106	0.030	0.169	
-CreateDesignPlot	0.020	0.001	0.022	
