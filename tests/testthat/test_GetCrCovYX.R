@@ -128,10 +128,10 @@ test_that('The cross-covariance of two simple related process is correct. Same r
   sSmall = seq(0,10,length.out = 51)
   
   # we know that the covariance between ksi_1 and ksi_2 is three
-  expect_equal( median(abs( eigFunct1(sSmall)%*%t(eigFunct1(sSmall))*3 - BB1$smoothedCC )),  0.02, tol=.02, scale=1 )
-  expect_equal( median(abs( eigFunct1(sSmall)%*%t(eigFunct1(sSmall))*3 - BB2$smoothedCC )),  0.02, tol=.02, scale=1 )
-  expect_equal( median(abs( eigFunct1(sSmall)%*%t(eigFunct1(sSmall))*3 - BB3$smoothedCC )),  0.02, tol=.02, scale=1 )
-  expect_equal( median(abs( eigFunct1(sSmall)%*%t(eigFunct1(sSmall))*3 - BB4$smoothedCC )),  0.02, tol=.02, scale=1 )
+  expect_equal( median(abs( eigFunct1(sSmall)%*%t(eigFunct1(sSmall))*3 - BB1$smoothedCC )),  0.02, tol=.03, scale=1 )
+  expect_equal( median(abs( eigFunct1(sSmall)%*%t(eigFunct1(sSmall))*3 - BB2$smoothedCC )),  0.02, tol=.03, scale=1 )
+  expect_equal( median(abs( eigFunct1(sSmall)%*%t(eigFunct1(sSmall))*3 - BB3$smoothedCC )),  0.02, tol=.03, scale=1 )
+  expect_equal( median(abs( eigFunct1(sSmall)%*%t(eigFunct1(sSmall))*3 - BB4$smoothedCC )),  0.02, tol=.03, scale=1 )
   # expect_equal( median(abs( eigFunct1(sSmall)%*%t(eigFunct1(sSmall))*3 - BB5$smoothedCC )),  0.02, tol=.02, scale=1 )
 
 })}
