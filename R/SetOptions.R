@@ -112,9 +112,16 @@ SetOptions = function(y, t, optns){
     }    
   }
   if(is.null(maxK)){ # maximum number of principal components to consider
-    maxK = min( nRegGrid-2, length(y)-2);   
+    maxK = min( nRegGrid-2, length(y)-2 );   
     if(methodMuCovEst == 'smooth'){
       maxK = min( maxK, 20) 
+    }
+    if(maxK < 1){
+      message("Automatically defined maxK cannot be less than 1. Reset to maxK = 1 now!\n")
+      maxK = 1
+    }
+    if( length(y) <= 3 ){
+      message("The sample size is less or equal to 3 curves. Be cautious!\n")
     }
   }
   methodNames = c("IN", "CE");

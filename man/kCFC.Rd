@@ -14,7 +14,7 @@ kCFC(y, t, k = 3, kSeed = 123, maxIter = 125,
 
 \item{t}{A list of \emph{n} vectors containing the observation time points for each individual corresponding to y.}
 
-\item{k}{A scalar defining the number of clusters to define; default 3.}
+\item{k}{A scalar defining the number of clusters to define; default 3. Values that define very small clusters (eg.cluster size <=3) will potentiall err.}
 
 \item{kSeed}{A scalar valid seed number to ensure replication; default: 123}
 
