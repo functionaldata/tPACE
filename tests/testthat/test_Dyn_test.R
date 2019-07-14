@@ -21,7 +21,7 @@ test_that('one sample test, when y_i[t] - mean(y[t]) = 2(x_i[t]-mean(x[t])), exp
   }
   
   bt_dc=Dyn_test(x1_quad,y1_quad,t)
-  expect_equal(bt_dc$pval < 0.01,T)
+  expect_equal(bt_dc$pval < 0.01,TRUE)
 })
 
 #positive test 2
@@ -52,7 +52,7 @@ test_that('one sample test, setting same as test #1 but with 1/5 missings in eac
   }
   
   bt_dc=Dyn_test(x1_quad,y1_quad,t)
-  expect_equal(bt_dc$pval < 0.01,T)
+  expect_equal(bt_dc$pval < 0.01,TRUE)
 })
 
 #positive test 3
@@ -87,5 +87,5 @@ test_that('two sample test, the first sample has the same setting as test #2, th
   }
   
   bt_dc=Dyn_test(x1_quad,y1_quad,t,x1_quad_error,y1_quad_error,t)
-  expect_equal(bt_dc$pval > 0.2,T)
+  expect_equal(bt_dc$pval > 0.2,TRUE)
 })
