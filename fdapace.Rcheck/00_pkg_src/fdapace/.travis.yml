@@ -1,0 +1,28 @@
+language: r
+#os:
+  #- osx
+cache: packages
+sudo: false
+
+
+before_install:
+  - tlmgr update --self --all
+  - tlmgr install listings 
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
+
+r_packages:
+  - survival
+
+addons:
+  apt:
+    packages:
+      - tcl-dev # - tcl-dev
+      - tk-dev  # - tk-dev
+      - texlive-latex-extra
+      
+warnings_are_errors: false
+
+#before_script:
+#  - R -e 'install.packages("http://cran.r-project.org/src/contrib/Archive/Rcpp/Rcpp_0.12.7.tar.gz", repos = NULL)'
+
