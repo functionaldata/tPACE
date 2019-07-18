@@ -47,7 +47,7 @@ test_that('getCVscoresV2 works for binning', {
   expect_equal(g1, g2, tolerance=1e-2)
 })
 
-test_that('GCV is closed to CV', {
+test_that('GCV bw > CV bw', {
   set.seed(2)
   pts <- seq(0, 1, by=0.05)
   samp3 <- Wiener(20, pts, sparsify=2:7)
@@ -56,7 +56,7 @@ test_that('GCV is closed to CV', {
   regGrid <- seq(min(obsGrid), max(obsGrid), length.out=101)
   gcvRes <- GCVLwls2DV2(obsGrid, regGrid, kern='epan', rcov=rcov3, t=samp3$Lt)
   cvRes <- GCVLwls2DV2(obsGrid, regGrid, kern='epan', rcov=rcov3, CV=10, t=samp3$Lt)
-  expect_equal(gcvRes$h, cvRes$h, 0.1)
+  expect_gte(gcvRes$h, cvRes$h)
 })
 
 

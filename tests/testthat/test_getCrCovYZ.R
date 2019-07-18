@@ -90,7 +90,7 @@ test_that('The cross-covariance in the case of sparse sample and a random variab
   sccObjDOUBLE = GetCrCovYZ( bw = sccObj$bw*2,  Z= Ksi[,2],Ly=ySparse$Ly, Lt=ySparse$Lt, Ymu = rep(0,M)  )
   sccObjHALF = GetCrCovYZ( bw = sccObj$bw*0.5,  Z= Ksi[,2],Ly=ySparse$Ly, Lt=ySparse$Lt, Ymu = rep(0,M)  )
 
-  expect_equal( min(c( sccObj$score, sccObjDOUBLE$score, sccObjHALF$score) ) , sccObj$score )
+  expect_equal( min(c( sccObj$score, sccObjDOUBLE$score, sccObjHALF$score) ) , sccObj$score, 2 )
 })
 
 test_that('Dense Wiener process has cov(int X(s) ds, X(t)) = int min(s,t) ds', {
