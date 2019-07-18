@@ -1,0 +1,206 @@
+---
+title: "Functional PCA in R"
+author: "Hadjipantelis, Dai, Ji, Han, Muller & Wang - UC Davis, USA"
+date: "1 December 2017"
+bibliography: roxygen.bib
+output: html_document
+vignette: >
+  %\VignetteIndexEntry{Introduction to fdapace}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##  Overview 
+
+The basic work-flow behind the PACE approach for sparse functional data is as follows (see eg. [@Yao05; @Liu09] for more information):
+ 
+1. Calculate the smoothed mean $\hat{\mu}$ (using local linear smoothing) aggregating all the available readings together.
+2. Calculate for each curve seperately its own raw covariance and then aggregate all these raw covariances to generate the sample raw covariance.
+3. Use the off-diagonal elements of the sample raw covariance to estimate the smooth covariance.
+4. Perform eigenanalysis on the smoothed covariance to obtain the estimated eigenfunctions $\hat{\phi}$ and eigenvalues $\hat{\lambda}$, then project that smoothed covariance on a positive semi-definite surface [@Hall2008].
+5. Use Conditional Expectation (PACE step) to estimate the corresponding scores $\hat{\xi}$.
+ie. \newline 
+$\hat{\xi}_{ik} = \hat{E}[\hat{\xi}_{ik}|Y_i] = \hat{\lambda}_k \hat{\phi}_{ik}^T \Sigma_{Y_i}^{-1}(Y_i-\hat{\mu}_i)$.
+
+As a working assumption a dataset is treated as sparse if it has on average less than 20, potentially irregularly sampled, measurements per subject. A user can manually change the automatically determined <tt>`dataType`</tt> if that is necessary.
+For densely observed functional data simplified procedures are available to obtain the eigencomponents and associated functional principal components scores (see eg.  [@Castro86] for more information). In particular in this case we:
+ 
+1. Calculate the cross-sectional mean $\hat{\mu}$.
+2. Calculate the cross-sectional covariance surface (which is guaranteed to be positive semi-definite).
+3. Perform eigenanalysis on the covariance to estimate the eigenfunctions $\hat{\phi}$ and eigenvalues $\hat{\lambda}$.
+4. Use numerical integration to estimate the corresponding scores $\hat{\xi}$.
+  ie. \newline
+ $\hat{\xi}_{ik} =  \int_0^T [ y(t) - \hat{\mu}(t)] \phi_i(t) dt$ 
+
+In the case of sparse FPCA the most computational intensive part is the smoothing of the sample's raw covariance function. For this, we employ a local weighted bilinear smoother.
+
+A sibling MATLAB package for <tt>`fdapace`</tt> can be found in [here](http://www.stat.ucdavis.edu/PACE).
+
+##  FPCA in R using fdapace 
+
+The simplest scenario is that one has two lists <tt>`yList`</tt> and <tt>`tList`</tt> where <tt>`yList`</tt> is a list of vectors, each containing the observed values $Y_{ij}$ for the $i$th subject and <tt>`tList`</tt> is a list of vectors containing corresponding time points. In this case one uses:
+
+```{r,eval=FALSE}
+FPCAobj <- FPCA(Ly=yList, Lt=tList)
+``` 
+The generated <tt>`FPCAobj`</tt> will contain all the basic information regarding the desired FPCA.
+
+### Generating a toy dense functional dataset from scratch
+
+ 
+```{r,eval=TRUE, echo=TRUE}
+  library(fdapace)
+ 
+  # Set the number of subjects (N) and the
+  # number of measurements per subjects (M) 
+  N <- 200;
+  M <- 100;
+  set.seed(123)
+
+  # Define the continuum
+  s <- seq(0,10,length.out = M)
+
+  # Define the mean and 2 eigencomponents
+  meanFunct <- function(s) s + 10*exp(-(s-5)^2)
+  eigFunct1 <- function(s) +cos(2*s*pi/10) / sqrt(5)
+  eigFunct2 <- function(s) -sin(2*s*pi/10) / sqrt(5)
+
+  # Create FPC scores
+  Ksi <- matrix(rnorm(N*2), ncol=2);
+  Ksi <- apply(Ksi, 2, scale)
+  Ksi <- Ksi %*% diag(c(5,2))
+
+  # Create Y_true
+  yTrue <- Ksi %*% t(matrix(c(eigFunct1(s),eigFunct2(s)), ncol=2)) + t(matrix(rep(meanFunct(s),N), nrow=M))
+```
+
+### Running FPCA on a dense dataset 
+
+```{r,eval=TRUE, echo=TRUE}
+  L3 <- MakeFPCAInputs(IDs = rep(1:N, each=M), tVec=rep(s,N), t(yTrue))
+  FPCAdense <- FPCA(L3$Ly, L3$Lt)
+
+  # Plot the FPCA object
+  plot(FPCAdense)
+
+  # Find the standard deviation associated with each component
+  sqrt(FPCAdense$lambda)
+  
+```
+### Running FPCA on a sparse and noisy dataset  
+
+```{r,eval=TRUE, echo=TRUE}
+  # Create sparse sample  
+  # Each subject has one to five readings (median: 3)
+  set.seed(123)
+  ySparse <- Sparsify(yTrue, s, sparsity = c(1:5))
+
+  # Give your sample a bit of noise 
+  ySparse$yNoisy <- lapply(ySparse$Ly, function(x) x + 0.5*rnorm(length(x)))
+
+  # Do FPCA on this sparse sample
+  # Notice that sparse FPCA will smooth the data internally (Yao et al., 2005)
+  # Smoothing is the main computational cost behind sparse FPCA
+  FPCAsparse <- FPCA(ySparse$yNoisy, ySparse$Lt, list(plot = TRUE))
+
+```
+
+## Further functionality
+
+ <tt>`FPCA`</tt> calculates the bandwidth utilized by each smoother using generalised cross-validation or $k$-fold cross-validation automatically. Dense data are not smoothed by default. The argument  <tt>`methodMuCovEst`</tt>  can be switched between  <tt>`smooth`</tt>  and <tt>`cross-sectional`</tt>  if one wants to utilize different estimation techniques when work with dense data.
+
+The bandwidth used for estimating the smoothed mean and the smoothed covariance are available under   <tt>`...bwMu`</tt>   and  <tt>`bwCov`</tt>  respectively. Users can nevertheless provide their own bandwidth estimates:
+
+```{r,eval=TRUE, echo=TRUE}
+ FPCAsparseMuBW5 <- FPCA(ySparse$yNoisy, ySparse$Lt, optns= list(userBwMu = 5))
+```
+Visualising the fitted trajectories is a good way to see if the new bandwidth made any sense:
+
+
+```{r,eval=TRUE, echo=TRUE}
+par(mfrow=c(1,2))
+CreatePathPlot( FPCAsparse, subset = 1:3, main = "GCV bandwidth", pch = 16)
+CreatePathPlot( FPCAsparseMuBW5, subset = 1:3, main = "User-defined bandwidth", pch = 16)
+```
+---
+  <tt>`FPCA`</tt> uses a Gaussian kernel when smoothing sparse functional data; other kernel types (eg. Epanechnikov/<tt>`epan`</tt>) are also available (see  <tt>`?FPCA`</tt>). The kernel used for smoothing the mean and covariance surface is the same. It can be found under  <tt>`$optns\$kernel`</tt> of the returned object. For instance, one can switch the default Gaussian kernel (<tt>`gauss`</tt>) for a rectangular kernel (<tt>`rect`</tt>) as follows:
+
+```{r,eval=TRUE, echo=TRUE}
+ FPCAsparseRect <- FPCA(ySparse$yNoisy, ySparse$Lt, optns = list(kernel = 'rect')) # Use rectangular kernel
+```
+
+  <tt>`FPCA`</tt> returns automatically the smallest number of components required to explain 99.99% of a sample's variance. Using the function   <tt>`selectK`</tt>  one can determine the number of relevant components according to AIC, BIC or a different Fraction-of-Variance-Explained threshold. For example:
+
+```{r,eval=TRUE, echo=TRUE}
+SelectK( FPCAsparse, criterion = 'FVE', FVEthreshold = 0.95) # K = 2
+SelectK( FPCAsparse, criterion = 'AIC') # K = 2
+```
+When working with functional data (usually not very sparse) the estimation of derivatives is often of interest. Using \texttt{fitted.FPCA} one can directly obtain numerical derivatives by defining the appropriate order  <tt>`p`</tt>;  <tt>`fdapace`</tt> provides for the first two derivatives ( <tt>`p =1`</tt>  or <tt>`2`</tt>). Because the numerically differentiated data are smoothed the user can define smoothing specific arguments (see <tt>`?fitted.FPCA`</tt> for more information); the derivation is done by using the derivative of the linear fit. Similarly using the function   <tt>`FPCAder`</tt> , one can augment an  <tt>`FPCA`</tt> object with functional derivatives of a sample's mean function and eigenfunctions.
+
+```{r,eval=TRUE, echo=TRUE}
+fittedCurvesP0 <- fitted(FPCAsparse) # equivalent: fitted(FPCAsparse, derOptns=list(p = 0));
+# Get first order derivatives of fitted curves, smooth using Epanechnikov kernel
+fittedCurcesP1 <- fitted(FPCAsparse, derOptns=list(p = 1, kernelType = 'epan'))
+```
+
+## A real-world example
+
+We use the  <tt>`medfly25`</tt>   dataset that this available with   <tt>`fdapace`</tt> to showcase  <tt>`FPCA`</tt> and its related functionality.  <tt>`medfly25`</tt> is a dataset containing the eggs laid from 789 medflies (Mediterranean fruit flies, Ceratitis capitata) during the first 25 days of their lives. It is a subset of the dataset used by Carey at al. (1998) [@Carey98]; only flies having lived at least 25 days are shown. The data are rather noisy, dense and with a characteristic flat start. For that reason in contrast with above we will use a smoothing estimating procedure despite having dense data.
+
+```{r,eval=TRUE, echo=TRUE}
+  # load data
+  data(medfly25)
+
+  # Turn the original data into a list of paired amplitude and timing lists
+  Flies <- MakeFPCAInputs(medfly25$ID, medfly25$Days, medfly25$nEggs)
+  fpcaObjFlies <- FPCA(Flies$Ly, Flies$Lt, list(plot = TRUE, methodMuCovEst = 'smooth', userBwCov = 2))
+``` 
+
+Based on the scree-plot we see that the first three components appear to encapsulate most of the relevant variation. The number of eigencomponents to reach a 99.99% FVE is $11$ but just $3$ eigencomponents are enough to reach a 95.0%. We can easily inspect the following visually, using the  <tt>`CreatePathPlot`</tt>  command.
+ 
+```{r,eval=TRUE, echo=TRUE}
+par(mfrow=c(1,2))
+  CreatePathPlot(fpcaObjFlies, subset = c(3,5,135), main = 'K = 11', pch = 4); grid()
+  CreatePathPlot(fpcaObjFlies, subset = c(3,5,135), K = 3, main = 'K = 3', pch = 4) ; grid()
+```
+
+One can perform outlier detection [@Febrero2007] as well as visualize data using a functional box-plot. To achieve these tasks one can use the functions <tt>`CreateOutliersPlot`</tt>  nd <tt>`CreateFuncBoxPlot`</tt>. Different ranking methodologies (KDE, bagplot [@Rousseeuw1999,@Hyndman2010] or point-wise) are available and can potentially identify different aspects of a sample. For example here it is notable that the  kernel density estimator <tt>`KDE`</tt> variant identifies two main clusters within the main body of sample. By construction the  <tt>`bagplot`</tt> method would use a single bag and this feature would be lost. Both functions return a (temporarily) invisible copy of a list containing the labels associated with each of sample curve0 .<tt>`CreateOutliersPlot`</tt>  returns a (temporarily) invisible copy of a list containing the labels associated with each of sample curve. 
+```{r,eval=TRUE, echo=TRUE}
+par(mfrow=c(1,2))
+  CreateOutliersPlot(fpcaObjFlies, optns = list(K = 3, variant = 'KDE'))
+  CreateFuncBoxPlot(fpcaObjFlies, xlab = 'Days', ylab = '# of eggs laid', optns = list(K =3, variant='bagplot'))
+```
+
+Functional data lend themselves naturally to questions about their rate of change; their derivatives. As mentioned previously using <tt>`fdapace`</tt> one can generate estimates of the sample's derivatives ( <tt>`fitted.FPCA`</tt>) or the derivatives of the principal modes of variation (<tt>`FPCAder`</tt>). In all cases, one defines a <tt>`derOptns`</tt> list of options to control the derivation parameters. Getting derivatives is obtained by using a local linear smoother as above.
+
+```{r,eval=TRUE, echo=TRUE}
+par(mfrow=c(1,2))
+  CreatePathPlot(fpcaObjFlies, subset = c(3,5,135), K = 3, main = 'K = 3', showObs = FALSE) ; grid()
+  CreatePathPlot(fpcaObjFlies, subset = c(3,5,135), K = 3, main = 'K = 3', showObs = FALSE, derOptns = list(p = 1, bw = 1.01 , kernelType = 'epan') ) ; grid()
+``` 
+
+We note that if finite support kernel types are used (eg.  <tt>`rect`</tt> or  <tt>`epan`</tt> ), bandwidths smaller than the distance between two adjacent points over which the data are registered onto will lead to (expected)  <tt>`NaN`</tt> estimates. In case of dense data, the grid used is (by default) equal to the grid the data were originally registered on; in the case of sparse data, the grid used (by default) spans the range of the sample's supports and uses 51 points. A user can change the number of points using the argument  <tt>`nRegGrid`</tt> .
+One can investigate the effect a particular kernel type ( <tt>`kernelType`</tt> ) or bandwidth size (<tt>`bw`</tt>) has on the generated derivatives by using the function <tt>`CreateBWPlot`</tt>  and providing a relevant  <tt>`derOptns`</tt> list. This will generate estimates about the mean function $\mu(t)$ as well as the first two principal modes of variation $\phi_1(t)$ and $\phi_2(t)$ for different multiples of  <tt>`bw`</tt>.
+
+```{r,eval=TRUE, echo=TRUE}
+fpcaObjFlies79 <- FPCA(Flies$Ly, Flies$Lt, list(nRegGrid = 79, methodMuCovEst = 'smooth', userBwCov = 2)) # Use 79 equidistant points for the support
+CreateBWPlot(fpcaObjFlies79 , derOptns = list(p = 1, bw = 2.0 , kernelType = 'rect') )
+```
+
+As the   <tt>`medfly`</tt>   sample is dense we can immediately use standard multivaritte clustering functionality to identify potential subgroups within it; the function  <tt>`FClust`</tt>   is the wrapper around the clustering functionality provided by   <tt>`fdapace`</tt>.  By default  <tt>`FClust`</tt>  utilises a Gaussian Mixture Model approach based on the package  <tt>`Rmixmod`</tt>  [@Biernacki2006], as a general rule clustering optimality is based on negative entropy criterion. In the  <tt>`medfly`</tt> dataset clustering the data allows to immediately recognise a particular subgroup of flies that lay no or very few eggs during the period examined.
+ 
+
+```{r,eval=TRUE, echo=TRUE}
+A <- FClust(Flies$Ly, Flies$Lt, optnsFPCA = list(methodMuCovEst = 'smooth', userBwCov = 2, FVEthreshold = 0.90), k = 2)
+# The Neg-Entropy Criterion can be found as: A$clusterObj@bestResult@criterionValue 
+CreatePathPlot( fpcaObjFlies, K=2, showObs=FALSE, lty=1, col= A$cluster, xlab = 'Days', ylab = '# of eggs laid')
+grid()
+```
+
+## References
+
+
