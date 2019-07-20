@@ -12,9 +12,11 @@ GetCEScores <- function(y, t, optns, mu, obsGrid, fittedCov, lambda, phi, sigma2
   Sigma_Y <- fittedCov + diag(sigma2, nrow(phi))
 
   MuPhiSig <- GetMuPhiSig(t, obsGrid, mu, phi, Sigma_Y)
-  ret <- mapply(function(yVec, muphisig) 
-         GetIndCEScores(yVec, muphisig$muVec, lambda, muphisig$phiMat, muphisig$Sigma_Yi, verbose=optns$verbose), 
-         y, MuPhiSig) 
+  ret <- mapply(function(yVec, muphisig){
+         rst = GetIndCEScores(yVec, muphisig$muVec, lambda, muphisig$phiMat, muphisig$Sigma_Yi, verbose=optns$verbose)
+         return(rst)
+         }, 
+         y, MuPhiSig)
 
   return(ret)
 }
@@ -26,7 +28,7 @@ GetMuPhiSig <- function(t, obsGrid, mu, phi, Sigma_Y) {
   ret <- lapply(t, function(tvec) {
     #ind <- match(signif(tvec, 14), obsGrid)
     if(length(tvec)!=0){
-      return(list(muVec=approx(obsGrid,mu,tvec)$y, phiMat=apply(phi,2,function(phivec){return(approx(obsGrid,phivec,tvec)$y)}), 
+      return(list(muVec=approx(obsGrid,mu,tvec)$y, phiMat=matrix(apply(phi,2,function(phivec){return(approx(obsGrid,phivec,tvec)$y)}),nrow = length(tvec),byrow = TRUE), 
                 Sigma_Yi=matrix(interp2(obsGrid,obsGrid,Sigma_Y,as.numeric(as.vector(sapply(tvec,function(x){return(rep(x,length(tvec)))}))),rep(tvec,length(tvec))),length(tvec),length(tvec))))
     }
     else{
