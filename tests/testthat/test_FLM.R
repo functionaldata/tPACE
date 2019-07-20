@@ -1,6 +1,6 @@
 library(MASS)
 library(testthat)
-# devtools::load_all()
+#devtools::load_all()
 
 test_that('Dense, scalar response case works', {
   set.seed(1000)
@@ -260,7 +260,7 @@ test_that('Dense, functional response case works', {
   
   ### functional response
   Beta <- matrix(c(1,0.5,-1,-1),nrow=2,ncol=2)
-  
+
   # training set
   n <- 100
   
@@ -333,28 +333,28 @@ test_that('Dense, functional response case works', {
                         diff(denseFLM$workGridY)[1])
   denseEstErr
   
-  par(mfrow=c(2,3))
-  for (i in 1:6) {
-    i <- sample(1:n,1)
-    plot(denseFLM$workGridY,denseFLM$yHat[i,],type='l',ylim=c(-10,10),xlab='t',ylab='Y (hat)')
-    points(denseY$Lt[[i]],denseY$Ly[[i]],type='l',col=2)
-  }
+  # par(mfrow=c(2,3))
+  # for (i in 1:6) {
+  #   i <- sample(1:n,1)
+  #   plot(denseFLM$workGridY,denseFLM$yHat[i,],type='l',ylim=c(-10,10),xlab='t',ylab='Y (hat)')
+  #   points(denseY$Lt[[i]],denseY$Ly[[i]],type='l',col=2)
+  # }
+  # 
+  # par(mfrow=c(2,3))
+  # for (i in 1:6) {
+  #   i <- sample(1:n,1)
+  #   plot(denseFLM$workGridY,denseFLM$yPred[i,],type='l',ylim=c(-10,10),xlab='t',ylab='Y (pred)')
+  #   points(denseYTest$Lt[[i]],denseYTest$Ly[[i]],type='l',col=2)
+  # }
   
-  par(mfrow=c(2,3))
-  for (i in 1:6) {
-    i <- sample(1:n,1)
-    plot(denseFLM$workGridY,denseFLM$yPred[i,],type='l',ylim=c(-10,10),xlab='t',ylab='Y (pred)')
-    points(denseYTest$Lt[[i]],denseYTest$Ly[[i]],type='l',col=2)
-  }
-  
-  # prediction error
-  densePredErr <- sqrt(mean(apply((YTest - denseFLM$yPred)^2*diff(denseFLM$workGridY)[1],1,'sum')))
-  densePredErr
+  # # prediction error
+  # densePredErr <- sqrt(mean(apply((YTest - denseFLM$yPred)^2*diff(denseFLM$workGridY)[1],1,'sum')))
+  # densePredErr
   
   
   # Errors are properly small
   expect_lt(denseEstErr, 1) 
-  expect_lt(densePredErr, 3) 
+  # expect_lt(densePredErr, 3) 
 })
 
 test_that('Sparse, functional response case works', {
@@ -492,28 +492,28 @@ test_that('Sparse, functional response case works', {
                          diff(sparseFLM$workGridY)[1])
   sparseEstErr
   
-  par(mfrow=c(2,3))
-  for (i in 1:6) {
-    i <- sample(1:n,1)
-    plot(sparseFLM$workGridY,sparseFLM$yHat[i,],type='l',ylim=c(-10,10),xlab='t',ylab='Y (fitted)')
-    points(sparseY$Lt[[i]],sparseY$Ly[[i]],col=2)
-  }
+  # par(mfrow=c(2,3))
+  # for (i in 1:6) {
+  #   i <- sample(1:n,1)
+  #   plot(sparseFLM$workGridY,sparseFLM$yHat[i,],type='l',ylim=c(-10,10),xlab='t',ylab='Y (fitted)')
+  #   points(sparseY$Lt[[i]],sparseY$Ly[[i]],col=2)
+  # }
+  # 
+  # par(mfrow=c(2,3))
+  # for (i in 1:6) {
+  #   i <- sample(1:n,1)
+  #   plot(sparseFLM$workGridY,sparseFLM$yPred[i,],type='l',ylim=c(-10,10),xlab='t',ylab='Y (pred)')
+  #   points(sparseYTest$Lt[[i]],sparseYTest$Ly[[i]],col=2)
+  # }
   
-  par(mfrow=c(2,3))
-  for (i in 1:6) {
-    i <- sample(1:n,1)
-    plot(sparseFLM$workGridY,sparseFLM$yPred[i,],type='l',ylim=c(-10,10),xlab='t',ylab='Y (pred)')
-    points(sparseYTest$Lt[[i]],sparseYTest$Ly[[i]],col=2)
-  }
-  
-  # prediction error
-  sparsePredErr <- sqrt(mean(apply((YTest - sparseFLM$yPred)^2*diff(sparseFLM$workGridY)[1],1,'sum')))
-  sparsePredErr
+  # # prediction error
+  # sparsePredErr <- sqrt(mean(apply((YTest - sparseFLM$yPred)^2*diff(sparseFLM$workGridY)[1],1,'sum')))
+  # sparsePredErr
   
   
   
   # Errors are properly small
   expect_lt(sparseEstErr, 3) 
-  expect_lt(sparsePredErr, 3) 
+  # expect_lt(sparsePredErr, 3) 
 })
 
