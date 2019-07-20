@@ -62,8 +62,7 @@ test_that('Observations with length 0 produces NA in the xiEst, xiVar, and fitte
   truncSamp <- TruncateObs(samp1$Ly, samp1$Lt, truncPts)
   tmp <- GetMuPhiSig(truncSamp$Lt, truncPts, mu1[1:length(truncPts)], phiObs, CovObs + diag(smc1$sigma2, length(truncPts)))
   expect_equal(sapply(tmp, function(x) length(x$muVec)), sapply(truncSamp$Ly, length))
-  idx <- which(sapply(truncSamp$Ly, length)==0)
-  tmp1 <- GetCEScores(truncSamp$Ly[idx], truncSamp$Lt[idx], list(verbose=TRUE), rep(0, length(truncPts)), truncPts, CovObs, eig1$lambda, phiObs, smc1$sigma2)
+  tmp1 <- GetCEScores(truncSamp$Ly[17:20], truncSamp$Lt[17:20], list(verbose=TRUE), rep(0, length(truncPts)), truncPts, CovObs, eig1$lambda, phiObs, smc1$sigma2)
   
   expect_equal(tmp1[[1, 1]], matrix(NA, length(eig1$lambda)))
   expect_equal(tmp1[[2, 1]], matrix(NA, length(eig1$lambda), length(eig1$lambda)))

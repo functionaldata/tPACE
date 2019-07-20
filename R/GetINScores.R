@@ -14,32 +14,33 @@
 #        fittedY: n by p matrix of fitted/recovered functional observations
 ##########################################################################
 
-GetINScores <- function(ymat, t, optns, mu, lambda, phi, sigma2=NULL){
+GetINScores <- function(yvec, tvec, optns,obsGrid, mu, lambda, phi, sigma2=NULL){
   if(length(lambda) != ncol(phi)){
     stop('No. of eigenvalues is not the same as the no. of eigenfunctions.')
   }
-
-  n = nrow(ymat)
-  tau = sort(unique(signif( unlist(t),14 ))) # get observed time grid
-  ranget <- diff(range(tau))
-  mumat = matrix(rep(mu, n), nrow = n, byrow = TRUE)
-  cymat = ymat - mumat
-
-  xiEst = matrix(0, nrow = n, ncol = length(lambda)) 
+  
+  #tau = sort(unique(signif( unlist(t),14 ))) # get observed time grid
+  ranget <- diff(range(tvec))
+  mu= approx(obsGrid,mu,tvec)$y
+  cy = yvec - mu
+  phi = apply(phi,2,function(phivec){return(approx(obsGrid,phivec,tvec)$y)})
+  
+  xiEst = array(0,length(lambda)) 
   # Get Scores xiEst
   for(i in 1:length(lambda)){
-    tempmat = cymat * matrix(rep(phi[,i],n), nrow = n, byrow = TRUE)
-    xiEst[,i] = sapply(1:n, function(j) trapzRcpp(X = tau[!is.na(tempmat[j,])], Y = tempmat[j, !is.na(tempmat[j,])]))
+    temp = cy * phi[,i]
+    xiEst[i] = trapzRcpp(X = tvec[!is.na(temp)], Y = temp[!is.na(temp)])
     if (optns[['shrink']] && !is.null(sigma2)) {
-      xiEst[, i] <- xiEst[, i] * lambda[i] / 
-                    (lambda[i] + ranget * sigma2 / length(tau))
+      xiEst[i] <- xiEst[i] * lambda[i] / 
+        (lambda[i] + ranget * sigma2 / length(tvec))
     }
   }
-
+  
   # Get Fitted Y: n by p matrix on observed time grid
-  fittedY = mumat + t(phi %*% t(xiEst))
-
+  fittedY = mu + t(phi %*% xiEst)
+  
   ret = list('xiEst' = xiEst, xiVar = NULL, 'fittedY' = fittedY)
-
+  
   return(ret)
+  
 }

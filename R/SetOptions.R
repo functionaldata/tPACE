@@ -28,7 +28,8 @@ SetOptions = function(y, t, optns){
   kernel =optns[['kernel']];            
   numBins =optns[['numBins']];
   yname =optns[['yname']];
-  rho =optns[['rho']];                
+  rho =optns[['rho']];
+  usergrid =optns[['usergrid']];
   userRho = optns[['userRho']];
   diagnosticsPlot =optns[['diagnosticsPlot']];
   plot =optns[['plot']]
@@ -235,6 +236,9 @@ SetOptions = function(y, t, optns){
       useBinnedCov <- FALSE
     } 
   }
+  if(is.null(usergrid)){ 
+    usergrid = TRUE;
+  }
   if(is.null(lean)){ 
     lean = FALSE;
   }
@@ -250,7 +254,7 @@ SetOptions = function(y, t, optns){
           fitEigenValues = fitEigenValues, maxK = maxK, dataType = dataType, error = error, shrink = shrink,
           nRegGrid = nRegGrid, rotationCut = rotationCut, methodXi = methodXi, kernel = kernel, 
           lean = lean, diagnosticsPlot = diagnosticsPlot, plot=plot, numBins = numBins, useBinnedCov = useBinnedCov, 
-          yname = yname,  rho = rho, verbose = verbose, userMu = userMu, userCov = userCov, methodMuCovEst = methodMuCovEst,
+          usergrid = usergrid, yname = yname,  rho = rho, verbose = verbose, userMu = userMu, userCov = userCov, methodMuCovEst = methodMuCovEst,
           userRho = userRho, userSigma2 = userSigma2, outPercent = outPercent, useBinnedData = useBinnedData, useBW1SE = useBW1SE)
 
   invalidNames <- !names(optns) %in% names(retOptns)

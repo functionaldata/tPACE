@@ -35,9 +35,10 @@
 #' \item{rotationCut}{The 2-element vector in [0,1] indicating the percent of data truncated during sigma^2 estimation; default  (0.25, 0.75))}
 #' \item{useBinnedData}{Should the data be binned? 'FORCE' (Enforce the # of bins), 'AUTO' (Select the # of  bins automatically), 'OFF' (Do not bin) - default: 'AUTO'}
 #' \item{useBinnedCov}{Whether to use the binned raw covariance for smoothing; logical - default:TRUE}
+#' \item{usergrid}{Whether to use observation grid for fitting, if false will use equidistant grid. logical - default:TRUE}
 #' \item{userCov}{The user-defined smoothed covariance function; list of two elements: numerical vector 't' and matrix 'cov', 't' must cover the support defined by 'Ly' - default: NULL}
 #' \item{userMu}{The user-defined smoothed mean function; list of two numerical vector 't' and 'mu' of equal size, 't' must cover the support defined 'Ly' - default: NULL}
-##' \item{userSigma2}{The user-defined measurement error variance. A positive scalar. If specified then no regularization is used (rho is set to 'no', unless specified otherwise). Default to `NULL`}
+#' \item{userSigma2}{The user-defined measurement error variance. A positive scalar. If specified then no regularization is used (rho is set to 'no', unless specified otherwise). Default to `NULL`}
 #' \item{userRho}{The user-defined measurement truncation threshold used for the calculation of functional principal components scores. A positive scalar. Default to `NULL`}
 #' \item{useBW1SE}{Pick the largest bandwidth such that CV-error is within one Standard Error from the minimum CV-error, relevant only if methodBwMu ='CV' and/or methodBwCov ='CV'; logical - default: FALSE}
 #' \item{verbose}{Display diagnostic messages; logical - default: FALSE}
@@ -106,7 +107,7 @@ FPCA = function(Ly, Lt, optns = list()){
   CheckOptions(Lt, optns,numOfCurves)
 
   # Bin the data
-  if ( optns$useBinnedData != 'OFF'){ 
+  if ( optns$usergrid  == FALSE & optns$useBinnedData != 'OFF'){ 
       BinnedDataset <- GetBinnedDataset(Ly,Lt,optns)
       Ly = BinnedDataset$newy;
       Lt = BinnedDataset$newt; 
@@ -164,7 +165,7 @@ FPCA = function(Ly, Lt, optns = list()){
                                      optns$useBinnedCov) 
   } else if (optns$methodMuCovEst == 'cross-sectional') {
     scsObj = GetCovDense(ymat, mu, optns)
-    if (length(obsGrid) != cutRegGrid || !all.equal(obsGrid, cutRegGrid)) {
+    if (length(obsGrid) != length(cutRegGrid) || !identical(obsGrid, cutRegGrid)) {
       scsObj$smoothCov = ConvertSupport(obsGrid, cutRegGrid, Cov =
                                         scsObj$smoothCov)
     }
@@ -217,8 +218,8 @@ FPCA = function(Ly, Lt, optns = list()){
     }
     scoresObj <- GetCEScores(Ly, Lt, optns, muObs, truncObsGrid, CovObs, eigObj$lambda, phiObs, sigma2)
   } else if (optns$methodXi == 'IN') {
-    ymat = List2Mat(Ly,Lt)
-    scoresObj <- GetINScores(ymat, Lt, optns, muObs, eigObj$lambda, phiObs, sigma2)
+    scoresObj <- mapply(function(yvec,tvec)
+      GetINScores(yvec, tvec,optns= optns,obsGrid,mu = muObs,lambda =eigObj$lambda ,phi = phiObs,sigma2 = sigma2),Ly,Lt)
   }
 
   if (optns$fitEigenValues) {

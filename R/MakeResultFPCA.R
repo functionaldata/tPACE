@@ -23,15 +23,26 @@
 MakeResultFPCA <- function(optns, smcObj, mu, scsObj, eigObj, 
                            scoresObj, obsGrid, workGrid, rho=NULL, fitLambda=NULL, inputData, timestamps = NULL){
   
-  if (optns$methodXi == 'CE') {
-    xiEst <- t(do.call(cbind, scoresObj[1, ])) 
-    xiVar <- scoresObj[2, ]
-  } else if (optns$methodXi == 'IN') {
-    xiEst <- scoresObj$xiEst
-    xiVar <- scoresObj$xiVar
-  }
-  
-  ret <- list(sigma2 = scsObj$sigma2, 
+  xiEst <- t(do.call(cbind, scoresObj[1, ])) 
+  xiVar <- scoresObj[2, ]
+  if(optns$usergrid == TRUE){
+    ret <- list(sigma2 = scsObj$sigma2, 
+                lambda = eigObj$lambda, 
+                phi = ConvertSupport(workGrid, obsGrid, phi=eigObj$phi), 
+                xiEst = xiEst, 
+                xiVar = xiVar, 
+                obsGrid = obsGrid, 
+                workGrid = obsGrid, 
+                mu = mu, 
+                smoothedCov = ConvertSupport(workGrid, obsGrid, Cov=scsObj$smoothCov), 
+                FVE = eigObj$cumFVE[eigObj$kChoosen], 
+                cumFVE =  eigObj$cumFVE, 
+                fittedCov = ConvertSupport(workGrid, obsGrid, Cov=eigObj$fittedCov), 
+                optns = optns, 
+                bwMu = smcObj$bw_mu, 
+                bwCov = scsObj$bwCov)
+  }else{
+    ret <- list(sigma2 = scsObj$sigma2, 
               lambda = eigObj$lambda, 
               phi = eigObj$phi, 
               xiEst = xiEst, 
@@ -46,7 +57,7 @@ MakeResultFPCA <- function(optns, smcObj, mu, scsObj, eigObj,
               optns = optns, 
               bwMu = smcObj$bw_mu, 
               bwCov = scsObj$bwCov)
-  
+  }
   if (optns$methodXi == 'CE') {
     ret$rho <- rho
   }

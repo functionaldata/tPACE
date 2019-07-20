@@ -1,6 +1,6 @@
 #' Predict FPC scores for a new sample given an FPCA object
 #'
-#' Return a matrix with the first k FPC scores according to conditional expectation or numerical integration.
+#' Return a matrix with the first K FPC scores according to conditional expectation or numerical integration.
 #'
 #' @param object An FPCA object.
 #' @param newLy  A list of \emph{n} vectors containing the observed values for each individual.
@@ -10,16 +10,20 @@
 #' @param xiMethod The integration method used to calculate the functional principal component scores ( standard numerical integration 'IN' or conditional expectation 'CE'); default: 'CE'.
 #' @param ... Not used.
 #' 
-#' @return  A matrix of size n-by-k 
+#' @return  A matrix of size n-by-K 
 #'
 #' @examples
 #' set.seed(1)
-#' n <- 20
+#' n <- 50
 #' pts <- seq(0, 1, by=0.05)
-#' sampWiener <- Wiener(n, pts)
-#' sampWiener <- Sparsify(sampWiener, pts, 10)
-#' res <- FPCA(sampWiener$Ly, sampWiener$Lt)
-#' res
+#' # The first n samples are for training and the rest testing
+#' sampWiener <- Wiener(2 * n, pts)
+#' sparsity <- 2:5
+#' train <- Sparsify(sampWiener[seq_len(n), , drop=FALSE], pts, sparsity)
+#' test <- Sparsify(sampWiener[seq(n + 1, 2 * n), , drop=FALSE], pts, sparsity)
+#' res <- FPCA(train$Ly, train$Lt)
+#' pred <- predict(res, test$Ly, test$Lt, K=5)
+#' plot(pred[, 1], pred[, 2])
 #'
 #' @method predict FPCA
 #' @export
@@ -81,11 +85,11 @@ predict.FPCA <- function(object, newLy, newLt, sigma2 = NULL, K = 1, xiMethod = 
   if ( xiMethod == 'CE') {
     scoresObj <- GetCEScores(y = newLy, t = newLt, optns = fpcaObj$optns, mu = MuObs, obsGrid = fpcaObj$obsGrid, sigma2 = sigma2,
                              fittedCov = CovObs, lambda = fpcaObj$lambda, phi = PhiObs)
-  finalXiEst <- t(do.call(cbind, scoresObj['xiEst', ]))[,1:K] 
+  finalXiEst <- t(do.call(cbind, scoresObj['xiEst', ]))[, seq_len(K), drop=FALSE]
   } else if (xiMethod == 'IN') {
-    ymat = List2Mat(newLy,newLt)
-    scoresObj <- GetINScores(ymat = ymat, t = newLt,optns = fpcaObj$optns,mu = MuObs,lambda =fpcaObj$lambda ,phi = PhiObs,sigma2 = sigma2)
-    finalXiEst <- scoresObj$xiEst[,1:K]
+    scoresObj <- mapply(function(yvec,tvec)
+      GetINScores(yvec, tvec,optns = fpcaObj$optns,obsGrid = fpcaObj$obsGrid,mu = MuObs,lambda =fpcaObj$lambda ,phi = PhiObs,sigma2 = sigma2),newLy,newLt)
+    finalXiEst <- t(do.call(cbind, scoresObj['xiEst', ]))[, seq_len(K), drop=FALSE]
   }
   
   return(finalXiEst)
