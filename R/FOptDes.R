@@ -68,6 +68,7 @@ FOptDes <- function(Ly, Lt, Resp, p = 3, optns = list(),
   obsGrid = sort(unique(c(unlist(t))));
 
   optns$nRegGrid = as.integer(1+diff(range(obsGrid))/min(diff(obsGrid))); 
+  optns$usergrid = FALSE
   # make sure that FPCA workGrid is a denser grid of obsGrid for cv
   # if measurement times are random, bin data first before run the function.
   optns = SetOptions(y, t, optns);
