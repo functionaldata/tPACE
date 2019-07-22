@@ -18,7 +18,7 @@ MCVOptRidge <- function(y, t, Resp, p, RidgeCand, isDense = FALSE,
       
       nRegGridA = as.integer(1+diff(range(obsGridA))/min(diff(obsGridA))); 
       
-      optnsA <- SetOptions(y = yA, t = tA, optns = list(nRegGrid = nRegGridA))
+      optnsA <- SetOptions(y = yA, t = tA, optns = list(usergrid= FALSE,nRegGrid = nRegGridA))
       CheckOptions(t = tA, optns = optnsA, n = length(yA))
       
       FPCAA <- FPCA(yA, tA, optnsA)
