@@ -1,0 +1,103 @@
+BwNN                    Minimum bandwidth based on kNN criterion.
+CheckData               Check data format
+CheckOptions            Check option format
+ConvertSupport          Convert support of a mu/phi/cov etc. to and
+                        from obsGrid and workGrid
+CreateBWPlot            Functional Principal Component Analysis
+                        Bandwidth Diagnostics plot
+CreateBasis             Create an orthogonal basis of K functions in
+                        [0, 1], with nGrid points.
+CreateCovPlot           Create the covariance surface plot based on the
+                        results from FPCA() or FPCder().
+CreateDesignPlot        Create the design plot of the functional data.
+CreateDiagnosticsPlot   Functional Principal Component Analysis
+                        Diagnostics plot
+CreateFuncBoxPlot       Create functional boxplot using 'bagplot',
+                        'KDE' or 'pointwise' methodology
+CreateModeOfVarPlot     Functional Principal Component Analysis mode of
+                        variation plot
+CreateOutliersPlot      Functional Principal Component or Functional
+                        Singular Value Decomposition Scores Plot using
+                        'bagplot' or 'KDE' methodology
+CreatePathPlot          Create the fitted sample path plot based on the
+                        results from FPCA().
+CreateScreePlot         Create the scree plot for the fitted
+                        eigenvalues
+CreateStringingPlot     Create plots for observed and stringed high
+                        dimensional data
+DynCorr                 Dynamical Correlation
+Dyn_test                Bootstrap test of Dynamic correlation
+FAM                     Functional Additive Models
+FCCor                   Calculate functional correlation between two
+                        simultaneously observed processes.
+FCReg                   Functional Concurrent Regression by 2D
+                        smoothing method.
+FClust                  Functional clustering and identifying
+                        substructures of longitudinal data
+FLM                     Functional Linear Models
+FOptDes                 Optimal Designs for Functional and Longitudinal
+                        Data for Trajectory Recovery or Scalar Response
+                        Prediction
+FPCA                    Functional Principal Component Analysis
+FPCAder                 Take derivative of an FPCA object
+FPCquantile             Conditional Quantile estimation with functional
+                        covariates
+FSVD                    Functional Singular Value Decomposition
+FVPA                    Functional Variance Process Analysis for dense
+                        functional data
+GetCrCorYX              Make cross-correlation matrix from auto- and
+                        cross-covariance matrix
+GetCrCorYZ              Make cross-correlation matrix from auto- and
+                        cross-covariance matrix
+GetCrCovYX              Functional Cross Covariance between
+                        longitudinal variable Y and longitudinal
+                        variable X
+GetCrCovYZ              Functional Cross Covariance between
+                        longitudinal variable Y and scalar variable Z
+GetNormalisedSample     Normalise sparse functional sample
+Lwls1D                  One dimensional local linear kernel smoother
+Lwls2D                  Two dimensional local linear kernel smoother.
+Lwls2DDeriv             Two dimensional local linear kernel smoother
+                        with derivatives.
+MakeBWtoZscore02y       Z-score body-weight for age 0 to 24 months
+                        based on WHO standards
+MakeFPCAInputs          Format FPCA input
+MakeGPFunctionalData    Make Gaussian Process Dense Functional Data
+                        sample
+MakeHCtoZscore02y       Z-score head-circumference for age 0 to 24
+                        months based on WHO standards
+MakeLNtoZscore02y       Z-score height for age 0 to 24 months based on
+                        WHO standards
+MakeSparseGP            Make Gaussian Process Sparse Functional Data
+                        sample
+MultiFAM                Functional Additive Models with Multiple
+                        Predictor Processes
+NormCurvToArea          Normalise a curve to a particular area.
+SBFitting               Iterative Smooth Backfitting Algorithm
+SelectK                 Selects number of functional principal
+                        components for given FPCA output and selection
+                        criteria
+SetOptions              Set the PCA option list
+Sparsify                Sparsify densely observed functional data
+Stringing               Stringing for High-Dimensional data
+TVAM                    Iterative Smooth Backfitting Algorithm
+VCAM                    Sieve estimation
+WFDA                    Warped Functional Data Analysis
+Wiener                  Simulate standard Wiener processes (Brownian
+                        motions)
+cumtrapzRcpp            Cumulative Trapezoid Rule Numerical Integration
+fdapace                 PACE: Principal Analysis by Conditional
+                        Expectation
+fitted.FPCA             Fitted functional sample from FPCA object
+fitted.FPCAder          Fitted functional sample from FPCAder object
+kCFC                    Functional clustering and identifying
+                        substructures of longitudinal data using kCFC.
+medfly25                Number of eggs laid daily from medflies
+predict.FPCA            Predict FPC scores for a new sample given an
+                        FPCA object
+print.FPCA              Print an FPCA object
+print.FSVD              Print an FSVD object
+print.WFDA              Print a WFDA object
+str.FPCA                Compactly display the structure of an FPCA
+                        object
+trapzRcpp               Trapezoid Rule Numerical Integration
