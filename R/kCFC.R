@@ -99,15 +99,16 @@ kCFC = function(y, t, k = 3, kSeed = 123, maxIter = 125,
   return( kCFCobj )
 }  
 
-GetISEfromFPCA = function(fpcaObj,ymat){
+GetISEfromFPCA = function(fpcaObj,y,t,ymat){
   # First get the fitted curves for all the sample based on the mu/phi/lambda/sigma2
   # of 'fpcaObj' and then calculate their associated ISE; 'iseCost' is a n-dim vector.
   phiObs <- ConvertSupport(fpcaObj$workGrid, fpcaObj$obsGrid, phi=fpcaObj$phi)
   muObs  <- ConvertSupport(fpcaObj$workGrid, fpcaObj$obsGrid, mu=fpcaObj$mu)
   
-  numIntResults <- GetINScores(ymat = ymat, t = fpcaObj$obsGrid, optns = fpcaObj$optns, mu = muObs, 
-                               lambda = fpcaObj$lambda, phi = phiObs, sigma2 = fpcaObj$sigma2) 
+  numIntResults <- mapply(function(yvec,tvec)
+    GetINScores(yvec, tvec,optns= fpcaObj$optns,fpcaObj$obsGrid,mu = muObs,lambda =fpcaObj$lambda ,phi = phiObs,sigma2 = fpcaObj$sigma2),y,t)
   
-  iseCost <- apply((numIntResults[['fittedY']] - ymat)^2, 1, function(y) {notNA <- !is.na(y);  trapzRcpp(X = fpcaObj$obsGrid[notNA], Y = y[notNA])}) 
+  fittedYmat = List2Mat(numIntResults[3,],t)
+  iseCost <- apply((fittedYmat - ymat)^2, 1, function(y) {notNA <- !is.na(y);  trapzRcpp(X = fpcaObj$obsGrid[notNA], Y = y[notNA])}) 
   return( iseCost )
 }
