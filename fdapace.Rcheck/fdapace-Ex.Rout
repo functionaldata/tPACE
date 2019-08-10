@@ -1,0 +1,87 @@
+
+R version 3.6.0 (2019-04-26) -- "Planting of a Tree"
+Copyright (C) 2019 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> pkgname <- "fdapace"
+> source(file.path(R.home("share"), "R", "examples-header.R"))
+> options(warn = 1)
+> base::assign(".ExTimings", "fdapace-Ex.timings", pos = 'CheckExEnv')
+> base::cat("name\tuser\tsystem\telapsed\n", file=base::get(".ExTimings", pos = 'CheckExEnv'))
+> base::assign(".format_ptime",
++ function(x) {
++   if(!is.na(x[4L])) x[1L] <- x[1L] + x[4L]
++   if(!is.na(x[5L])) x[2L] <- x[2L] + x[5L]
++   options(OutDec = '.')
++   format(x[1L:3L], digits = 7L)
++ },
++ pos = 'CheckExEnv')
+> 
+> ### * </HEADER>
+> library('fdapace')
+> 
+> base::assign(".oldSearch", base::search(), pos = 'CheckExEnv')
+> base::assign(".old_wd", base::getwd(), pos = 'CheckExEnv')
+> cleanEx()
+> nameEx("BwNN")
+> ### * BwNN
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: BwNN
+> ### Title: Minimum bandwidth based on kNN criterion.
+> ### Aliases: BwNN
+> 
+> ### ** Examples
+> 
+> tinyGrid = list(c(1,7), c(2,3),  6,  c(2,4), c(4,5))
+> BwNN(tinyGrid, k = 2) # c(3,2)
+cov  mu 
+  3   2 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("BwNN", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("CreateBWPlot")
+> ### * CreateBWPlot
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: CreateBWPlot
+> ### Title: Functional Principal Component Analysis Bandwidth Diagnostics
+> ###   plot
+> ### Aliases: CreateBWPlot
+> 
+> ### ** Examples
+> 
+> set.seed(1)
+> n <- 20
+> pts <- seq(0, 1, by=0.05)
+> sampWiener <- Wiener(n, pts)
+> sampWiener <- Sparsify(sampWiener, pts, 10)
+> res1 <- FPCA(sampWiener$Ly, sampWiener$Lt, 
++             list(dataType='Sparse', error=FALSE, kernel='epan', verbose=FALSE))
+Loading required package: pracma
+> CreateBWPlot(res1)
+Error in value[[3L]](cond) : 
+  Multiplier : 0.5 failed to return valid FPCA object. Change multiplier values.
+Calls: CreateBWPlot ... tryCatch -> tryCatchList -> tryCatchOne -> <Anonymous>
+Execution halted
