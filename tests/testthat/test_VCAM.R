@@ -101,3 +101,4 @@ test_that('Irregular design example works.',{
   expect_lt(MISE(vcam$betaEst[,1],beta1(vcam$gridT),vcam$gridT), 0.1)
   expect_lt(MISE(vcam$betaEst[,2],beta2(vcam$gridT),vcam$gridT), 0.1)
 })
+

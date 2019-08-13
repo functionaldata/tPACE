@@ -163,7 +163,7 @@ test_that('User provided mu, cov, and sigma2',{
   expect_equal( FPCAsparseA$sigma2, userSigma2)
   expect_equal( sqrt(FPCAsparseA$lambda[1:2]), expected=c(5,2), tolerance = 1e-1)
   expect_equal( abs(cor( FPCAsparseA$xiEst[,1], Ksi[,1])) > 0.95, TRUE)
-  expect_equal( abs(cor( FPCAsparseA$xiEst[,2], Ksi[,2])) > 0.90, TRUE)
+  expect_equal( abs(cor( FPCAsparseA$xiEst[,2], Ksi[,2])) > 0.85, TRUE)
 })
 
 test_that('Case where one component should be returned',{

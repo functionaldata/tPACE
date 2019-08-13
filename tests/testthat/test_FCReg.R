@@ -78,11 +78,11 @@ Ysp <- Sparsify(Y, T, sparsity)
 outGrid <- round(seq(min(T), 1, by=0.05), 2)
 vars <- list(X_1=X_1sp, X_2=X_2sp, Z_3=Z[, 3], Z_4=Z[, 4], Y=Ysp)
 
-test_that('Scaler-scaler cov', 
+test_that('Scalar-scalar cov', 
   expect_equal(as.numeric(uniCov(Z[, 3], Z[, 4])), cov(Z[, 3], Z[, 4]))
 )
 
-test_that('Scaler-function cov = Function-scaler cov', {
+test_that('Scalar-function cov = Function-scalar cov', {
   expect_equal(uniCov(X_1sp, Z[, 3], bw, outGrid), 
     t(uniCov(Z[, 3], X_1sp, bw, outGrid)))
 })
@@ -113,7 +113,7 @@ test_that('Function-function cov works', {
 covAll <- MvCov(vars, bw, outGrid, kern)
 covAllNoError <- MvCov(vars, bw, outGrid, kern, measurementError=FALSE)
 
-test_that('Multi-function/scaler cov works', {
+test_that('Multi-function/scalar cov works', {
 # The cov(x, y) and cov(y, x) is symmetric.
   expect_equal(as.numeric(cov12), as.numeric(covAll[, , 1, 2]))
   expect_equal(covAll[, , 3, 1], t(covAll[, , 1, 3]))
@@ -242,7 +242,7 @@ test_that('Test based on previous implementation: simple concurrent regression w
 
   Q <- FCReg(vars, 0.5,0.5, outGrid, 'epan', measurementError=FALSE)
 
-  expect_equal( 2.5, mean(Q$beta[2,]) , tol= 0.01 )
+  expect_equal( 2.5, mean(Q$beta[2,]) , tol= 0.04 )
   expect_gt( cor( Q$beta0, 0.2*s), 0.95) # this should be change to beta0 at some point.
   expect_gt( cor(Q$beta[1,], as.vector(betaFunc1)), 0.99)
 })

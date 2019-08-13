@@ -69,12 +69,12 @@ test_that('consistent estimates for dense data with sparse FPCA object', {
   set.seed(2)
   sampWienerD <- Sparsify(sampWiener, pts, 33)
   resD <- FPCA(sampWienerD$Ly, sampWienerD$Lt)
-  testK = 4
+  testK = 3
   
   AAA2 <- predict(resS, newLy = sampWienerD$Ly,newLt =  sampWienerD$Lt, K = testK)
   
   expect_lt( max( abs(colMeans( abs(AAA2) - abs(resD$xiEst[,1:testK])) ) - 1.96 * apply( abs(AAA2) - abs( resD$xiEst[,1:testK]),2,sd) ), .Machine$double.eps)  
-  expect_gt( min( abs(diag(cor(AAA2 , resD$xiEst[,1:testK])) ) ), 0.985)
+  expect_gt( min( abs(diag(cor(AAA2 , resD$xiEst[,1:testK])) ) ), 0.9)
   
 })
 
