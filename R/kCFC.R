@@ -62,7 +62,7 @@ kCFC = function(y, t, k = 3, kSeed = 123, maxIter = 125,
   for(j in seq_len(maxIter)){ 
     
     # Get new costs and relevant cluster configuration
-    iseCosts       <- sapply(listOfFPCAobjs, function(u) GetISEfromFPCA(u, ymat))
+    iseCosts       <- sapply(listOfFPCAobjs, function(u) GetISEfromFPCA(u, y,t,ymat))
     clustConf[[j]] <- as.factor(apply(iseCosts, 1, which.min))
     
     # Check that clustering progressed reasonably 

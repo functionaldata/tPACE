@@ -163,6 +163,7 @@ We use the  <tt>`medfly25`</tt>   dataset that this available with   <tt>`fdapac
 Based on the scree-plot we see that the first three components appear to encapsulate most of the relevant variation. The number of eigencomponents to reach a 99.99% FVE is $11$ but just $3$ eigencomponents are enough to reach a 95.0%. We can easily inspect the following visually, using the  <tt>`CreatePathPlot`</tt>  command.
  
 ```{r,eval=TRUE, echo=TRUE}
+require('ks')
 par(mfrow=c(1,2))
   CreatePathPlot(fpcaObjFlies, subset = c(3,5,135), main = 'K = 11', pch = 4); grid()
   CreatePathPlot(fpcaObjFlies, subset = c(3,5,135), K = 3, main = 'K = 3', pch = 4) ; grid()
