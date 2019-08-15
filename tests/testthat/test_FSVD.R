@@ -90,7 +90,7 @@ test_that('consistent estimates for sparse case', {
   expect_gt(abs(cor(fsvdObj1$sScores1[,1], singscore[,1])), 0.98)
   expect_gt(abs(cor(fsvdObj1$sScores1[,2], singscore[,2])), 0.81)
   expect_gt(abs(cor(fsvdObj1$sScores1[,3], singscore[,3])), 0.81)
-  expect_gt(abs(cor(fsvdObj1$sScores2[,1], singscore[,4])), 0.98)
+  expect_gt(abs(cor(fsvdObj1$sScores2[,1], singscore[,4])), 0.97)
   expect_gt(abs(cor(fsvdObj1$sScores2[,2], singscore[,5])), 0.965)
   expect_gt(abs(cor(fsvdObj1$sScores2[,3], singscore[,6])), 0.85)
 })
