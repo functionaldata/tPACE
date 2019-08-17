@@ -1,4 +1,4 @@
-### subset the FPCA object with specified number of components K
+### subset the FPCA object with a specified number of components K
 ### and return the subsetted fpcaObj
 
 SubsetFPCA <- function(fpcaObj, K){

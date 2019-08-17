@@ -7,7 +7,8 @@
 #' @param newLt A list of \emph{n} vectors containing the observation time points for each individual corresponding to y.
 #' @param sigma2 The user-defined measurement error variance. A positive scalar. (default: rho if applicable, otherwise sigma2 if applicable, otherwise 0 if no error. )
 #' @param K The scalar defining the number of clusters to define; (default: 1).
-#' @param xiMethod The integration method used to calculate the functional principal component scores ( standard numerical integration 'IN' or conditional expectation 'CE'); default: 'CE'.
+#' @param xiMethod The integration method used to calculate the functional principal component scores 
+#' (standard numerical integration 'IN' or conditional expectation 'CE'); default: 'CE'.
 #' @param ... Not used.
 #' 
 #' @return  A matrix of size n-by-K 

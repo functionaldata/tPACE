@@ -1,6 +1,6 @@
 # #' Check if NaN are present in the data and if yes remove them
 # #' 
-# #' Check if there are problems cause by missing values with the form and basic structure of the functional data 'Ly' and the recorded times 'Lt'.
+# #' Check if there are problems caused by missing values with the form and basic structure of the functional data 'Ly' and the recorded times 'Lt'.
 # #' 
 # #' @param Ly is a n-by-1 list of vectors
 # #' @param Lt is a n-by-1 list of vectors

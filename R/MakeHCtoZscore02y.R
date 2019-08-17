@@ -1,6 +1,6 @@
 #' Z-score head-circumference for age 0 to 24 months based on WHO standards
 #'
-#' Make vector of age and height measurement to z-scores based on WHO standards using mu and sigma (not LMS)
+#' Convert vector of age and height measurement to z-scores based on WHO standards using mu and sigma (not LMS)
 #' 
 #' @param sex A character 'M' or 'F' indicating the sex of the child. 
 #' @param age A vector of time points of size Q.

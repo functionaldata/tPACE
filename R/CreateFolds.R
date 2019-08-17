@@ -1,4 +1,4 @@
-# Returns the test sets indices for k-Fold cross-validation. Stratified sampling is used.
+# Returns the test sets indices for k-fold cross-validation. Stratified sampling is used.
 # y: the response vector, for stratifying
 # k: number of folds
 # returns: a list of length k, containing the test-set indices.

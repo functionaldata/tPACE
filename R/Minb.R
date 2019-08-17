@@ -1,5 +1,5 @@
 # This function is used to find the minimum bandwidth choice
-# where local window contains at least "numPoints" points
+# where the local window contains at least "numPoints" points
 # Input x  : n x 1 vector
 # Input numPoints: an integer specifying the number of points in a local window
 # for local weighted constant, numPoints is at least 1

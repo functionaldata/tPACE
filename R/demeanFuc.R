@@ -1,4 +1,4 @@
-### demeanFuc : the same one as FPCReg
+### demeanFuc: see FPCReg
 
 demeanFuc <- function(p, varsTrain, kern, varsOptns) {
 	for (i in 1:(p+1)) {

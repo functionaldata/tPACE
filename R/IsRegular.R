@@ -1,6 +1,6 @@
 IsRegular = function(t){
   
-  # Check the if we have dense (2), or  dataType data with missing values (1) or sparse (0) data
+  # Check the data type in terms of dense-sparse. Classification is dense (2), or  data with missing values (1) or sparse (0) data
   # t : n-by-1 list of vectors 
   
   tt = unlist(t);

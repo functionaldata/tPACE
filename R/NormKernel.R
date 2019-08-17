@@ -21,7 +21,7 @@ NormKernel <- function(x, X, h=NULL, K='epan', supp=NULL){
   n <- length(X)
   
   if (K!='epan') {
-    message('Epanechnikov kernel is only supported currently. It uses Epanechnikov kernel automatically')
+    message('Epanechnikov kernel is the default choice')
     K<-'epan'
   }
   if (is.null(supp)==TRUE) {

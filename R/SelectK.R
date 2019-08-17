@@ -1,9 +1,11 @@
 #' Selects number of functional principal components for
 #' given FPCA output and selection criteria
 #'
-#' @param fpcaObj A list containing FPCA related subjects returned by MakeFPCAResults().
-#' @param criterion A string or positive integer specifying selection criterion for number of functional principal components, available options: 'FVE', 'AIC', 'BIC', or the specified number of components - default: 'FVE'
-#' @param FVEthreshold A threshold percentage specified by user when using "FVE" as selection criterion: (0,1] - default: NULL
+#' @param fpcaObj A list containing FPCA related objects returned by MakeFPCAResults().
+#' @param criterion A string or positive integer specifying selection criterion for the number of functional principal components.
+#' Available options: 'FVE', 'AIC', 'BIC', or the specified number of components - default: 'FVE'
+#' For explanations of these criteria, see Yao et al (2005, JASA)
+#' @param FVEthreshold A threshold percentage to be specified by the user when using "FVE" as selection criterion: (0,1] - default: NULL
 #' @param Ly A list of \emph{n} vectors containing the observed values for each individual - default: NULL
 #' @param Lt A list of \emph{n} vectors containing the observation time points for each individual corresponding to Ly - default: NULL
 #'

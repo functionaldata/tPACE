@@ -1,19 +1,25 @@
-#' Take derivative of an FPCA object
+#' Obtain the derivatives of eigenfunctions/ eigenfunctions of derivatives
+#' (note: these two are not the same)
 #' 
 #' @param fpcaObj A object of class FPCA returned by the function FPCA().   
 #' @param derOptns A list of options to control the derivation parameters specified by \code{list(name=value)}. See `Details'. (default = NULL)
 #'
-#' @details Available derivation control options are 
+#' @details Available derivative options are 
 #' \describe{
-#' \item{method}{The method used for obtaining the derivatives (default: 'FPC'). 'DPC': derivatives principal component, with G^(1,1) estimated by first kernel local smoothing G^(1,0), and then apply a 1D smoother on the second direction; 'FPC': functional principal component, based on smoothing the eigenfunctions; 'FPC1': functional principal component, based on smoothing G^(1,0). May produce better estimate than 'FPC' but is slower.}
+#' \item{method}{The method used for obtaining the derivatives -- default is  'FPC', which is the derivatives of eigenfunctions; 'DPC': eigenfunctions of derivatives, 
+#' with G^(1,1) estimated by an initial kernel local smoothing step for  G^(1,0),  then applying a 1D smoother in the second direction; 
+#' 'FPC': functional principal component, based on smoothing the eigenfunctions; 'FPC1': functional principal component, based on smoothing G^(1,0). 
+#'  The latter may produce better estimates than 'FPC' but is slower.}
 #' \item{p}{The order of the derivatives returned (default: 1, max: 2). }
-#' \item{bw}{Bandwidth for the 1D and the 2D smoothers (default: p * 0.1 * S).}
+#' \item{bw}{Bandwidth for the 1D and the 2D smoothers (default: p * 0.1 * S, where S is the length of the domain).}
 #' \item{kernelType}{Smoothing kernel choice; same available types are FPCA(). default('epan')}
 #' }
 #'
 #' @references
-#' \cite{Dai, Xiongtao, Hans-Georg Mueller, and Wenwen Tao. "Derivative Principal Component Analysis for Representing the Time Dynamics of Longitudinal and Functional Data." Submitted (DPC)}
-#' \cite{Liu, Bitao, and Hans-Georg Mueller. "Estimating derivatives for samples of sparsely observed functions, with application to online auction dynamics." Journal of the American Statistical Association 104, no. 486 (2009): 704-717. (FPC)}
+#' \cite{Dai, X., Tao, W., Müller, H.G. (2018). Derivative principal components for representing the time dynamics of longitudinal and functional data.
+#'  Statistica Sinica 28, 1583--1609. (DPC)}
+#' \cite{Liu, Bitao, and Hans-Georg Müller. "Estimating derivatives for samples of sparsely observed functions, 
+#' with application to online auction dynamics." Journal of the American Statistical Association 104, no. 486 (2009): 704-717. (FPC)}
 #' @examples
 #' 
 #' bw <- 0.2

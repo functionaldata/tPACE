@@ -29,7 +29,8 @@
 #' res <- FOptDes(Ly=sampWiener$Ly, Lt=sampWiener$Lt, p=2,
 #'                isSequential=FALSE, RidgeCand = seq(0.02,0.2,0.02))
 #' @references
-#' \cite{Ji, H., Mueller, H.G. (2016) "Optimal Designs for Longitudinal and Functional Data" Journal of the Royal Statistical Society: Series B (Statistical Methodology)}
+#' \cite{Ji, H., Mueller, H.G. (2017) "Optimal Designs for Longitudinal and Functional Data" 
+#' Journal of the Royal Statistical Society: Series B 79, 859-876.}
 #' 
 #' @export
 

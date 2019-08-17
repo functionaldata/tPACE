@@ -3,7 +3,7 @@
 #' This function by default creates the mean and first principal modes of variation plots for
 #' 50%, 75%, 100%, 125% and 150% of the defined bandwidth choices in the fpcaObj provided as input.
 #' If provided with a derivative options object (?FPCAder) it will return the 
-#' differentiated mean and first two principal modes of variations for 50%, 75%, 100%, 125% and 150% of the defined bandwidth choice.
+#' differentiated mean and first two principal modes of variation for 50%, 75%, 100%, 125% and 150% of the defined bandwidth choice.
 #'
 #' @param fpcaObj An FPCA class object returned by FPCA().
 #' @param derOptns A list of options to control the derivation parameters; see ?FPCAder. If NULL standard diagnostics are returned 

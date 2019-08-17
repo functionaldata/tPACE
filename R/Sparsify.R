@@ -1,6 +1,6 @@
 #' Sparsify densely observed functional data
 #'
-#' Given a matrix of densely observed functional data, make a sparsified sample.
+#' Given a matrix of densely observed functional data, create a sparsified sample for experimental purposes
 #' 
 #' @param samp A matrix of densely observed functional data, with each row containing one sample.
 #' @param pts A vector of grid points corresponding to the columns of \code{samp}.

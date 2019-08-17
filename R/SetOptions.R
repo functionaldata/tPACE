@@ -4,7 +4,7 @@
 #' @param t A list of \emph{n} vectors containing the observation time points for each individual corresponding to y.
 #' @param optns A list of options control parameters specified by \code{list(name=value)}. See `Details'.
 #'
-#' See '?FPCAfor more details. Usually users are not supposed to use this function directly.
+#' See '?FPCAfor more details. Casual users are not advised to tamper with this function.
 #' @export
 
 

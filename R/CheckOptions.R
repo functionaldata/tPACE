@@ -1,6 +1,6 @@
 #' Check option format
 #'
-#' Check if the options structure is valid and set the ones that are NULL
+#' Check if the options structure is valid and set the  NULL options
 #' 
 #' @param t is a n-by-1 list of vectors 
 #' @param optns is an initialized option list

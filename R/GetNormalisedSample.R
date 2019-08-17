@@ -1,4 +1,4 @@
-#' Normalise sparse functional sample
+#' Normalise sparse multivariate functional data
 #'
 #' Normalise sparse functional sample given in an FPCA object
 #'

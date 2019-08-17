@@ -1,9 +1,10 @@
-#' Create the design plot of the functional data.
-#'
-#' This function will open a new device if not instructed otherwise.
+#' Create design plots for functional data. See Yao, F., M\"{u}ller, H.G., Wang, J.L. (2005). Functional
+#' data analysis for sparse longitudinal data. J. American Statistical Association 100, 577-590
+#' for interpretation and usage of these plots. 
+#' This function will open a new device as default. 
 #'
 #' @param Lt a list of observed time points for functional data
-#' @param obsGrid a vector of sorted observed time points. Default to the 
+#' @param obsGrid a vector of sorted observed time points. Default are the 
 #' unique time points in Lt.
 #' @param isColorPlot an option for colorful plot: 
 #'                    TRUE: create color plot with color indicating counts

@@ -1,7 +1,7 @@
-#' Functional Principal Component Analysis mode of variation plot
+#' Functional Principal Component Analysis: Mode of variation plot
 #' 
-#' Create the k-th mode of variation plot around the mean. The red-line is
-#' the functional mean, the grey shaded areas show the range of variations
+#' Creates the k-th mode of variation plot around the mean. The red-line is
+#' the functional mean, the grey shaded areas show the range of variation
 #' around the mean: \eqn{ \pm Q \sqrt{\lambda_k} \phi_k}{+/- Q sqrt{lambda_k} phi_k}
 #' for the dark grey area Q = 1, and for the light grey are Q = 2. In the case of 'rainbowPlot'
 #' the blue edge corresponds to Q = -3, the green edge to Q = +3 and the red-line to Q = 0 (the mean).

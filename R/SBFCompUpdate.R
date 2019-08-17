@@ -24,7 +24,7 @@ SBFCompUpdate<-function(f,ind,fNW,Y,X,x,h=NULL,K='epan',supp=NULL,MgnJntDens){
   n<-nrow(X)
   
   if (K!='epan') {
-    message('Epanechnikov kernel is only supported currently. It uses Epanechnikov kernel automatically')
+    message('Epanechnikov kernel is the default choice')
     K<-'epan'
   }
   if (is.null(supp)==TRUE) {

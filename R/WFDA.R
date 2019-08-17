@@ -1,5 +1,4 @@
-#' Warped Functional Data Analysis
-#' 
+#' Time-Warping in Functional Data Analysis:
 #' Pairwise curve synchronization for functional data
 #' 
 #' @param Ly A list of \emph{n} vectors containing the observed values for each individual.

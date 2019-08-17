@@ -1,9 +1,9 @@
 #' Functional clustering and identifying substructures of longitudinal data
 #' 
-#' By default the function will cluster the data using the functional principal component (FPC) scores from the data's 
+#' Default:  Cluster functional data using the functional principal component (FPC) scores obtained from the data
 #' FPC analysis using EMCluster (Chen and Maitra, 2015) or directly clustering the functional data using kCFC (Chiou and Li, 2007).
 #' 
-#' Within EMCluster we examine the model initiated "EMCluster::em.EM" and return the optimal model based on 'EMCluster::emcluster'. 
+#' Within EMCluster, uses the model initiated "EMCluster::em.EM" and returne the optimal model based on 'EMCluster::emcluster'. 
 #' See ?EMCluster::emcluster for details.
 #' 
 #' @param Ly A list of \emph{n} vectors containing the observed values for each individual. Missing values specified by \code{NA}s are supported for dense case (\code{dataType='dense'}).

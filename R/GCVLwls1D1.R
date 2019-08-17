@@ -1,7 +1,7 @@
 # This function computes the optimal bandwidth choice for the mean
-# function use GCV method by pooling the longitudinal data together. 
+# function -- uses GCV method by pooling the longitudinal data together. 
 # verbose is unused for now
-# this is compatible with PACE because the GCV is calculated in a same way
+# this is compatible with PACE 
 
 GCVLwls1D1 <- function(yy,tt, kernel, npoly, nder, dataType, verbose=TRUE) {
  

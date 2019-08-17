@@ -1,5 +1,5 @@
 GetUserMeanCurve <- function (optns, obsGrid, regGrid, buff) {
-  # If the user provided a mean function use it
+  # For the case where a user provides a mean function 
 
   userMu = optns$userMu
   rangeUser <- range(optns$userMu$t)

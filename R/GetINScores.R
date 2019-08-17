@@ -1,5 +1,6 @@
 # This function obtains the FPC scores for dense
-# regular functional data by trapezoidal rule integration
+# regular functional data by trapezoidal rule integration (see 
+# https://en.wikipedia.org/wiki/Functional_principal_component_analysis)
 
 ######
 # Input:

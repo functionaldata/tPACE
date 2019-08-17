@@ -1,4 +1,4 @@
-# This function is used to create count matrix based on
+# This function is used to create a count matrix based on
 # observed pairs of time points for the raw covariance.
 
 ######

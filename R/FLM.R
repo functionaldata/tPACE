@@ -1,6 +1,7 @@
 #' Functional Linear Models
 #'
-#' Functional linear models with a scalar or covariate response
+#' Functional linear models with scalar or functional responses (see eg Yao, F., M\"{u}ller, H.G., Wang, J.L. (2005). Functional
+#' linear regression analysis for longitudinal data. Annals of Statistics 33, 2873--2903.)
 #' 
 #' @param Y Either n \emph{n}-dimensional vector whose elements consist of scalar responses, or a list which contains functional responses and the time points at which they are observed.
 #' @param X A list which contains the observed functional predictors.

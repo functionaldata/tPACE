@@ -1,6 +1,6 @@
-#' Two dimensional local linear kernel smoother with derivatives.
+#' Two dimensional local linear kernel smoother to target derivatives.
 #'
-#' Two dimensional local weighted least squares smoother. Only local linear smoother for estimating the original curve is available (no higher order, no derivative). 
+#' Two dimensional local weighted least squares smoother. Only a local linear smoother for estimating the original curve is available (no higher order)
 #' @param bw A scalar or a vector of length 2 specifying the bandwidth.
 #' @param kern Kernel used: 'gauss', 'rect', 'gausvar', 'epan' (default), 'quar'.
 #' @param xin An n by 2 data frame or matrix of x-coordinate.

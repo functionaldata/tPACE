@@ -1,6 +1,7 @@
 #' Functional Singular Value Decomposition
 #' 
-#' FSVD for a pair of dense or sparse functional data. 
+#' FSVD for a pair of dense or sparse functional data, implementing Yang, W., M\"{u}ller, H.G., Stadtm\"{u}ller, U. (2011). 
+#' Functional singular component analysis. J. Royal Statistical Society B73, 303-324.
 #' 
 #' @param Ly1 A list of \emph{n} vectors containing the observed values for each individual. Missing values specified by \code{NA}s are supported for dense case (\code{dataType='dense'}).
 #' @param Lt1 A list of \emph{n} vectors containing the observation time points for each individual corresponding to y. Each vector should be sorted in ascending order.

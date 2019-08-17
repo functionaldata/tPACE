@@ -1,6 +1,6 @@
-#' Make Gaussian Process Sparse Functional Data sample
+#' Create a sparse Functional Data sample for a Gaussian Process
 #' 
-#' Make a Gaussian process sparse functional data sample of size n 
+#' Functional data sample of size n, sparsely sampled from a Gaussian process
 #' 
 #' @param n number of samples to generate.
 #' @param rdist a sampler for generating the random design time points within [0, 1].

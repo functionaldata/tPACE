@@ -1,6 +1,7 @@
 # obsGrid: supports fittedCov and phi. May be a truncated version.
 # Assumes each tVec in t are all supported on obsGrid.
-# return: ret is a 3 by n array, with the first row containing the xiEst, second row containing the xiVar, and the third containing the fitted values. 
+# return: ret is a 3 by n array, with the first row containing the xiEst, second row containing the xiVar, and the third 
+# row containing the fitted values. 
 GetCEScores <- function(y, t, optns, mu, obsGrid, fittedCov, lambda, phi, sigma2) {
   
   if (length(lambda) != ncol(phi))

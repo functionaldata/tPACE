@@ -12,7 +12,7 @@
 #####   supp: supports of estimation interested (d*2 matrix)
 
 ##### output:
-#####   NW marginal regression function kernel estimators at each estimation points (N*d matrix)
+#####   NW marginal regression function kernel estimators at each estimation point (N*d matrix)
 
 NWMgnReg <- function(Y, x, X, h=NULL, K='epan', supp=NULL){
   

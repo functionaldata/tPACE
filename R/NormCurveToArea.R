@@ -1,4 +1,4 @@
-#' Normalise a curve to a particular area.
+#' Normalise a curve to a particular area, by multiplication with a factor
 #' 
 #' Normalise a curve such that \\int{yNew}dx = area (according to trapezoid integration)
 #' 

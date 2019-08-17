@@ -1,6 +1,6 @@
-#' Make Gaussian Process Dense Functional Data sample
+#' Create a Dense Functional Data sample for a Gaussian process
 #' 
-#' Make a Gaussian process dense functional data sample of size n over a [0,1] support.
+#' For a Gaussian process, create a dense functional data sample of size n over a [0,1] support.
 #' 
 #' @param n number of samples to generate
 #' @param M number of equidistant readings per sample (default: 100)

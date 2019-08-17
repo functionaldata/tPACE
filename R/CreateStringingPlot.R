@@ -5,6 +5,10 @@
 #' 2) A plot of predictors in stringed order for the same subset of observations;
 #' 3) A plot of the stringing function, which is the stringed order vs. the original order.
 #' 
+#' This approach is based on 
+#' Chen, K., Chen, K., Müller, H.G., Wang, J.L. (2011). Stringing high-dimensional data for functional analysis. J. American Statistical Association 106, 275--284.
+#' 
+#'
 #' @param stringingObj A stringing object of class "Stringing", returned by the function Stringing.
 #' @param subset A vector of indices or a logical vector for subsetting the observations. If missing,  first min(n,50) observations will be plotted where n is the sample size.
 #' @param ... Other arguments passed into matplot for plotting options

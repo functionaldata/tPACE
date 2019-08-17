@@ -1,5 +1,7 @@
 #' Stringing for High-Dimensional data
 #' 
+#' Converting high-dimensional data to functional data
+#' 
 #' @param X A matrix (n by p) of data, where X[i,] is the row vector of measurements for the ith subject.
 #' @param Y A vector (n by 1), where Y[i] is the reponse associated with X[i,]
 #' @param standardize A logical variable indicating whether standardization of the input data matrix is required, with default: FALSE.

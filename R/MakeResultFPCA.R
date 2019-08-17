@@ -1,4 +1,4 @@
-# This function makes the output object for function FPCA
+# This function creates the output object for FPCA
 
 ######
 # Input:

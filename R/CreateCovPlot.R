@@ -1,4 +1,4 @@
-#' Create the covariance surface plot based on the results from FPCA() or FPCder().
+#' Creates a covariance surface plot based on the results from FPCA() or FPCder().
 #'
 #' This function will open a new device if not instructed otherwise.
 #'

@@ -1,4 +1,4 @@
-# The output outGrid of this function is the (potentially) truncated greid.
+# The output outGrid of this function is a (potentially) truncated grid.
 GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, optns, useBinnedCov=FALSE) {
   
   dataType <- optns$dataType

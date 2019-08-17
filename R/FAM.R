@@ -117,7 +117,7 @@
 #' plot(yHat,YTest,xlim=c(-10,10))
 #' abline(coef=c(0,1),col=2)
 #' @references
-#' \cite{Mueller, H.-G. and Yao, F. (2005), "Functional additive models", JASA, Vol.103, No.484, p.1534-1544.}
+#' \cite{Müller, H.-G. and Yao, F. (2005), "Functional additive models", JASA, Vol.103, No.484, p.1534-1544.}
 #' 
 #' @export
 

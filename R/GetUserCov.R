@@ -1,5 +1,5 @@
 GetUserCov <- function(optns, obsGrid, cutRegGrid, buff, ymat) {
-# If covariance function is provided
+# Is used for the case where the covariance function is provided by the user
 
 
   rangeUser <- range(optns$userCov$t)

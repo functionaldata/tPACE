@@ -1,6 +1,6 @@
-# Approximate the minimum bandwidth choice for% for the covariance function. 
-# In stead of the getMinb.m functionality we can garantee minimal number of neighboring points in here.
-# TODO: distMat is memory inefficient.
+# Approximate the minimum bandwidth choice for the covariance function. 
+# Instead of the getMinb.m functionality this garantees a minimal number of neighboring points
+# Note: distMat is memory-inefficient.
 GetMinb <- function(t, obsGrid, dataType='Sparse', npoly=1, minUniqPts=3, minPts=6, legacyCode = FALSE) {
   
  

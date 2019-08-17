@@ -1,5 +1,6 @@
-#' @title Bootstrap test of Dynamic correlation
-#' @description Perform one sample (H0: Dynamic correlation = 0) or two sample (H0:Dynamic_correlation_1 = Dynamic_correlation_2) bootstrap test of Dynamical Correlation. 
+#' @title Bootstrap test of Dynamic Correlation
+#' @description Perform one sample (H0: Dynamic correlation = 0) or two sample (H0:Dynamic_correlation_1 = Dynamic_correlation_2) bootstrap test 
+#' of H_0: Dynamical Correlation=0. 
 #' @param x1 a n by m matrix where rows representing subjects and columns representing measurements, missings are allowed.
 #' @param y1 a n by m matrix where rows representing subjects and columns representing measurements, missings are allowed.
 #' @param t1 a vector of time points where x1,y1 are observed.
@@ -28,9 +29,11 @@
 #' bt_DC=Dyn_test(x1_quad_error,y1_quad_error,t,B=1000)
 #'
 #' @references
-#' \cite{Dubin J A, M\"uller H G. Dynamical correlation for multivariate longitudinal data[J]. Journal of the American Statistical Association, 2005, 100(471): 872-881.}
+#' \cite{Dubin J A, M\"uller H G. (2005)  Dynamical correlation for multivariate longitudinal data.  
+#' Journal of the American Statistical Association 100(471): 872-881.}
 #'
-#' \cite{Liu S, Zhou Y, Palumbo R, et al. Dynamical correlation: A new method for quantifying synchrony with multivariate intensive longitudinal data[J]. Psychological methods, 2016, 21(3): 291.}
+#' \cite{Liu S, Zhou Y, Palumbo R, Wang, J.L. (2016).  Dynamical correlation: A new method for quantifying synchrony with multivariate intensive 
+#' longitudinal data.  Psychological Methods 21(3): 291.}
 #' @export
 
 Dyn_test = function(x1,y1,t1,x2,y2,t2,B=1000){

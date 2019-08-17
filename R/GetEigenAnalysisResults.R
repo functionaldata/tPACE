@@ -1,5 +1,5 @@
 # phi: a nRegGrid * no_FVE
-# The input smoothCov is possibly truncated.
+# The input smoothCov may be truncated.
 
 GetEigenAnalysisResults <- function(smoothCov, regGrid, optns, muWork = NULL) {
 

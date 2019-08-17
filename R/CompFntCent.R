@@ -1,5 +1,5 @@
 #####
-##### centering conponent function by marginal mean
+##### centering component functions by using the marginal mean
 #####
 
 ##### input variables: 

@@ -9,7 +9,7 @@ GCVLwls2DV2 <- function(obsGrid, regGrid, ngrid=NULL, dataType=rcov$dataType, er
   # CV: whether to use CV rather than GCV. Default to FALSE as not using CV. If CV is used use an integer value to specify the number of cross-validation folds. 
   
   # This function computes the optimal bandwidth choice for the covariance surface. 
-  # function use GCV method by pooling the longitudinal data together. 
+  # based on the  GCV method by pooling the longitudinal data together. 
   # verbose is unused for now
   # this follows exactly the matlab 2D gcv selector.
   

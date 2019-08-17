@@ -6,7 +6,10 @@
 #' @param Lt A list of \emph{n} vectors containing the observation time points for each individual corresponding to y. Each vector should be sorted in ascending order.
 #' @param optns A list of options control parameters specified by \code{list(name=value)}. See `Details'.
 #'
-#' @details If the input is sparse data, make sure you check the design plot is dense and the 2D domain is well covered, using \code{plot} or \code{CreateDesignPlot}. Some study design such as snippet data (each subject is observed only on a sub-interval of the period of study) will have an ill-covered design plot, for which the covariance estimate will be unreliable.
+#' @details If the input is sparse data, make sure you check the design plot is dense and the 2D domain is well covered
+#' by support points, using \code{plot} or \code{CreateDesignPlot}. Some study design such as snippet data (where each subject is 
+#' observed only on a sub-interval of the period of study) will have an ill-covered design plot, in which case the nonparametric 
+#' covariance estimate will be unreliable.
 #' 
 #' Available control options are 
 #' \describe{
@@ -74,13 +77,17 @@
 #' plot(res) # The design plot covers [0, 1] * [0, 1] well.
 #' CreateCovPlot(res, 'Fitted')
 #' @references
-#' \cite{Yao, F., Mueller, H.G., Clifford, A.J., Dueker, S.R., Follett, J., Lin, Y., Buchholz, B., Vogel, J.S. (2003). "Shrinkage estimation for functional principal component scores, with application to the population kinetics of plasma folate." Biometrics 59, 676-685. (Shrinkage estimates for dense data)}
+#' \cite{Yao, F., Müller, H.G., Clifford, A.J., Dueker, S.R., Follett, J., Lin, Y., Buchholz, B., Vogel, J.S. (2003). "Shrinkage estimation 
+#' for functional principal component scores, with application to the population kinetics of plasma folate." Biometrics 59, 676-685. (Shrinkage estimates for dense data)}
 #' 
-#' \cite{Yao, Fang, Hans-Georg Mueller, and Jane-Ling Wang. "Functional data analysis for sparse longitudinal data." Journal of the American Statistical Association 100, no. 470 (2005): 577-590. (Sparse data FPCA)}
+#' \cite{Yao, Fang, Müller, Hans-Georg and Wang, Jane-Ling (2005). "Functional data analysis for sparse longitudinal data." 
+#' Journal of the American Statistical Association 100, no. 470  577-590. (Sparse data FPCA)}
 #'
-#' \cite{Liu, Bitao, and Hans-Georg Mueller. "Estimating derivatives for samples of sparsely observed functions, with application to online auction dynamics." Journal of the American Statistical Association 104, no. 486 (2009): 704-717. (Sparse data FPCA)}
+#' \cite{Liu, Bitao  and Müller, Hans-Georg (2009). "Estimating derivatives for samples of sparsely observed functions, 
+#' with application to online auction dynamics." Journal of the American Statistical Association 104, no. 486 704-717. (Sparse data FPCA)}
 #'
-#' \cite{Castro, P. E., W. H. Lawton, and E. A. Sylvestre. "Principal modes of variation for processes with continuous sample curves." Technometrics 28, no. 4 (1986): 329-337. (Dense data FPCA)}
+#' \cite{Castro, P. E., Lawton, W.H. and Sylvestre, E.A. (1986). "Principal modes of variation for processes with continuous 
+#' sample curves." Technometrics 28, no. 4, 329-337. (modes of variation for dense data FPCA)}
 #' @export
 
 FPCA = function(Ly, Lt, optns = list()){
@@ -89,7 +96,7 @@ FPCA = function(Ly, Lt, optns = list()){
   # Check the data validity for further analysis
   CheckData(Ly,Lt)
   
-  # Force the data to be list of numeric members and handle NA's
+  # Force the data to be numeric member lists and handle NA's
   #Ly <- lapply(Ly, as.numeric) 
   #Lt <- lapply(Lt, as.numeric)
   #Lt <- lapply(Lt, signif, 14)

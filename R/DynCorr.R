@@ -1,5 +1,5 @@
 #' @title Dynamical Correlation
-#' @description Calculate Dynamical Correlation for 2 paired dense regular functional data observed on the same grid.
+#' @description Calculates the Dynamical Correlation for 2 paired dense regular functional data observed on the same grid.
 #' @param x a n by m matrix where rows representing subjects and columns representing measurements, missings are allowed.
 #' @param y a n by m matrix where rows representing subjects and columns representing measurements, missings are allowed.
 #' @param t a length m vector of time points where x,y are observed.
@@ -22,8 +22,10 @@
 #' }
 #' dyn1_quad=DynCorr(x1_quad_error,y1_quad_error,t) 
 #' @references
-#' \cite{Dubin J A, M\"uller H G. Dynamical correlation for multivariate longitudinal data[J]. Journal of the American Statistical Association, 2005, 100(471): 872-881.}
-#' \cite{Liu S, Zhou Y, Palumbo R, et al. Dynamical correlation: A new method for quantifying synchrony with multivariate intensive longitudinal data[J]. Psychological methods, 2016, 21(3): 291.}
+#' \cite{Dubin J A, M\"uller H G. Dynamical correlation for multivariate longitudinal data (2005).  
+#' Journal of the American Statistical Association 100(471): 872-881.}
+#' \cite{Liu S, Zhou Y, Palumbo R, Wang, J.L. (2016).  Dynamical correlation: A new method for quantifying synchrony with 
+#' multivariate intensive longitudinal data. Psychological methods 21(3): 291.}
 #' @export
 
 DynCorr = function(x,y,t){

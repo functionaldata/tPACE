@@ -2,8 +2,8 @@
 #'
 #' A dataset containing the eggs laid from 789 medflies (Mediterranean fruit flies,
 #'  Ceratitis capitata) during the first 25 days of their lives. This is a subset of 
-#' the dataset used by Carey at al. (1998); only flies having lived at least 25 days 
-#' are shown. At the end of the recording period all flies were still alive.
+#' the dataset used by Carey at al. (1998); only flies that lived at least 25 days 
+#' are included, i.e, at the end of the recording period [0,25] all flies are still alive.
 #'
 #' @name medfly25
 #' @docType data

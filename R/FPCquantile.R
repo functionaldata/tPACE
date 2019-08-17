@@ -39,7 +39,8 @@
 #'qtreg = FPCquantile(x, t_x, y, outQ,optns_x = NULL,isNewsub)
 #'
 #'@references
-#' \cite{Chen, K., M\"uller, H.G. (2011). Conditional quantile analysis when covariates are functions, with application to growth data. J. Royal Statistical Society B.}
+#' \cite{Chen, K., M\"uller, H.G. (2011). Conditional quantile analysis when covariates are functions, with application to growth data. 
+#' J. Royal Statistical Society B 74, 67-89}
 #' @export
 
 

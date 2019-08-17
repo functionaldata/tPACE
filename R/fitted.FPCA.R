@@ -1,7 +1,10 @@
-#' Fitted functional sample from FPCA object
+#' Fitted functional data from FPCA object
 #' 
-#' Combine the zero-meaned fitted values and the interpolated mean to get the fitted values for the trajectories or the derivatives of these trajectories.
-#' Estimates are given on the work-grid, not on the observation grid. Use ConvertSupport to map the estimates to your desired domain. \code{100*(1-alpha)}-percentage coverage intervals, or bands, for trajectory estimates (not derivatives) are provided. See details in example.
+#' Combines the zero-meaned fitted values and the interpolated mean to get the fitted values for the trajectories 
+#' or the derivatives of these trajectories.
+#' Estimates are given on the work-grid, not on the observation grid. Use ConvertSupport 
+#' to map the estimates to your desired domain. \code{100*(1-alpha)}-percentage coverage intervals, or 
+#' bands, for trajectory estimates (not derivatives) are provided. For details consult the example.
 #' 
 #' @param object A object of class FPCA returned by the function FPCA().   
 #' @param K The integer number of the first K components used for the representation. (default: length(fpcaObj$lambda ))

@@ -1,6 +1,6 @@
 #' Minimum bandwidth based on kNN criterion.
 #'
-#' Input a list of time points Lt, and the number of unique neighbors k and get the minimum bandwidth  garanteeing k unique neighbours.
+#' Input a list of time points Lt, and the number of unique neighbors k. Obtain  the minimum bandwidth  garanteeing k unique neighbours.
 #' 
 #' @param Lt n-by-1 list of vectors  
 #' @param k number of unique neighbors for cov and mu (default = 3)

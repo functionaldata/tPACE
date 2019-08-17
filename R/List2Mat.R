@@ -1,4 +1,4 @@
-# This function converts dense regular functional input list
+# This function converts dense regular functional input lists
 # to a matrix for easier dense case implementation
 ##########################################################################
 # Input:  - y: list of n dense regular observed p-dim functional objects

@@ -1,8 +1,8 @@
 GetSmoothedMeanCurve <- function (y, t, obsGrid, regGrid, optns){
   
-  # Note : If binned data we should use weighted mean response for each time-point.
+  # For the case of binned data one may use a weighted mean response for each time-point.
   # This is not currently implemented. \hat{y}_i = \sum_i w_i y_i where w_i are the
-  # same points for common t_is. so we have: \hat{y}_i = n_t w_i \bar{y}
+  # same points for common t_is so we have: \hat{y}_i = n_t w_i \bar{y}
 
   userMu = optns$userMu;
   methodBwMu = optns$methodBwMu;

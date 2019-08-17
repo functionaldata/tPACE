@@ -12,8 +12,8 @@
 #####   supp: supports of estimation interested (d*2 matrix)
 
 ##### output:
-#####   margianl densities at estimation points near observation points (N*d matrix)
-#####   2-dim. joint densities at estimation grid near observation grid (N*N*d*d array)
+#####   marginal densities at output grid points near observation points (N*d matrix)
+#####   2-dim. joint densities at output grid near observation grid (N*N*d*d array)
 
 
 ### propertion of non-truncated observation
