@@ -11,7 +11,7 @@ Authors@R: c(person("Xiongtao","Dai", role=c("aut")),
     person("Kynghee","Han", role="aut"),
     person("Hao","Ji", role=c("aut")),
     person("Shu-Chin", "Lin", role="ctb"),
-    person("Hans-Georg", "M¨¹ller", role=c("cph","ths")),
+    person("Hans-Georg", "Mueller", role=c("cph","ths")),
     person("Jane-Ling", "Wang", role=c("cph","ths"))) 
 Maintainer: Pantelis Z. Hadjipantelis <pantelis@ucdavis.edu>
 Description: Provides implementation of various methods of Functional Data
