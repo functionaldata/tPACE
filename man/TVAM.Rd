@@ -82,7 +82,9 @@ persp(gridT,x0,gjSbf[[2]],theta=60,phi=30,
 
 }
 \references{
-\cite{Zhang, X., Park, B. U. and Wang, J.-L. (2013), "Time-varying additive models for longitudinal data", Journal of the American Statistical Association, Vol.108, No.503, p.983-998.}
+\cite{Zhang, X., Park, B. U. and Wang, J.-L. (2013), "Time-varying additive models for longitudinal data", Journal of the 
+American Statistical Association, Vol.108, No.503, p.983-998.}
 
-\cite{Han, K., Mueller, H.-G. and Park, B. U. (2018), "Smooth backfitting for additive modeling with small errors-in-variables, with an application to additive functional regression for multiple predictor functions", Bernoulli, Vol.24, No.2, p.1233-1265.}
+\cite{Han, K., Mueller, H.-G. and Park, B. U. (2018), "Smooth backfitting for additive modeling with 
+small errors-in-variables, with an application to additive functional regression for multiple predictor functions", Bernoulli, Vol.24, No.2, p.1233-1265.}
 }

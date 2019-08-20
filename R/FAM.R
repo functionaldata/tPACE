@@ -13,7 +13,7 @@
 #' @param supp The lower and upper limits of kernel smoothing domain for studentized FPC scores, which FPC scores are divided by the square roots of eigenvalues (default is [-2,2]).
 #' @param optns A list of options control parameters specified by list(name=value). See \code{FPCA}.
 #'
-#' @details \code{FAM} fits functional additive models for a scalar response and single predictor process proposed by Mueller and Yao (2007) that \deqn{E(Y | \mathbf{X}) = \sum_{k=1}^K g_{k}(\xi_{k}),} where \eqn{\xi_{k}} stand for the k-th FPC score of the the predictor process.
+#' @details \code{FAM} fits functional additive models for a scalar response and single predictor process proposed by Müller and Yao (2007) that \deqn{E(Y | \mathbf{X}) = \sum_{k=1}^K g_{k}(\xi_{k}),} where \eqn{\xi_{k}} stand for the k-th FPC score of the the predictor process.
 #'
 #' @return A list containing the following fields:
 #' \item{mu}{Mean estimator of \eqn{EY}}

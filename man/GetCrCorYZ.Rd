@@ -2,7 +2,7 @@
 % Please edit documentation in R/GetCrCorYZ.R
 \name{GetCrCorYZ}
 \alias{GetCrCorYZ}
-\title{Make cross-correlation matrix from auto- and cross-covariance matrix}
+\title{Create cross-correlation matrix from auto- and cross-covariance matrix}
 \usage{
 GetCrCorYZ(ccYZ, acYY, covZ)
 }
@@ -17,5 +17,5 @@ GetCrCorYZ(ccYZ, acYY, covZ)
 A cross-correlation matrix between variables Y (functional) and Z (scalar).
 }
 \description{
-Make cross-correlation matrix from auto- andcross-covariance matrix
+Create cross-correlation matrix from auto- and cross-covariance matrix
 }

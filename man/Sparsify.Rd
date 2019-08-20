@@ -23,5 +23,5 @@ A list of length 2, containing the following fields:
 \item{Ly}{A list of values for each sample, corresponding to the time points.}
 }
 \description{
-Given a matrix of densely observed functional data, make a sparsified sample.
+Given a matrix of densely observed functional data, create a sparsified sample for experimental purposes
 }

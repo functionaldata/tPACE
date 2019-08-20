@@ -2,7 +2,7 @@
 % Please edit documentation in R/fitted.FPCAder.R
 \name{fitted.FPCAder}
 \alias{fitted.FPCAder}
-\title{Fitted functional sample from FPCAder object}
+\title{Fitted functional data for derivatives from the FPCAder object}
 \usage{
 \method{fitted}{FPCAder}(object, K = NULL, ...)
 }
@@ -17,8 +17,9 @@
 An \code{n} by \code{length(workGrid)} matrix, each row of which contains a sample.
 }
 \description{
-Combine the zero-meaned fitted values and the mean derivative to get the fitted values for the derivatives trajectories
-Estimates are given on the work-grid, not on the observation grid. Use ConvertSupport to map the estimates to your desired domain.
+Combines the zero-meaned fitted values and the mean derivative to get the fitted values for the derivative trajectories.
+Estimates are given on the work-grid, not on the observation grid. Use ConvertSupport to map the 
+estimates to your desired domain.
 }
 \examples{
 set.seed(1)

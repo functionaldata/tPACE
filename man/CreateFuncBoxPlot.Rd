@@ -15,17 +15,18 @@ CreateFuncBoxPlot(fpcaObj, optns = list(), ...)
 }
 \description{
 Using an FPCA object create a functional box-plot based on the function scores.
-The green line corresponds to the functional median, the dark grey area to the area spanned
-by the curves within the 25th and 75-th percentile and the light gret to the area spanned
+The green line corresponds to the functional median, the dark gray area to the area spanned
+by the curves within the 25th and 75-th percentile and the light gray to the area spanned
 by the curves within the 2.5th and 97.5-th percentile.
 }
 \details{
 Available control options are 
 \describe{
-\item{ifactor}{inflation ifactor for the bag-plot defining the loop of bag-plot or multiplying ifactor the KDE pilot bandwidth matrix. (see ?aplpack::compute.bagplot; ?ks::Hpi respectively; default: 2.58; 2 respectively).}
+\item{ifactor}{inflation ifactor for the bag-plot defining the loop of bag-plot or multiplying ifactor 
+the KDE pilot bandwidth matrix. (see ?aplpack::compute.bagplot; ?ks::Hpi respectively; default: 2.58; 2 respectively).}
 \item{variant}{string defining the method used ('KDE', 'pointwise' or 'bagplot') (default: 'bagplot')}
-\item{unimodal}{logical specifying if the KDE estimate should be unimodal (default: FALSE, relavant only for variant='KDE')}
-\item{addIndx}{vector of indeces corresponding to which samples one should overlay (Default: NULL)}
+\item{unimodal}{logical specifying if the KDE estimate should be unimodal (default: FALSE, relevant only for variant='KDE')}
+\item{addIndx}{vector of indices corresponding to which samples one should overlay (Default: NULL)}
 \item{K}{integer number of the first K components used for the representation. (default: length(fpcaObj$lambda ))} 
 }
 }

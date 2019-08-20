@@ -28,19 +28,32 @@ MultiFAM(Y, X, ker = "epan", nEval = 51, XTest = NULL,
 }
 \value{
 A list containing the following fields:
-\item{mu}{A scalar of centered part of the regression model.}
-\item{SBFit}{An \emph{N} by \eqn{(K_1 + ... + K_d)} matrix whose column vectors consist of the smooth backfitting component function estimators at the given \emph{N} estimation points.}
-\item{xi}{An \emph{N} by \eqn{(K_1 + ... + K_d)} matrix whose column vectors consist of FPC score grid vectors that each additive component functional is evluated.}
+\item{mu}{A scalar for the centered regression model.}
+\item{SBFit}{An \emph{N} by \eqn{(K_1 + ... + K_d)} matrix whose column vectors consist of the smooth backfitting component 
+function estimators at the given \emph{N} estimation points.}
+\item{xi}{An \emph{N} by \eqn{(K_1 + ... + K_d)} matrix whose column vectors consist of the FPC score grid vectors 
+at which each additive component function is evaluated.}
 \item{bw}{A \eqn{(K_1 + ... + K_d)}-dimensional bandwidth vector.}
 \item{lambda}{A \eqn{(K_1 + ... + K_d)}-dimensional vector containing eigenvalues.}
-\item{phi}{A \emph{d}-dimensional list whose components consist of an \emph{nWorkGrid} by \emph{K_j} matrix containing eigenfunctions, supported by \code{WorkGrid}. See \code{FPCA}.}
-\item{workGrid}{A \emph{d}-dimensional list whose components consist of an \emph{nWorkGrid} by \emph{K_j} working grid, the internal regular grid on which the eigen analysis is carried on. See \code{FPCA}.}
+\item{phi}{A \emph{d}-dimensional list whose components consist of an \emph{nWorkGrid} by \emph{K_j} matrix containing eigenfunctions, 
+supported by \code{WorkGrid}. See \code{FPCA}.}
+\item{workGrid}{A \emph{d}-dimensional list whose components consist of an \emph{nWorkGrid} by \emph{K_j} working grid, 
+a regular grid on which the eigenanalysis is carried out See \code{FPCA}.}
 }
 \description{
 Smooth backfitting procedure for functional additive models with multiple predictor processes
 }
 \details{
-\code{MultiFAM} fits functional additive models for a scalar response and multiple predictor processes based on the smooth backfitting algorithm proposed by Han et al. (2016) that \deqn{E(Y | \mathbf{X}) = \sum_{j=1}^d \sum_{k=1}^{K_j} g_{jk}(\xi_{jk}),} where \eqn{\xi_{jk}} stand for the k-th FPC score of the j-th predictor process. \code{MultiFAM} only focuses on mutiple predictor processes case. In fact, the case of univariate predictor is the same with functional additive model proposed by Mueller and Yao (2008). Especially in this development, one can designate an estimation support of additive models when the additive modeling is only allowed over restricted intervals or one is interested in the modeling over the support (see Han et al., 2016).
+\code{MultiFAM} fits functional additive models for a scalar response and 
+multiple predictor processes and implements  the smooth backfitting  algorithm provided in
+ Han, K., Müller, H.G., Park, B.U.  (2018). Smooth backfitting for additive modeling with small errors-in-variables, 
+ with an application to additive functional regression for multiple predictor functions. Bernoulli 24, 1233--1265.
+
+  It is based on the model  \deqn{E(Y | \mathbf{X}) = \sum_{j=1}^d \sum_{k=1}^{K_j} g_{jk}(\xi_{jk}),} where \eqn{\xi_{jk}} stand for the k-th FPC scores of the j-th predictor 
+ process. \code{MultiFAM} only is for the multiple predictor processes case.
+ For a univariate predictor use FAM, the functional additive model (Müller and Yao 2008). 
+ It is necessary to designate an estimation support for the additive compoennt functions where the additive modeling is only allowed over 
+ restricted intervals  (see Han et al., 2018).
 }
 \examples{
 set.seed(1000)

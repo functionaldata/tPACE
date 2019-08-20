@@ -27,7 +27,7 @@ A list containing the following fields:
 \item{Xstd}{A matrix, corresponding to the standardized input data matrix. It is NULL if standardize is FALSE.}
 }
 \description{
-Stringing for High-Dimensional data
+Converting high-dimensional data to functional data
 }
 \examples{
 set.seed(1)

@@ -2,7 +2,7 @@
 % Please edit documentation in R/Lwls2DDeriv.R
 \name{Lwls2DDeriv}
 \alias{Lwls2DDeriv}
-\title{Two dimensional local linear kernel smoother with derivatives.}
+\title{Two dimensional local linear kernel smoother to target derivatives.}
 \usage{
 Lwls2DDeriv(bw, kern = "epan", xin, yin, win = NULL, xout1 = NULL,
   xout2 = NULL, xout = NULL, npoly = 1L, nder1 = 0L, nder2 = 0L,
@@ -41,5 +41,5 @@ Lwls2DDeriv(bw, kern = "epan", xin, yin, win = NULL, xout1 = NULL,
 a p1 by p2 matrix of fitted values if xout is not specified. Otherwise a vector of length p corresponding to the rows of xout.
 }
 \description{
-Two dimensional local weighted least squares smoother. Only local linear smoother for estimating the original curve is available (no higher order, no derivative).
+Two dimensional local weighted least squares smoother. Only a local linear smoother for estimating the original curve is available (no higher order)
 }

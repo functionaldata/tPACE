@@ -2,7 +2,7 @@
 % Please edit documentation in R/MakeSparseGP.R
 \name{MakeSparseGP}
 \alias{MakeSparseGP}
-\title{Make Gaussian Process Sparse Functional Data sample}
+\title{Create a sparse Functional Data sample for a Gaussian Process}
 \usage{
 MakeSparseGP(n, rdist = runif, sparsity = 2:9, muFun = function(x)
   rep(0, length(x)), K = 2, lambda = rep(1, K), sigma = 0,
@@ -31,5 +31,5 @@ MakeSparseGP(n, rdist = runif, sparsity = 2:9, muFun = function(x)
 TODO
 }
 \description{
-Make a Gaussian process sparse functional data sample of size n
+Functional data sample of size n, sparsely sampled from a Gaussian process
 }

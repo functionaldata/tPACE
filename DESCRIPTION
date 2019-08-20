@@ -4,13 +4,14 @@ Title: Functional Data Analysis and Empirical Dynamics
 URL: https://github.com/functionaldata/tPACE
 BugReports: https://github.com/functionaldata/tPACE/issues
 Version: 0.5.0
+Encoding:  UTF-8
 Date: 2019-03-20,
 Authors@R: c(person("Xiongtao","Dai", role=c("aut")),
     person("Pantelis Z.","Hadjipantelis", email="pantelis@ucdavis.edu", role=c("aut","cre")),
     person("Kynghee","Han", role="aut"),
     person("Hao","Ji", role=c("aut")),
     person("Shu-Chin", "Lin", role="ctb"),
-    person("Hans-Georg", "Mueller", role=c("cph","ths")),
+    person("Hans-Georg", "M¨¹ller", role=c("cph","ths")),
     person("Jane-Ling", "Wang", role=c("cph","ths"))) 
 Maintainer: Pantelis Z. Hadjipantelis <pantelis@ucdavis.edu>
 Description: Provides implementation of various methods of Functional Data

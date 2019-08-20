@@ -40,7 +40,8 @@ A list containing the following fields:
 \item{optns}{A list of options used by the SVD and the FPCA's procedures.}
 }
 \description{
-FSVD for a pair of dense or sparse functional data.
+FSVD for a pair of dense or sparse functional data, implementing Yang, W., M\"{u}ller, H.G., Stadtm\"{u}ller, U. (2011). 
+Functional singular component analysis. J. Royal Statistical Society B73, 303-324.
 }
 \details{
 Available control options for SVDoptns are: 

@@ -2,7 +2,8 @@
 % Please edit documentation in R/VCAM.R
 \name{VCAM}
 \alias{VCAM}
-\title{Sieve estimation}
+\title{Sieve estimation:
+B-spline based estimation procedure for time-varying additive models}
 \usage{
 VCAM(Lt, Ly, X, optnAdd = list(), optnVc = list())
 }
@@ -28,6 +29,7 @@ A list containing the following fields:
 \item{gridT}{The same with input  given by \emph{optnVc$grid}}
 }
 \description{
+Sieve estimation:
 B-spline based estimation procedure for time-varying additive models
 }
 \details{

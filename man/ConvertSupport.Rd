@@ -22,5 +22,5 @@ ConvertSupport(fromGrid, toGrid, mu = NULL, Cov = NULL, phi = NULL,
 }
 \description{
 Convert the support of a given function 1-D or 2-D function from 'fromGrd' to 'toGrid'.
-Both grids need to be sorted. This is a interpolation/convenience function.
+Both grids need to be sorted. This is an interpolation/convenience function.
 }

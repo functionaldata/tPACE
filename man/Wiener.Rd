@@ -2,7 +2,7 @@
 % Please edit documentation in R/Wiener.R
 \name{Wiener}
 \alias{Wiener}
-\title{Simulate standard Wiener processes (Brownian motions)}
+\title{Simulate a standard Wiener processes (Brownian motions)}
 \usage{
 Wiener(n = 1, pts = seq(0, 1, length = 50), sparsify = NULL,
   K = 50)
@@ -24,7 +24,7 @@ Simulate \code{n} standard Wiener processes on [0, 1], possibly
 sparsifying the results.
 }
 \details{
-The algorithm is based on Karhunen-Loeve expansion.
+The algorithm is based on the Karhunen-Loeve expansion of the Wiener process
 }
 \seealso{
 Sparsify

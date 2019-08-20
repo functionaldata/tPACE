@@ -2,7 +2,8 @@
 % Please edit documentation in R/WFDA.R
 \name{WFDA}
 \alias{WFDA}
-\title{Warped Functional Data Analysis}
+\title{Time-Warping in Functional Data Analysis:
+Pairwise curve synchronization for functional data}
 \usage{
 WFDA(Ly, Lt, optns = list())
 }
@@ -24,6 +25,7 @@ A list containing the following fields:
 \item{timing}{The time required by time-warping.}
 }
 \description{
+Time-Warping in Functional Data Analysis:
 Pairwise curve synchronization for functional data
 }
 \details{

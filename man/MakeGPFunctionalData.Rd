@@ -2,7 +2,7 @@
 % Please edit documentation in R/MakeGPFunctionalData.R
 \name{MakeGPFunctionalData}
 \alias{MakeGPFunctionalData}
-\title{Make Gaussian Process Dense Functional Data sample}
+\title{Create a Dense Functional Data sample for a Gaussian process}
 \usage{
 MakeGPFunctionalData(n, M = 100, mu = rep(0, M), K = 2,
   lambda = rep(1, K), sigma = 0, basisType = "cos")
@@ -26,5 +26,5 @@ MakeGPFunctionalData(n, M = 100, mu = rep(0, M), K = 2,
 Y: X(t_{j}), Yn: noisy observations
 }
 \description{
-Make a Gaussian process dense functional data sample of size n over a [0,1] support.
+For a Gaussian process, create a dense functional data sample of size n over a [0,1] support.
 }

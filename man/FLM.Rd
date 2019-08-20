@@ -18,7 +18,8 @@ FLM(Y, X, XTest = NULL, optnsListY = NULL, optnsListX = NULL)
 \item{optnsListX}{A list of options control parameters for the predictors specified by \code{list(name=value)}. See `Details' in  \code{FPCA}.}
 }
 \description{
-Functional linear models with a scalar or covariate response
+Functional linear models with scalar or functional responses (see eg Yao, F., M\"{u}ller, H.G., Wang, J.L. (2005). Functional
+linear regression analysis for longitudinal data. Annals of Statistics 33, 2873--2903.)
 }
 \examples{
 set.seed(1000)

@@ -42,7 +42,7 @@ A list containing the following fields:
 Functional additive models with a single predictor process
 }
 \details{
-\code{FAM} fits functional additive models for a scalar response and single predictor process proposed by Mueller and Yao (2007) that \deqn{E(Y | \mathbf{X}) = \sum_{k=1}^K g_{k}(\xi_{k}),} where \eqn{\xi_{k}} stand for the k-th FPC score of the the predictor process.
+\code{FAM} fits functional additive models for a scalar response and single predictor process proposed by Müller and Yao (2007) that \deqn{E(Y | \mathbf{X}) = \sum_{k=1}^K g_{k}(\xi_{k}),} where \eqn{\xi_{k}} stand for the k-th FPC score of the the predictor process.
 }
 \examples{
 set.seed(1000)
@@ -139,5 +139,5 @@ plot(yHat,YTest,xlim=c(-10,10))
 abline(coef=c(0,1),col=2)
 }
 \references{
-\cite{Mueller, H.-G. and Yao, F. (2005), "Functional additive models", JASA, Vol.103, No.484, p.1534-1544.}
+\cite{Müller, H.-G. and Yao, F. (2005), "Functional additive models", JASA, Vol.103, No.484, p.1534-1544.}
 }

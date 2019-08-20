@@ -29,11 +29,11 @@ A list containing the following fields:
 \item{clusterObj}{Either a EMCluster object or kCFC object.}
 }
 \description{
-By default the function will cluster the data using the functional principal component (FPC) scores from the data's 
+Default:  Cluster functional data using the functional principal component (FPC) scores obtained from the data
 FPC analysis using EMCluster (Chen and Maitra, 2015) or directly clustering the functional data using kCFC (Chiou and Li, 2007).
 }
 \details{
-Within EMCluster we examine the model initiated "EMCluster::em.EM" and return the optimal model based on 'EMCluster::emcluster'. 
+Within EMCluster, uses the model initiated "EMCluster::em.EM" and returne the optimal model based on 'EMCluster::emcluster'. 
 See ?EMCluster::emcluster for details.
 }
 \examples{

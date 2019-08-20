@@ -2,7 +2,7 @@
 % Please edit documentation in R/CreateCovPlot.R
 \name{CreateCovPlot}
 \alias{CreateCovPlot}
-\title{Create the covariance surface plot based on the results from FPCA() or FPCder().}
+\title{Creates a covariance surface plot based on the results from FPCA() or FPCder().}
 \usage{
 CreateCovPlot(fpcaObj, covPlotType = "Fitted", isInteractive = FALSE,
   colSpectrum = NULL, ...)

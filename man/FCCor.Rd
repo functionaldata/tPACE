@@ -2,7 +2,7 @@
 % Please edit documentation in R/FCCor.R
 \name{FCCor}
 \alias{FCCor}
-\title{Calculate functional correlation between two simultaneously observed processes.}
+\title{Calculattion of functional correlation between two simultaneously observed processes.}
 \usage{
 FCCor(x, y, Lt, bw = stop("bw missing"), kern = "epan",
   Tout = sort(unique(unlist(Lt))))
@@ -27,7 +27,7 @@ A list with the following components:
 \item{bw}{The bandwidths used for E(X), E(Y), var(X), var(Y), and cov(X, Y).}
 }
 \description{
-Calculate functional correlation between two simultaneously observed processes.
+Calculattion of functional correlation between two simultaneously observed processes.
 }
 \details{
 \code{FCCor} calculate only the concurrent correlation corr(X(t), Y(t)) (note that the time points t are the same). It assumes no measurement error in the observed values.

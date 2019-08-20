@@ -2,7 +2,7 @@
 % Please edit documentation in R/NormCurveToArea.R
 \name{NormCurvToArea}
 \alias{NormCurvToArea}
-\title{Normalise a curve to a particular area.}
+\title{Normalise a curve to a particular area, by multiplication with a factor}
 \usage{
 NormCurvToArea(y, x = seq(0, 1, length.out = length(y)), area = 1)
 }

@@ -3,7 +3,7 @@
 \name{GetNormalisedSample}
 \alias{GetNormalisedSample}
 \alias{GetNormalizedSample}
-\title{Normalise sparse functional sample}
+\title{Normalise sparse multivariate functional data}
 \usage{
 GetNormalisedSample(fpcaObj, errorSigma = FALSE)
 

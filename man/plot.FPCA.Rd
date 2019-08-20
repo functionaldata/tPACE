@@ -21,9 +21,9 @@ CreateDiagnosticsPlot(...)
 \description{
 Deprecated. Use \code{plot.FPCA} instead.
 
-This function plot the results for an FPCA. It prints the design plot, mean function, scree-plot
-and the first three eigenfunctions of a sample. If provided with a derivative options object (?FPCAder) it will return the 
-differentiated mean and first two principal modes of variations for 50\%, 75\%, 100\%, 125\% and 150\% of the defined bandwidth choice.
+Plotting the results of an FPCA, including printing the design plot, mean function, scree-plot
+and the first three eigenfunctions for a functional sample. If provided with a derivative options object (?FPCAder), it will  return the 
+differentiated mean function and first two principal modes of variation for 50\%, 75\%, 100\%, 125\% and 150\% of the defined bandwidth choice.
 }
 \details{
 The black, red, and green curves stand for the first, second, and third eigenfunctions, respectively. 

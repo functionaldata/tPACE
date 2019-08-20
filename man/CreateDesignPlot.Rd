@@ -2,7 +2,10 @@
 % Please edit documentation in R/CreateDesignPlot.R
 \name{CreateDesignPlot}
 \alias{CreateDesignPlot}
-\title{Create the design plot of the functional data.}
+\title{Create design plots for functional data. See Yao, F., M\"{u}ller, H.G., Wang, J.L. (2005). Functional
+data analysis for sparse longitudinal data. J. American Statistical Association 100, 577-590
+for interpretation and usage of these plots. 
+This function will open a new device as default.}
 \usage{
 CreateDesignPlot(Lt, obsGrid = NULL, isColorPlot = TRUE,
   noDiagonal = TRUE, addLegend = TRUE, ...)
@@ -10,7 +13,7 @@ CreateDesignPlot(Lt, obsGrid = NULL, isColorPlot = TRUE,
 \arguments{
 \item{Lt}{a list of observed time points for functional data}
 
-\item{obsGrid}{a vector of sorted observed time points. Default to the 
+\item{obsGrid}{a vector of sorted observed time points. Default are the 
 unique time points in Lt.}
 
 \item{isColorPlot}{an option for colorful plot: 
@@ -26,7 +29,10 @@ FALSE:  do not remove diagonal time pairs}
 \item{...}{Other arguments passed into \code{plot()}.}
 }
 \description{
-This function will open a new device if not instructed otherwise.
+Create design plots for functional data. See Yao, F., M\"{u}ller, H.G., Wang, J.L. (2005). Functional
+data analysis for sparse longitudinal data. J. American Statistical Association 100, 577-590
+for interpretation and usage of these plots. 
+This function will open a new device as default.
 }
 \examples{
 set.seed(1)

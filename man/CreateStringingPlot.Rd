@@ -19,6 +19,10 @@ The function produces the following three plots:
 2) A plot of predictors in stringed order for the same subset of observations;
 3) A plot of the stringing function, which is the stringed order vs. the original order.
 }
+\details{
+This approach is based on 
+Chen, K., Chen, K., Müller, H.G., Wang, J.L. (2011). Stringing high-dimensional data for functional analysis. J. American Statistical Association 106, 275--284.
+}
 \examples{
 set.seed(1)
 n <- 50

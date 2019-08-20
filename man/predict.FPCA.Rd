@@ -18,7 +18,8 @@
 
 \item{K}{The scalar defining the number of clusters to define; (default: 1).}
 
-\item{xiMethod}{The integration method used to calculate the functional principal component scores ( standard numerical integration 'IN' or conditional expectation 'CE'); default: 'CE'.}
+\item{xiMethod}{The integration method used to calculate the functional principal component scores 
+(standard numerical integration 'IN' or conditional expectation 'CE'); default: 'CE'.}
 
 \item{...}{Not used.}
 }
