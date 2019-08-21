@@ -1,4 +1,19 @@
-Current version
+fdapace v0.5.0 (Release date: 21-Aug-2019)
+=============
+New functionality:
+* Added quantile regression (FPCQuantile).
+* Added functional additive models (TVAM, VCAM).
+* Merged functional linear regression with both scalar and functional response (FLM, removed FPCReg).
+* Added dynamic correlation (DynCorr).
+* Added confidence band for individual prediction in FPCA.
+
+
+Changes:
+* Added usergrid option to FPCA. Modularized FPCA subroutines.
+* Fixed bug in WFDA.
+* Multiple minor bug fixes.
+
+fdapace v0.4.1 (Release date: 19-Mar-2019)
 =============
 New functionality:
 * Added functional additive models (MultiFAM, TVAMSBFitting, SBFitting).

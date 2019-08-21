@@ -1,9 +1,9 @@
-#' fda-pace: Principal Analysis by Conditional Expectation and Applications in
+#' fdapace: Principal Analysis by Conditional Expectation and Applications in
 #' Functional Data Analysis (revised version 16 August 2019)
 #'
-#' fda-pace for Functional Data Analysis 
+#' fdapace for Functional Data Analysis 
 #' 
-#' fda-pace is a versatile package that provides implementation of various methods
+#' fdapace is a versatile package that provides implementation of various methods
 #' of Functional Data Analysis (FDA) and Empirical Dynamics. The core of this
 #' package is Functional Principal Component Analysis (FPCA), a key technique
 #' for functional data analysis, for sparsely or densely sampled random
@@ -58,7 +58,7 @@
 #' Yaqing Chen \email{yaqchen@@ucdavis.edu}
 #' Cody Carroll \email{cjcarroll@@ucdavis.edu}
 #' Xiongtao Dai \email{dai@@ucdavis.edu}
-
+#' Jianing Fan
 #' Pantelis Z. Hadjipantelis 
 #' Kyunghee Han 
 #' Hao Ji

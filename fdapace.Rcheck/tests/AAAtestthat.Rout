@@ -1,0 +1,113 @@
+
+R version 3.6.0 (2019-04-26) -- "Planting of a Tree"
+Copyright (C) 2019 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> # # Based on https://github.com/hadley/testthat#integration-with-r-cmd-check
+> # splitting test files into multiple ones so that each one runs within 10 mins,
+> # which is the limit on travis CI.
+> # This file contains the "fast" checks.
+> 
+> library(testthat)
+> library(fdapace)
+> test_check("fdapace", filter='_(?!FPCA)(?!FCReg)(?!FClust)(?!FSVD)(?!FVPA)(?!MultiFAM)', perl=TRUE)
+
+Tests for 'CheckData'Press enter to continue.
+Press enter to continue.
+Press enter to continue.
+Press enter to continue.
+
+Tests for 'FOptDes'Finding optimal designs for trajectory recovery.
+CV for 1 out of 10 ridge parameters complete!
+CV for 2 out of 10 ridge parameters complete!
+CV for 3 out of 10 ridge parameters complete!
+CV for 4 out of 10 ridge parameters complete!
+CV for 5 out of 10 ridge parameters complete!
+CV for 6 out of 10 ridge parameters complete!
+CV for 7 out of 10 ridge parameters complete!
+CV for 8 out of 10 ridge parameters complete!
+CV for 9 out of 10 ridge parameters complete!
+CV for 10 out of 10 ridge parameters complete!
+Finding optimal designs for trajectory recovery.
+CV for 1 out of 10 ridge parameters complete!
+CV for 2 out of 10 ridge parameters complete!
+CV for 3 out of 10 ridge parameters complete!
+CV for 4 out of 10 ridge parameters complete!
+CV for 5 out of 10 ridge parameters complete!
+CV for 6 out of 10 ridge parameters complete!
+CV for 7 out of 10 ridge parameters complete!
+CV for 8 out of 10 ridge parameters complete!
+CV for 9 out of 10 ridge parameters complete!
+CV for 10 out of 10 ridge parameters complete!
+Finding optimal designs for trajectory recovery.
+CV for 1 out of 9 ridge parameters complete!
+CV for 2 out of 9 ridge parameters complete!
+CV for 3 out of 9 ridge parameters complete!
+CV for 4 out of 9 ridge parameters complete!
+CV for 5 out of 9 ridge parameters complete!
+CV for 6 out of 9 ridge parameters complete!
+CV for 7 out of 9 ridge parameters complete!
+CV for 8 out of 9 ridge parameters complete!
+CV for 9 out of 9 ridge parameters complete!
+Finding optimal designs for trajectory recovery.
+CV for 1 out of 9 ridge parameters complete!
+CV for 2 out of 9 ridge parameters complete!
+CV for 3 out of 9 ridge parameters complete!
+CV for 4 out of 9 ridge parameters complete!
+CV for 5 out of 9 ridge parameters complete!
+CV for 6 out of 9 ridge parameters complete!
+CV for 7 out of 9 ridge parameters complete!
+CV for 8 out of 9 ridge parameters complete!
+CV for 9 out of 9 ridge parameters complete!
+Finding optimal designs for scalar response prediction.
+CV for 1 out of 10 ridge parameters complete!
+CV for 2 out of 10 ridge parameters complete!
+CV for 3 out of 10 ridge parameters complete!
+CV for 4 out of 10 ridge parameters complete!
+CV for 5 out of 10 ridge parameters complete!
+CV for 6 out of 10 ridge parameters complete!
+CV for 7 out of 10 ridge parameters complete!
+CV for 8 out of 10 ridge parameters complete!
+CV for 9 out of 10 ridge parameters complete!
+CV for 10 out of 10 ridge parameters complete!
+Finding optimal designs for trajectory recovery.
+Only 1 ridge candidate in RidgeCand. The candidate is used and cross validation is skipped.
+Finding optimal designs for scalar response prediction.
+CV for 1 out of 11 ridge parameters complete!
+CV for 2 out of 11 ridge parameters complete!
+CV for 3 out of 11 ridge parameters complete!
+CV for 4 out of 11 ridge parameters complete!
+CV for 5 out of 11 ridge parameters complete!
+CV for 6 out of 11 ridge parameters complete!
+CV for 7 out of 11 ridge parameters complete!
+CV for 8 out of 11 ridge parameters complete!
+CV for 9 out of 11 ridge parameters complete!
+CV for 10 out of 11 ridge parameters complete!
+CV for 11 out of 11 ridge parameters complete!
+
+Tests for 'GetSmoothedMeanCurve.R'
+tests for 'IsRegular'
+except for dense but irregular case
+Tests for 'SetOptions'
+tests for 'CVLwls1D'
+Tests for 'GCVLwls1D1.R'
+tests for 'MapX1D'
+Tests for 'Minb'══ testthat results  ═══════════════════════════════════════════════════════════
+OK: 647 SKIPPED: 12 WARNINGS: 23 FAILED: 0
+> # test_check("fdapace")
+> 
+> proc.time()
+    user   system  elapsed 
+1043.513   19.150 4118.473 
