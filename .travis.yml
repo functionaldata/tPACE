@@ -11,8 +11,6 @@ before_install:
   - tlmgr update --self --all
   - tlmgr install listings 
   - export DISPLAY=:99.0
-  - sh -e /etc/init.d/xvfb start
-  - sleep 3
 
 r_packages:
   - survival
