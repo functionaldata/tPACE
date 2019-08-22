@@ -17,7 +17,7 @@ Authors@R: c(person("Yaqing","Chen", email="yaqchen@ucdavis.edu", role=c("aut","
     person("Hans-Georg", "Mueller", role=c("cph","ths","aut")),
     person("Jane-Ling", "Wang", role=c("cph","ths","aut"))) 
 Maintainer: Yaqing Chen <yaqchen@ucdavis.edu>
-Description: fdapace is a versatile package that provides implementation of various
+Description: A versatile package that provides implementation of various
     methods of Functional Data Analysis (FDA) and Empirical Dynamics. The core of this
     package is Functional Principal Component Analysis (FPCA), a key technique for
     functional data analysis, for sparsely or densely sampled random trajectories
@@ -29,7 +29,8 @@ Description: fdapace is a versatile package that provides implementation of vari
     even for subjects with very few longitudinal observations. PACE is a viable and
     flexible alternative to random effects modeling of longitudinal data. There is also a
     Matlab version (PACE) that contains some methods not available on fdapace and vice
-    versa.
+    versa. Please cite our package if you use it (You may run the command
+    devtools::citation("fdapace") to get the citation format and bibtex entry).
 License: BSD_3_clause + file LICENSE
 LazyData: false
 Imports:
