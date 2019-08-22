@@ -3,7 +3,6 @@ language: r
   #- osx
 cache: packages
 sudo: false
-dist: xenial
 services:
   - xvfb
 
