@@ -92,13 +92,13 @@ plot(res) # The design plot covers [0, 1] * [0, 1] well.
 CreateCovPlot(res, 'Fitted')
 }
 \references{
-\cite{Yao, F., Müller, H.G., Clifford, A.J., Dueker, S.R., Follett, J., Lin, Y., Buchholz, B., Vogel, J.S. (2003). "Shrinkage estimation 
+\cite{Yao, F., M\"{u}ller, H.G., Clifford, A.J., Dueker, S.R., Follett, J., Lin, Y., Buchholz, B., Vogel, J.S. (2003). "Shrinkage estimation 
 for functional principal component scores, with application to the population kinetics of plasma folate." Biometrics 59, 676-685. (Shrinkage estimates for dense data)}
 
-\cite{Yao, Fang, Müller, Hans-Georg and Wang, Jane-Ling (2005). "Functional data analysis for sparse longitudinal data." 
+\cite{Yao, Fang, M\"{u}ller, Hans-Georg and Wang, Jane-Ling (2005). "Functional data analysis for sparse longitudinal data." 
 Journal of the American Statistical Association 100, no. 470  577-590. (Sparse data FPCA)}
 
-\cite{Liu, Bitao  and Müller, Hans-Georg (2009). "Estimating derivatives for samples of sparsely observed functions, 
+\cite{Liu, Bitao  and M\"{u}ller, Hans-Georg (2009). "Estimating derivatives for samples of sparsely observed functions, 
 with application to online auction dynamics." Journal of the American Statistical Association 104, no. 486 704-717. (Sparse data FPCA)}
 
 \cite{Castro, P. E., Lawton, W.H. and Sylvestre, E.A. (1986). "Principal modes of variation for processes with continuous 
