@@ -249,6 +249,10 @@ FPCA = function(Ly, Lt, optns = list()){
     plot.FPCA(ret)
   }
 
+  if (optns$lean) {
+    ret$inputData <- NULL
+  }
+
   return(ret); 
 }
 

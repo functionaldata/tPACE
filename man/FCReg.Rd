@@ -73,3 +73,8 @@ Ysp <- Sparsify(Y, T, sparsity)
 vars <- list(X_1=X_1sp, Z_2=Z[, 2], Y=Ysp)
 withError2D <- FCReg(vars, bw, bw, outGrid)
 }
+\references{
+\cite{Yao, F., M\"{u}ller, H.G., Wang, J.L. "Functional Linear Regression Analysis for Longitudinal Data." Annals of Statistics 33, (2005): 2873-2903.(Dense data)} 
+\cite{Sent\"{u}rk, D., M\"{u}ller, H.G. "Functional varying coefficient models for longitudinal data." J. American Statistical Association, 10, (2010): 1256--1264.}
+\cite{Sent\"{u}rk, D., Nguyen, D.V. "Varying Coefficient Models for Sparse Noise-contaminated Longitudinal Data", Statistica Sinica 21(4), (2011): 1831-1856. (Sparse data)}
+}
