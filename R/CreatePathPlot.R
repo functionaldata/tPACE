@@ -25,7 +25,7 @@
 #' CreatePathPlot(res, subset=1:5)
 #'
 #' # CreatePathPlot has a lot of usages:
-#' \dontrun{
+#' \donttest{
 #' CreatePathPlot(res)
 #' CreatePathPlot(res, 1:20)
 #' CreatePathPlot(res, 1:20, showObs=FALSE)

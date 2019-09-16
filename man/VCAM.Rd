@@ -8,9 +8,9 @@ B-spline based estimation procedure for time-varying additive models}
 VCAM(Lt, Ly, X, optnAdd = list(), optnVc = list())
 }
 \arguments{
-\item{Lt}{An \emph{n}-dimensional list of \emph{N_i}-dimensional vectors whose elements consist of longitudial time points for each \emph{i}-th subject.}
+\item{Lt}{An \emph{n}-dimensional list of \emph{N_i}-dimensional vectors whose elements consist of longitudinal time points for each \emph{i}-th subject.}
 
-\item{Ly}{An \emph{n}-dimensional list of \emph{N_i}-dimensional vectors whose elements consist of longitudial response observations of each \emph{i}-subject corresponding to \emph{Lt}.}
+\item{Ly}{An \emph{n}-dimensional list of \emph{N_i}-dimensional vectors whose elements consist of longitudinal response observations of each \emph{i}-subject corresponding to \emph{Lt}.}
 
 \item{X}{An \emph{n} by \emph{d} matrix whose row vectors consist of covariate vector of additive components for each subject.}
 
@@ -22,9 +22,9 @@ VCAM(Lt, Ly, X, optnAdd = list(), optnVc = list())
 A list containing the following fields:
 \item{Lt}{The same with input given by \emph{Lt}}
 \item{LyHat}{Fitted values corresponding to \emph{Ly}}
-\item{phiEst}{An \emph{N} by \emph{d} matrix whose column vectors consist of esimates for each additive component function evaluated at \emph{gridX}.}
-\item{beta0Est}{An \emph{M}-dimensional vector for overall mean function estimates evalueated at \emph{gridT}.}
-\item{betaEst}{An \emph{M} by \emph{d} matrix whose column vectors consist of esimates for each varying-coefficient components evalueated at \emph{gridT}.}
+\item{phiEst}{An \emph{N} by \emph{d} matrix whose column vectors consist of estimates for each additive component function evaluated at \emph{gridX}.}
+\item{beta0Est}{An \emph{M}-dimensional vector for overall mean function estimates evaluated at \emph{gridT}.}
+\item{betaEst}{An \emph{M} by \emph{d} matrix whose column vectors consist of estimates for each varying-coefficient components evaluated at \emph{gridT}.}
 \item{gridX}{The same with input given by \emph{optnAdd$grid}}
 \item{gridT}{The same with input  given by \emph{optnVc$grid}}
 }
@@ -75,12 +75,15 @@ for (i in 1:n) {
   Ni <- sample(10:20,1)
   
   Lt[[i]] <- sort(runif(Ni,0,1))
-  Ly[[i]] <- beta0(Lt[[i]]) + beta1(Lt[[i]])*phi1(X[i,1]) + beta2(Lt[[i]])*phi2(X[i,2]) + rnorm(Ni,0,0.1)
+  Ly[[i]] <- beta0(Lt[[i]]) + 
+     beta1(Lt[[i]])*phi1(X[i,1]) + beta2(Lt[[i]])*phi2(X[i,2]) + rnorm(Ni,0,0.1)
   
 }
 
 
 vcam <- VCAM(Lt,Ly,X)
+
+op <- par(no.readonly = TRUE)
 
 par(mfrow=c(1,1))
 plot(unlist(vcam$LyHat),unlist(Ly),xlab='observed Y',ylab='fitted Y')
@@ -107,6 +110,8 @@ legend('topright',c('true','est'),lwd=2,lty=c(1,2),col=c(1,2))
 plot(vcam$gridT,vcam$betaEst[,2],type='l',xlab='t',ylab='beta2')
 points(vcam$gridT,beta2(vcam$gridT),col=2,type='l',lty=2,lwd=2)
 legend('topright',c('true','est'),lwd=2,lty=c(1,2),col=c(1,2))
+
+par(op)
 
 }
 \references{

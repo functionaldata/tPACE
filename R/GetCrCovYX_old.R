@@ -31,7 +31,7 @@
 # #' AA<-GetCrCovYX(Ly1 = Ly1, Ly2= Ly2, Lt1=Lt1, Lt2=Lt2, Ymu1=Ymu1, Ymu2=Ymu2)
 # #'   
 # #' @references
-# #' \cite{Yang, Wenjing, Hans-Georg Mueller, and Ulrich Stadtmueller. "Functional singular component analysis." Journal of the Royal Statistical Society: Series B (Statistical Methodology) 73.3 (2011): 303-324}
+# #' \cite{Yang, Wenjing, Hans-Georg Müller, and Ulrich Stadtmüller. "Functional singular component analysis." Journal of the Royal Statistical Society: Series B (Statistical Methodology) 73.3 (2011): 303-324}
 # #' @export
 
 GetCrCovYX_old <- function(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL, Ly2, Lt2 = NULL, Ymu2 = NULL, 
@@ -120,7 +120,7 @@ GetCrCovYX_old <- function(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL,
       upperB = bwRanges[2,]
       lowerB = bwRanges[1,]
       
-      if( !is.element('minqa', installed.packages()[,1]) && bwRoutine == 'bobyqa'){
+      if( !requireNamespace("minqa", quietly=TRUE) && bwRoutine == 'bobyqa'){ #!is.element('minqa', installed.packages()[,1])
         warning("Cannot use 'minqa::bobyqa' to find the optimal bandwidths. 'minqa' is not installed. We will do an 'L-BFGS-B' search.")
         bwRoutine == 'l-bfgs-b'
       }

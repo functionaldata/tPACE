@@ -52,7 +52,7 @@
 #' sbfEst <- SBFitting(Y,x,X,h)
 #' fFit <- sbfEst$SBFit
 #' 
-#' par(mfrow=c(1,2))
+#' op <- par(mfrow=c(1,2))
 #' plot(x[,1],f1(x[,1]),type='l',lwd=2,col=2,lty=4,xlab='X1',ylab='Y')
 #' points(x[,1],fFit[,1],type='l',lwd=2,col=1)
 #' points(X[,1],Y,cex=0.3,col=8)
@@ -64,6 +64,7 @@
 #' points(X[,2],Y,cex=0.3,col=8)
 #' legend('topright',legend=c('SBF','true'),col=c(1,2),lwd=2,lty=c(1,4),horiz=FALSE,bty='n')
 #' abline(h=0,col=8)
+#' par(op)
 #' 
 #' # prediction
 #' x <- X
@@ -72,9 +73,10 @@
 #' sbfPred <- SBFitting(Y,X,X,h)
 #' fPred <- sbfPred$mY+apply(sbfPred$SBFit,1,'sum')
 #' 
-#' par(mfrow=c(1,1))
+#' op <- par(mfrow=c(1,1))
 #' plot(fPred,Y,cex=0.5,xlab='SBFitted values',ylab='Y')
 #' abline(coef=c(0,1),col=8)
+#' par(op)
 #' @references
 #' \cite{Mammen, E., Linton, O. and Nielsen, J. (1999), "The existence and asymptotic properties of a backfitting projection algorithm under weak conditions", Annals of Statistics, Vol.27, No.5, p.1443-1490.}
 #'
@@ -86,7 +88,7 @@
 #'
 #' \cite{Lee, Y. K., Mammen, E. and Park., B. U. (2012), "Flexible generalized varying coefficient regression models", Annals of Statistics, Vol.40, No.3, p.1906-1933.}
 #'
-#' \cite{Han, K., Mueller, H.-G. and Park, B. U. (2016), "Smooth backfitting for additive modeling with small errors-in-variables, with an application to additive functional regression for multiple predictor functions", Bernoulli (accepted).}
+#' \cite{Han, K., Müller, H.-G. and Park, B. U. (2016), "Smooth backfitting for additive modeling with small errors-in-variables, with an application to additive functional regression for multiple predictor functions", Bernoulli (accepted).}
 #' @export
 
 SBFitting <- function(Y,x,X,h=NULL,K='epan',supp=NULL){

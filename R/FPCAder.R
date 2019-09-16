@@ -16,17 +16,17 @@
 #' }
 #'
 #' @references
-#' \cite{Dai, X., Tao, W., M\"{u}ller, H.G. (2018). Derivative principal components for representing the time dynamics of longitudinal and functional data.
+#' \cite{Dai, X., Tao, W., Müller, H.G. (2018). Derivative principal components for representing the time dynamics of longitudinal and functional data.
 #'  Statistica Sinica 28, 1583--1609. (DPC)}
-#' \cite{Liu, Bitao, and Hans-Georg M\"{u}ller. "Estimating derivatives for samples of sparsely observed functions, 
+#' \cite{Liu, Bitao, and Hans-Georg Müller. "Estimating derivatives for samples of sparsely observed functions, 
 #' with application to online auction dynamics." Journal of the American Statistical Association 104, no. 486 (2009): 704-717. (FPC)}
 #' @examples
 #' 
 #' bw <- 0.2
 #' kern <- 'epan'
 #' set.seed(1)
-#' n <- 100 
-#' M <- 40
+#' n <- 50 
+#' M <- 30
 #' pts <- seq(0, 1, length.out=M)
 #' lambdaTrue <- c(1, 0.8, 0.1)^2
 #' sigma2 <- 0.1

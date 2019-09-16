@@ -2,7 +2,7 @@
 #' 
 #' @param y A list of \emph{n} vectors containing the observed values for each individual. Missing values specified by \code{NA}s are supported for dense case (\code{dataType='dense'}).
 #' @param t A list of \emph{n} vectors containing the observation time points for each individual corresponding to y.
-#' @param k A scalar defining the number of clusters to define; default 3. Values that define very small clusters (eg.cluster size <=3) will potentiall err.
+#' @param k A scalar defining the number of clusters to define; default 3. Values that define very small clusters (eg.cluster size <=3) will potentially err.
 #' @param kSeed A scalar valid seed number to ensure replication; default: 123
 #' @param maxIter A scalar defining the maximum number of iterations allowed; default 20, common for both the simple kmeans initially and the subsequent k-centres
 #' @param optnsSW A list of options control parameters specified by \code{list(name=value)} to be used for sample-wide FPCA; by default: "list( methodMuCovEst ='smooth', FVEthreshold= 0.90, methodBwCov = 'GCV', methodBwMu = 'GCV' )". See `Details in ?FPCA'.
@@ -16,7 +16,7 @@
 #' @examples
 #' data(medfly25) 
 #' Flies <- MakeFPCAInputs(medfly25$ID, medfly25$Days, medfly25$nEggs)
-#' kcfcObj <- kCFC(Flies$Ly[1:250], Flies$Lt[1:250], # using only 250 for speed consideration 
+#' kcfcObj <- kCFC(Flies$Ly[1:150], Flies$Lt[1:150], # using only 150 for speed consideration 
 #'                  optnsSW = list(methodMuCovEst = 'smooth', userBwCov = 2, FVEthreshold = 0.90),
 #'                  optnsCS = list(methodMuCovEst = 'smooth', userBwCov = 2, FVEthreshold = 0.70))
 #' @references

@@ -23,15 +23,15 @@ Dyn_test(x1, y1, t1, x2, y2, t2, B = 1000)
 }
 \value{
 a list of the following 
-\item{stats: test statistics.}
-\item{pval: p-value of the test.}
+\item{stats}{Test statistics.}
+\item{pval}{p-value of the test.}
 }
 \description{
 Perform one sample (H0: Dynamic correlation = 0) or two sample (H0:Dynamic_correlation_1 = Dynamic_correlation_2) bootstrap test 
 of H_0: Dynamical Correlation=0.
 }
 \examples{
-n=200             # sample size
+n=20             # sample size
 t=seq(0,1,length.out=100)       # length of data
 mu_quad_x=8*t^2-4*t+5
 mu_quad_y=8*t^2-12*t+6
@@ -45,11 +45,11 @@ for (i in 1:n){
   x1_quad_error[i,]=mu_quad_x+z1[i,]\%*\%fun+rnorm(length(t),0,0.01)
   y1_quad_error[i,]=mu_quad_y+2*z1[i,]\%*\%fun +rnorm(length(t),0,0.01)
 }
-bt_DC=Dyn_test(x1_quad_error,y1_quad_error,t,B=1000)
+bt_DC=Dyn_test(x1_quad_error,y1_quad_error,t,B=500) # using B=500 for speed consideration
 
 }
 \references{
-\cite{Dubin J A, M\"uller H G. (2005)  Dynamical correlation for multivariate longitudinal data.  
+\cite{Dubin J A, Müller H G. (2005)  Dynamical correlation for multivariate longitudinal data.  
 Journal of the American Statistical Association 100(471): 872-881.}
 
 \cite{Liu S, Zhou Y, Palumbo R, Wang, J.L. (2016).  Dynamical correlation: A new method for quantifying synchrony with multivariate intensive 

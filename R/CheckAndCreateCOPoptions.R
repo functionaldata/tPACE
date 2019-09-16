@@ -70,10 +70,10 @@ CheckAndCreateCOPoptions <- function(optns,fObjClass){
   if( !any( variant == c('KDE','bagplot', 'NN')) ){
     stop("You request an outlier detection method not currenty available.")
   }
-  if ( variant == 'bagplot' && !is.element('aplpack', installed.packages()[,1]) ){
+  if ( variant == 'bagplot' && !requireNamespace("aplpack", quietly=TRUE) ){ #!is.element('aplpack', installed.packages()[,1])
     stop("Cannot the use the bagplot method; the package 'aplpack' is unavailable.")
   }
-  if ( variant == 'KDE' && !is.element('ks', installed.packages()[,1]) ){
+  if ( variant == 'KDE' && !requireNamespace("ks", quietly=TRUE) ){ #!is.element('ks', installed.packages()[,1])
     stop("Cannot the use the KDE method; the package 'ks' is unavailable.")
   } 
   if ( !is.null(unimodal) && !is.logical(unimodal) ){

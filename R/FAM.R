@@ -33,8 +33,8 @@
 #' f3 <- function(t) 1.5*sin(2*pi*t/4)
 #' f4 <- function(t) 2*atan(2*pi*t/4)
 #' 
-#' n<-250
-#' N<-500
+#' n <- 100
+#' N <- 100
 #' 
 #' sig <- diag(c(4.0,2.0,1.5,1.2))
 #' 
@@ -71,7 +71,7 @@
 #' 
 #' xi <- fit$xi
 #' 
-#' par(mfrow=c(2,2))
+#' op <- par(mfrow=c(2,2))
 #' j <- 1
 #' g1 <- f1(sort(xi[,j]))
 #' tmpSgn <- sign(sum(g1*fit$fam[,j]))
@@ -95,12 +95,11 @@
 #' tmpSgn <- sign(sum(g4*fit$fam[,j]))
 #' plot(sort(xi[,j]),g4,type='l',col=2,ylim=c(-2.5,2.5),xlab='xi4')
 #' points(sort(xi[,j]),tmpSgn*fit$fam[order(xi[,j]),j],type='l')
-#' 
+#' par(op)
 #' 
 #' # fitting
 #' fit <- FAM(Y=Y,Lx=Lx,Lt=Lt,nEval=0)
 #' yHat <- fit$mu+apply(fit$fam,1,'sum')
-#' par(mfrow=c(1,1))
 #' plot(yHat,Y)
 #' abline(coef=c(0,1),col=2)
 #' 
@@ -113,7 +112,6 @@
 #' # prediction
 #' fit <- FAM(Y=Y,Lx=Lx,Lt=Lt,newLx=LxTest,newLt=LtTest)
 #' yHat <- fit$mu+apply(fit$fam,1,'sum')
-#' par(mfrow=c(1,1))
 #' plot(yHat,YTest,xlim=c(-10,10))
 #' abline(coef=c(0,1),col=2)
 #' @references
@@ -159,13 +157,9 @@ FAM <- function(Y,Lx,Lt,nEval=51,newLx=NULL,newLt=NULL,bwMethod=0,alpha=0.7,supp
   h <- c()
   for (j in 1:d) {
     if (bwMethod>0) {
-      options(warn = -1) 
-      h[j] <- CVLwls1D(y=(Y-mean(Y)),t=XiStd[,j],kernel='epan',npoly=1,nder=0,dataType='Sparse',kFolds=bwMethod)
-      options(warn = 0) 
+      h[j] <- suppressWarnings(CVLwls1D(y=(Y-mean(Y)),t=XiStd[,j],kernel='epan',npoly=1,nder=0,dataType='Sparse',kFolds=bwMethod))
     } else {
-      options(warn = -1) 
-      h[j] <- GCVLwls1D1(yy=(Y-mean(Y)),tt=XiStd[,j],kernel='epan',npoly=1,nder=0,dataType='Sparse')$bOpt
-      options(warn = 0) 
+      h[j] <- suppressWarnings(GCVLwls1D1(yy=(Y-mean(Y)),tt=XiStd[,j],kernel='epan',npoly=1,nder=0,dataType='Sparse')$bOpt)
     }
   } 
   

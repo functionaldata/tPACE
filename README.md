@@ -3,7 +3,7 @@ PACE package for Functional Data Analysis and Empirical Dynamics
 ====
 
 [![Build Status](https://travis-ci.org/functionaldata/tPACE.svg?branch=master)](https://travis-ci.org/functionaldata/tPACE)
-[![cran version](http://www.r-pkg.org/badges/version/fdapace)](https://cran.r-project.org/web/packages/fdapace)
+[![cran version](https://CRAN.R-project.org/package=fdapace)](https://CRAN.R-project.org/package=fdapace)
 [![downloads](http://cranlogs.r-pkg.org/badges/fdapace)](http://cranlogs.r-pkg.org/badges/fdapace)
 [![total downloads](http://cranlogs.r-pkg.org/badges/grand-total/fdapace)](http://cranlogs.r-pkg.org/badges/grand-total/fdapace)
 

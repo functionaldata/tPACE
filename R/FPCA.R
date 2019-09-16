@@ -22,12 +22,12 @@
 #' \item{plot}{Plot FPCA results (design plot, mean, scree plot and first K (<=3) eigenfunctions); logical - default: FALSE}
 #' \item{error}{Assume measurement error in the dataset; logical - default: TRUE}
 #' \item{fitEigenValues}{Whether also to obtain a regression fit of the eigenvalues - default: FALSE}
-#' \item{FVEthreshold}{Fraction-of-Variance-Explained threshold used during the SVD of the fitted covar. function; numeric (0,1] - default: 0.9999}
+#' \item{FVEthreshold}{Fraction-of-Variance-Explained threshold used during the SVD of the fitted covariance function; numeric (0,1] - default: 0.9999}
 #' \item{kernel}{Smoothing kernel choice, common for mu and covariance; "rect", "gauss", "epan", "gausvar", "quar" - default: "gauss"; dense data are assumed noise-less so no smoothing is performed. }
 #' \item{kFoldMuCov}{The number of folds to be used for mean and covariance smoothing. Default: 10}
 #' \item{lean}{If TRUE the 'inputData' field in the output list is empty. Default: FALSE}
 #' \item{maxK}{The maximum number of principal components to consider - default: min(20, N-1), N:# of curves}
-#' \item{methodXi}{The method to estimate the PC scores; 'CE' (Condit. Expectation), 'IN' (Numerical Integration) - default: 'CE' for sparse data and dense data with missing values, 'IN' for dense data.}
+#' \item{methodXi}{The method to estimate the PC scores; 'CE' (Conditional Expectation), 'IN' (Numerical Integration) - default: 'CE' for sparse data and dense data with missing values, 'IN' for dense data.}
 #' \item{methodMuCovEst}{The method to estimate the mean and covariance in the case of dense functional data; 'cross-sectional', 'smooth' - default: 'cross-sectional'}
 #' \item{nRegGrid}{The number of support points in each direction of covariance surface; numeric - default: 51}
 #' \item{numBins}{The number of bins to bin the data into; positive integer > 10, default: NULL}
@@ -65,7 +65,7 @@
 #' \item{cumFVE}{A vector with the percentages of the total variance explained by each FPC. Increase to almost 1.}
 #' \item{FVE}{A percentage indicating the total variance explained by chosen FPCs with corresponding 'FVEthreshold'.}
 #' \item{criterionValue}{A scalar specifying the criterion value obtained by the selected number of components with specific methodSelectK: FVE,AIC,BIC values or NULL for fixedK.}
-#' \item{inputData}{A list containting the original 'Ly' and 'Lt' lists used as inputs to FPCA. NULL if 'lean' was specified to be TRUE.}
+#' \item{inputData}{A list containing the original 'Ly' and 'Lt' lists used as inputs to FPCA. NULL if 'lean' was specified to be TRUE.}
 #' @examples
 #' set.seed(1)
 #' n <- 20
@@ -77,13 +77,13 @@
 #' plot(res) # The design plot covers [0, 1] * [0, 1] well.
 #' CreateCovPlot(res, 'Fitted')
 #' @references
-#' \cite{Yao, F., M\"{u}ller, H.G., Clifford, A.J., Dueker, S.R., Follett, J., Lin, Y., Buchholz, B., Vogel, J.S. (2003). "Shrinkage estimation 
+#' \cite{Yao, F., Müller, H.G., Clifford, A.J., Dueker, S.R., Follett, J., Lin, Y., Buchholz, B., Vogel, J.S. (2003). "Shrinkage estimation 
 #' for functional principal component scores, with application to the population kinetics of plasma folate." Biometrics 59, 676-685. (Shrinkage estimates for dense data)}
 #' 
-#' \cite{Yao, Fang, M\"{u}ller, Hans-Georg and Wang, Jane-Ling (2005). "Functional data analysis for sparse longitudinal data." 
+#' \cite{Yao, Fang, Müller, Hans-Georg and Wang, Jane-Ling (2005). "Functional data analysis for sparse longitudinal data." 
 #' Journal of the American Statistical Association 100, no. 470  577-590. (Sparse data FPCA)}
 #'
-#' \cite{Liu, Bitao  and M\"{u}ller, Hans-Georg (2009). "Estimating derivatives for samples of sparsely observed functions, 
+#' \cite{Liu, Bitao  and Müller, Hans-Georg (2009). "Estimating derivatives for samples of sparsely observed functions, 
 #' with application to online auction dynamics." Journal of the American Statistical Association 104, no. 486 704-717. (Sparse data FPCA)}
 #'
 #' \cite{Castro, P. E., Lawton, W.H. and Sylvestre, E.A. (1986). "Principal modes of variation for processes with continuous 

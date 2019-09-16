@@ -25,7 +25,7 @@ Lwls1D(bw, kernel_type, win = rep(1L, length(xin)), xin, yin, xout,
 \item{nder}{Scalar (integer) degree of derivative fitted (default 0)}
 }
 \value{
-Vector of length M with measurement values at the the point speficied by 'xout'
+Vector of length M with measurement values at the the point specified by 'xout'
 }
 \description{
 One dimensional local linear kernel smoother for longitudinal data.

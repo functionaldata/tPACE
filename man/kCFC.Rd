@@ -14,7 +14,7 @@ kCFC(y, t, k = 3, kSeed = 123, maxIter = 125,
 
 \item{t}{A list of \emph{n} vectors containing the observation time points for each individual corresponding to y.}
 
-\item{k}{A scalar defining the number of clusters to define; default 3. Values that define very small clusters (eg.cluster size <=3) will potentiall err.}
+\item{k}{A scalar defining the number of clusters to define; default 3. Values that define very small clusters (eg.cluster size <=3) will potentially err.}
 
 \item{kSeed}{A scalar valid seed number to ensure replication; default: 123}
 
@@ -36,7 +36,7 @@ Functional clustering and identifying substructures of longitudinal data using k
 \examples{
 data(medfly25) 
 Flies <- MakeFPCAInputs(medfly25$ID, medfly25$Days, medfly25$nEggs)
-kcfcObj <- kCFC(Flies$Ly[1:250], Flies$Lt[1:250], # using only 250 for speed consideration 
+kcfcObj <- kCFC(Flies$Ly[1:150], Flies$Lt[1:150], # using only 150 for speed consideration 
                  optnsSW = list(methodMuCovEst = 'smooth', userBwCov = 2, FVEthreshold = 0.90),
                  optnsCS = list(methodMuCovEst = 'smooth', userBwCov = 2, FVEthreshold = 0.70))
 }

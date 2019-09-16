@@ -1,7 +1,6 @@
 #' Functional Linear Models
 #'
-#' Functional linear models with scalar or functional responses (see eg Yao, F., M\"{u}ller, H.G., Wang, J.L. (2005). Functional
-#' linear regression analysis for longitudinal data. Annals of Statistics 33, 2873--2903.)
+#' Functional linear models with scalar or functional responses.
 #' 
 #' @param Y Either n \emph{n}-dimensional vector whose elements consist of scalar responses, or a list which contains functional responses and the time points at which they are observed.
 #' @param X A list which contains the observed functional predictors.
@@ -20,7 +19,7 @@
 #' lambdaX <- c(1,0.7)
 #' 
 #' # training set
-#' n <- 100
+#' n <- 50
 #' Xi <- matrix(rnorm(2*n),nrow=n,ncol=2)
 #' 
 #' denseLt <- list(); denseLy <- list()
@@ -43,7 +42,7 @@
 #' sparseX <- list(X=sparseX)
 #' 
 #' # test set
-#' N <- 500
+#' N <- 30
 #' 
 #' XiTest <- matrix(rnorm(2*N),nrow=N,ncol=2)
 #' 
@@ -80,24 +79,27 @@
 #' trueBetaList[[1]] <- cbind(phi1(denseFLM$workGridX[[1]],1),phi1(denseFLM$workGridX[[1]],2))%*%beta
 #' 
 #' # coefficient function estimation error (L2-norm)
-#' par(mfrow=c(1,1))
 #' plot(denseFLM$workGridX[[1]],denseFLM$betaList[[1]],type='l',xlab='t',ylab=paste('beta',1,sep=''))
 #' points(denseFLM$workGridX[[1]],trueBetaList[[1]],type='l',col=2)
 #' 
-#' denseEstErr <- sqrt(trapzRcpp(denseFLM$workGridX[[1]],(denseFLM$betaList[[1]] - trueBetaList[[1]])^2))
+#' denseEstErr <-
+#'   sqrt(trapzRcpp(denseFLM$workGridX[[1]],(denseFLM$betaList[[1]] - trueBetaList[[1]])^2))
 #' denseEstErr
 #' 
-#' par(mfrow=c(1,2))
+#' op <- par(mfrow=c(1,2))
 #' plot(denseFLM$yHat,Y,xlab='fitted Y', ylab='observed Y')
 #' abline(coef=c(0,1),col=8)
-#' 
 #' plot(denseFLM$yPred,YTest,xlab='predicted Y', ylab='observed Y')
 #' abline(coef=c(0,1),col=8)
+#' par(op)
 #' 
 #' # prediction error
 #' densePredErr <- sqrt(mean((YTest - denseFLM$yPred)^2))
 #' densePredErr
 #' 
+#' @references
+#' \cite{Yao, F., Müller, H.G., Wang, J.L. (2005). Functional linear regression analysis for longitudinal data. Annals of Statistics 33, 2873--2903.}
+#' \cite{Hall, P., Horowitz, J.L. (2007). Methodology and convergence rates for functional linear regression. The Annals of Statistics, 35(1), 70--91.}
 #' @export
 
 
@@ -147,7 +149,7 @@ FLM <- function(Y,X,XTest=NULL,optnsListY=NULL,optnsListX=NULL){
       testXi <- cbind(testXi,testXij)
       
     } else {
-      testXij <- fdapace:::predict.FPCA(tmpFPCA,newLy=XTest[[j]]$Ly,newLt=XTest[[j]]$Lt,K=dj[j])
+      testXij <- predict.FPCA(tmpFPCA,newLy=XTest[[j]]$Ly,newLt=XTest[[j]]$Lt,K=dj[j])
       
       testXi <- cbind(testXi,testXij)
     }

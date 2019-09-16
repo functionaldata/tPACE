@@ -3,13 +3,13 @@
 #' Default:  Cluster functional data using the functional principal component (FPC) scores obtained from the data
 #' FPC analysis using EMCluster (Chen and Maitra, 2015) or directly clustering the functional data using kCFC (Chiou and Li, 2007).
 #' 
-#' Within EMCluster, uses the model initiated "EMCluster::em.EM" and returne the optimal model based on 'EMCluster::emcluster'. 
+#' Within EMCluster, uses the model initiated \code{EMCluster::em.EM} and returns the optimal model based on \code{EMCluster::emcluster}. 
 #' See ?EMCluster::emcluster for details.
 #' 
 #' @param Ly A list of \emph{n} vectors containing the observed values for each individual. Missing values specified by \code{NA}s are supported for dense case (\code{dataType='dense'}).
 #' @param Lt A list of \emph{n} vectors containing the observation time points for each individual corresponding to y.
 #' @param k A scalar defining the number of clusters to define; default 3.
-#' @param cmethod A string specifying the clusterig method to use ('EMCluster' or 'kCFC'); default: 'EMCluster'. 
+#' @param cmethod A string specifying the clustering method to use ('EMCluster' or 'kCFC'); default: 'EMCluster'. 
 #' @param optnsFPCA A list of options control parameters specified by \code{list(name=value)} to be used for by FPCA on the sample y; by default: 
 #' "list( methodMuCovEst ='smooth', FVEthreshold= 0.90, methodBwCov = 'GCV', methodBwMu = 'GCV' )". See `Details in ?FPCA'.
 #' @param optnsCS A list of options control parameters specified by \code{list(name=value)} to be used for cluster-specific FPCA from kCFC; by default:  
@@ -21,7 +21,7 @@
 #' \item{clusterObj}{Either a EMCluster object or kCFC object.} 
 #' 
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' data(medfly25)
 #' Flies <- MakeFPCAInputs(medfly25$ID, medfly25$Days, medfly25$nEggs) 
 #' newClust <- FClust(Flies$Ly, Flies$Lt, k = 2, optnsFPCA = 
@@ -36,7 +36,7 @@
 #' (correctRate <- sum( (1 + veryLowCount) ==  newClust$cluster) / N) # 99.6%
 #' }
 #' @references
-#' \cite{Wei-Chen Chen and Ranjan Maitra, "EMCluster: EM Algorithm for Model-Based Clusttering of Finite Mixture Gaussian Distribution". (2015)}
+#' \cite{Wei-Chen Chen and Ranjan Maitra, "EMCluster: EM Algorithm for Model-Based Clustering of Finite Mixture Gaussian Distribution". (2015)}
 #'
 #' \cite{Julien Jacques and Cristian Preda, "Funclust: A curves clustering method using functional random variables density approximation". Neurocomputing 112 (2013): 164-171}
 #' 
@@ -60,7 +60,7 @@ FClust = function(Ly, Lt, k = 3, cmethod = 'EMCluster', optnsFPCA = NULL, optnsC
   }
   
   if( cmethod == 'EMCluster'){
-    if( !is.element('EMCluster', installed.packages()[,1]) ) {
+    if( !requireNamespace("EMCluster", quietly=TRUE) ) {#!is.element('EMCluster', installed.packages()[,1])
       stop("Cannot the use the EMCluster method; the package 'EMCluster' is unavailable.")
     }
     # suppressMessages(library(EMCluster))

@@ -38,7 +38,7 @@ for (i in 1:n){
 dyn1_quad=DynCorr(x1_quad_error,y1_quad_error,t) 
 }
 \references{
-\cite{Dubin J A, M\"uller H G. Dynamical correlation for multivariate longitudinal data (2005).  
+\cite{Dubin J A, Müller H G. Dynamical correlation for multivariate longitudinal data (2005).  
 Journal of the American Statistical Association 100(471): 872-881.}
 \cite{Liu S, Zhou Y, Palumbo R, Wang, J.L. (2016).  Dynamical correlation: A new method for quantifying synchrony with 
 multivariate intensive longitudinal data. Psychological methods 21(3): 291.}

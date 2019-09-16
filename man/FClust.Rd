@@ -14,7 +14,7 @@ FClust(Ly, Lt, k = 3, cmethod = "EMCluster", optnsFPCA = NULL,
 
 \item{k}{A scalar defining the number of clusters to define; default 3.}
 
-\item{cmethod}{A string specifying the clusterig method to use ('EMCluster' or 'kCFC'); default: 'EMCluster'.}
+\item{cmethod}{A string specifying the clustering method to use ('EMCluster' or 'kCFC'); default: 'EMCluster'.}
 
 \item{optnsFPCA}{A list of options control parameters specified by \code{list(name=value)} to be used for by FPCA on the sample y; by default: 
 "list( methodMuCovEst ='smooth', FVEthreshold= 0.90, methodBwCov = 'GCV', methodBwMu = 'GCV' )". See `Details in ?FPCA'.}
@@ -33,11 +33,11 @@ Default:  Cluster functional data using the functional principal component (FPC)
 FPC analysis using EMCluster (Chen and Maitra, 2015) or directly clustering the functional data using kCFC (Chiou and Li, 2007).
 }
 \details{
-Within EMCluster, uses the model initiated "EMCluster::em.EM" and returne the optimal model based on 'EMCluster::emcluster'. 
+Within EMCluster, uses the model initiated \code{EMCluster::em.EM} and returns the optimal model based on \code{EMCluster::emcluster}. 
 See ?EMCluster::emcluster for details.
 }
 \examples{
-\dontrun{
+\donttest{
 data(medfly25)
 Flies <- MakeFPCAInputs(medfly25$ID, medfly25$Days, medfly25$nEggs) 
 newClust <- FClust(Flies$Ly, Flies$Lt, k = 2, optnsFPCA = 
@@ -53,7 +53,7 @@ N <- length(unique(medfly25$ID))
 }
 }
 \references{
-\cite{Wei-Chen Chen and Ranjan Maitra, "EMCluster: EM Algorithm for Model-Based Clusttering of Finite Mixture Gaussian Distribution". (2015)}
+\cite{Wei-Chen Chen and Ranjan Maitra, "EMCluster: EM Algorithm for Model-Based Clustering of Finite Mixture Gaussian Distribution". (2015)}
 
 \cite{Julien Jacques and Cristian Preda, "Funclust: A curves clustering method using functional random variables density approximation". Neurocomputing 112 (2013): 164-171}
 

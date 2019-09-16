@@ -8,9 +8,9 @@
 #' @param Ymu Vector Q-1 Vector of length nObsGrid containing the mean function estimate
 #' @param bw Scalar bandwidth for smoothing the cross-covariance function (if NULL it will be automatically estimated)
 #' @param Z Vector N-1 Vector of length N with the scalar function values
-#' @param Zmu Scalar with the mean of Z (if NULL it will be automaticall estimated)
+#' @param Zmu Scalar with the mean of Z (if NULL it will be automatically estimated)
 #' @param support Vector of unique and sorted values for the support of the smoothed cross-covariance function (if NULL it will be automatically estimated)
-#' @param kern Kernel type to be used. See ?FPCA for more details. (defult: 'gauss')
+#' @param kern Kernel type to be used. See ?FPCA for more details. (default: 'gauss')
 #' If the variables Ly1 is in matrix form the data are assumed dense and only
 #' the raw cross-covariance is returned. One can obtain Ymu1 
 #' from \code{FPCA} and \code{ConvertSupport}.
@@ -18,7 +18,7 @@
 #' @return A list containing:
 #' \item{smoothedCC}{The smoothed cross-covariance as a vector}
 #' \item{rawCC}{The raw cross-covariance as a vector }
-#' \item{bw}{The bandwidth used for smoohting as a scalar}
+#' \item{bw}{The bandwidth used for smoothing as a scalar}
 #' \item{score}{The GCV score associated with the scalar used}
 #' @examples
 #' Ly <- list( runif(5),  c(1:3), c(2:4), c(4))
@@ -26,7 +26,7 @@
 #' Z = rep(4,4) # Constant vector so the covariance has to be zero.
 #' sccObj = GetCrCovYZ(bw=1, Z= Z, Ly=Ly, Lt=Lt, Ymu=rep(4,5))
 #' @references
-#' \cite{Yang, Wenjing, Hans-Georg Mueller, and Ulrich Stadtmueller. "Functional singular component analysis." Journal of the Royal Statistical Society: Series B (Statistical Methodology) 73.3 (2011): 303-324}
+#' \cite{Yang, Wenjing, Hans-Georg Müller, and Ulrich Stadtmüller. "Functional singular component analysis." Journal of the Royal Statistical Society: Series B (Statistical Methodology) 73.3 (2011): 303-324}
 #' @export
 
 GetCrCovYZ <- function(bw = NULL, Z, Zmu = NULL, Ly, Lt = NULL, Ymu = NULL, support = NULL, kern='gauss') {

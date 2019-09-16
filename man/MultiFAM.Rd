@@ -10,13 +10,13 @@ MultiFAM(Y, X, ker = "epan", nEval = 51, XTest = NULL,
 \arguments{
 \item{Y}{An \emph{n}-dimensional vector whose elements consist of scalar responses.}
 
-\item{X}{A \emph{d}-dimensional list whose components consist of two lists of \emph{Ly} and \emph{Lt} containing obervation times and functional covariate values for each predictor component, respectively. For details of \emph{Ly} and \emph{Lt}, see \code{FPCA} for detail.}
+\item{X}{A \emph{d}-dimensional list whose components consist of two lists of \emph{Ly} and \emph{Lt} containing observation times and functional covariate values for each predictor component, respectively. For details of \emph{Ly} and \emph{Lt}, see \code{FPCA} for detail.}
 
 \item{ker}{A \code{function} object representing the base kernel to be used in the smooth backfitting algorithm (default is 'epan' which is the only option supported currently).}
 
 \item{nEval}{The number of evaluation grid points for kernel smoothing (default is 51. If it is specified as 0, then estimated FPC scores in the training set are used for evaluation grid instead of equal grid).}
 
-\item{XTest}{A \emph{d}-dimensional list for test set of functional predictors (default is NULL). If \code{XTest} is specified, then estimated FPC scores in the test set are used for evalution grid.}
+\item{XTest}{A \emph{d}-dimensional list for test set of functional predictors (default is NULL). If \code{XTest} is specified, then estimated FPC scores in the test set are used for evaluation grid.}
 
 \item{bwMethod}{The method of initial bandwidth selection for kernel smoothing, a positive value for designating K-fold cross-validtaion and zero for GCV (default is 0)}
 
@@ -52,7 +52,7 @@ multiple predictor processes and implements  the smooth backfitting  algorithm p
   It is based on the model  \deqn{E(Y | \mathbf{X}) = \sum_{j=1}^d \sum_{k=1}^{K_j} g_{jk}(\xi_{jk}),} where \eqn{\xi_{jk}} stand for the k-th FPC scores of the j-th predictor 
  process. \code{MultiFAM} only is for the multiple predictor processes case.
  For a univariate predictor use FAM, the functional additive model (Müller and Yao 2008). 
- It is necessary to designate an estimation support for the additive compoennt functions where the additive modeling is only allowed over 
+ It is necessary to designate an estimation support for the additive component functions where the additive modeling is only allowed over 
  restricted intervals  (see Han et al., 2018).
 }
 \examples{
@@ -152,11 +152,10 @@ plot(sort(xi[,j]),g22,type='l',col=2,ylim=c(-2.5,2.5),xlab='xi22')
 points(sort(xi[,j]),tmpSgn*sbf$SBFit[order(xi[,j]),j],type='l')
 legend('top',c('true','SBF'),col=c(2,1),lwd=2,bty='n',horiz=TRUE)
 
-\dontrun{
+\donttest{
 # fitting
 sbf <- MultiFAM(Y=Y,X=X,nEval=0)
 yHat <- sbf$mu+apply(sbf$SBFit,1,'sum')
-par(mfrow=c(1,1))
 plot(yHat,Y)
 abline(coef=c(0,1),col=2)
 
@@ -169,7 +168,6 @@ R2
 # prediction
 sbf <- MultiFAM(Y=Y,X=X,XTest=XTest)
 yHat <- sbf$mu+apply(sbf$SBFit,1,'sum')
-par(mfrow=c(1,1))
 plot(yHat,YTest)
 abline(coef=c(0,1),col=2)
 }
@@ -179,7 +177,7 @@ abline(coef=c(0,1),col=2)
 
 \cite{Mammen, E. and Park, B. U. (2006), "A simple smooth backfitting method for additive models", Annals of Statistics, Vol.34, No.5, p.2252-2271.}
 
-\cite{Mueller, H.-G. and Yao, F. (2008), "Functional additive models", Journal of the Americal Statistical Association, Vol.103, No.484, p.1534-1544.}
+\cite{Müller, H.-G. and Yao, F. (2008), "Functional additive models", Journal of the American Statistical Association, Vol.103, No.484, p.1534-1544.}
 
-\cite{Han, K., Mueller, H.-G. and Park, B. U. (2016), "Smooth backfitting for additive modeling with small errors-in-variables, with an application to additive functional regression for multiple predictor functions", Bernoulli (accepted).}
+\cite{Han, K., Müller, H.-G. and Park, B. U. (2016), "Smooth backfitting for additive modeling with small errors-in-variables, with an application to additive functional regression for multiple predictor functions", Bernoulli (accepted).}
 }

@@ -36,7 +36,7 @@ bands, for trajectory estimates (not derivatives) are provided. For details cons
 Available derivation control options are 
 \describe{
 \item{p}{The order of the derivatives returned (default: 0, max: 2)}
-\item{method}{The method used to produce the sample of derivatives ('FPC' (default) or 'QUO'). See Liu and Mueller (2009) for more details}
+\item{method}{The method used to produce the sample of derivatives ('FPC' (default) or 'QUO'). See Liu and Müller (2009) for more details}
 \item{bw}{Bandwidth for smoothing the derivatives (default: p * 0.10 * S)}
 \item{kernelType}{Smoothing kernel choice; same available types are FPCA(). default('epan')}
 }
@@ -44,7 +44,7 @@ Available derivation control options are
 Available confidence interval/band control options are 
 \describe{
 \item{alpha}{Significant level for confidence interval/band for trajectory coverage. default=0.05 (currently only work when p=0)}
-\item{cvgMethod}{Option for trajectory coverage method beween 'interval' and 'band'. default='band'}
+\item{cvgMethod}{Option for trajectory coverage method between 'interval' and 'band'. default='band'}
 }
 }
 \examples{
@@ -61,7 +61,7 @@ workGrid <- res$workGrid
 cvgUpper <- fittedY$cvgUpper
 cvgLower <- fittedY$cvgLower
 
-par(mfrow=c(2,3))
+op <- par(mfrow=c(2,3))
 ind <- sample(1:n,6)
 for (i in 1:6) {
  j <- ind[i]
@@ -70,10 +70,11 @@ for (i in 1:6) {
  points(workGrid,cvgLower[j,],type='l',col=4,lty=2)
  points(res$inputData$Lt[[j]],res$inputData$Ly[[j]])
 }
+par(op)
     
 }
 \references{
-\cite{Yao, F., Mueller, H.-G. and Wang, J.-L. "Functional data analysis for sparse longitudinal data", Journal of the American Statistical Association, vol.100, No. 470 (2005): 577-590.}
+\cite{Yao, F., Müller, H.-G. and Wang, J.-L. "Functional data analysis for sparse longitudinal data", Journal of the American Statistical Association, vol.100, No. 470 (2005): 577-590.}
 
-\cite{Liu, Bitao, and Hans-Georg Mueller. "Estimating derivatives for samples of sparsely observed functions, with application to online auction dynamics." Journal of the American Statistical Association 104, no. 486 (2009): 704-717. (Sparse data FPCA)}
+\cite{Liu, Bitao, and Hans-Georg Müller. "Estimating derivatives for samples of sparsely observed functions, with application to online auction dynamics." Journal of the American Statistical Association 104, no. 486 (2009): 704-717. (Sparse data FPCA)}
 }

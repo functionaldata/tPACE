@@ -13,9 +13,9 @@
 #'@param isNewSub A 1*n vector of 0s or 1s, where n is the total count of subjects. 0 denotes the corresponding subject is only used for training and 1 denotes the corresponding subject is only used for prediction. (default: 0's)
 #'
 #'@return A list of the following
-#'\item{pred_quantile: a matrix of n*length(outQ) where the the first nn (number of 0s in isNewSub) rows containing fitted  conditional quantiles of Y corresponding to the trainning subjects, and the last n-nn rows containing predicted conditional quantiles of Y corresponding to the subjects isNewSub ==1.}
-#'\item{pred_CDF: a matrix of n*100. The ith row contains the fitted or predicted conditional distribution function \eqn{F(y|X_i)}, evaluated at an equally spaced grid of 100 points.}
-#'\item{b: a matrix of 50*(K+1) contains the coefficient functions, defined as \eqn{F(y|X) = g(\sum_(k=0)^K b_k(y)\xi_k)}, see equation (5) in the paper for details, where K is the number of components selected to expand the predictor functions X, and \eqn{\xi_k} is the kth principal component score.}
+#'\item{pred_quantile}{A matrix of n*length(outQ) where the the first nn (number of 0s in \code{isNewSub}) rows containing fitted  conditional quantiles of Y corresponding to the trainning subjects, and the last n-nn rows containing predicted conditional quantiles of Y corresponding to the subjects isNewSub ==1.}
+#'\item{pred_CDF}{A matrix of n*100. The ith row contains the fitted or predicted conditional distribution function \eqn{F(y|X_i)}, evaluated at an equally spaced grid of 100 points.}
+#'\item{b}{A matrix of 50*(K+1) contains the coefficient functions, defined as \eqn{F(y|X) = g(\sum_(k=0)^K b_k(y)\xi_k)}, see equation (5) in the paper for details, where K is the number of components selected to expand the predictor functions X, and \eqn{\xi_k} is the kth principal component score.}
 #'
 #'@examples
 #'set.seed(10)
@@ -35,16 +35,16 @@
 #'}
 #'
 #'outQ = c(0.1,0.25,0.5,0.75,0.9,0.95)
-#'isNewsub = c(rep(0,150),rep(1,50))
-#'qtreg = FPCquantile(x, t_x, y, outQ,optns_x = NULL,isNewsub)
+#'isNewSub = c(rep(0,150),rep(1,50))
+#'qtreg = FPCquantile(x, t_x, y, outQ,optns_x = NULL,isNewSub)
 #'
 #'@references
-#' \cite{Chen, K., M\"uller, H.G. (2011). Conditional quantile analysis when covariates are functions, with application to growth data. 
+#' \cite{Chen, K., Müller, H.G. (2011). Conditional quantile analysis when covariates are functions, with application to growth data. 
 #' J. Royal Statistical Society B 74, 67-89}
 #' @export
 
 
-FPCquantile = function(Lx,Lt_x,y,outQ=c(0.1,0.25,0.5,0.75,0.9),optns_x = NULL,isNewsub = NULL){
+FPCquantile = function(Lx,Lt_x,y,outQ=c(0.1,0.25,0.5,0.75,0.9),optns_x = NULL,isNewSub = NULL){
   CheckData(Lx,Lt_x)
   if(min(outQ) < 0 || max(outQ) > 1){
     stop("quantile levels must be between 0 and 1")
@@ -53,16 +53,16 @@ FPCquantile = function(Lx,Lt_x,y,outQ=c(0.1,0.25,0.5,0.75,0.9),optns_x = NULL,is
     stop('length of Lx and y must agree')
   }
   n = length(Lx)
-  if(is.null(isNewsub)){
-    isNewsub = rep(0,n)
+  if(is.null(isNewSub)){
+    isNewSub = rep(0,n)
   }
-  nn = sum(isNewsub == 0)
+  nn = sum(isNewSub == 0)
   Lx_e = list()
   Lt_x_e = list()
   Lnewx = list()
   Lnewt_x = list()
   for(i in 1:n){
-    if(isNewsub[i] == 0){
+    if(isNewSub[i] == 0){
       Lx_e = c(Lx_e,list(Lx[[i]]))
       Lt_x_e = c(Lt_x_e,list(Lt_x[[i]]))
     }else{
@@ -70,7 +70,7 @@ FPCquantile = function(Lx,Lt_x,y,outQ=c(0.1,0.25,0.5,0.75,0.9),optns_x = NULL,is
       Lnewt_x = c(Lnewt_x,list(Lt_x[[i]]))
     }
   }
-  ty= y[isNewsub==0]
+  ty= y[isNewSub==0]
   optns_x = SetOptions(Lx, Lt_x, optns_x)
   CheckOptions(Lt_x, optns_x,n)
   verbose_x = optns_x$verbose

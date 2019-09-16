@@ -13,10 +13,10 @@ BwNN(Lt, k = 3, onlyMean = FALSE, onlyCov = FALSE)
 
 \item{onlyMean}{Indicator to return only the minimum bandwidth for the mean}
 
-\item{onlyCov}{Indicator to return only the minium bandwidth for the covariance}
+\item{onlyCov}{Indicator to return only the minimum bandwidth for the covariance}
 }
 \description{
-Input a list of time points Lt, and the number of unique neighbors k. Obtain  the minimum bandwidth  garanteeing k unique neighbours.
+Input a list of time points Lt, and the number of unique neighbors k. Obtain  the minimum bandwidth  guaranteeing k unique neighbours.
 }
 \examples{
 tinyGrid = list(c(1,7), c(2,3),  6,  c(2,4), c(4,5))

@@ -31,6 +31,8 @@ Description: A versatile package that provides implementation of various
     Matlab version (PACE) that contains some methods not available on fdapace and vice
     versa. Please cite our package if you use it (You may run the command
     devtools::citation("fdapace") to get the citation format and bibtex entry).
+    References: Wang, J.L., Chiou, J., Müller, H.G. (2016) <doi:10.1146/annurev-statistics-041715-033624>;
+    Chen, K., Zhang, X., Petersen, A., Müller, H.G. (2017) <doi:10.1007/s12561-015-9137-5>.
 License: BSD_3_clause + file LICENSE
 LazyData: false
 Imports:

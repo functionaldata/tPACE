@@ -10,13 +10,13 @@ Stringing(X, Y = NULL, standardize = FALSE, disOptns = "euclidean",
 \arguments{
 \item{X}{A matrix (n by p) of data, where X[i,] is the row vector of measurements for the ith subject.}
 
-\item{Y}{A vector (n by 1), where Y[i] is the reponse associated with X[i,]}
+\item{Y}{A vector (n by 1), where Y[i] is the response associated with X[i,]}
 
 \item{standardize}{A logical variable indicating whether standardization of the input data matrix is required, with default: FALSE.}
 
-\item{disOptns}{A distance metric to be used, one of the following: "euclidean" (default), "maximum", "manhattan", "canberra", "binary", "minkowski", "correlation", "spearman", "hamming", "xycor", or "user". If specified as "xycor", the absolute difference of correlation between predictor and response is used. If specified as "user", a dissimilarity matrix for the argument "disMat" must be provided.}
+\item{disOptns}{A distance metric to be used, one of the following: "euclidean" (default), "maximum", "manhattan", "canberra", "binary", "minkowski", "correlation", "spearman", "hamming", "xycor", or "user". If specified as "xycor", the absolute difference of correlation between predictor and response is used. If specified as "user", a dissimilarity matrix for the argument \code{disMat} must be provided.}
 
-\item{disMat}{A user-specified dissimilarity matrix, only necessary when "disOptns" is "user".}
+\item{disMat}{A user-specified dissimilarity matrix, only necessary when \code{disOptns} is "user".}
 }
 \value{
 A list containing the following fields:
@@ -46,5 +46,5 @@ plot(1:p, rdmorder[stringingfit$StringingOrder], pch=18); abline(a=0,b=1)
 
 }
 \references{
-\cite{Chen, K., Chen, K., Mueller, H. G., and Wang, J. L. (2011). "Stringing high-dimensional data for functional analysis." Journal of the American Statistical Association, 106(493), 275-284.}
+\cite{Chen, K., Chen, K., Müller, H. G., and Wang, J. L. (2011). "Stringing high-dimensional data for functional analysis." Journal of the American Statistical Association, 106(493), 275-284.}
 }

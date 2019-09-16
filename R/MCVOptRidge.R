@@ -31,7 +31,7 @@ MCVOptRidge <- function(y, t, Resp, p, RidgeCand, isDense = FALSE,
       for(j in 1:n_DesB){
         if(length(tB[[j]]) >= p){
           subidxj <- which(workGridA %in% tB[[j]])
-          if(length(subidxj) < p){cat(subidxj,"\n")}
+          if(length(subidxj) < p){message(subidxj)}
           DesPoolB <- cbind(DesPoolB, utils::combn(subidxj,p))
         }
       }
@@ -56,7 +56,7 @@ MCVOptRidge <- function(y, t, Resp, p, RidgeCand, isDense = FALSE,
           if(sum(workGridA[optdesii] %in% tB[[ll]]) == p) idxB2Prd[ll] <- 1
         }
         #if(!isDense){
-        #cat(paste("idxB2Prd is", length(which(idxB2Prd==1)),"...\n"))
+        #message(paste("idxB2Prd is", length(which(idxB2Prd==1)),"..."))
         #}
         yB2Prd <- yB[which(idxB2Prd == 1)]
         tB2Prd <- tB[which(idxB2Prd == 1)]
@@ -78,7 +78,7 @@ MCVOptRidge <- function(y, t, Resp, p, RidgeCand, isDense = FALSE,
           if(sum(workGridA[optdesii] %in% tB[[ll]]) == p) idxB2Prd[ll] <- 1
         }
         #if(!isDense){
-        #cat(paste("idxB2Prd is", length(which(idxB2Prd==1)),"...\n"))
+        #message(paste("idxB2Prd is", length(which(idxB2Prd==1)),"..."))
         #}
         yB2Prd <- yB[which(idxB2Prd == 1)]
         tB2Prd <- tB[which(idxB2Prd == 1)]
@@ -96,7 +96,7 @@ MCVOptRidge <- function(y, t, Resp, p, RidgeCand, isDense = FALSE,
       }
     }
     ridgecrit[cviter,] <- colMeans(crittemp, na.rm = TRUE)
-    cat(paste("CV for",cviter,"out of",length(RidgeCand), "ridge parameters complete!\n"))
+    message(paste("CV for",cviter,"out of",length(RidgeCand), "ridge parameters complete!"))
   }
   optridge = RidgeCand[which(ridgecrit[,1] == min(ridgecrit[,1]))]
   return(list(optridge = optridge, RidgeError = cbind(RidgeCand,ridgecrit)))

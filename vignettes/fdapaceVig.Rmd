@@ -19,7 +19,7 @@ knitr::opts_chunk$set(echo = TRUE)
 The basic work-flow behind the PACE approach for sparse functional data is as follows (see eg. [@Yao05; @Liu09] for more information):
  
 1. Calculate the smoothed mean $\hat{\mu}$ (using local linear smoothing) aggregating all the available readings together.
-2. Calculate for each curve seperately its own raw covariance and then aggregate all these raw covariances to generate the sample raw covariance.
+2. Calculate for each curve separately its own raw covariance and then aggregate all these raw covariances to generate the sample raw covariance.
 3. Use the off-diagonal elements of the sample raw covariance to estimate the smooth covariance.
 4. Perform eigenanalysis on the smoothed covariance to obtain the estimated eigenfunctions $\hat{\phi}$ and eigenvalues $\hat{\lambda}$, then project that smoothed covariance on a positive semi-definite surface [@Hall2008].
 5. Use Conditional Expectation (PACE step) to estimate the corresponding scores $\hat{\xi}$.
@@ -139,7 +139,7 @@ CreatePathPlot( FPCAsparseMuBW5, subset = 1:3, main = "User-defined bandwidth", 
 SelectK( FPCAsparse, criterion = 'FVE', FVEthreshold = 0.95) # K = 2
 SelectK( FPCAsparse, criterion = 'AIC') # K = 2
 ```
-When working with functional data (usually not very sparse) the estimation of derivatives is often of interest. Using \texttt{fitted.FPCA} one can directly obtain numerical derivatives by defining the appropriate order  <tt>`p`</tt>;  <tt>`fdapace`</tt> provides for the first two derivatives ( <tt>`p =1`</tt>  or <tt>`2`</tt>). Because the numerically differentiated data are smoothed the user can define smoothing specific arguments (see <tt>`?fitted.FPCA`</tt> for more information); the derivation is done by using the derivative of the linear fit. Similarly using the function   <tt>`FPCAder`</tt> , one can augment an  <tt>`FPCA`</tt> object with functional derivatives of a sample's mean function and eigenfunctions.
+When working with functional data (usually not very sparse) the estimation of derivatives is often of interest. Using <tt>`fitted.FPCA`</tt> one can directly obtain numerical derivatives by defining the appropriate order  <tt>`p`</tt>;  <tt>`fdapace`</tt> provides for the first two derivatives ( <tt>`p =1`</tt>  or <tt>`2`</tt>). Because the numerically differentiated data are smoothed the user can define smoothing specific arguments (see <tt>`?fitted.FPCA`</tt> for more information); the derivation is done by using the derivative of the linear fit. Similarly using the function   <tt>`FPCAder`</tt> , one can augment an  <tt>`FPCA`</tt> object with functional derivatives of a sample's mean function and eigenfunctions.
 
 ```{r,eval=TRUE, echo=TRUE}
 fittedCurvesP0 <- fitted(FPCAsparse) # equivalent: fitted(FPCAsparse, derOptns=list(p = 0));
@@ -169,7 +169,7 @@ par(mfrow=c(1,2))
   CreatePathPlot(fpcaObjFlies, subset = c(3,5,135), K = 3, main = 'K = 3', pch = 4) ; grid()
 ```
 
-One can perform outlier detection [@Febrero2007] as well as visualize data using a functional box-plot. To achieve these tasks one can use the functions <tt>`CreateOutliersPlot`</tt>  nd <tt>`CreateFuncBoxPlot`</tt>. Different ranking methodologies (KDE, bagplot [@Rousseeuw1999,@Hyndman2010] or point-wise) are available and can potentially identify different aspects of a sample. For example here it is notable that the  kernel density estimator <tt>`KDE`</tt> variant identifies two main clusters within the main body of sample. By construction the  <tt>`bagplot`</tt> method would use a single bag and this feature would be lost. Both functions return a (temporarily) invisible copy of a list containing the labels associated with each of sample curve0 .<tt>`CreateOutliersPlot`</tt>  returns a (temporarily) invisible copy of a list containing the labels associated with each of sample curve. 
+One can perform outlier detection [@Febrero2007] as well as visualize data using a functional box-plot. To achieve these tasks one can use the functions <tt>`CreateOutliersPlot`</tt> and <tt>`CreateFuncBoxPlot`</tt>. Different ranking methodologies (KDE, bagplot [@Rousseeuw1999,@Hyndman2010] or point-wise) are available and can potentially identify different aspects of a sample. For example here it is notable that the  kernel density estimator <tt>`KDE`</tt> variant identifies two main clusters within the main body of sample. By construction the  <tt>`bagplot`</tt> method would use a single bag and this feature would be lost. Both functions return a (temporarily) invisible copy of a list containing the labels associated with each of sample curve0 .<tt>`CreateOutliersPlot`</tt>  returns a (temporarily) invisible copy of a list containing the labels associated with each of sample curve. 
 ```{r,eval=TRUE, echo=TRUE}
 par(mfrow=c(1,2))
   CreateOutliersPlot(fpcaObjFlies, optns = list(K = 3, variant = 'KDE'))
@@ -192,7 +192,7 @@ fpcaObjFlies79 <- FPCA(Flies$Ly, Flies$Lt, list(nRegGrid = 79, methodMuCovEst = 
 CreateBWPlot(fpcaObjFlies79 , derOptns = list(p = 1, bw = 2.0 , kernelType = 'rect') )
 ```
 
-As the   <tt>`medfly`</tt>   sample is dense we can immediately use standard multivaritte clustering functionality to identify potential subgroups within it; the function  <tt>`FClust`</tt>   is the wrapper around the clustering functionality provided by   <tt>`fdapace`</tt>.  By default  <tt>`FClust`</tt>  utilises a Gaussian Mixture Model approach based on the package  <tt>`Rmixmod`</tt>  [@Biernacki2006], as a general rule clustering optimality is based on negative entropy criterion. In the  <tt>`medfly`</tt> dataset clustering the data allows to immediately recognise a particular subgroup of flies that lay no or very few eggs during the period examined.
+As the   <tt>`medfly`</tt>   sample is dense we can immediately use standard multivariate clustering functionality to identify potential subgroups within it; the function  <tt>`FClust`</tt>   is the wrapper around the clustering functionality provided by   <tt>`fdapace`</tt>.  By default  <tt>`FClust`</tt>  utilises a Gaussian Mixture Model approach based on the package  <tt>`Rmixmod`</tt>  [@Biernacki2006], as a general rule clustering optimality is based on negative entropy criterion. In the  <tt>`medfly`</tt> dataset clustering the data allows to immediately recognise a particular subgroup of flies that lay no or very few eggs during the period examined.
  
 
 ```{r,eval=TRUE, echo=TRUE}

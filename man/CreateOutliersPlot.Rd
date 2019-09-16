@@ -24,17 +24,17 @@ Available control options are
 \describe{
 \item{ifactor}{inflation ifactor for the bag-plot defining the loop of bag-plot or multiplying ifactor the KDE pilot bandwidth matrix. (see ?aplpack::compute.bagplot; ?ks::Hpi respectively; default: 2.58; 2 respectively).}
 \item{variant}{string defining the outlier method used ('KDE', 'NN' or 'bagplot') (default: 'KDE')}
-\item{unimodal}{logical specifying if the KDE estimate should be unimodal (default: FALSE, relavant only for variant='KDE')}
+\item{unimodal}{logical specifying if the KDE estimate should be unimodal (default: FALSE, relevant only for variant='KDE')}
 \item{maxVar}{logical specifying if during slicing we should used the directions of maximum variance (default: FALSE for FPCA, TRUE for FSVD)}
-\item{nSlices}{integer between 3 and 16, denoting the number of slices to be used (default: 4, relavant only for groupingType='slice') }
+\item{nSlices}{integer between 3 and 16, denoting the number of slices to be used (default: 4, relevant only for groupingType='slice') }
 \item{showSlices}{logical specifying if during slicing we should show the outline of the slice (default: FALSE)}
-\item{colSpectrum}{character vector to be use as input in the 'colorRampPalette' function defining the outliers colours (default: c("red",  "yellow", 'blue'), relavant only for groupingType='slice') }
+\item{colSpectrum}{character vector to be use as input in the 'colorRampPalette' function defining the outliers colours (default: c("red",  "yellow", 'blue'), relevant only for groupingType='slice') }
 \item{groupingType}{string specifying if a slice grouping ('slice') or a standard percentile/bagplot grouping ('standard') should be returned (default: 'standard')} 
 \item{fIndeces}{a two-component vector with the index of the mode of variation to consider (default: c(1,2) for FPCA and c(1,1) for FSVD)}
 }
 }
 \examples{
-\dontrun{
+\donttest{
 set.seed(1)
 n <- 420
 pts <- seq(0, 1, by=0.05)

@@ -86,11 +86,11 @@ CreateFuncBoxPlot <- function(fpcaObj, optns = list() , ...){
     stop("This plotting utility function can only implement a 'KDE', 'bagplot' or 'pointwise' mapping.")
     return(NULL)
   }  
-  if ( variant == 'bagplot' && !is.element('aplpack', installed.packages()[,1])){
+  if ( variant == 'bagplot' && !requireNamespace("aplpack", quietly=TRUE) ){ #!is.element('aplpack', installed.packages()[,1])
     warning('Cannot use bagplot because aplpack::compute.bagplot is unavailable; reverting to point-wise');
     variant = 'pointwise'
   }  
-  if ( variant == 'KDE' && !is.element('ks', installed.packages()[,1])){
+  if ( variant == 'KDE' && !requireNamespace("ks", quietly=TRUE) ){ #!is.element('ks', installed.packages()[,1])
     warning('Cannot use KDE because ks::kde is unavailable; reverting to point-wise');
     variant = 'pointwise'
   }

@@ -6,7 +6,7 @@
 #' 3) A plot of the stringing function, which is the stringed order vs. the original order.
 #' 
 #' This approach is based on 
-#' Chen, K., Chen, K., M\"{u}ller, H.G., Wang, J.L. (2011). Stringing high-dimensional data for functional analysis. J. American Statistical Association 106, 275--284.
+#' Chen, K., Chen, K., Müller, H.G., Wang, J.L. (2011). Stringing high-dimensional data for functional analysis. J. American Statistical Association 106, 275--284.
 #' 
 #'
 #' @param stringingObj A stringing object of class "Stringing", returned by the function Stringing.

@@ -66,12 +66,13 @@ Y = as.list(as.data.frame(t(yMat)))
 X = rep(list(T),N)
  
 sss =  WFDA(Ly = Y, Lt = X, list( choice = 'weighted' ))
-par(mfrow=c(1,2))
+op <- par(mfrow=c(1,2))
 matplot(x= T, t(yMat), t='l', main = 'Raw', ylab = 'Y'); grid()
 matplot(x= T, t(sss$aligned), t='l', main = 'Aligned', ylab='Y'); grid() 
+par(op)
 }
 \references{
-\cite{Tang, R. and Mueller, H.G. (2008). "Pairwise curve synchronization for functional data." Biometrika 95, 875-889}
+\cite{Tang, R. and Müller, H.G. (2008). "Pairwise curve synchronization for functional data." Biometrika 95, 875-889}
 
-\cite{Tang, R. and Mueller, H.G. (2009) "Time-synchronized clustering of gene expression trajectories." Biostatistics 10, 32-45}
+\cite{Tang, R. and Müller, H.G. (2009) "Time-synchronized clustering of gene expression trajectories." Biostatistics 10, 32-45}
 }

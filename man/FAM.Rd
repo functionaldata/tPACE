@@ -54,8 +54,8 @@ f2 <- function(t) 2*cos(2*pi*t/4)
 f3 <- function(t) 1.5*sin(2*pi*t/4)
 f4 <- function(t) 2*atan(2*pi*t/4)
 
-n<-250
-N<-500
+n <- 100
+N <- 100
 
 sig <- diag(c(4.0,2.0,1.5,1.2))
 
@@ -92,7 +92,7 @@ fit <- FAM(Y=Y,Lx=Lx,Lt=Lt)
 
 xi <- fit$xi
 
-par(mfrow=c(2,2))
+op <- par(mfrow=c(2,2))
 j <- 1
 g1 <- f1(sort(xi[,j]))
 tmpSgn <- sign(sum(g1*fit$fam[,j]))
@@ -116,12 +116,11 @@ g4 <- f4(sort(xi[,j]))
 tmpSgn <- sign(sum(g4*fit$fam[,j]))
 plot(sort(xi[,j]),g4,type='l',col=2,ylim=c(-2.5,2.5),xlab='xi4')
 points(sort(xi[,j]),tmpSgn*fit$fam[order(xi[,j]),j],type='l')
-
+par(op)
 
 # fitting
 fit <- FAM(Y=Y,Lx=Lx,Lt=Lt,nEval=0)
 yHat <- fit$mu+apply(fit$fam,1,'sum')
-par(mfrow=c(1,1))
 plot(yHat,Y)
 abline(coef=c(0,1),col=2)
 
@@ -134,7 +133,6 @@ R2
 # prediction
 fit <- FAM(Y=Y,Lx=Lx,Lt=Lt,newLx=LxTest,newLt=LtTest)
 yHat <- fit$mu+apply(fit$fam,1,'sum')
-par(mfrow=c(1,1))
 plot(yHat,YTest,xlim=c(-10,10))
 abline(coef=c(0,1),col=2)
 }

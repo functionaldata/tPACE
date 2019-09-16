@@ -5,7 +5,7 @@
 \title{Conditional Quantile estimation with functional covariates}
 \usage{
 FPCquantile(Lx, Lt_x, y, outQ = c(0.1, 0.25, 0.5, 0.75, 0.9),
-  optns_x = NULL, isNewsub = NULL)
+  optns_x = NULL, isNewSub = NULL)
 }
 \arguments{
 \item{Lx}{A length n list of predictor function where x[[i]] is the row vector of measurements for ith subject, i=1,...,n}
@@ -22,9 +22,9 @@ FPCquantile(Lx, Lt_x, y, outQ = c(0.1, 0.25, 0.5, 0.75, 0.9),
 }
 \value{
 A list of the following
-\item{pred_quantile: a matrix of n*length(outQ) where the the first nn (number of 0s in isNewSub) rows containing fitted  conditional quantiles of Y corresponding to the trainning subjects, and the last n-nn rows containing predicted conditional quantiles of Y corresponding to the subjects isNewSub ==1.}
-\item{pred_CDF: a matrix of n*100. The ith row contains the fitted or predicted conditional distribution function \eqn{F(y|X_i)}, evaluated at an equally spaced grid of 100 points.}
-\item{b: a matrix of 50*(K+1) contains the coefficient functions, defined as \eqn{F(y|X) = g(\sum_(k=0)^K b_k(y)\xi_k)}, see equation (5) in the paper for details, where K is the number of components selected to expand the predictor functions X, and \eqn{\xi_k} is the kth principal component score.}
+\item{pred_quantile}{A matrix of n*length(outQ) where the the first nn (number of 0s in \code{isNewSub}) rows containing fitted  conditional quantiles of Y corresponding to the trainning subjects, and the last n-nn rows containing predicted conditional quantiles of Y corresponding to the subjects isNewSub ==1.}
+\item{pred_CDF}{A matrix of n*100. The ith row contains the fitted or predicted conditional distribution function \eqn{F(y|X_i)}, evaluated at an equally spaced grid of 100 points.}
+\item{b}{A matrix of 50*(K+1) contains the coefficient functions, defined as \eqn{F(y|X) = g(\sum_(k=0)^K b_k(y)\xi_k)}, see equation (5) in the paper for details, where K is the number of components selected to expand the predictor functions X, and \eqn{\xi_k} is the kth principal component score.}
 }
 \description{
 Main function to implement conditional Quantile estimation with functional covariates and scalar response. The method includes 3 steps: 
@@ -50,11 +50,11 @@ for(i in 1:n){
 }
 
 outQ = c(0.1,0.25,0.5,0.75,0.9,0.95)
-isNewsub = c(rep(0,150),rep(1,50))
-qtreg = FPCquantile(x, t_x, y, outQ,optns_x = NULL,isNewsub)
+isNewSub = c(rep(0,150),rep(1,50))
+qtreg = FPCquantile(x, t_x, y, outQ,optns_x = NULL,isNewSub)
 
 }
 \references{
-\cite{Chen, K., M\"uller, H.G. (2011). Conditional quantile analysis when covariates are functions, with application to growth data. 
+\cite{Chen, K., Müller, H.G. (2011). Conditional quantile analysis when covariates are functions, with application to growth data. 
 J. Royal Statistical Society B 74, 67-89}
 }

@@ -11,7 +11,7 @@
 #' @param npoly Scalar (integer) degree of polynomial fitted (default 1)
 #' @param nder Scalar (integer) degree of derivative fitted (default 0)
 #'
-#' @return Vector of length M with measurement values at the the point speficied by 'xout'
+#' @return Vector of length M with measurement values at the the point specified by 'xout'
 #'
 #' @export
 

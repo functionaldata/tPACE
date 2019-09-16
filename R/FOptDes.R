@@ -29,7 +29,7 @@
 #' res <- FOptDes(Ly=sampWiener$Ly, Lt=sampWiener$Lt, p=2,
 #'                isSequential=FALSE, RidgeCand = seq(0.02,0.2,0.02))
 #' @references
-#' \cite{Ji, H., Mueller, H.G. (2017) "Optimal Designs for Longitudinal and Functional Data" 
+#' \cite{Ji, H., Müller, H.G. (2017) "Optimal Designs for Longitudinal and Functional Data" 
 #' Journal of the Royal Statistical Society: Series B 79, 859-876.}
 #' 
 #' @export
@@ -56,9 +56,9 @@ FOptDes <- function(Ly, Lt, Resp, p = 3, optns = list(),
     if( length(Resp) != length(Ly) ){
       stop("Resp does not have the same length as Ly! Double check the data inputs.")
     }
-    cat("Finding optimal designs for scalar response prediction.\n")
+    message("Finding optimal designs for scalar response prediction.")
   } else {
-    cat("Finding optimal designs for trajectory recovery.\n")
+    message("Finding optimal designs for trajectory recovery.")
   }
   
   CheckData(y = Ly, t = Lt);
@@ -91,7 +91,7 @@ FOptDes <- function(Ly, Lt, Resp, p = 3, optns = list(),
                             isRegression = isRegression, isSequential = isSequential)
     optridge <- OptRidge$optridge
   } else { # skip CV if only ridge is prespecified.
-    cat("Only 1 ridge candidate in RidgeCand. The candidate is used and cross validation is skipped.\n")
+    message("Only 1 ridge candidate in RidgeCand. The candidate is used and cross validation is skipped.")
     OptRidge <- RidgeCand
     optridge <- RidgeCand
   }

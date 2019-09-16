@@ -33,8 +33,8 @@ with G^(1,1) estimated by an initial kernel local smoothing step for  G^(1,0),  
 bw <- 0.2
 kern <- 'epan'
 set.seed(1)
-n <- 100 
-M <- 40
+n <- 50 
+M <- 30
 pts <- seq(0, 1, length.out=M)
 lambdaTrue <- c(1, 0.8, 0.1)^2
 sigma2 <- 0.1

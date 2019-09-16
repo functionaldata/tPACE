@@ -120,10 +120,9 @@ MgnJntDensity <- function(x, X, h=NULL, K='epan', supp=NULL){
   
   pMatMgn <- matrix(0,nrow=N,ncol=d)
   pArrJnt <- array(0,dim=c(N,N,d,d))
-  #cat(paste('Computing all pairs of 1-/2-dim.l marginal/joint density estimators...','\n',sep=''))
+  #message('Computing all pairs of 1-/2-dim.l marginal/joint density estimators...')
   for (j in 1:d) {
-    #cat(paste('   ',round(j/d,3),'\n',sep=''))
-    #cat('\n')
+    #message(paste('   ',round(j/d,3),sep=''))
     pMatMgn[,j] <- Pj(j,x,X,h,K,supp)
     
     for (k in j:d) { 

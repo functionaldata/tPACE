@@ -27,8 +27,8 @@ A list containing the following fields:
 \item{bw1}{The selected (or user specified) bandwidth for smoothing the cross-covariance function across the support of sample 1.}
 \item{bw2}{The selected (or user specified) bandwidth for smoothing the cross-covariance function across the support of sample 2.}
 \item{CrCov}{The smoothed cross-covariance between samples 1 & 2.}
-\item{sValues}{A list of length \emph{nsvd}, each entry containing the singuar value estimates for the FSC estimates.}
-\item{nsvd}{The number of singular componentes used.}
+\item{sValues}{A list of length \emph{nsvd}, each entry containing the singular value estimates for the FSC estimates.}
+\item{nsvd}{The number of singular components used.}
 \item{canCorr}{The canonical correlations for each dimension.}
 \item{FVE}{A percentage indicating the total variance explained by chosen FSCs with corresponding 'FVEthreshold'.}
 \item{sFun1}{An nWorkGrid by \emph{K} matrix containing the estimated singular functions for sample 1.}
@@ -40,8 +40,7 @@ A list containing the following fields:
 \item{optns}{A list of options used by the SVD and the FPCA's procedures.}
 }
 \description{
-FSVD for a pair of dense or sparse functional data, implementing Yang, W., M\"{u}ller, H.G., Stadtm\"{u}ller, U. (2011). 
-Functional singular component analysis. J. Royal Statistical Society B73, 303-324.
+FSVD for a pair of dense or sparse functional data.
 }
 \details{
 Available control options for SVDoptns are: 
@@ -55,11 +54,14 @@ Available control options for SVDoptns are:
 \item{kernel}{Smoothing kernel choice, common for mu and covariance; "rect", "gauss", "epan", "gausvar", "quar" - default: "gauss"; dense data are assumed noise-less so no smoothing is performed.}
 \item{rmDiag}{Logical describing if the routine should remove diagonal raw cov for cross cov estimation (default: FALSE) }
 \item{noScores}{Logical describing if the routine should return functional singular scores or not (default: TRUE) }
-\item{regulRS}{String describing if the regularisation of the compositie cross-covariance matrix should be done using 'sigma1' or 'rho' (see ?FPCA for details) (default: 'sigma2') }
+\item{regulRS}{String describing if the regularisation of the composite cross-covariance matrix should be done using 'sigma1' or 'rho' (see ?FPCA for details) (default: 'sigma2') }
 \item{bwRoutine}{String specifying the routine used to find the optimal bandwidth 'grid-search', 'bobyqa', 'l-bfgs-b' (default: 'l-bfgs-b')}
 \item{flip}{Logical describing if the routine should flip the sign of the singular components functions or not after the SVD of the cross-covariance matrix. (default: FALSE)}
 \item{useGAM}{Indicator to use gam smoothing instead of local-linear smoothing (semi-parametric option) (default: FALSE)}
 \item{dataType1}{The type of design we have for sample 1 (usually distinguishing between sparse or dense functional data); 'Sparse', 'Dense', 'DenseWithMV' - default:  determine automatically based on 'IsRegular'}
 \item{dataType2}{The type of design we have for sample 2 (usually distinguishing between sparse or dense functional data); 'Sparse', 'Dense', 'DenseWithMV' - default:  determine automatically based on 'IsRegular'}
 }
+}
+\references{
+\cite{Yang, W., Müller, H.G., Stadtmüller, U. (2011). Functional singular component analysis. J. Royal Statistical Society B73, 303-324.}
 }

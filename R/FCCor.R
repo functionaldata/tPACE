@@ -1,4 +1,4 @@
-#' Calculattion of functional correlation between two simultaneously observed processes.
+#' Calculation of functional correlation between two simultaneously observed processes.
 #'
 #' @param x A list of function values corresponding to the first process.
 #' @param y A list of function values corresponding to the second process.

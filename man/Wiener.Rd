@@ -24,7 +24,7 @@ Simulate \code{n} standard Wiener processes on [0, 1], possibly
 sparsifying the results.
 }
 \details{
-The algorithm is based on the Karhunen-Loeve expansion of the Wiener process
+The algorithm is based on the Karhunen-Loève expansion of the Wiener process
 }
 \seealso{
 Sparsify

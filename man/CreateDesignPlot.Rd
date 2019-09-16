@@ -2,7 +2,7 @@
 % Please edit documentation in R/CreateDesignPlot.R
 \name{CreateDesignPlot}
 \alias{CreateDesignPlot}
-\title{Create design plots for functional data. See Yao, F., M\"{u}ller, H.G., Wang, J.L. (2005). Functional
+\title{Create design plots for functional data. See Yao, F., Müller, H.G., Wang, J.L. (2005). Functional
 data analysis for sparse longitudinal data. J. American Statistical Association 100, 577-590
 for interpretation and usage of these plots. 
 This function will open a new device as default.}
@@ -29,7 +29,7 @@ FALSE:  do not remove diagonal time pairs}
 \item{...}{Other arguments passed into \code{plot()}.}
 }
 \description{
-Create design plots for functional data. See Yao, F., M\"{u}ller, H.G., Wang, J.L. (2005). Functional
+Create design plots for functional data. See Yao, F., Müller, H.G., Wang, J.L. (2005). Functional
 data analysis for sparse longitudinal data. J. American Statistical Association 100, 577-590
 for interpretation and usage of these plots. 
 This function will open a new device as default.

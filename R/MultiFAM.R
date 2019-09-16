@@ -3,10 +3,10 @@
 #' Smooth backfitting procedure for functional additive models with multiple predictor processes
 #'
 #' @param Y An \emph{n}-dimensional vector whose elements consist of scalar responses.
-#' @param X A \emph{d}-dimensional list whose components consist of two lists of \emph{Ly} and \emph{Lt} containing obervation times and functional covariate values for each predictor component, respectively. For details of \emph{Ly} and \emph{Lt}, see \code{FPCA} for detail.
+#' @param X A \emph{d}-dimensional list whose components consist of two lists of \emph{Ly} and \emph{Lt} containing observation times and functional covariate values for each predictor component, respectively. For details of \emph{Ly} and \emph{Lt}, see \code{FPCA} for detail.
 #' @param ker A \code{function} object representing the base kernel to be used in the smooth backfitting algorithm (default is 'epan' which is the only option supported currently).
 #' @param nEval The number of evaluation grid points for kernel smoothing (default is 51. If it is specified as 0, then estimated FPC scores in the training set are used for evaluation grid instead of equal grid).
-#' @param XTest A \emph{d}-dimensional list for test set of functional predictors (default is NULL). If \code{XTest} is specified, then estimated FPC scores in the test set are used for evalution grid.
+#' @param XTest A \emph{d}-dimensional list for test set of functional predictors (default is NULL). If \code{XTest} is specified, then estimated FPC scores in the test set are used for evaluation grid.
 #' @param bwMethod The method of initial bandwidth selection for kernel smoothing, a positive value for designating K-fold cross-validtaion and zero for GCV (default is 0)
 #' @param alpha The shrinkage factor (positive number) for bandwidth selection. See Han et al. (2016) (default is 0.7).
 #' @param supp The lower and upper limits of kernel smoothing domain for studentized FPC scores, which FPC scores are divided by the square roots of eigenvalues (default is [-2,2]).
@@ -14,13 +14,13 @@
 #'
 #' @details \code{MultiFAM} fits functional additive models for a scalar response and 
 #' multiple predictor processes and implements  the smooth backfitting  algorithm provided in
-#'  Han, K., M\"{u}ller, H.G., Park, B.U.  (2018). Smooth backfitting for additive modeling with small errors-in-variables, 
+#'  Han, K., Müller, H.G., Park, B.U.  (2018). Smooth backfitting for additive modeling with small errors-in-variables, 
 #'  with an application to additive functional regression for multiple predictor functions. Bernoulli 24, 1233--1265.
 #' 
 #'   It is based on the model  \deqn{E(Y | \mathbf{X}) = \sum_{j=1}^d \sum_{k=1}^{K_j} g_{jk}(\xi_{jk}),} where \eqn{\xi_{jk}} stand for the k-th FPC scores of the j-th predictor 
 #'  process. \code{MultiFAM} only is for the multiple predictor processes case.
-#'  For a univariate predictor use FAM, the functional additive model (M\"{u}ller and Yao 2008). 
-#'  It is necessary to designate an estimation support for the additive compoennt functions where the additive modeling is only allowed over 
+#'  For a univariate predictor use FAM, the functional additive model (Müller and Yao 2008). 
+#'  It is necessary to designate an estimation support for the additive component functions where the additive modeling is only allowed over 
 #'  restricted intervals  (see Han et al., 2018).
 #'
 #' @return A list containing the following fields:
@@ -132,11 +132,10 @@
 #' points(sort(xi[,j]),tmpSgn*sbf$SBFit[order(xi[,j]),j],type='l')
 #' legend('top',c('true','SBF'),col=c(2,1),lwd=2,bty='n',horiz=TRUE)
 #' 
-#' \dontrun{
+#' \donttest{
 #' # fitting
 #' sbf <- MultiFAM(Y=Y,X=X,nEval=0)
 #' yHat <- sbf$mu+apply(sbf$SBFit,1,'sum')
-#' par(mfrow=c(1,1))
 #' plot(yHat,Y)
 #' abline(coef=c(0,1),col=2)
 #' 
@@ -149,7 +148,6 @@
 #' # prediction
 #' sbf <- MultiFAM(Y=Y,X=X,XTest=XTest)
 #' yHat <- sbf$mu+apply(sbf$SBFit,1,'sum')
-#' par(mfrow=c(1,1))
 #' plot(yHat,YTest)
 #' abline(coef=c(0,1),col=2)
 #' }
@@ -158,9 +156,9 @@
 #'
 #' \cite{Mammen, E. and Park, B. U. (2006), "A simple smooth backfitting method for additive models", Annals of Statistics, Vol.34, No.5, p.2252-2271.}
 #'
-#' \cite{Mueller, H.-G. and Yao, F. (2008), "Functional additive models", Journal of the Americal Statistical Association, Vol.103, No.484, p.1534-1544.}
+#' \cite{Müller, H.-G. and Yao, F. (2008), "Functional additive models", Journal of the American Statistical Association, Vol.103, No.484, p.1534-1544.}
 #'
-#' \cite{Han, K., Mueller, H.-G. and Park, B. U. (2016), "Smooth backfitting for additive modeling with small errors-in-variables, with an application to additive functional regression for multiple predictor functions", Bernoulli (accepted).}
+#' \cite{Han, K., Müller, H.-G. and Park, B. U. (2016), "Smooth backfitting for additive modeling with small errors-in-variables, with an application to additive functional regression for multiple predictor functions", Bernoulli (accepted).}
 #' @export
 
 MultiFAM <- function(Y,X,ker='epan',nEval=51,XTest=NULL,bwMethod=0,alpha=0.7,supp=c(-2,2),optnsList=NULL){
@@ -234,13 +232,9 @@ MultiFAM <- function(Y,X,ker='epan',nEval=51,XTest=NULL,bwMethod=0,alpha=0.7,sup
   h <- c()
   for (j in 1:d) {
     if (bwMethod>0) {
-      options(warn = -1) 
-      h0 <- CVLwls1D(y=Y,t=XiStd[,j],kernel='epan',npoly=0,nder=0,dataType='Sparse',kFolds=bwMethod)
-      options(warn = 0) 
+      h0 <- suppressWarnings(CVLwls1D(y=Y,t=XiStd[,j],kernel='epan',npoly=0,nder=0,dataType='Sparse',kFolds=bwMethod))
     } else {
-      options(warn = -1) 
-      h0 <- GCVLwls1D1(yy=Y,tt=XiStd[,j],kernel='epan',npoly=0,nder=0,dataType='Sparse')$bOpt
-      options(warn = 0) 
+      h0 <- suppressWarnings(GCVLwls1D1(yy=Y,tt=XiStd[,j],kernel='epan',npoly=0,nder=0,dataType='Sparse')$bOpt)
     }
     h[j] <- alpha*h0
   }

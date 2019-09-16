@@ -20,7 +20,7 @@
 #' @return A list containing:
 #' \item{smoothedCC}{The smoothed cross-covariance as a matrix (currently only 51 by 51)}
 #' \item{rawCC}{The raw cross-covariance as a list}
-#' \item{bw}{The bandwidth used for smoohting as a vector of lengh 2}
+#' \item{bw}{The bandwidth used for smoothing as a vector of length 2}
 #' \item{score}{The GCV score associated with the scalar used}
 #' \item{smoothGrid}{The grid over which the smoothed cross-covariance is evaluated}
 #' @examples
@@ -33,7 +33,7 @@
 #' AA<-GetCrCovYX(Ly1 = Ly1, Ly2= Ly2, Lt1=Lt1, Lt2=Lt2, Ymu1=Ymu1, Ymu2=Ymu2)
 #'   
 #' @references
-#' \cite{Yang, Wenjing, Hans-Georg Mueller, and Ulrich Stadtmueller. "Functional singular component analysis." Journal of the Royal Statistical Society: Series B (Statistical Methodology) 73.3 (2011): 303-324}
+#' \cite{Yang, Wenjing, Hans-Georg Müller, and Ulrich Stadtmüller. "Functional singular component analysis." Journal of the Royal Statistical Society: Series B (Statistical Methodology) 73.3 (2011): 303-324}
 #' @export
 
 GetCrCovYX <- function(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL, Ly2, Lt2 = NULL, Ymu2 = NULL, 
@@ -139,7 +139,7 @@ GetCrCovYX <- function(bw1 = NULL, bw2 = NULL, Ly1, Lt1 = NULL, Ymu1 = NULL, Ly2
       upperB = bwRanges[2,]
       lowerB = bwRanges[1,]
       
-      if( !is.element('minqa', installed.packages()[,1]) && bwRoutine == 'bobyqa'){
+      if( !requireNamespace("minqa", quietly=TRUE) && bwRoutine == 'bobyqa'){ #!is.element('minqa', installed.packages()[,1])
         warning("Cannot use 'minqa::bobyqa' to find the optimal bandwidths. 'minqa' is not installed. We will do an 'L-BFGS-B' search.")
         bwRoutine == 'l-bfgs-b'
       }

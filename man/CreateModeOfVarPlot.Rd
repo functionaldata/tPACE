@@ -14,7 +14,7 @@ CreateModeOfVarPlot(fpcaObj, k = 1, rainbowPlot = FALSE,
 
 \item{rainbowPlot}{Indicator to create a rainbow-plot instead of a shaded plot (default: FALSE)}
 
-\item{colSpectrum}{Character vector to be use as input in the 'colorRampPalette' function defining the outliers colours (default: c("blue","red", "green"), relavant only for rainbowPlot=TRUE)}
+\item{colSpectrum}{Character vector to be use as input in the 'colorRampPalette' function defining the outliers colours (default: c("blue","red", "green"), relevant only for rainbowPlot=TRUE)}
 
 \item{...}{Additional arguments for the \code{plot} function.}
 }
