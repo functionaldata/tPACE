@@ -2,9 +2,9 @@
 #'
 #' Functional linear models with scalar or functional responses.
 #' 
-#' @param Y Either n \emph{n}-dimensional vector whose elements consist of scalar responses, or a list which contains functional responses and the time points at which they are observed.
+#' @param Y Either an \emph{n}-dimensional vector whose elements consist of scalar responses, or a list which contains functional responses and the time points at which they are observed.
 #' @param X A list which contains the observed functional predictors.
-#' @param XTest A list which contains the functional predictors for which we are interested in predicting.
+#' @param XTest A list which contains the values of functional predictors for a held-out testing set.
 #' @param optnsListY A list of options control parameters for the response specified by \code{list(name=value)}. See `Details' in  \code{FPCA}.
 #' @param optnsListX A list of options control parameters for the predictors specified by \code{list(name=value)}. See `Details' in  \code{FPCA}.
 #' @examples

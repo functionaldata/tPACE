@@ -238,8 +238,8 @@ test_that('Dense data that requires binning', {
   expect_equal(range(resErr$obsGrid), range(resErrNoBin$obsGrid))
   expect_equal(range(resErr$workGrid), range(resErrNoBin$workGrid))
   expect_equal(resErr$sigma2, sigma2, tolerance=1e-1)
-  expect_equal(length(resErr$obsGrid), 1001)
-  expect_equal(length(resErr$workGrid), 1001)
+  expect_equal(length(resErr$obsGrid), 400)
+  expect_equal(length(resErr$workGrid), 400)
   plot(resErr)
 })
 

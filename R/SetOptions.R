@@ -237,7 +237,7 @@ SetOptions = function(y, t, optns){
     } 
   }
   if(is.null(usergrid)){ 
-    usergrid = TRUE;
+    usergrid = FALSE;
   }
   if(is.null(lean)){ 
     lean = FALSE;
