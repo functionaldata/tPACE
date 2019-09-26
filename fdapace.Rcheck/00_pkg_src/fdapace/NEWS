@@ -1,0 +1,74 @@
+fdapace v0.5.0 (Release date: 21-Aug-2019)
+=============
+New functionality:
+* Added quantile regression (FPCQuantile).
+* Added functional additive models (TVAM, VCAM).
+* Merged functional linear regression with both scalar and functional response (FLM, removed FPCReg).
+* Added dynamic correlation (DynCorr).
+* Added confidence band for individual prediction in FPCA.
+
+
+Changes:
+* Added usergrid option to FPCA. Modularized FPCA subroutines.
+* Fixed bug in WFDA.
+* Multiple minor bug fixes.
+
+fdapace v0.4.1 (Release date: 19-Mar-2019)
+=============
+New functionality:
+* Added functional additive models (MultiFAM, TVAMSBFitting, SBFitting).
+* Added stringing (Stringing).
+* Added functonal linear regression with functional response (FPCReg).
+
+Changes:
+* Dropped argument `k` from SelectK.
+* Vignette in HTML.
+* FClust functionality uses `EMCluster` instead `Rmixmod`.
+* Multiple minor bug fixes.
+
+fdapace v0.3.0 (Release date: 25-Jan-2017)
+=============
+New functionality:
+* Added obsOnly option to CreatePathPlot.
+* Added derivative estimators (FPCAder, fitted.FPCAder)
+* Added functional concurrent correlation (FCCor).
+* Added pairwise curve synchronization for functional data (WFDA).
+* Added optimal designs for longitudinal or functional data (FOptDes).
+* Miscellaneous update to utility functions (CreateBasis, MakeSparseGP)
+
+Changes:
+* Covariance GCV bandwidth is modified to prevent oversmoothing.
+* "Diagnostic plots" are renamed.
+* GetNormalisedSample now uses fitted covariance.
+
+fdapace v0.2.5 (Release date: 14-Jul-2016)
+=============
+Changes:
+* `K` is used for specifying the number of components in functions such as SelectK, fitted, CreatePathPlot, CreateFuncBoxPlot, etc, instead of `k`.
+* GetCrCovYX is sped up.
+
+Minors:
+* Improved the legend placing in CreateDesignPlot.
+* Plot functions no longer show warnings.
+* Changed clustering example in vignettes.
+
+Minors:
+* Improved the legend placing in CreateDesignPlot.
+* Plot functions no longer show warnings.
+
+fdapace v0.2.0 (Release date: 17-Jun-2016)
+==============
+
+New functionality:
+* Addition of Functional Variance Process Analysis (FVPA.R), Functional Clustering (FClust.R) and Functional Singular Value Decomposition (FSVD.R) functionality.
+
+Changes:
+* Minor changes to the interface of functions FPCA.R and FCReg.R.
+* New internal C++ smoother used. 
+* General improvements and bug fixes. 
+* Vignette with knitr.
+
+fdapace v0.1.1 (Release data: 15-Mar-2016)
+==============
+
+* Initial release

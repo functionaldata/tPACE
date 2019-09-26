@@ -75,7 +75,7 @@ FCReg <- function(vars, userBwMu, userBwCov, outGrid, kern='gauss', measurementE
   }
   
   Yname <- names(vars)[length(vars)]
-
+  
   # Handle NaN, int to double
   vars[sapply(vars, is.list)] <- lapply(
     vars[sapply(vars, is.list)], 
@@ -104,6 +104,8 @@ FCReg <- function(vars, userBwMu, userBwCov, outGrid, kern='gauss', measurementE
     tmpCov <- allCov[i, i, , ]
     tmpCov[p + 1, 1:p, drop=FALSE] %*% beta[, i, drop=FALSE] / tmpCov[p + 1, p + 1]
   })
+  
+  R2<-sapply(R2,function(x){max(min(x,1),0)}) #capping the R2 value between 0 and 1.
   
   muBeta <- sapply(seq_len(p), function(j) {
     if (!is.function(muList[[j]])) { # scalar mean
@@ -280,14 +282,14 @@ uniCov <- function(X, Y, userBwCov, outGrid, kern='gauss', rmDiag=FALSE, center=
                         Y[['Ly']], Y[['Lt']], Ymu, rmDiag=rmDiag, kern=kern)
       gd <- tmp[['smoothGrid']]
       res <- matrix(
-              interp2lin(as.numeric(gd[, 1]), 
-                         as.numeric(gd[, 2]), 
-                         matrix(as.numeric(tmp[['smoothedCC']]),
-                                nrow(tmp[['smoothedCC']]),
-                                ncol(tmp[['smoothedCC']])), 
-                         rep(as.numeric(outGrid), times=noutGrid), 
-                         rep(as.numeric(outGrid), each=noutGrid)), 
-              noutGrid, noutGrid)
+        interp2lin(as.numeric(gd[, 1]), 
+                   as.numeric(gd[, 2]), 
+                   matrix(as.numeric(tmp[['smoothedCC']]),
+                          nrow(tmp[['smoothedCC']]),
+                          ncol(tmp[['smoothedCC']])), 
+                   rep(as.numeric(outGrid), times=noutGrid), 
+                   rep(as.numeric(outGrid), each=noutGrid)), 
+        noutGrid, noutGrid)
     }
     attr(res, 'covType') <- 'FF'
   }
@@ -363,3 +365,4 @@ lengthVars <- function(vars, subset) {
   
   return(len)
 }
+
