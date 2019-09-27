@@ -1,6 +1,6 @@
 #' Convert support of a mu/phi/cov etc. to and from obsGrid and workGrid
 #' 
-#' Convert the support of a given function 1-D or 2-D function from 'fromGrd' to 'toGrid'.
+#' Convert the support of a given function 1-D or 2-D function from \code{fromGrid} to \code{toGrid}.
 #' Both grids need to be sorted. This is an interpolation/convenience function.
 #' 
 #' @param fromGrid vector of points with input grid to interpolate from

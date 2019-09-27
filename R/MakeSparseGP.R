@@ -9,7 +9,7 @@
 #' @param K scalar specifying the number of basis to be used (default: 2).
 #' @param lambda vector of size K specifying the variance of each components (default: rep(1,K)).
 #' @param sigma The standard deviation of the Gaussian noise added to each observation points.
-#' @param basisType string specifiying the basis type used; possible options are: 'sin', 'cos' and 'fourier' (default: 'cos') (See code of 'CreateBasis' for implementation details.)
+#' @param basisType string specifying the basis type used; possible options are: 'sin', 'cos' and 'fourier' (default: 'cos') (See code of 'CreateBasis' for implementation details.)
 #' @param CovFun an alternative specification of the covariance structure.
 #'
 #' @return TODO

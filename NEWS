@@ -1,3 +1,9 @@
+fdapace v0.5.1 (Release date: 26-Sep-2019)
+=============
+Changes:
+* Reset the default working grid of FPCA.
+* Multiple minor bug fixes.
+
 fdapace v0.5.0 (Release date: 21-Aug-2019)
 =============
 New functionality:

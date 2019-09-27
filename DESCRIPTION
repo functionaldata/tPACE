@@ -3,9 +3,9 @@ Type: Package
 Title: Functional Data Analysis and Empirical Dynamics
 URL: https://github.com/functionaldata/tPACE
 BugReports: https://github.com/functionaldata/tPACE/issues
-Version: 0.5.0
+Version: 0.5.1
 Encoding:  UTF-8
-Date: 2019-08-20,
+Date: 2019-09-26,
 Authors@R: c(person("Yaqing","Chen", email="yaqchen@ucdavis.edu", role=c("aut","cre")),
     person("Cody","Carroll", email="cjcarroll@ucdavis.edu", role=c("aut")),
     person("Xiongtao","Dai", email="dai@ucdavis.edu", role=c("aut")),
@@ -14,6 +14,7 @@ Authors@R: c(person("Yaqing","Chen", email="yaqchen@ucdavis.edu", role=c("aut","
     person("Kyunghee","Han", role="aut"),
     person("Hao","Ji", role=c("aut")),
     person("Shu-Chin", "Lin", role="ctb"),
+    person("Paromita", "Dubey", role="ctb"),
     person("Hans-Georg", "Mueller", role=c("cph","ths","aut")),
     person("Jane-Ling", "Wang", role=c("cph","ths","aut"))) 
 Maintainer: Yaqing Chen <yaqchen@ucdavis.edu>
@@ -30,7 +31,7 @@ Description: A versatile package that provides implementation of various
     flexible alternative to random effects modeling of longitudinal data. There is also a
     Matlab version (PACE) that contains some methods not available on fdapace and vice
     versa. Please cite our package if you use it (You may run the command
-    devtools::citation("fdapace") to get the citation format and bibtex entry).
+    citation("fdapace") to get the citation format and bibtex entry).
     References: Wang, J.L., Chiou, J., Müller, H.G. (2016) <doi:10.1146/annurev-statistics-041715-033624>;
     Chen, K., Zhang, X., Petersen, A., Müller, H.G. (2017) <doi:10.1007/s12561-015-9137-5>.
 License: BSD_3_clause + file LICENSE

@@ -44,7 +44,7 @@ Available derivation control options are
 Available confidence interval/band control options are 
 \describe{
 \item{alpha}{Significant level for confidence interval/band for trajectory coverage. default=0.05 (currently only work when p=0)}
-\item{cvgMethod}{Option for trajectory coverage method between 'interval' and 'band'. default='band'}
+\item{cvgMethod}{Option for trajectory coverage method between 'interval' (pointwise coverage) and 'band' (simultaneous coverage). default='band'}
 }
 }
 \examples{

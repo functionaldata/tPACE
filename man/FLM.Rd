@@ -7,11 +7,11 @@
 FLM(Y, X, XTest = NULL, optnsListY = NULL, optnsListX = NULL)
 }
 \arguments{
-\item{Y}{Either n \emph{n}-dimensional vector whose elements consist of scalar responses, or a list which contains functional responses and the time points at which they are observed.}
+\item{Y}{Either an \emph{n}-dimensional vector whose elements consist of scalar responses, or a list which contains functional responses and the time points at which they are observed.}
 
 \item{X}{A list which contains the observed functional predictors.}
 
-\item{XTest}{A list which contains the functional predictors for which we are interested in predicting.}
+\item{XTest}{A list which contains the values of functional predictors for a held-out testing set.}
 
 \item{optnsListY}{A list of options control parameters for the response specified by \code{list(name=value)}. See `Details' in  \code{FPCA}.}
 

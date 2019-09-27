@@ -7,9 +7,9 @@
 MakeFPCAInputs(IDs = NULL, tVec, yVec, na.rm = FALSE, sort = FALSE)
 }
 \arguments{
-\item{IDs}{n-by-1 vector of subject IDs (Default: NULL)}
+\item{IDs}{np-by-1 vector of subject IDs (Default: NULL)}
 
-\item{tVec}{Either an n-by-1 vector of measurement times, or a p-by-1 vector corresponding to the common time support}
+\item{tVec}{Either an np-by-1 vector of measurement times, or a p-by-1 vector corresponding to the common time support}
 
 \item{yVec}{n-by-1 vector of measurements from the variable of interest, or a n-by-p matrix with each row corresponding to the dense observations.}
 

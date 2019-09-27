@@ -23,7 +23,7 @@ MakeSparseGP(n, rdist = runif, sparsity = 2:9, muFun = function(x)
 
 \item{sigma}{The standard deviation of the Gaussian noise added to each observation points.}
 
-\item{basisType}{string specifiying the basis type used; possible options are: 'sin', 'cos' and 'fourier' (default: 'cos') (See code of 'CreateBasis' for implementation details.)}
+\item{basisType}{string specifying the basis type used; possible options are: 'sin', 'cos' and 'fourier' (default: 'cos') (See code of 'CreateBasis' for implementation details.)}
 
 \item{CovFun}{an alternative specification of the covariance structure.}
 }

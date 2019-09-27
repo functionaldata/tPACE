@@ -21,6 +21,6 @@ ConvertSupport(fromGrid, toGrid, mu = NULL, Cov = NULL, phi = NULL,
 \item{isCrossCov}{logical, indicating whether the input covariance is a cross-covariance. If so then the output is not made symmetric.}
 }
 \description{
-Convert the support of a given function 1-D or 2-D function from 'fromGrd' to 'toGrid'.
+Convert the support of a given function 1-D or 2-D function from \code{fromGrid} to \code{toGrid}.
 Both grids need to be sorted. This is an interpolation/convenience function.
 }

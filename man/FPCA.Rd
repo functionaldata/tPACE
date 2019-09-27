@@ -32,7 +32,7 @@ A list containing the following fields:
 \item{rho}{A regularizing scalar for the measurement error variance estimate.}
 \item{cumFVE}{A vector with the percentages of the total variance explained by each FPC. Increase to almost 1.}
 \item{FVE}{A percentage indicating the total variance explained by chosen FPCs with corresponding 'FVEthreshold'.}
-\item{criterionValue}{A scalar specifying the criterion value obtained by the selected number of components with specific methodSelectK: FVE,AIC,BIC values or NULL for fixedK.}
+\item{criterionValue}{A scalar specifying the criterion value obtained by the selected number of components with specific methodSelectK: FVE, AIC, BIC values or NULL for fixed K.}
 \item{inputData}{A list containing the original 'Ly' and 'Lt' lists used as inputs to FPCA. NULL if 'lean' was specified to be TRUE.}
 }
 \description{

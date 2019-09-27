@@ -20,7 +20,7 @@ MakeGPFunctionalData(n, M = 100, mu = rep(0, M), K = 2,
 
 \item{sigma}{The standard deviation of the Gaussian noise added to each observation points.}
 
-\item{basisType}{string specifiying the basis type used; possible options are: 'sin', 'cos' and 'fourier' (default: 'cos') (See code of 'CreateBasis' for implementation details.)}
+\item{basisType}{string specifying the basis type used; possible options are: 'sin', 'cos' and 'fourier' (default: 'cos') (See code of 'CreateBasis' for implementation details.)}
 }
 \value{
 Y: X(t_{j}), Yn: noisy observations
