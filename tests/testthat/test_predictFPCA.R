@@ -51,7 +51,7 @@ test_that('consistent estimates for sparse case using CE', {
   CCC <- predict(resC, newLy = sampWiener$Ly,newLt =  sampWiener$Lt, K = testK)
   
   expect_lt( max( abs(colMeans(CCC - resC$xiEst[,1:testK]) ) - 1.96 * apply(CCC - resC$xiEst[,1:testK],2,sd) ), .Machine$double.eps)  
-  expect_gt( min( abs(diag(cor(CCC , resC$xiEst[,1:testK])) ) ), 0.99999)  
+  expect_gt( min( abs(diag(cor(CCC , resC$xiEst[,1:testK])) ) ), 0.9999)  
   
 })
 
