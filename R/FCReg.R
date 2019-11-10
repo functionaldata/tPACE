@@ -1,6 +1,6 @@
 #' Functional Concurrent Regression using 2D smoothing 
 #' 
-#' Functional concurrent regression with dense or sparse functional data for scalar or functional dependent variable. 
+#' Functional concurrent regression with dense or sparse functional data for scalar or functional dependent variables. Note: function-to-scalar regression can also be handled using the VCAM function in fdapace. 
 #' 
 #' @param vars A list of input functional/scalar covariates. Each field corresponds to a functional (a list) or scalar (a vector) covariate. The last entry is assumed to be the response if no entry is names 'Y'. If a field corresponds to a functional covariate, it should have two fields: 'Lt', a list of time points, and 'Ly', a list of function values.
 #' @param userBwMu A scalar with bandwidth used for smoothing the mean

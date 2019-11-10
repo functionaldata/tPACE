@@ -1,0 +1,43 @@
+
+R version 3.6.0 (2019-04-26) -- "Planting of a Tree"
+Copyright (C) 2019 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> # # Based on https://github.com/hadley/testthat#integration-with-r-cmd-check
+> 
+> # Splitting test files into multiple ones so that each one runs within 10 mins,
+> # which is the limit on travis CI.
+> # This file contains the slow running tests.
+> 
+> library(testthat)
+> library(fdapace)
+> 
+> if (Sys.getenv('TRAVIS') != 'true') { 
++ test_check("fdapace", filter='FClust', perl=TRUE) #
++ test_check("fdapace", filter='FSVD', perl=TRUE) # over 10 min
++ test_check("fdapace", filter='FPCA', perl=TRUE) # over 10 min
++ test_check("fdapace", filter='FVPA', perl=TRUE) # over 10 min
++ test_check("fdapace", filter='FCReg', perl=TRUE) #
++ test_check("fdapace", filter='FOptDes', perl=TRUE) #
++ test_check("fdapace", filter='GetCrCovYX', perl=TRUE) # over 10 min
++ test_check("fdapace", filter='selectK', perl=TRUE) #
++ test_check("fdapace", filter='WFDA', perl=TRUE) #
++ }
+══ testthat results  ═══════════════════════════════════════════════════════════
+OK: 3 SKIPPED: 0 WARNINGS: 0 FAILED: 0
+══ testthat results  ═══════════════════════════════════════════════════════════
+OK: 24 SKIPPED: 0 WARNINGS: 0 FAILED: 0
+
+Execution halted

@@ -27,7 +27,7 @@ GetMeanDense <- function(ymat, obsGrid, optns){
   }
 
   if(any(is.na(mu))){
-      stop('The cross sectional mean is appears to have NaN! Consider setting your dataType to \'Sparse\' manually')
+      stop('The cross sectional mean appears to have NaN! Consider setting your dataType to \'Sparse\' manually')
   }
 
   ret = list('mu' = mu, 'muDense' = NULL, 'mu_bw' = NULL)
