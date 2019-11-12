@@ -3,7 +3,7 @@ Type: Package
 Title: Functional Data Analysis and Empirical Dynamics
 URL: https://github.com/functionaldata/tPACE
 BugReports: https://github.com/functionaldata/tPACE/issues
-Version: 0.5.1
+Version: 0.5.2
 Encoding:  UTF-8
 Date: 2019-09-26,
 Authors@R: c(person("Yaqing","Chen", email="yaqchen@ucdavis.edu", role=c("aut","cre")),

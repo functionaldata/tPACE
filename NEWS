@@ -1,3 +1,9 @@
+fdapace v0.5.2 (Release date: 12-Nov-2019)
+=============
+Changes:
+* Updated documentation for FPCA, FCReg, and VCAM.
+* Multiple minor bug fixes and improvements for user friendliness.
+
 fdapace v0.5.1 (Release date: 26-Sep-2019)
 =============
 Changes:
