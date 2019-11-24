@@ -131,7 +131,7 @@ FLM <- function(Y,X,XTest=NULL,optnsListY=NULL,optnsListX=NULL){
     tmpLy <- X[[j]]$Ly
     tmpLt <- X[[j]]$Lt
     
-    tmpFPCA <- FPCA(tmpLy, tmpLt, optns = optnsListX[j])
+    tmpFPCA <- FPCA(tmpLy, tmpLt, optns = optnsListX)
     
     estXij <- tmpFPCA$xiEst
     dj[j] <- length(tmpFPCA$lambda)

@@ -517,3 +517,62 @@ test_that('Sparse, functional response case works', {
   # expect_lt(sparsePredErr, 3) 
 })
 
+
+test_that('nRegGrid works', {
+  set.seed(1000)
+  
+  library(MASS)
+  
+  ### functional covariate
+  phi1 <- function(t,k) sqrt(2)*sin(2*pi*k*t)
+  phi2 <- function(t,k) sqrt(2)*cos(2*pi*k*t)
+  
+  lambdaX <- c(1,0.7)
+  
+  # training set
+  n <- 100
+  Xi <- matrix(rnorm(2*n),nrow=n,ncol=2)
+  
+  denseLt <- list(); denseLy <- list()
+
+  t0 <- seq(0,1,length.out=51)
+  for (i in 1:n) {
+    denseLt[[i]] <- t0
+    denseLy[[i]] <- lambdaX[1]*Xi[i,1]*phi1(t0,1) + lambdaX[2]*Xi[i,2]*phi1(t0,2)
+  }
+  
+  denseX <- list(Ly=denseLy,Lt=denseLt)
+
+  denseX <- list(X=denseX)
+
+  # test set
+  N <- 500
+  
+  XiTest <- matrix(rnorm(2*N),nrow=N,ncol=2)
+  
+  denseLtTest <- list(); denseLyTest <- list()
+  
+
+  t0 <- seq(0,1,length.out=51)
+  for (i in 1:N) {
+    denseLtTest[[i]] <- t0
+    denseLyTest[[i]] <- lambdaX[1]*XiTest[i,1]*phi1(t0,1) + lambdaX[2]*XiTest[i,2]*phi1(t0,2)
+  }
+  
+  denseXTest <- list(Ly=denseLyTest,Lt=denseLtTest)
+
+  denseXTest <- list(X=denseXTest)
+
+  
+  ### scalar response
+  beta <- c(1, -1)
+  Y <- c(Xi%*%diag(lambdaX)%*%beta) + rnorm(n,0,0.5)
+  YTest <- c(XiTest%*%diag(lambdaX)%*%beta) + rnorm(N,0,0.5)
+  
+  ## dense
+  denseFLM <- FLM(Y=Y,X=denseX,XTest=denseXTest,optnsListX=list(FVEthreshold=0.95,nRegGrid=100))
+  
+  expect_equal(length(denseFLM$workGridX[[1]]), 100)
+})
+
+
