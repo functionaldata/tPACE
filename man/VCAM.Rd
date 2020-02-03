@@ -3,7 +3,7 @@
 \name{VCAM}
 \alias{VCAM}
 \title{Sieve estimation:
-B-spline based estimation procedure for time-varying additive models}
+B-spline based estimation procedure for time-varying additive models. The VCAM function can be used to perform function-to-scalar regression.}
 \usage{
 VCAM(Lt, Ly, X, optnAdd = list(), optnVc = list())
 }
@@ -30,7 +30,7 @@ A list containing the following fields:
 }
 \description{
 Sieve estimation:
-B-spline based estimation procedure for time-varying additive models
+B-spline based estimation procedure for time-varying additive models. The VCAM function can be used to perform function-to-scalar regression.
 }
 \details{
 \code{VCAM} provides a simple algorithm based on B-spline basis to estimate its nonparametric additive and varying-coefficient components.

@@ -71,7 +71,7 @@ Available control options are
 \item{rotationCut}{The 2-element vector in [0,1] indicating the percent of data truncated during sigma^2 estimation; default  (0.25, 0.75))}
 \item{useBinnedData}{Should the data be binned? 'FORCE' (Enforce the # of bins), 'AUTO' (Select the # of  bins automatically), 'OFF' (Do not bin) - default: 'AUTO'}
 \item{useBinnedCov}{Whether to use the binned raw covariance for smoothing; logical - default:TRUE}
-\item{usergrid}{Whether to use observation grid for fitting, if false will use equidistant grid. logical - default:TRUE}
+\item{usergrid}{Whether to use observation grid for fitting, if false will use equidistant grid. logical - default:FALSE}
 \item{userCov}{The user-defined smoothed covariance function; list of two elements: numerical vector 't' and matrix 'cov', 't' must cover the support defined by 'Ly' - default: NULL}
 \item{userMu}{The user-defined smoothed mean function; list of two numerical vector 't' and 'mu' of equal size, 't' must cover the support defined 'Ly' - default: NULL}
 \item{userSigma2}{The user-defined measurement error variance. A positive scalar. If specified then no regularization is used (rho is set to 'no', unless specified otherwise). Default to `NULL`}

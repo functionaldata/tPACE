@@ -28,11 +28,9 @@ FCReg(vars, userBwMu, userBwCov, outGrid, kern = "gauss",
 
 \item{returnCov}{Indicator to return the covariance surfaces, which is a four dimensional array. The first two dimensions correspond to outGrid
 and the last two correspond to the covariates and the response, i.e. (i, j, k, l) entry being Cov(X_k(t_i), X_l(t_j)) (default: FALSE)}
-
-\item{...}{Additional arguments}
 }
 \description{
-Functional concurrent regression with dense or sparse functional data for scalar or functional dependent variable.
+Functional concurrent regression with dense or sparse functional data for scalar or functional dependent variables. Note: function-to-scalar regression can also be handled using the VCAM function in fdapace.
 }
 \details{
 If measurement error is assumed, the diagonal elements of the raw covariance will be removed. This could result in highly unstable estimate if the design is very sparse, or strong seasonality presents.
