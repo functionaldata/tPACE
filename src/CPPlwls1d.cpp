@@ -69,7 +69,7 @@ Eigen::VectorXd CPPlwls1d( const double & bw, const std::string kernel_type, con
   //   Rcpp::stop("The X-grid used is not sorted. (or you have less than 6 points)");
   // }
   if ( !(std::is_sorted(xin.data(), xin.data() + nXGrid)) ){
-    Rcpp::stop("The X-grid used is not sorted. (or you have less than 6 points)");
+    Rcpp::stop("The X-grid used is not sorted.");
   }
 
 
