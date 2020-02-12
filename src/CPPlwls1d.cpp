@@ -44,7 +44,7 @@ Eigen::VectorXd CPPlwls1d( const double & bw, const std::string kernel_type, con
     Rcpp::stop("The degree of polynomial supplied for 1-D smoothing is less than the order of derivative");
   }
 
-  // Map the kernel name so we can use switches  
+  // Map the kernel name so we can use switches
   std::map<std::string,int> possibleKernels;
   possibleKernels["epan"]    = 1;   possibleKernels["rect"]    = 2;
   possibleKernels["gauss"]   = 3;   possibleKernels["gausvar"] = 4;
@@ -55,19 +55,24 @@ Eigen::VectorXd CPPlwls1d( const double & bw, const std::string kernel_type, con
   if ( possibleKernels.count( kernel_type ) != 0){
     KernelName = possibleKernels.find( kernel_type )->second; //Set kernel choice
   } else {
-  // otherwise use "epan"as the kernel_type 
+  // otherwise use "epan"as the kernel_type
     Rcpp::warning("Kernel_type argument was not set correctly; Epanechnikov kernel used.");
     KernelName = possibleKernels.find( "epan" )->second;;
   }
 
   // Check that we do not have zero weights // Should do a try-catch here
-  if ( !(win.all()) ){  // 
+  if ( !(win.all()) ){  //
     Rcpp::warning("Cases with zero-valued windows maybe not be too safe.");
   }
   // Check if the first 5 elements are sorted // Very rough check // Will use issorted in the future
-  if ( (xin[0]> xin[1]) ||  (xin[1]> xin[2]) ||  (xin[2]> xin[3]) ||  (xin[3]> xin[4]) ||  (xin[4]> xin[5]) ){
+  // if ( (xin[0]> xin[1]) ||  (xin[1]> xin[2]) ||  (xin[2]> xin[3]) ||  (xin[3]> xin[4]) ||  (xin[4]> xin[5]) ){
+  //   Rcpp::stop("The X-grid used is not sorted. (or you have less than 6 points)");
+  // }
+  if ( !(std::is_sorted(xin.data(), xin.data() + nXGrid)) ){
     Rcpp::stop("The X-grid used is not sorted. (or you have less than 6 points)");
   }
+
+
 
   // The checks end here.
   // ===================
@@ -115,8 +120,8 @@ Eigen::VectorXd CPPlwls1d( const double & bw, const std::string kernel_type, con
 
 
     Eigen::VectorXd llx = (lx.array() -xout(i)) * (1./bw) ;
-     
-    //define the kernel used 
+
+    //define the kernel used
     switch (KernelName){
       case 1: // Epan
         temp = (1-llx.array().pow(2))*0.75*(lw.array());
@@ -133,7 +138,7 @@ Eigen::VectorXd CPPlwls1d( const double & bw, const std::string kernel_type, con
                (1.25 - (0.25 * (llx.array().pow(2))).array());
         break;
       case 5 :  // Quar
-        temp = (lw.array()) * 
+        temp = (lw.array()) *
                ((1.-llx.array().pow(2)).array().pow(2)).array() * (15./16.);
         break;
     }
@@ -165,7 +170,7 @@ Eigen::VectorXd CPPlwls1d( const double & bw, const std::string kernel_type, con
       //  Rcpp::Rcout << "factorials[nder]: " << factorials[nder]  << std::endl;
       //  Rcpp::Rcout << "pow (-1.0, nder): " << pow (-1.0, nder) << std::endl;
 
-      result(i) = beta(nder+0) * factorials[nder] *  std::pow(-1.0, int(nder));       
+      result(i) = beta(nder+0) * factorials[nder] *  std::pow(-1.0, int(nder));
     }
   }
   return result;
