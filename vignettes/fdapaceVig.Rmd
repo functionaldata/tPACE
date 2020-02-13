@@ -2,7 +2,8 @@
 title: "Functional PCA in R"
 author: "Hadjipantelis, Dai, Ji, Han, Muller & Wang - UC Davis, USA"
 date: "1 December 2017"
-bibliography: roxygen.bib
+bibliography: 
+  - roxygen.bib
 output: html_document
 vignette: >
   %\VignetteIndexEntry{Introduction to fdapace}
@@ -16,8 +17,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ##  Overview 
 
-The basic work-flow behind the PACE approach for sparse functional data is as follows (see eg. [@Yao05; @Liu09] for more information):
- 
+For a general overview on functional data analysis (FDA) see [@Wang16] and key references for the PACE approach and the associated dynamics are [@Yao03; @Yao05; @Liu09; @Yao10; @Li10; @Zhang16; @Zhang18]. The basic work-flow behind the PACE approach for sparse functional data is as follows (see e.g. [@Yao05; @Liu09] for more information):
+
 1. Calculate the smoothed mean $\hat{\mu}$ (using local linear smoothing) aggregating all the available readings together.
 2. Calculate for each curve separately its own raw covariance and then aggregate all these raw covariances to generate the sample raw covariance.
 3. Use the off-diagonal elements of the sample raw covariance to estimate the smooth covariance.
@@ -184,23 +185,6 @@ par(mfrow=c(1,2))
   CreatePathPlot(fpcaObjFlies, subset = c(3,5,135), K = 3, main = 'K = 3', showObs = FALSE, derOptns = list(p = 1, bw = 1.01 , kernelType = 'epan') ) ; grid()
 ``` 
 
-We note that if finite support kernel types are used (eg.  <tt>`rect`</tt> or  <tt>`epan`</tt> ), bandwidths smaller than the distance between two adjacent points over which the data are registered onto will lead to (expected)  <tt>`NaN`</tt> estimates. In case of dense data, the grid used is (by default) equal to the grid the data were originally registered on; in the case of sparse data, the grid used (by default) spans the range of the sample's supports and uses 51 points. A user can change the number of points using the argument  <tt>`nRegGrid`</tt> .
-One can investigate the effect a particular kernel type ( <tt>`kernelType`</tt> ) or bandwidth size (<tt>`bw`</tt>) has on the generated derivatives by using the function <tt>`CreateBWPlot`</tt>  and providing a relevant  <tt>`derOptns`</tt> list. This will generate estimates about the mean function $\mu(t)$ as well as the first two principal modes of variation $\phi_1(t)$ and $\phi_2(t)$ for different multiples of  <tt>`bw`</tt>.
-
-```{r,eval=TRUE, echo=TRUE}
-fpcaObjFlies79 <- FPCA(Flies$Ly, Flies$Lt, list(nRegGrid = 79, methodMuCovEst = 'smooth', userBwCov = 2)) # Use 79 equidistant points for the support
-CreateBWPlot(fpcaObjFlies79 , derOptns = list(p = 1, bw = 2.0 , kernelType = 'rect') )
-```
-
-As the   <tt>`medfly`</tt>   sample is dense we can immediately use standard multivariate clustering functionality to identify potential subgroups within it; the function  <tt>`FClust`</tt>   is the wrapper around the clustering functionality provided by   <tt>`fdapace`</tt>.  By default  <tt>`FClust`</tt>  utilises a Gaussian Mixture Model approach based on the package  <tt>`Rmixmod`</tt>  [@Biernacki2006], as a general rule clustering optimality is based on negative entropy criterion. In the  <tt>`medfly`</tt> dataset clustering the data allows to immediately recognise a particular subgroup of flies that lay no or very few eggs during the period examined.
- 
-
-```{r,eval=TRUE, echo=TRUE}
-A <- FClust(Flies$Ly, Flies$Lt, optnsFPCA = list(methodMuCovEst = 'smooth', userBwCov = 2, FVEthreshold = 0.90), k = 2)
-# The Neg-Entropy Criterion can be found as: A$clusterObj@bestResult@criterionValue 
-CreatePathPlot( fpcaObjFlies, K=2, showObs=FALSE, lty=1, col= A$cluster, xlab = 'Days', ylab = '# of eggs laid')
-grid()
-```
 
 ## References
 
