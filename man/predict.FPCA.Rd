@@ -30,6 +30,7 @@ A matrix of size n-by-K
 Return a matrix with the first K FPC scores according to conditional expectation or numerical integration.
 }
 \examples{
+\donttest{
 set.seed(1)
 n <- 50
 pts <- seq(0, 1, by=0.05)
@@ -41,5 +42,6 @@ test <- Sparsify(sampWiener[seq(n + 1, 2 * n), , drop=FALSE], pts, sparsity)
 res <- FPCA(train$Ly, train$Lt)
 pred <- predict(res, test$Ly, test$Lt, K=5)
 plot(pred[, 1], pred[, 2])
+}
 
 }

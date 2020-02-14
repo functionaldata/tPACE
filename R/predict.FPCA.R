@@ -14,6 +14,7 @@
 #' @return  A matrix of size n-by-K 
 #'
 #' @examples
+#' \donttest{
 #' set.seed(1)
 #' n <- 50
 #' pts <- seq(0, 1, by=0.05)
@@ -25,7 +26,8 @@
 #' res <- FPCA(train$Ly, train$Lt)
 #' pred <- predict(res, test$Ly, test$Lt, K=5)
 #' plot(pred[, 1], pred[, 2])
-#'
+#' }
+#' 
 #' @method predict FPCA
 #' @export
 

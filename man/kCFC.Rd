@@ -34,11 +34,13 @@ A list containing the following fields:
 Functional clustering and identifying substructures of longitudinal data using kCFC.
 }
 \examples{
+\donttest{
 data(medfly25) 
 Flies <- MakeFPCAInputs(medfly25$ID, medfly25$Days, medfly25$nEggs)
 kcfcObj <- kCFC(Flies$Ly[1:150], Flies$Lt[1:150], # using only 150 for speed consideration 
                  optnsSW = list(methodMuCovEst = 'smooth', userBwCov = 2, FVEthreshold = 0.90),
                  optnsCS = list(methodMuCovEst = 'smooth', userBwCov = 2, FVEthreshold = 0.70))
+}
 }
 \references{
 \cite{Jeng-Min Chiou, Pai-Ling Li, "Functional clustering and identifying substructures of longitudinal data." Journal of the Royal Statistical Society 69 (2007): 679-699}
