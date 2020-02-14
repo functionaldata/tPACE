@@ -15,7 +15,7 @@
 #' res <- FPCA(sampWiener$Ly, sampWiener$Lt)
 #' res
 #' }
-#'
+#' 
 #' @method print FPCA
 #' @export
 print.FPCA <- function(x, ...){
