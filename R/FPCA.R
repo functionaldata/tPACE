@@ -34,6 +34,7 @@
 #' \item{methodSelectK}{The method of choosing the number of principal components K; 'FVE','AIC','BIC', or a positive integer as specified number of components: default 'FVE')}
 #' \item{shrink}{Whether to use shrinkage method to estimate the scores in the dense case (see Yao et al 2003) - default FALSE}
 #' \item{outPercent}{A 2-element vector in [0,1] indicating the outPercent data in the boundary - default (0,1)}
+#' \item{rho}{The truncation threshold for the iterative residual. 'cv': choose rho by leave-one-observation out cross-validation; 'no': no regularization - default "cv" if error == TRUE, and "no" if error == FALSE.}
 #' \item{rotationCut}{The 2-element vector in [0,1] indicating the percent of data truncated during sigma^2 estimation; default  (0.25, 0.75))}
 #' \item{useBinnedData}{Should the data be binned? 'FORCE' (Enforce the # of bins), 'AUTO' (Select the # of  bins automatically), 'OFF' (Do not bin) - default: 'AUTO'}
 #' \item{useBinnedCov}{Whether to use the binned raw covariance for smoothing; logical - default:TRUE}
@@ -60,6 +61,7 @@
 #' \item{timings}{A vector with execution times for the basic parts of the FPCA call.}
 #' \item{bwMu}{The selected (or user specified) bandwidth for smoothing the mean function.}
 #' \item{bwCov}{The selected (or user specified) bandwidth for smoothing the covariance function.}
+#' \item{rho}{A regularizing scalar for the measurement error variance estimate.}
 #' \item{cumFVE}{A vector with the percentages of the total variance explained by each FPC. Increase to almost 1.}
 #' \item{FVE}{A percentage indicating the total variance explained by chosen FPCs with corresponding 'FVEthreshold'.}
 #' \item{criterionValue}{A scalar specifying the criterion value obtained by the selected number of components with specific methodSelectK: FVE, AIC, BIC values or NULL for fixed K.}
@@ -106,9 +108,6 @@ FPCA = function(Ly, Lt, optns = list()){
 
   # Set the options structure members that are still NULL
   optns = SetOptions(Ly, Lt, optns);
-  
-  # tentatively eliminate the second shrinkage
-  optns$rho <- "no"
   
   # Check the options validity for the PCA function. 
   numOfCurves = length(Ly);
@@ -241,7 +240,7 @@ FPCA = function(Ly, Lt, optns = list()){
   ret <- MakeResultFPCA(optns, smcObj, muObs, scsObj, eigObj, 
                         inputData = inputData, 
                         scoresObj, truncObsGrid, workGrid, 
-                        #rho = if (optns$rho != 'no') rho else NULL, 
+                        rho = if (optns$rho != 'no') rho else NULL, 
                         fitLambda=fitLambda, 
                         timestamps = c(lasttsMu, lasttsCov, lasttsPACE, firsttsFPCA, firsttsMu, firsttsCov, firsttsPACE) )
   
