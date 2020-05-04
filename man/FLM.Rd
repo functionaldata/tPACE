@@ -9,7 +9,7 @@ FLM(Y, X, XTest = NULL, optnsListY = NULL, optnsListX = NULL)
 \arguments{
 \item{Y}{Either an \emph{n}-dimensional vector whose elements consist of scalar responses, or a list which contains functional responses in the form of a list LY and the time points LT at which they are observed (i.e., list(Ly = LY,Lt = LT)).}
 
-\item{X}{A list of lists which contains the observed functional predictors list Lxi and the time points list Lti at which they are observed. It needs to be of the form \code{list(list(Ly = Lx1,Lt = Lxt1),list(Ly = Lx2,Lt = Lxt2),...)}}
+\item{X}{A list of lists which contains the observed functional predictors list Lxj and the time points list Ltj at which they are observed. It needs to be of the form \code{list(list(Ly = Lx1,Lt = Lxt1),list(Ly = Lx2,Lt = Lxt2),...)}}
 
 \item{XTest}{A list which contains the values of functional predictors for a held-out testing set.}
 
@@ -20,9 +20,9 @@ FLM(Y, X, XTest = NULL, optnsListY = NULL, optnsListX = NULL)
 \value{
 A list of the following:
 \item{alpha}{A length-one numeric if the response Y is scalar. Or a vector of \code{length(workGridY)} of the fitted constant alpha(t) in the linear model if Y is functional.}
-\item{betaList}{A list of fitted beta(s) vectors, one per predictor, if Y is scalar. Each of dimension \code{length(workGridX[[i]])}.
+\item{betaList}{A list of fitted beta(s) vectors, one per predictor, if Y is scalar. Each of dimension \code{length(workGridX[[j]])}.
 
-Or a list of fitted beta(s,t) matrices, one per predictor, if Y is functional. Each of dimension \code{length(workGridX[[i]])} times \code{length(workGridY)}.
+Or a list of fitted beta(s,t) matrices, one per predictor, if Y is functional. Each of dimension \code{length(workGridX[[j]])} times \code{length(workGridY)}.
 }
 \item{yHat}{A length n vector if Y is scalar. 
 
