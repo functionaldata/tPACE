@@ -9,7 +9,6 @@ services:
 latex: false
 
 before_install:
-  - tlmgr update --self --all
   - tlmgr install listings 
   - export DISPLAY=:99.0
   - sudo apt-get update
