@@ -5,10 +5,10 @@ cache: packages
 sudo: false
 services:
   - xvfb
+  
+latex: false
 
 before_install:
-  - tlmgr update --self --all
-  - tlmgr install listings 
   - export DISPLAY=:99.0
   - sudo apt-get update
   - sudo apt-get install libglu1-mesa-dev freeglut3-dev mesa-common-dev
