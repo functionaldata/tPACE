@@ -25,7 +25,7 @@ addons:
       
 warnings_are_errors: false
 
-
+latex: false
 
 #before_script:
 #  - R -e 'install.packages("http://cran.r-project.org/src/contrib/Archive/Rcpp/Rcpp_0.12.7.tar.gz", repos = NULL)'
