@@ -14,29 +14,6 @@ rho <- 0.5
 fittedCov <- phi %*% diag(lambda) %*% t(phi)
 
 
-# RandTime
-test_that('RandTime is the same as getTimeID', 
-          expect_equal(RandTime(t, isRandom=FALSE), c(2, 1, 2)))
-
-
-# cvRho
-leaveOutInd <- RandTime(t, isRandom=FALSE)
-test_that('cvRho matches getScores2', 
-          expect_equal(cvRho(0.5, leaveOutInd, y, t, list(), mu, obsGrid,
-                             fittedCov, lambda, phi), 0.775069444444445))
-
-
-test_that('GetRho matches cv_rho.m', 
-          expect_equal(GetRho(y, t, list(), mu, obsGrid, fittedCov, lambda, phi, 0.01), 0.510049017252264)
-          )
-
-# test_that('cvRho for example.m are almost the same', {
-#   load(system.file('testdata', '200curvesByExampleSeed123.RData', package='fdapace'))
-#   load(system.file('testdata', 'exampleResultsFromMatlab.RData', package='fdapace'))
-#   tmpCov <- ConvertSupport(res$out21, res$out1, Cov=res$xcovfit)
-#   expect_equal(GetRho(y, t, list(), res$mu, res$out1, tmpCov, as.numeric(res$lambda), res$phi, as.numeric(res$sigma)), 0.939907526613129, tolerance=1e-2)
-# })
-
 test_that('Truncation works for GetRho', {
   set.seed(1)
   n <- 20
@@ -53,10 +30,9 @@ test_that('Truncation works for GetRho', {
   phiObs <- ConvertSupport(pts, truncPts, phi=eig4$phi)
   CovObs <- ConvertSupport(pts, truncPts, Cov=eig4$fittedCov)
   
-  rho4 <- GetRho(samp4Trunc$Ly, samp4Trunc$Lt, pTrunc, mu[1:length(truncPts)], truncPts, CovObs, eig4$lambda, phiObs, smc4$sigma2)
+  rho4 <- GetRho(samp4Trunc$Ly, samp4Trunc$Lt, pTrunc, mu[1:length(truncPts)],mu[1:length(truncPts)],truncPts, CovObs, eig4$lambda, phiObs, phiObs, truncPts,smc4$sigma2)
   expect_true(rho4 < 0.2)
 })
-
 # # Matlab code:
 # y{1} = [1, 2]; y{2} = [4]; y{3} = [0, 2, 3]
 # t{1} = [1.5, 2.5]; t{2} = [2]; t{3} = [1, 1.5, 2.5]

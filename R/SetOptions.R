@@ -28,7 +28,7 @@ SetOptions = function(y, t, optns){
   kernel =optns[['kernel']];            
   numBins =optns[['numBins']];
   yname =optns[['yname']];
-  rho =optns[['rho']];
+  methodRho =optns[['methodRho']];
   usergrid =optns[['usergrid']];
   userRho = optns[['userRho']];
   diagnosticsPlot =optns[['diagnosticsPlot']];
@@ -191,12 +191,12 @@ SetOptions = function(y, t, optns){
   if(is.null(plot)){ # make corrplot
     plot = FALSE;
   }
-  if(is.null(rho)){ # truncation threshold for the iterative residual that is used
+  if(is.null(methodRho)){ # truncation threshold for the iterative residual that is used
     # no regularization if sigma2 is specified or assume no measurement error.
     if (!is.null(userSigma2) || error == FALSE) { 
-      rho <- 'no'
+      methodRho <- 'no'
     } else {
-      rho <- 'cv'
+      methodRho <- 'trunc'
     }
   }
   if(is.null(userRho)){
@@ -254,7 +254,7 @@ SetOptions = function(y, t, optns){
           fitEigenValues = fitEigenValues, maxK = maxK, dataType = dataType, error = error, shrink = shrink,
           nRegGrid = nRegGrid, rotationCut = rotationCut, methodXi = methodXi, kernel = kernel, 
           lean = lean, diagnosticsPlot = diagnosticsPlot, plot=plot, numBins = numBins, useBinnedCov = useBinnedCov, 
-          usergrid = usergrid, yname = yname,  rho = rho, verbose = verbose, userMu = userMu, userCov = userCov, methodMuCovEst = methodMuCovEst,
+          usergrid = usergrid, yname = yname,  methodRho = methodRho, verbose = verbose, userMu = userMu, userCov = userCov, methodMuCovEst = methodMuCovEst,
           userRho = userRho, userSigma2 = userSigma2, outPercent = outPercent, useBinnedData = useBinnedData, useBW1SE = useBW1SE)
 
   invalidNames <- !names(optns) %in% names(retOptns)

@@ -34,7 +34,7 @@
 #' \item{methodSelectK}{The method of choosing the number of principal components K; 'FVE','AIC','BIC', or a positive integer as specified number of components: default 'FVE')}
 #' \item{shrink}{Whether to use shrinkage method to estimate the scores in the dense case (see Yao et al 2003) - default FALSE}
 #' \item{outPercent}{A 2-element vector in [0,1] indicating the outPercent data in the boundary - default (0,1)}
-#' \item{rho}{The truncation threshold for the iterative residual. 'cv': choose rho by leave-one-observation out cross-validation; 'no': no regularization - default "cv" if error == TRUE, and "no" if error == FALSE.}
+#' \item{methodRho}{The method of regularization (add to diagonal of covariance surface) in estimating principal component scores; 'trunc': rho is truncation of sigma2, 'ridge': rho is a ridge parameter, 'no': no regularization - default "trunc" if error == TRUE, and "no" if error == FALSE.}
 #' \item{rotationCut}{The 2-element vector in [0,1] indicating the percent of data truncated during sigma^2 estimation; default  (0.25, 0.75))}
 #' \item{useBinnedData}{Should the data be binned? 'FORCE' (Enforce the # of bins), 'AUTO' (Select the # of  bins automatically), 'OFF' (Do not bin) - default: 'AUTO'}
 #' \item{useBinnedCov}{Whether to use the binned raw covariance for smoothing; logical - default:TRUE}
@@ -101,29 +101,29 @@ FPCA = function(Ly, Lt, optns = list()){
   #Lt <- lapply(Lt, as.numeric)
   #Lt <- lapply(Lt, signif, 14)
   #inputData <- list(Ly=Ly, Lt=Lt);
-
+  
   inputData <- HandleNumericsAndNAN(Ly,Lt);
   Ly <- inputData$Ly;
   Lt <- inputData$Lt;
-
+  
   # Set the options structure members that are still NULL
   optns = SetOptions(Ly, Lt, optns);
   
   # Check the options validity for the PCA function. 
   numOfCurves = length(Ly);
   CheckOptions(Lt, optns,numOfCurves)
-
+  
   # Bin the data
   if ( optns$usergrid  == FALSE & optns$useBinnedData != 'OFF'){ 
-      BinnedDataset <- GetBinnedDataset(Ly,Lt,optns)
-      Ly = BinnedDataset$newy;
-      Lt = BinnedDataset$newt; 
-      optns[['nRegGrid']] <- min(optns[['nRegGrid']],
-                                 BinnedDataset[['numBins']])
-      inputData$Ly <- Ly
-      inputData$Lt <- Lt
+    BinnedDataset <- GetBinnedDataset(Ly,Lt,optns)
+    Ly = BinnedDataset$newy;
+    Lt = BinnedDataset$newt; 
+    optns[['nRegGrid']] <- min(optns[['nRegGrid']],
+                               BinnedDataset[['numBins']])
+    inputData$Ly <- Ly
+    inputData$Lt <- Lt
   }
-
+  
   # Generate basic grids:
   # obsGrid:  the unique sorted pooled time points of the sample and the new
   # data
@@ -139,12 +139,12 @@ FPCA = function(Ly, Lt, optns = list()){
   minGrid <- rangeGrid[1]
   maxGrid <- rangeGrid[2]
   cutRegGrid <- regGrid[regGrid > minGrid + diff(rangeGrid) * outPercent[1] -
-                        buff & 
-                        regGrid < minGrid + diff(rangeGrid) * outPercent[2] +
-                        buff]
-
+                          buff & 
+                          regGrid < minGrid + diff(rangeGrid) * outPercent[2] +
+                          buff]
+  
   ymat <- List2Mat(Ly, Lt)
-
+  
   ## Mean function
   # If the user provided a mean function use it
   firsttsMu <- Sys.time() #First time-stamp for calculation of the mean
@@ -157,24 +157,24 @@ FPCA = function(Ly, Lt, optns = list()){
   } else if (optns$methodMuCovEst == 'cross-sectional') { # cross-sectional mean
     smcObj = GetMeanDense(ymat, obsGrid, optns)
   }
-# mu: the smoothed mean curve evaluated at times 'obsGrid'
+  # mu: the smoothed mean curve evaluated at times 'obsGrid'
   mu <- smcObj$mu
   lasttsMu <- Sys.time()
   
   
   firsttsCov <- Sys.time() #First time-stamp for calculation of the covariance
-## Covariance function and sigma2
+  ## Covariance function and sigma2
   if (!is.null(optns$userCov) && optns$methodMuCovEst != 'smooth') { 
-      scsObj <- GetUserCov(optns, obsGrid, cutRegGrid, buff, ymat)
+    scsObj <- GetUserCov(optns, obsGrid, cutRegGrid, buff, ymat)
   } else if (optns$methodMuCovEst == 'smooth') {
-# smooth cov and/or sigma2
+    # smooth cov and/or sigma2
     scsObj = GetSmoothedCovarSurface(Ly, Lt, mu, obsGrid, regGrid, optns,
                                      optns$useBinnedCov) 
   } else if (optns$methodMuCovEst == 'cross-sectional') {
     scsObj = GetCovDense(ymat, mu, optns)
     if (length(obsGrid) != length(cutRegGrid) || !identical(obsGrid, cutRegGrid)) {
       scsObj$smoothCov = ConvertSupport(obsGrid, cutRegGrid, Cov =
-                                        scsObj$smoothCov)
+                                          scsObj$smoothCov)
     }
     scsObj$outGrid <- cutRegGrid
   }
@@ -183,40 +183,40 @@ FPCA = function(Ly, Lt, optns = list()){
   firsttsPACE <- Sys.time() #First time-stamp for calculation of PACE
   # workGrid: possibly truncated version of the regGrid
   workGrid <- scsObj$outGrid
-
+  
   
   # convert mu to truncated workGrid
   muWork <- ConvertSupport(obsGrid, toGrid = workGrid, mu=smcObj$mu)
   
   # Get the results for the eigen-analysis
   eigObj = GetEigenAnalysisResults(smoothCov = scsObj$smoothCov, workGrid, optns, muWork = muWork)
-
+  
   # Truncated obsGrid, and observations. Empty observation due to truncation has length 0.
   truncObsGrid <- obsGrid
   if (!all(abs(optns$outPercent - c(0, 1)) < .Machine$double.eps * 2)) {
     truncObsGrid <- truncObsGrid[truncObsGrid >= min(workGrid) - buff &
-                                 truncObsGrid <= max(workGrid) + buff]
+                                   truncObsGrid <= max(workGrid) + buff]
     tmp <- TruncateObs(Ly, Lt, truncObsGrid)
     Ly <- tmp$Ly
     Lt <- tmp$Lt
   }
-
+  
   # convert phi and fittedCov to obsGrid.
   muObs <- ConvertSupport(obsGrid, truncObsGrid, mu=mu)
   phiObs <- ConvertSupport(workGrid, truncObsGrid, phi=eigObj$phi)
   if (optns$methodXi == 'CE') {
     CovObs <- ConvertSupport(workGrid, truncObsGrid, Cov=eigObj$fittedCov)
   }
-
+  
   # Get scores  
   if (optns$methodXi == 'CE') {
-    if (optns$rho != 'no') { 
+    if (optns$methodRho != 'no') { 
       if( is.null(optns$userRho) ){
         if( length(Ly) > 2048 ){
           randIndx <- sample( length(Ly), 2048)
-          rho <- GetRho(Ly[randIndx], Lt[randIndx], optns, muObs, truncObsGrid, CovObs, eigObj$lambda, phiObs, sigma2)
+          rho <- GetRho(Ly[randIndx], Lt[randIndx], optns, muObs,muWork, truncObsGrid, CovObs, eigObj$lambda, phiObs,eigObj$phi,workGrid, sigma2)
         } else {
-          rho <- GetRho(Ly, Lt, optns, muObs, truncObsGrid, CovObs, eigObj$lambda, phiObs, sigma2)
+          rho <- GetRho(Ly, Lt, optns, muObs,muWork , truncObsGrid, CovObs, eigObj$lambda, phiObs,eigObj$phi,workGrid, sigma2)
         }
       } else {
         rho = optns$userRho;
@@ -228,7 +228,7 @@ FPCA = function(Ly, Lt, optns = list()){
     scoresObj <- mapply(function(yvec,tvec)
       GetINScores(yvec, tvec,optns= optns,obsGrid,mu = muObs,lambda =eigObj$lambda ,phi = phiObs,sigma2 = sigma2),Ly,Lt)
   }
-
+  
   if (optns$fitEigenValues) {
     fitLambda <- FitEigenValues(scsObj$rcov, workGrid, eigObj$phi, optns$maxK)
   } else {
@@ -240,7 +240,7 @@ FPCA = function(Ly, Lt, optns = list()){
   ret <- MakeResultFPCA(optns, smcObj, muObs, scsObj, eigObj, 
                         inputData = inputData, 
                         scoresObj, truncObsGrid, workGrid, 
-                        rho = if (optns$rho != 'no') rho else NULL, 
+                        rho = if (optns$methodRho != 'no') rho else 0, 
                         fitLambda=fitLambda, 
                         timestamps = c(lasttsMu, lasttsCov, lasttsPACE, firsttsFPCA, firsttsMu, firsttsCov, firsttsPACE) )
   
@@ -248,7 +248,7 @@ FPCA = function(Ly, Lt, optns = list()){
   if(optns$plot){
     plot.FPCA(ret)
   }
-
+  
   return(ret); 
 }
 

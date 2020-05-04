@@ -137,8 +137,8 @@ test_that('Noiseless example', {
   samp <- MakeGPFunctionalData(n, M, K=K, lambda=2^(-seq(1, K)))
   # matplot(t(samp$Y[1:10, ])) 
   sampList <- MakeFPCAInputs(tVec=samp$pts, yVec=samp$Y)
-  resIN <- FPCA(sampList$Ly, sampList$Lt, list(methodXi='IN', lean=TRUE, error=FALSE, rho='no'))
-  resCE <- FPCA(sampList$Ly, sampList$Lt, list(methodXi='CE', lean=TRUE, error=FALSE, rho='no'))
+  resIN <- FPCA(sampList$Ly, sampList$Lt, list(methodXi='IN', lean=TRUE, error=FALSE, methodRho='no'))
+  resCE <- FPCA(sampList$Ly, sampList$Lt, list(methodXi='CE', lean=TRUE, error=FALSE, methodRho='no'))
   
   expect_gt( abs( cor( samp$xi[,1] , resIN$xiEst[,1])),0.97)
   expect_gt( abs(cor( samp$xi[,2] , resIN$xiEst[,2])),0.97)
