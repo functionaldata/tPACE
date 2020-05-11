@@ -8,6 +8,8 @@ services:
   
 latex: false
 
+latex: false
+
 before_install:
   - export DISPLAY=:99.0
   - sudo apt-get update
@@ -24,7 +26,6 @@ addons:
       - texlive-latex-extra
       
 warnings_are_errors: false
-
 
 
 #before_script:

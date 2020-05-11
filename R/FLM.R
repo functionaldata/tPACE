@@ -1,12 +1,36 @@
 #' Functional Linear Models
 #'
-#' Functional linear models with scalar or functional responses.
+#' Functional linear models for scalar or functional responses and functional predictors.
 #' 
-#' @param Y Either an \emph{n}-dimensional vector whose elements consist of scalar responses, or a list which contains functional responses and the time points at which they are observed.
-#' @param X A list which contains the observed functional predictors.
+#' @param Y Either an \emph{n}-dimensional vector whose elements consist of scalar responses, or a list which contains functional responses in the form of a list LY and the time points LT at which they are observed (i.e., list(Ly = LY,Lt = LT)).
+#' @param X A list of lists which contains the observed functional predictors list Lxj and the time points list Ltj at which they are observed. It needs to be of the form \code{list(list(Ly = Lx1,Lt = Lxt1),list(Ly = Lx2,Lt = Lxt2),...)}
 #' @param XTest A list which contains the values of functional predictors for a held-out testing set.
 #' @param optnsListY A list of options control parameters for the response specified by \code{list(name=value)}. See `Details' in  \code{FPCA}.
 #' @param optnsListX A list of options control parameters for the predictors specified by \code{list(name=value)}. See `Details' in  \code{FPCA}.
+#' 
+#' @return A list of the following:
+#' \item{alpha}{A length-one numeric if the response Y is scalar. Or a vector of \code{length(workGridY)} of the fitted constant alpha(t) in the linear model if Y is functional.}
+#' \item{betaList}{A list of fitted beta(s) vectors, one per predictor, if Y is scalar. Each of dimension \code{length(workGridX[[j]])}.
+#' 
+#' Or a list of fitted beta(s,t) matrices, one per predictor, if Y is functional. Each of dimension \code{length(workGridX[[j]])} times \code{length(workGridY)}.
+#' }
+#' \item{yHat}{A length n vector if Y is scalar. 
+#' 
+#' Or an n by \code{length(workGridY)} matrix of fitted Y's from the model if Y is functional.}
+#' 
+#' \item{yPred}{Same as YHat if XTest is not provided. 
+#' 
+#' Or a length \code{length(XTest[[1]]$Ly)} vector of predicted Y's if Y is scalar.
+#' 
+#' Or a \code{length(XTest[[1]]$Ly)} by \code{length(workGridY)} matrix of predicted Y's if Y is functional.}
+#' 
+#' 
+#' \item{estXi}{A list of n by k_j matrices of estimated functional principal component scores of predictors, where k_j is the number of eigenfunctions selected for each predictor.}
+#' \item{testXi}{A list of n by k_j matrices of estimated functional principal component scores of predictors in XTest, with eigenfunctions fitted only with X.}
+#' \item{lambdaX}{A length sum_j k_j vector of estimated eigenvalues for predictors.}
+#' \item{workGridX}{A list of vectors, each is a working grid for a predictor.}
+#' \item{phiY}{A \code{length(workGridY)} by k_y the estimated eigenfunctions of Y's, where k_y is number of eigenfunctions selected for Y. NULL if Y is scalar.}
+#' \item{workGridY}{A vector of working grid of the response Y's. NULL if Y is scalar}
 #' @examples
 #' set.seed(1000)
 #' 
@@ -202,7 +226,7 @@ FLM <- function(Y,X,XTest=NULL,optnsListY=NULL,optnsListX=NULL){
     yPred <- as.numeric(alpha + testXi%*%bVec)
     
     return(list(alpha=alpha,betaList=betaList,yHat=yHat,yPred=yPred,#R2=R2,
-                estXi=estXiList,testXi=testXiList,lambdaX=estLambdaX,phiX=estEigenX,workGridX=workGridX))
+                estXi=estXiList,testXi=testXiList,lambdaX=estLambdaX,phiX=estEigenX,workGridX=workGridX,phiY = NULL,workGridY = NULL))
   }
   
   if (class(Y)=='list') {
@@ -249,11 +273,12 @@ FLM <- function(Y,X,XTest=NULL,optnsListY=NULL,optnsListX=NULL){
         testXiList[[j]] <- testXi[,(sum(dj[1:(j-1)])+1):sum(dj[1:j])]
       }
       
-      if (d0==1) {
-        betaList[[j]] <- as.numeric(estEigenX[[j]]%*%bList[[j]]%*%t(estEigenY))
-      } else {
-        betaList[[j]] <- estEigenX[[j]]%*%bList[[j]]%*%t(estEigenY)
-      }
+#      if (d0==1) {
+#        betaList[[j]] <- as.numeric(estEigenX[[j]]%*%bList[[j]]%*%t(estEigenY))
+#      } else {
+#        betaList[[j]] <- estEigenX[[j]]%*%bList[[j]]%*%t(estEigenY)
+#      }
+      betaList[[j]] <- estEigenX[[j]]%*%bList[[j]]%*%t(estEigenY)
     }
     
     alpha <- c(estEigenY%*%alphaVec)
