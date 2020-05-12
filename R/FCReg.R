@@ -55,6 +55,16 @@
 #' Ysp <- Sparsify(Y, T, sparsity)
 #' vars <- list(X_1=X_1sp, Z_2=Z[, 2], Y=Ysp)
 #' withError2D <- FCReg(vars, bw, bw, outGrid)
+#' 
+#' Very Sparse functional data
+#' set.seed(1)
+#' X_1sp <- Sparsify(X_1, T, sparsity=1:3)
+#' set.seed(1)
+#' Ysp <- Sparsify(Y, T, sparsity=1:3)
+#' vars <- list(X_1=X_1sp, Z_2=Z[, 2], Y=Ysp)
+#' outGrid <- round(seq(min(unlist(X_1sp$Lt)), max(unlist(X_1sp$Lt)), by=0.05), 2)
+#' withoutError2D <- FCReg(vars, bw, bw, outGrid, measurementError = FALSE)
+#' Warning: For very sparse functional data, setting measurementError = TRUE is not recommended.
 
 
 FCReg <- function(vars, userBwMu, userBwCov, outGrid, kern='gauss', measurementError=TRUE, diag1D='none', useGAM = FALSE, returnCov=TRUE) {
@@ -88,6 +98,7 @@ FCReg <- function(vars, userBwMu, userBwCov, outGrid, kern='gauss', measurementE
   muList <- demeanedRes[['muList']]
   
   allCov <- MvCov(vars, userBwCov, outGrid, kern, measurementError, center=FALSE, diag1D)
+  
   beta <- sapply(seq_len(dim(allCov)[1]), function(i) {
     tmpCov <- allCov[i, i, , ]
     beta_ti <- qr.solve(tmpCov[1:p, 1:p], tmpCov[1:p, p + 1])
@@ -95,7 +106,7 @@ FCReg <- function(vars, userBwMu, userBwCov, outGrid, kern='gauss', measurementE
   })
   if (is.null(nrow(beta)))
     beta <- matrix(beta, 1)
-  rownames(beta) <- names(vars)[-length(vars)]
+    rownames(beta) <- names(vars)[-length(vars)]
   
   # coefficient of determination: 
   #   R2 = cov(X, Y)' var(X)^{-1} cov(X, Y) / var(Y)
@@ -156,6 +167,7 @@ MvCov <- function(vars, userBwCov, outGrid, kern, measurementError=TRUE, center=
   if (diag1D == 'all' && measurementError) {
     stop("Cannot assume measurement error when diag1D == 'all'")
   }
+  
   isFuncVars <- sapply(vars, is.list)
   p <- length(isFuncVars)
   pFunc <- sum(isFuncVars)
