@@ -191,11 +191,11 @@ fpcaX1 <- FPCA(X_1sp[['Ly']], X_1sp[['Lt']], list(userBwMu=bw, userBwCov=bw))
 fpcaX2 <- FPCA(X_2sp[['Ly']], X_2sp[['Lt']], list(userBwMu=bw, userBwCov=bw))
 fpcaY <- FPCA(Ysp[['Ly']], Ysp[['Lt']], list(userBwMu=bw, userBwCov=bw))
 FPCAlist <- list(Y=fpcaY, X_1=fpcaX1, X_2=fpcaX2)
-imputeRes <- imputeConReg(FPCAlist, Z[, 3:4], outGrid)
-test_that('imputation and 1D beta estimates are similar', {
-  expect_equal(imputeRes[['beta0']], noError1D[['beta0']], scale=1, tolerance=0.5)
-  expect_equal(unname(imputeRes[['beta']]), unname(noError1D[['beta']]), scale=1, tolerance=0.5)
-})
+# imputeRes <- imputeConReg(FPCAlist, Z[, 3:4], outGrid)
+# test_that('imputation and 1D beta estimates are similar', {
+#   expect_equal(imputeRes[['beta0']], noError1D[['beta0']], scale=1, tolerance=0.5)
+#   expect_equal(unname(imputeRes[['beta']]), unname(noError1D[['beta']]), scale=1, tolerance=0.5)
+# })
 
 ## subsetVars
 test_that('subseting covariates is fine', {

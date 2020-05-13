@@ -3,11 +3,11 @@ Type: Package
 Title: Functional Data Analysis and Empirical Dynamics
 URL: https://github.com/functionaldata/tPACE
 BugReports: https://github.com/functionaldata/tPACE/issues
-Version: 0.5.2
-Encoding:  UTF-8
-Date: 2020-02-13,
-Authors@R: c(person("Yaqing","Chen", email="yaqchen@ucdavis.edu", role=c("aut","cre")),
-    person("Cody","Carroll", email="cjcarroll@ucdavis.edu", role=c("aut")),
+Version: 0.5.3
+Encoding: UTF-8
+Date: 2020-05-13,
+Authors@R: c(person("Cody","Carroll", email="cjcarroll@ucdavis.edu", role=c("aut","cre")),
+    person("Yaqing","Chen", email="yaqchen@ucdavis.edu", role=c("aut")),
     person("Xiongtao","Dai", email="dai@ucdavis.edu", role=c("aut")),
     person("Jianing","Fan", role=c("aut")),
     person("Pantelis Z.","Hadjipantelis", role=c("aut")),
@@ -18,7 +18,7 @@ Authors@R: c(person("Yaqing","Chen", email="yaqchen@ucdavis.edu", role=c("aut","
     person("Alvaro", "Gajardo", role="ctb"),
     person("Hans-Georg", "Mueller", role=c("cph","ths","aut")),
     person("Jane-Ling", "Wang", role=c("cph","ths","aut"))) 
-Maintainer: Yaqing Chen <yaqchen@ucdavis.edu>
+Maintainer: Cody Carroll <cjcarroll@ucdavis.edu>
 Description: A versatile package that provides implementation of various
     methods of Functional Data Analysis (FDA) and Empirical Dynamics. The core of this
     package is Functional Principal Component Analysis (FPCA), a key technique for
@@ -57,5 +57,5 @@ Suggests:
     minqa,
     testthat
 NeedsCompilation: yes
-RoxygenNote: 6.1.1.9000
+RoxygenNote: 7.1.0
 VignetteBuilder: knitr
