@@ -7,7 +7,7 @@ Version: 0.5.3
 Encoding:  UTF-8
 Date: 2020-05-13,
 Authors@R: c(person("Cody","Carroll", email="cjcarroll@ucdavis.edu", role=c("aut","cre")),
-    person("Alvaro", "Gajardo", role="ctb"),
+    person("Alvaro", "Gajardo", email="aegajardo@ucdavis.edu", role=c("aut")),
     person("Yaqing","Chen", email="yaqchen@ucdavis.edu", role=c("aut")),
     person("Xiongtao","Dai", email="dai@ucdavis.edu", role=c("aut")),
     person("Jianing","Fan", role=c("aut")),
