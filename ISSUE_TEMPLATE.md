@@ -12,4 +12,4 @@ If you are filing a bug, make sure these steps are followed before submitting yo
 
 If you are having a general question about using `fdapace` or its design:
 
-- Email us at first instance; this is not a Q&A forum. :D
+- Email us at first instance; we are eager to help new users of fdapace. :D

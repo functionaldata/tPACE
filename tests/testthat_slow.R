@@ -9,7 +9,7 @@ library(fdapace)
 
 if (Sys.getenv('TRAVIS') != 'true') { 
 test_check("fdapace", filter='FClust', perl=TRUE) #
-test_check("fdapace", filter='FSVD', perl=TRUE) # over 10 min
+#test_check("fdapace", filter='FSVD', perl=TRUE) # over 10 min
 test_check("fdapace", filter='FPCA', perl=TRUE) # over 10 min
 test_check("fdapace", filter='FVPA', perl=TRUE) # over 10 min
 test_check("fdapace", filter='FCReg', perl=TRUE) #

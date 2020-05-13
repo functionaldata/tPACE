@@ -1,3 +1,9 @@
+fdapace v0.5.3 (Release date: 13-May-2020)
+=============
+Changes:
+* Alternative truncation method implemented in FPCA.
+* Updated documentation for FLM and FCReg.
+
 fdapace v0.5.2 (Release date: 13-Feb-2020)
 =============
 Changes:

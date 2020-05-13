@@ -1,0 +1,4 @@
+^\.travis\.yml$
+^inst/testdata$
+^ISSUE_TEMPLATE\.md$
+^tests$
