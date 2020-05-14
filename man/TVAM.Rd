@@ -4,8 +4,18 @@
 \alias{TVAM}
 \title{Iterative Smooth Backfitting Algorithm}
 \usage{
-TVAM(Lt, Ly, LLx, gridT = NULL, x = NULL, ht = NULL, hx = NULL,
-  K = "epan", suppT = NULL, suppX = NULL)
+TVAM(
+  Lt,
+  Ly,
+  LLx,
+  gridT = NULL,
+  x = NULL,
+  ht = NULL,
+  hx = NULL,
+  K = "epan",
+  suppT = NULL,
+  suppX = NULL
+)
 }
 \arguments{
 \item{Lt}{An \emph{n}-dimensional list of \emph{N_i}-dimensional vector whose elements consist of longitudinal time points for each \emph{i}-th subject.}

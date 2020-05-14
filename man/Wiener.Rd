@@ -4,8 +4,7 @@
 \alias{Wiener}
 \title{Simulate a standard Wiener processes (Brownian motions)}
 \usage{
-Wiener(n = 1, pts = seq(0, 1, length = 50), sparsify = NULL,
-  K = 50)
+Wiener(n = 1, pts = seq(0, 1, length = 50), sparsify = NULL, K = 50)
 }
 \arguments{
 \item{n}{Sample size.}

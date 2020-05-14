@@ -4,8 +4,13 @@
 \alias{fitted.FPCA}
 \title{Fitted functional data from FPCA object}
 \usage{
-\method{fitted}{FPCA}(object, K = NULL, derOptns = list(p = 0),
-  ciOptns = list(alpha = NULL, cvgMethod = NULL), ...)
+\method{fitted}{FPCA}(
+  object,
+  K = NULL,
+  derOptns = list(p = 0),
+  ciOptns = list(alpha = NULL, cvgMethod = NULL),
+  ...
+)
 }
 \arguments{
 \item{object}{A object of class FPCA returned by the function FPCA().}

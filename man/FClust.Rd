@@ -4,8 +4,7 @@
 \alias{FClust}
 \title{Functional clustering and identifying substructures of longitudinal data}
 \usage{
-FClust(Ly, Lt, k = 3, cmethod = "EMCluster", optnsFPCA = NULL,
-  optnsCS = NULL)
+FClust(Ly, Lt, k = 3, cmethod = "EMCluster", optnsFPCA = NULL, optnsCS = NULL)
 }
 \arguments{
 \item{Ly}{A list of \emph{n} vectors containing the observed values for each individual. Missing values specified by \code{NA}s are supported for dense case (\code{dataType='dense'}).}

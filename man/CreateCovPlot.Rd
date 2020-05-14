@@ -4,8 +4,13 @@
 \alias{CreateCovPlot}
 \title{Creates a covariance surface plot based on the results from FPCA() or FPCder().}
 \usage{
-CreateCovPlot(fpcaObj, covPlotType = "Fitted", isInteractive = FALSE,
-  colSpectrum = NULL, ...)
+CreateCovPlot(
+  fpcaObj,
+  covPlotType = "Fitted",
+  isInteractive = FALSE,
+  colSpectrum = NULL,
+  ...
+)
 }
 \arguments{
 \item{fpcaObj}{returned object from FPCA().}

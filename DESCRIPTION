@@ -6,7 +6,8 @@ BugReports: https://github.com/functionaldata/tPACE/issues
 Version: 0.5.3
 Encoding: UTF-8
 Date: 2020-05-13,
-Authors@R: c(person("Cody","Carroll", email="cjcarroll@ucdavis.edu", role=c("aut","cre")),
+Authors@R: c(person("Cody","Carroll", email="cjcarroll@ucdavis.edu", role=c("aut","cre"), comment =  c(ORCID = "0000-0003-3525-8653")),
+    person("Alvaro", "Gajardo", email="aegajardo@ucdavis.edu", role=c("aut")),
     person("Yaqing","Chen", email="yaqchen@ucdavis.edu", role=c("aut")),
     person("Xiongtao","Dai", email="dai@ucdavis.edu", role=c("aut")),
     person("Jianing","Fan", role=c("aut")),
@@ -15,7 +16,6 @@ Authors@R: c(person("Cody","Carroll", email="cjcarroll@ucdavis.edu", role=c("aut
     person("Hao","Ji", role=c("aut")),
     person("Shu-Chin", "Lin", role="ctb"),
     person("Paromita", "Dubey", role="ctb"),
-    person("Alvaro", "Gajardo", role="ctb"),
     person("Hans-Georg", "Mueller", role=c("cph","ths","aut")),
     person("Jane-Ling", "Wang", role=c("cph","ths","aut"))) 
 Maintainer: Cody Carroll <cjcarroll@ucdavis.edu>

@@ -5,8 +5,7 @@
 \title{Selects number of functional principal components for
 given FPCA output and selection criteria}
 \usage{
-SelectK(fpcaObj, criterion = "FVE", FVEthreshold = 0.95, Ly = NULL,
-  Lt = NULL)
+SelectK(fpcaObj, criterion = "FVE", FVEthreshold = 0.95, Ly = NULL, Lt = NULL)
 }
 \arguments{
 \item{fpcaObj}{A list containing FPCA related objects returned by MakeFPCAResults().}

@@ -4,8 +4,13 @@
 \alias{Stringing}
 \title{Stringing for High-Dimensional data}
 \usage{
-Stringing(X, Y = NULL, standardize = FALSE, disOptns = "euclidean",
-  disMat = NA)
+Stringing(
+  X,
+  Y = NULL,
+  standardize = FALSE,
+  disOptns = "euclidean",
+  disMat = NA
+)
 }
 \arguments{
 \item{X}{A matrix (n by p) of data, where X[i,] is the row vector of measurements for the ith subject.}
