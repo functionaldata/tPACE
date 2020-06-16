@@ -17,7 +17,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ##  Overview 
 
-For a general overview on functional data analysis (FDA) see [@Wang16] and key references for the PACE approach and the associated dynamics are [@Yao03; @Yao05; @Liu09; @Yao10; @Li10; @Zhang16; @Zhang18]. The basic work-flow behind the PACE approach for sparse functional data is as follows (see e.g. [@Yao05; @Liu09] for more information):
+This is a brief introduction to the package <tt>`fdapace`</tt> [@Carroll20]. For a general overview on functional data analysis (FDA) see [@Wang16] and key references for the PACE approach and the associated dynamics are [@Yao03; @Yao05; @Liu09; @Yao10; @Li10; @Zhang16; @Zhang18]. The basic work-flow behind the PACE approach for sparse functional data is as follows (see e.g. [@Yao05; @Liu09] for more information):
 
 1. Calculate the smoothed mean $\hat{\mu}$ (using local linear smoothing) aggregating all the available readings together.
 2. Calculate for each curve separately its own raw covariance and then aggregate all these raw covariances to generate the sample raw covariance.
@@ -39,7 +39,7 @@ For densely observed functional data simplified procedures are available to obta
 
 In the case of sparse FPCA the most computational intensive part is the smoothing of the sample's raw covariance function. For this, we employ a local weighted bilinear smoother.
 
-A sibling MATLAB package for <tt>`fdapace`</tt> can be found in [here](http://www.stat.ucdavis.edu/PACE).
+A sibling MATLAB package for <tt>`fdapace`</tt> can be found [here](http://www.stat.ucdavis.edu/PACE).
 
 ##  FPCA in R using fdapace 
 

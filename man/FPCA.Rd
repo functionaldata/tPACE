@@ -43,6 +43,7 @@ If the input is sparse data, make sure you check the design plot is dense and th
 by support points, using \code{plot} or \code{CreateDesignPlot}. Some study design such as snippet data (where each subject is 
 observed only on a sub-interval of the period of study) will have an ill-covered design plot, in which case the nonparametric 
 covariance estimate will be unreliable.
+WARNING! Slow computation times may occur if the dataType argument is incorrect. If FPCA is taking a while, please double check that a dense design is not mistakenly coded as 'Sparse'.
 
 Available control options are 
 \describe{

@@ -41,7 +41,8 @@ and the last two correspond to the covariates and the response, i.e. (i, j, k, l
 Functional concurrent regression with dense or sparse functional data for scalar or functional dependent variables. Note: function-to-scalar regression can also be handled using the VCAM function in fdapace.
 }
 \details{
-If measurement error is assumed, the diagonal elements of the raw covariance will be removed. This could result in highly unstable estimate if the design is very sparse, or strong seasonality presents.
+If measurement error is assumed, the diagonal elements of the raw covariance will be removed. This could result in highly unstable estimate if the design is very sparse, or strong seasonality presents. 
+WARNING! For very sparse functional data, setting measurementError = TRUE is not recommended.
 }
 \examples{
 # Y(t) = \beta_0(t) + \beta_1(t) X_1(t) + \beta_2(t) Z_2 + \epsilon
