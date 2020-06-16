@@ -15,6 +15,7 @@
 #'  and the last two correspond to the covariates and the response, i.e. (i, j, k, l) entry being Cov(X_k(t_i), X_l(t_j)) (default: FALSE)
 #' 
 #' @details If measurement error is assumed, the diagonal elements of the raw covariance will be removed. This could result in highly unstable estimate if the design is very sparse, or strong seasonality presents. 
+#' WARNING! For very sparse functional data, setting measurementError = TRUE is not recommended.
 #' @references
 #' \cite{Yao, F., Müller, H.G., Wang, J.L. "Functional Linear Regression Analysis for Longitudinal Data." Annals of Statistics 33, (2005): 2873-2903.(Dense data)} 
 #' \cite{Sentürk, D., Müller, H.G. "Functional varying coefficient models for longitudinal data." J. American Statistical Association, 10, (2010): 1256--1264.}
