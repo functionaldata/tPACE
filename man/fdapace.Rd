@@ -4,7 +4,7 @@
 \name{fdapace}
 \alias{fdapace}
 \title{fdapace: Principal Analysis by Conditional Expectation and Applications in
-Functional Data Analysis (revised version 16 August 2019)}
+Functional Data Analysis (revised version 18 June 2020)}
 \description{
 fdapace for Functional Data Analysis
 }
@@ -58,11 +58,12 @@ fda-pace is a comprehensive package that directly implements fitting of the foll
  
  
 
-Maintainer:  Yaqing Chen \email{yaqchen@ucdavis.edu}
+Maintainer:  Cody Carroll \email{cjcarroll@ucdavis.edu}
 }
 \author{
-Yaqing Chen \email{yaqchen@ucdavis.edu}
 Cody Carroll \email{cjcarroll@ucdavis.edu}
+Alvaro Gajardo \email{aegajardo@ucdavis.edu}
+Yaqing Chen \email{yaqchen@ucdavis.edu}
 Xiongtao Dai \email{dai@ucdavis.edu}
 Jianing Fan
 Pantelis Z. Hadjipantelis 
