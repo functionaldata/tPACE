@@ -25,9 +25,6 @@
 
 GetMeanCI <- function (Ly, Lt, level = 0.95, R = 999, optns = list()) {
   optns = SetOptions(Ly, Lt, optns)
-  if (optns$dataType == 'Sparse') {
-    stop("Bootstrap CIs can't be computed for sparse data.")
-  }
   
   if (length(level) > 1) {
     level = level[1]
@@ -39,8 +36,9 @@ GetMeanCI <- function (Ly, Lt, level = 0.95, R = 999, optns = list()) {
   if (R %% 1 != 0 | R < 0) {
     stop("R should be an positive integer.")
   }
+  n <- length(Ly)
+  
   if (optns$methodMuCovEst == 'smooth') {
-    n <- length(Ly)
     obsGrid = sort(unique( c(unlist(Lt))))
     regGrid = seq(min(obsGrid), max(obsGrid),length.out = optns$nRegGrid)
     muMat <- t(sapply(1:R, function(b) {
@@ -69,6 +67,9 @@ GetMeanCI <- function (Ly, Lt, level = 0.95, R = 999, optns = list()) {
     CIgrid <- obsGrid
   }
   
+  if (optns$dataType == 'Sparse') {
+    warning("Bootstrap CIs for the mean function may not be computed for the entire time range.")
+  }
   CI <- data.frame(CIgrid, lower = CI[1,], upper = CI[2,])
   return(list(CI = CI, level = level))
 }

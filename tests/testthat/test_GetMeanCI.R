@@ -3,9 +3,8 @@ library(testthat)
 load(system.file('testdata', 'dataGeneratedByExampleSeed123.RData', package='fdapace'))
 
 test_that("sparse case", {
-  expect_error(GetMeanCI(Lt=t, Ly=y, optns = list(nRegGrid = 30)), "Bootstrap CIs can't be computed for sparse data.")
-  #res <- GetMeanCI(Lt=t, Ly=y, optns = list(nRegGrid = 30))
-  #expect(all(res$CI$upper-res$CI$lower > 0), "upper bounds are not all greater than lower bounds.")
+  expect_warning(res <- GetMeanCI(Lt=t, Ly=y, optns = list(nRegGrid = 30)))
+  expect(all(res$CI$upper-res$CI$lower > 0), "upper bounds are not all greater than lower bounds.")
 })
 
 test_that("dense case", {
