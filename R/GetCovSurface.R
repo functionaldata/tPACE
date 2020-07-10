@@ -1,6 +1,6 @@
-#' Mean Curve
+#' Covariance Surface
 #' 
-#' Mean curve calculation for dense or sparse functional data. 
+#' Covariance surface estimation for dense or sparse functional data. 
 #' 
 #' @param Ly A list of \emph{n} vectors containing the observed values for each individual. Missing values specified by \code{NA}s are supported for dense case (\code{dataType='dense'}).
 #' @param Lt A list of \emph{n} vectors containing the observation time points for each individual corresponding to y. Each vector should be sorted in ascending order.
@@ -8,36 +8,36 @@
 #'
 #' Available control options are 
 #' \describe{
+#' \item{userBwCov}{The bandwidth value for the smoothed covariance function; positive numeric - default: determine automatically based on 'methodBwCov'}
+#' \item{methodBwCov}{The bandwidth choice method for the smoothed covariance function; 'GMeanAndGCV' (the geometric mean of the GCV bandwidth and the minimum bandwidth),'CV','GCV' - default: 10\% of the support}
 #' \item{userBwMu}{The bandwidth value for the smoothed mean function (using 'CV' or 'GCV'); positive numeric - default: determine automatically based on 'methodBwMu'}
 #' \item{methodBwMu}{The bandwidth choice method for the mean function; 'GMeanAndGCV' (the geometric mean of the GCV bandwidth and the minimum bandwidth),'CV','GCV' - default: 5\% of the support} 
 #' \item{dataType}{The type of design we have (usually distinguishing between sparse or dense functional data); 'Sparse', 'Dense', 'DenseWithMV', 'p>>n' - default:  determine automatically based on 'IsRegular'}
-#' \item{plot}{Plot mean curve; logical - default: FALSE}
+#' \item{plot}{Plot FPCA results (design plot, mean, scree plot and first K (<=3) eigenfunctions); logical - default: FALSE}
+#' \item{error}{Assume measurement error in the dataset; logical - default: TRUE}
 #' \item{kernel}{Smoothing kernel choice, common for mu and covariance; "rect", "gauss", "epan", "gausvar", "quar" - default: "gauss"; dense data are assumed noise-less so no smoothing is performed. }
 #' \item{kFoldMuCov}{The number of folds to be used for mean and covariance smoothing. Default: 10}
+#' \item{lean}{If TRUE the 'inputData' field in the output list is empty. Default: FALSE}
 #' \item{methodMuCovEst}{The method to estimate the mean and covariance in the case of dense functional data; 'cross-sectional', 'smooth' - default: 'cross-sectional'}
+#' \item{nRegGrid}{The number of support points in each direction of covariance surface; numeric - default: 51}
 #' \item{numBins}{The number of bins to bin the data into; positive integer > 10, default: NULL}
+#' \item{rotationCut}{The 2-element vector in [0,1] indicating the percent of data truncated during sigma^2 estimation; default  (0.25, 0.75))}
 #' \item{useBinnedData}{Should the data be binned? 'FORCE' (Enforce the # of bins), 'AUTO' (Select the # of  bins automatically), 'OFF' (Do not bin) - default: 'AUTO'}
+#' \item{useBinnedCov}{Whether to use the binned raw covariance for smoothing; logical - default:TRUE}
 #' \item{userMu}{The user-defined smoothed mean function; list of two numerical vector 't' and 'mu' of equal size, 't' must cover the support defined 'Ly' - default: NULL}
+#' \item{userSigma2}{The user-defined measurement error variance. A positive scalar. If specified then no regularization is used (rho is set to 'no', unless specified otherwise). Default to `NULL`}
 #' \item{useBW1SE}{Pick the largest bandwidth such that CV-error is within one Standard Error from the minimum CV-error, relevant only if methodBwMu ='CV' and/or methodBwCov ='CV'; logical - default: FALSE}
 #' }
 #' @return A list containing the following fields:
-#' \item{mu}{A vector of length nWorkGrid containing the mean function estimate.}
-#' \item{workGrid}{A vector of length nWorkGrid. The internal regular grid on which the mean estimation is carried out.}
-#' \item{bwMu}{The selected (or user specified) bandwidth for smoothing the mean function.}
-#' \item{optns}{A list of actually-used options relevant to the mean function calculation.}
+#' \item{cov}{A square matrix of size nWorkGrid containing the covariance surface estimate.}
+#' \item{sigma2}{A numeric estimate of the variance of measurement error.}
+#' \item{workGrid}{A vector of length nWorkGrid. The internal regular grid on which the covariance surface estimation is carried out.}
+#' \item{bwCov}{The selected (or user specified) bandwidth for smoothing thecovariance surface.}
+#' \item{optns}{A list of actually-used options relevant to the covariance surface calculation.}
 #' @examples
-#' set.seed(1)
-#' n <- 20
-#' pts <- seq(0, 1, by=0.025)
-#' sampWiener <- Wiener(n, pts)
-#' mu = sin(2*pi*pts)
-#' sampWiener <- Sparsify(t(t(sampWiener) + mu), pts, 10)
-#' res = GetMeanCurve(Ly = sampWiener$Ly, Lt = sampWiener$Lt, optns = list(plot = TRUE))
 #' @export
-
-GetMeanCurve = function(Ly, Lt, optns = list()){
+GetCovSurface = function(Ly, Lt, optns = list()){
   
-  firsttsMean <- Sys.time() #First time-stamp for FPCA
   # Check the data validity for further analysis
   CheckData(Ly,Lt)
   
@@ -105,29 +105,57 @@ GetMeanCurve = function(Ly, Lt, optns = list()){
   # mu: the smoothed mean curve evaluated at times 'obsGrid'
   mu <- smcObj$mu
   lasttsMu <- Sys.time()
-  bwMu = smcObj$bwMu
   
-  meanoptns = list(userBwMu = optns$userBwMu,
+  
+  firsttsCov <- Sys.time() #First time-stamp for calculation of the covariance
+  ## Covariance function and sigma2
+  if (!is.null(optns$userCov) && optns$methodMuCovEst != 'smooth') { 
+    scsObj <- GetUserCov(optns, obsGrid, cutRegGrid, buff, ymat)
+  } else if (optns$methodMuCovEst == 'smooth') {
+    # smooth cov and/or sigma2
+    scsObj = GetSmoothedCovarSurface(Ly, Lt, mu, obsGrid, regGrid, optns,
+                                     optns$useBinnedCov) 
+  } else if (optns$methodMuCovEst == 'cross-sectional') {
+    scsObj = GetCovDense(ymat, mu, optns)
+    if (length(obsGrid) != length(cutRegGrid) || !identical(obsGrid, cutRegGrid)) {
+      scsObj$smoothCov = ConvertSupport(obsGrid, cutRegGrid, Cov =
+                                          scsObj$smoothCov)
+    }
+    scsObj$outGrid <- cutRegGrid
+  }
+  sigma2 <- scsObj[['sigma2']]
+  bwCov = scsObj$bwCov
+  workGrid <- scsObj$outGrid
+  
+  #cov options
+  covoptns = list(userBwMu = optns$userBwMu,
                    methodBwMu = optns$methodBwMu,
+                  userBwCov = optns$userBwCov,
+                  methodBwCov = optns$methodBwCov,
+                  kFoldMuCov = optns$kFoldMuCov,
                    dataType = optns$dataType,
+                  error = optns$error,
                    nRegGrid = optns$nRegGrid,
                    kernel = optns$kernel,
+                  useBinnedCov = optns$useBinnedCov,
                    methodMuCovEst = optns$methodMuCovEst,
+                  userSigma2 = optns$userSigma2,
                    useBinnedData = optns$useBinnedData,
                    useBW1SE = optns$useBW1SE)
 
   # Make the return object by MakeResultFPCA
-  ret <- list(mu = mu,
-              workGrid = obsGrid,
-              bwMu = bwMu,
-              optns = meanoptns
-  )
-
-  # Plot the results
-    if(optns$plot){
-      plot(obsGrid, mu, type='l', xlab='s',ylab='', main='Mean Function', panel.first = grid(), axes = TRUE)   
-    }
+  ret <- list(cov = scsObj$smoothCov,  
+              sigma2 = scsObj$sigma2,
+              workGrid = workGrid,
+              bwCov = bwCov,
+              optns = covoptns)
   
-  return(ret) 
+  # Plot the results
+  # if(optns$plot){
+  #   plot.FPCA(ret)
+  # }
+  
+  return(ret)
 }
+
 
