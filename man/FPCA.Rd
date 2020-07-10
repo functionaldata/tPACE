@@ -15,7 +15,7 @@ FPCA(Ly, Lt, optns = list())
 }
 \value{
 A list containing the following fields:
-\item{sigma2}{Variance for measure error.}
+\item{sigma2}{Variance for measurement error.}
 \item{lambda}{A vector of length \emph{K} containing eigenvalues.}
 \item{phi}{An nWorkGrid by \emph{K} matrix containing eigenfunctions, supported on workGrid.}
 \item{xiEst}{A \emph{n} by \emph{K} matrix containing the FPC estimates.} 

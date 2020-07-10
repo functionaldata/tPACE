@@ -13,7 +13,6 @@
 #' \item{userBwMu}{The bandwidth value for the smoothed mean function (using 'CV' or 'GCV'); positive numeric - default: determine automatically based on 'methodBwMu'}
 #' \item{methodBwMu}{The bandwidth choice method for the mean function; 'GMeanAndGCV' (the geometric mean of the GCV bandwidth and the minimum bandwidth),'CV','GCV' - default: 5\% of the support} 
 #' \item{dataType}{The type of design we have (usually distinguishing between sparse or dense functional data); 'Sparse', 'Dense', 'DenseWithMV', 'p>>n' - default:  determine automatically based on 'IsRegular'}
-#' \item{plot}{Plot FPCA results (design plot, mean, scree plot and first K (<=3) eigenfunctions); logical - default: FALSE}
 #' \item{error}{Assume measurement error in the dataset; logical - default: TRUE}
 #' \item{kernel}{Smoothing kernel choice, common for mu and covariance; "rect", "gauss", "epan", "gausvar", "quar" - default: "gauss"; dense data are assumed noise-less so no smoothing is performed. }
 #' \item{kFoldMuCov}{The number of folds to be used for mean and covariance smoothing. Default: 10}
@@ -35,6 +34,13 @@
 #' \item{bwCov}{The selected (or user specified) bandwidth for smoothing thecovariance surface.}
 #' \item{optns}{A list of actually-used options relevant to the covariance surface calculation.}
 #' @examples
+#' set.seed(1)
+#' n <- 20
+#' pts <- seq(0, 1, by=0.025)
+#' sampWiener <- Wiener(n, pts)
+#' mu = sin(2*pi*pts)
+#' sampWiener <- Sparsify(t(t(sampWiener) + mu), pts, 10)
+#' res = GetCovSurface(Ly = sampWiener$Ly, Lt = sampWiener$Lt)
 #' @export
 GetCovSurface = function(Ly, Lt, optns = list()){
   
@@ -151,9 +157,7 @@ GetCovSurface = function(Ly, Lt, optns = list()){
               optns = covoptns)
   
   # Plot the results
-  # if(optns$plot){
-  #   plot.FPCA(ret)
-  # }
+  # 
   
   return(ret)
 }
