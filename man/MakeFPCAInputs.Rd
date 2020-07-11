@@ -4,7 +4,14 @@
 \alias{MakeFPCAInputs}
 \title{Format FPCA input}
 \usage{
-MakeFPCAInputs(IDs = NULL, tVec, yVec, na.rm = FALSE, sort = FALSE)
+MakeFPCAInputs(
+  IDs = NULL,
+  tVec,
+  yVec,
+  na.rm = FALSE,
+  sort = FALSE,
+  deduplicate = FALSE
+)
 }
 \arguments{
 \item{IDs}{np-by-1 vector of subject IDs (Default: NULL)}
@@ -15,7 +22,9 @@ MakeFPCAInputs(IDs = NULL, tVec, yVec, na.rm = FALSE, sort = FALSE)
 
 \item{na.rm}{logical indicating if NA should be omitted (Default: FALSE)}
 
-\item{sort}{logical indicating if the returned lists Lt and Ly should be ensured to be sorted (Default: FALSE)}
+\item{sort}{logical indicating if Lt (and the correspoding Ly values) should be ensured to be sorted (Default: FALSE)}
+
+\item{deduplicate}{logical indicating if the Lt should be ensured not to have within-subject duplicated values; the Ly values of repeated Lt values are averaged (Default: FALSE)}
 }
 \value{
 L list containing 3 lists each of length 'm', 'm' being the number of unique subject IDs
