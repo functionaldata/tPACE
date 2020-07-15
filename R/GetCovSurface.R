@@ -133,31 +133,18 @@ GetCovSurface = function(Ly, Lt, optns = list()){
   bwCov = scsObj$bwCov
   workGrid <- scsObj$outGrid
   
-  #cov options
-  covoptns = list(userBwMu = optns$userBwMu,
-                   methodBwMu = optns$methodBwMu,
-                  userBwCov = optns$userBwCov,
-                  methodBwCov = optns$methodBwCov,
-                  kFoldMuCov = optns$kFoldMuCov,
-                   dataType = optns$dataType,
-                  error = optns$error,
-                   nRegGrid = optns$nRegGrid,
-                   kernel = optns$kernel,
-                  useBinnedCov = optns$useBinnedCov,
-                   methodMuCovEst = optns$methodMuCovEst,
-                  userSigma2 = optns$userSigma2,
-                   useBinnedData = optns$useBinnedData,
-                   useBW1SE = optns$useBW1SE)
+
 
   # Make the return object by MakeResultFPCA
   ret <- list(cov = scsObj$smoothCov,  
               sigma2 = scsObj$sigma2,
               workGrid = workGrid,
               bwCov = bwCov,
-              optns = covoptns)
+              optns = optns)
   
   # Plot the results
   # 
+  plot3D::persp3D(x = workGrid, y = workGrid, z = ret$cov, col = colorRampPalette( c('blue','red') )(50))
   
   return(ret)
 }

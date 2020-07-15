@@ -37,7 +37,7 @@
 
 GetMeanCurve = function(Ly, Lt, optns = list()){
   
-  firsttsMean <- Sys.time() #First time-stamp for FPCA
+  firsttsMean <- Sys.time() #First time-stamp for mean
   # Check the data validity for further analysis
   CheckData(Ly,Lt)
   
@@ -103,29 +103,24 @@ GetMeanCurve = function(Ly, Lt, optns = list()){
     smcObj = GetMeanDense(ymat, obsGrid, optns)
   }
   # mu: the smoothed mean curve evaluated at times 'obsGrid'
-  mu <- smcObj$mu
+  # convert mu to truncated workGrid
+  workGrid <- cutRegGrid
+  mu = spline(x= obsGrid, y= smcObj$mu, xout=  workGrid)$y
+  
   lasttsMu <- Sys.time()
   bwMu = smcObj$bwMu
   
-  meanoptns = list(userBwMu = optns$userBwMu,
-                   methodBwMu = optns$methodBwMu,
-                   dataType = optns$dataType,
-                   nRegGrid = optns$nRegGrid,
-                   kernel = optns$kernel,
-                   methodMuCovEst = optns$methodMuCovEst,
-                   useBinnedData = optns$useBinnedData,
-                   useBW1SE = optns$useBW1SE)
 
   # Make the return object by MakeResultFPCA
   ret <- list(mu = mu,
-              workGrid = obsGrid,
+              workGrid = workGrid,
               bwMu = bwMu,
-              optns = meanoptns
+              optns = optns
   )
 
   # Plot the results
     if(optns$plot){
-      plot(obsGrid, mu, type='l', xlab='s',ylab='', main='Mean Function', panel.first = grid(), axes = TRUE)   
+      plot(workGrid, mu, type='l', xlab='s',ylab='', main='Mean Function', panel.first = grid(), axes = TRUE)   
     }
   
   return(ret) 
