@@ -3,7 +3,7 @@
 #' @param x a n by m matrix where rows representing subjects and columns representing measurements, missings are allowed.
 #' @param y a n by m matrix where rows representing subjects and columns representing measurements, missings are allowed.
 #' @param t a length m vector of time points where x,y are observed.
-#' @return A length m vector of individual dynamic correlations
+#' @return A length n vector of individual dynamic correlations. The dynamic correlation can be obtained by taking average of this vector. 
 #' @examples
 #' set.seed(10)
 #' n=200             # sample size

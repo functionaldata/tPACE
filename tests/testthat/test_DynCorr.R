@@ -12,7 +12,7 @@ test_that('when y_i[t] - mean(y[t]) = 2(x_i[t]-mean(x[t])), expect correlation 1
   mu_quad_y=8*t^2-12*t+6
   
   fun=rbind(rep(1,length(t)),-t,t^2)
-  z1=mvrnorm(n,rep(0,3),diag(c(2,16/3,4)))   # covariance matrix of random effects
+  z1=mvrnorm(n,rep(0,3),diag(x = c(2,16/3,4)))   # covariance matrix of random effects
   x1_quad=y1_quad=x1_quad_error=y1_quad_error=matrix(0,nrow=n,ncol=length(t))
   
   for (i in 1:n){
