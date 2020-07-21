@@ -1,6 +1,6 @@
-#' Predict FPC scores for a new sample given an FPCA object
+#' Predict FPC scores and curves for a new sample given an FPCA object
 #'
-#' Return a matrix with the first K FPC scores according to conditional expectation or numerical integration.
+#' Return a list containing the matrix with the first k FPC scores according to conditional expectation or numerical integration, the matrix of predicted trajectories and the prediction work grid.
 #'
 #' @param object An FPCA object.
 #' @param newLy  A list of \emph{n} vectors containing the observed values for each individual.
@@ -11,7 +11,10 @@
 #' (standard numerical integration 'IN' or conditional expectation 'CE'); default: 'CE'.
 #' @param ... Not used.
 #' 
-#' @return  A matrix of size n-by-K 
+#' @return  A list containing the following fields:
+#' \item{scores}{A matrix of size \emph{n}-by-\emph{k} which comprise of the predicted functional principal component scores.}
+#' \item{predCurves}{A matrix of size \emph{n}-by-\emph{l} where \emph{l} is the length of the work grid in \emph{object}.}
+#' \item{predGrid}{A vector of length \emph{l} which is the output grid of the predicted curves. This is same is the workgrid of \emph{object}.}
 #'
 #' @examples
 #' \donttest{
@@ -25,7 +28,7 @@
 #' test <- Sparsify(sampWiener[seq(n + 1, 2 * n), , drop=FALSE], pts, sparsity)
 #' res <- FPCA(train$Ly, train$Lt)
 #' pred <- predict(res, test$Ly, test$Lt, K=5)
-#' plot(pred[, 1], pred[, 2])
+#' plot(pred$predGrid, pred$predCurves[1,])
 #' }
 #' 
 #' @method predict FPCA
@@ -83,17 +86,23 @@ predict.FPCA <- function(object, newLy, newLt, sigma2 = NULL, K = 1, xiMethod = 
   MuObs = ConvertSupport(fromGrid = fpcaObj$workGrid, toGrid = fpcaObj$obsGrid, mu = fpcaObj$mu)
   CovObs = ConvertSupport(fromGrid = fpcaObj$workGrid, toGrid = fpcaObj$obsGrid, Cov =  fpcaObj$fittedCov)
   PhiObs = ConvertSupport(fromGrid = fpcaObj$workGrid, toGrid = fpcaObj$obsGrid, phi = fpcaObj$phi)
-
+  
   # Get scores  
   if ( xiMethod == 'CE') {
     scoresObj <- GetCEScores(y = newLy, t = newLt, optns = fpcaObj$optns, mu = MuObs, obsGrid = fpcaObj$obsGrid, sigma2 = sigma2,
                              fittedCov = CovObs, lambda = fpcaObj$lambda, phi = PhiObs)
-  finalXiEst <- t(do.call(cbind, scoresObj['xiEst', ]))[, seq_len(K), drop=FALSE]
+    finalXiEst <- t(do.call(cbind, scoresObj['xiEst', ]))[, seq_len(K), drop=FALSE]
   } else if (xiMethod == 'IN') {
     scoresObj <- mapply(function(yvec,tvec)
       GetINScores(yvec, tvec,optns = fpcaObj$optns,obsGrid = fpcaObj$obsGrid,mu = MuObs,lambda =fpcaObj$lambda ,phi = PhiObs,sigma2 = sigma2),newLy,newLt)
     finalXiEst <- t(do.call(cbind, scoresObj['xiEst', ]))[, seq_len(K), drop=FALSE]
   }
   
-  return(finalXiEst)
+  #return(finalXiEst)
+  
+  #Get predicted trajectories
+  trajectoryEst <- t(fpcaObj$mu+fpcaObj$phi[,1:K]%*%t(finalXiEst))
+  
+  return(list(scores = finalXiEst, predCurves = trajectoryEst, predGrid = fpcaObj$workGrid))
+  
 }

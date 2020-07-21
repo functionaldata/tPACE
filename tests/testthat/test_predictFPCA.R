@@ -15,8 +15,8 @@ test_that('consistent estimates for dense case using IN', {
   
   AAA <- predict(resA, newLy = sampWiener$Ly,newLt =  sampWiener$Lt, K = testK, xiMethod = 'IN') 
   
-  expect_lt( max(  abs(colMeans( abs(AAA) - abs(resA$xiEst[,1:testK]) ) ) ), .Machine$double.eps)  
-  expect_gt( min(  abs(diag(cor( AAA , resA$xiEst[,1:testK])) ) ), 0.99999)  
+  expect_lt( max(  abs(colMeans( abs(AAA$scores) - abs(resA$xiEst[,1:testK]) ) ) ), .Machine$double.eps)  
+  expect_gt( min(  abs(diag(cor( AAA$scores , resA$xiEst[,1:testK])) ) ), 0.99999)  
   
 })
 
@@ -32,8 +32,8 @@ test_that('consistent estimates for dense case using CE', {
   testK = 4;
   BBB <- predict(resB, newLy = sampWiener$Ly,newLt =  sampWiener$Lt, K = testK, xiMethod = 'CE')
 
-  expect_lt( max( abs(colMeans( abs(BBB) - abs(resB$xiEst[,1:testK])) ) ), sd(abs(resB$xiEst[,1:testK])) / 50)
-  expect_gt( min( abs(diag(cor(BBB , resB$xiEst[,1:testK])) ) ), 0.99)  
+  expect_lt( max( abs(colMeans( abs(BBB$scores) - abs(resB$xiEst[,1:testK])) ) ), sd(abs(resB$xiEst[,1:testK])) / 50)
+  expect_gt( min( abs(diag(cor(BBB$scores , resB$xiEst[,1:testK])) ) ), 0.99)  
   
 })
 
@@ -48,10 +48,10 @@ test_that('consistent estimates for sparse case using CE', {
   resC <- FPCA(sampWiener$Ly, sampWiener$Lt)
   testK = 4
   
-  CCC <- predict(resC, newLy = sampWiener$Ly,newLt =  sampWiener$Lt, K = testK)
+  CCC <- predict(resC, newLy = sampWiener$Ly, newLt =  sampWiener$Lt, K = testK)
   
-  expect_lt( max( abs(colMeans(CCC - resC$xiEst[,1:testK]) ) - 1.96 * apply(CCC - resC$xiEst[,1:testK],2,sd) ), .Machine$double.eps)  
-  expect_gt( min( abs(diag(cor(CCC , resC$xiEst[,1:testK])) ) ), 0.9999)  
+  expect_lt( max( abs(colMeans(CCC$scores - resC$xiEst[,1:testK]) ) - 1.96 * apply(CCC$scores - resC$xiEst[,1:testK],2,sd) ), .Machine$double.eps)  
+  expect_gt( min( abs(diag(cor(CCC$scores , resC$xiEst[,1:testK])) ) ), 0.9999)  
   
 })
 
@@ -73,8 +73,8 @@ test_that('consistent estimates for dense data with sparse FPCA object', {
   
   AAA2 <- predict(resS, newLy = sampWienerD$Ly,newLt =  sampWienerD$Lt, K = testK)
   
-  expect_lt( max( abs(colMeans( abs(AAA2) - abs(resD$xiEst[,1:testK])) ) - 1.96 * apply( abs(AAA2) - abs( resD$xiEst[,1:testK]),2,sd) ), .Machine$double.eps)  
-  expect_gt( min( abs(diag(cor(AAA2 , resD$xiEst[,1:testK])) ) ), 0.9)
+  expect_lt( max( abs(colMeans( abs(AAA2$scores) - abs(resD$xiEst[,1:testK])) ) - 1.96 * apply( abs(AAA2$scores) - abs( resD$xiEst[,1:testK]),2,sd) ), .Machine$double.eps)  
+  expect_gt( min( abs(diag(cor(AAA2$scores , resD$xiEst[,1:testK])) ) ), 0.9)
   
 })
 
@@ -95,8 +95,8 @@ test_that('consistent estimates for sparse data with dense FPCA object', {
   
   AAA3 <- predict(resD, newLy = sampWienerS$Ly,newLt =  sampWienerS$Lt, K = testK, xiMethod = 'CE')
   
-  expect_lt( max( abs(colMeans( abs(AAA3) - abs(resD$xiEst[,1:testK])) ) - 1.96 * apply( abs(AAA3) - abs( resD$xiEst[,1:testK]),2,sd) ), .Machine$double.eps)  
-  expect_gt( min( abs(diag(cor(AAA3, resD$xiEst[,1:testK])) ) ), 0.90) # 
+  expect_lt( max( abs(colMeans( abs(AAA3$scores) - abs(resD$xiEst[,1:testK])) ) - 1.96 * apply( abs(AAA3$scores) - abs( resD$xiEst[,1:testK]),2,sd) ), .Machine$double.eps)  
+  expect_gt( min( abs(diag(cor(AAA3$scores, resD$xiEst[,1:testK])) ) ), 0.90) # 
   
 })
 

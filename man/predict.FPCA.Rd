@@ -2,7 +2,7 @@
 % Please edit documentation in R/predict.FPCA.R
 \name{predict.FPCA}
 \alias{predict.FPCA}
-\title{Predict FPC scores for a new sample given an FPCA object}
+\title{Predict FPC scores and curves for a new sample given an FPCA object}
 \usage{
 \method{predict}{FPCA}(object, newLy, newLt, sigma2 = NULL, K = 1, xiMethod = "CE", ...)
 }
@@ -23,10 +23,13 @@
 \item{...}{Not used.}
 }
 \value{
-A matrix of size n-by-K
+A list containing the following fields:
+\item{scores}{A matrix of size \emph{n}-by-\emph{k} which comprise of the predicted functional principal component scores.}
+\item{predCurves}{A matrix of size \emph{n}-by-\emph{l} where \emph{l} is the length of the work grid in \emph{object}.}
+\item{predGrid}{A vector of length \emph{l} which is the output grid of the predicted curves. This is same is the workgrid of \emph{object}.}
 }
 \description{
-Return a matrix with the first K FPC scores according to conditional expectation or numerical integration.
+Return a list containing the matrix with the first k FPC scores according to conditional expectation or numerical integration, the matrix of predicted trajectories and the prediction work grid.
 }
 \examples{
 \donttest{
@@ -40,7 +43,7 @@ train <- Sparsify(sampWiener[seq_len(n), , drop=FALSE], pts, sparsity)
 test <- Sparsify(sampWiener[seq(n + 1, 2 * n), , drop=FALSE], pts, sparsity)
 res <- FPCA(train$Ly, train$Lt)
 pred <- predict(res, test$Ly, test$Lt, K=5)
-plot(pred[, 1], pred[, 2])
+plot(pred$predGrid, pred$predCurves[1,])
 }
 
 }

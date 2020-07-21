@@ -14,7 +14,7 @@ DynCorr(x, y, t)
 \item{t}{a length m vector of time points where x,y are observed.}
 }
 \value{
-A length m vector of individual dynamic correlations
+A length n vector of individual dynamic correlations. The dynamic correlation can be obtained by taking average of this vector.
 }
 \description{
 Calculates the Dynamical Correlation for 2 paired dense regular functional data observed on the same grid.
