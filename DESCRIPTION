@@ -31,7 +31,7 @@ Description: A versatile package that provides implementation of various
     even for subjects with very few longitudinal observations. PACE is a viable and
     flexible alternative to random effects modeling of longitudinal data. There is also a
     Matlab version (PACE) that contains some methods not available on fdapace and vice
-    versa. Development of fdapace was supported by NSF and NIH. Please cite our package if you use it (You may run the command citation("fdapace") to get the citation format and bibtex entry).
+    versa. Updates to fdapace were supported by grants from NIH Echo and NSF DMS-1712864 and DMS-2014626. Please cite our package if you use it (You may run the command citation("fdapace") to get the citation format and bibtex entry).
     References: Wang, J.L., Chiou, J., Müller, H.G. (2016) <doi:10.1146/annurev-statistics-041715-033624>;
     Chen, K., Zhang, X., Petersen, A., Müller, H.G. (2017) <doi:10.1007/s12561-015-9137-5>.
 License: BSD_3_clause + file LICENSE
