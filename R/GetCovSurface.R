@@ -2,7 +2,7 @@
 #' 
 #' Covariance surface estimation for dense or sparse functional data. 
 #' 
-#' @param Ly A list of \emph{n} vectors containing the observed values for each individual. Missing values specified by \code{NA}s are supported for dense case (\code{dataType='dense'}).
+#' @param Ly A list of \emph{n} vectors containing the observed values for each individual. Missing values specified by \code{NA}s are supported for dense case (\code{dataType='Dense'}).
 #' @param Lt A list of \emph{n} vectors containing the observation time points for each individual corresponding to y. Each vector should be sorted in ascending order.
 #' @param optns A list of options control parameters specified by \code{list(name=value)}. See `Details'.
 #'
@@ -144,7 +144,9 @@ GetCovSurface = function(Ly, Lt, optns = list()){
   
   # Plot the results
   # 
-  plot3D::persp3D(x = workGrid, y = workGrid, z = ret$cov, col = colorRampPalette( c('blue','red') )(50))
+  if(optns$plot == TRUE){
+    plot3D::persp3D(x = workGrid, y = workGrid, z = ret$cov, col = colorRampPalette( c('blue','red') )(50))
+  }
   
   return(ret)
 }
