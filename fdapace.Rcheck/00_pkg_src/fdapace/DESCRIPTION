@@ -43,7 +43,7 @@ Suggests: plot3D, rgl, aplpack, mgcv, ks, gtools, knitr, EMCluster,
 NeedsCompilation: yes
 RoxygenNote: 7.1.0
 VignetteBuilder: knitr
-Packaged: 2020-07-24 21:59:15 UTC; codycarroll
+Packaged: 2020-07-24 22:31:17 UTC; codycarroll
 Author: Cody Carroll [aut, cre] (<https://orcid.org/0000-0003-3525-8653>),
   Alvaro Gajardo [aut],
   Yaqing Chen [aut],

@@ -1637,7 +1637,7 @@ At most 28 number of PC can be selected, thresholded by `maxK` = 20.
 > cleanEx()
 > options(digits = 7L)
 > base::cat("Time elapsed: ", proc.time() - base::get("ptime", pos = 'CheckExEnv'),"\n")
-Time elapsed:  17.198 1.861 18.913 0.008 0.011 
+Time elapsed:  18.088 1.994 20 0.008 0.012 
 > grDevices::dev.off()
 null device 
           1 
