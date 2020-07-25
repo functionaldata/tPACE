@@ -56,5 +56,5 @@ Suggests:
     minqa,
     testthat
 NeedsCompilation: yes
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 VignetteBuilder: knitr
