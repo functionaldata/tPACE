@@ -173,7 +173,8 @@ FLM <- function(Y,X,XTest=NULL,optnsListY=NULL,optnsListX=NULL){
       testXi <- cbind(testXi,testXij)
       
     } else {
-      testXij <- predict.FPCA(tmpFPCA,newLy=XTest[[j]]$Ly,newLt=XTest[[j]]$Lt,K=dj[j])
+      predobj = predict.FPCA(tmpFPCA,newLy=XTest[[j]]$Ly,newLt=XTest[[j]]$Lt,K=dj[j])
+      testXij <- predobj$scores
       
       testXi <- cbind(testXi,testXij)
     }

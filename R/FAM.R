@@ -150,7 +150,8 @@ FAM <- function(Y,Lx,Lt,nEval=51,newLx=NULL,newLt=NULL,bwMethod=0,alpha=0.7,supp
     }
     
   } else {
-    xiStdGrid <- predict.FPCA(tmpFPCA,newLy=newLx,newLt=newLt,K=d)%*%diag(1/sqrt(tmpFPCA$lambda))
+    predobj <- predict.FPCA(object = tmpFPCA,newLy=newLx,newLt=newLt,K=d)
+    xiStdGrid <- predobj$scores%*%diag(1/sqrt(tmpFPCA$lambda))
     N <- nrow(xiStdGrid)
   }
   

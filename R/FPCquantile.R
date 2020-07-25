@@ -96,7 +96,8 @@ FPCquantile = function(Lx,Lt_x,y,outQ=c(0.1,0.25,0.5,0.75,0.9),optns_x = NULL,is
   xi = matrix(0,n, K_x)
   xi[1:nn,] = xitrain
   if(length(Lnewx) > 0){
-    xi[(nn+1):n,] = predict.FPCA(xfpca,Lnewx,Lnewt_x,K = K_x,xiMethod = optns$methodXi)
+    predobj = predict.FPCA(xfpca,Lnewx,Lnewt_x,K = K_x,xiMethod = optns$methodXi)
+    xi[(nn+1):n,] = predobj$scores
   }
   
   m = 100

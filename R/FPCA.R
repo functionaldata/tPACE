@@ -2,7 +2,7 @@
 #' 
 #' FPCA for dense or sparse functional data. 
 #' 
-#' @param Ly A list of \emph{n} vectors containing the observed values for each individual. Missing values specified by \code{NA}s are supported for dense case (\code{dataType='dense'}).
+#' @param Ly A list of \emph{n} vectors containing the observed values for each individual. Missing values specified by \code{NA}s are supported for dense case (\code{dataType='Dense'}).
 #' @param Lt A list of \emph{n} vectors containing the observation time points for each individual corresponding to y. Each vector should be sorted in ascending order.
 #' @param optns A list of options control parameters specified by \code{list(name=value)}. See `Details'.
 #'
@@ -10,7 +10,7 @@
 #' by support points, using \code{plot} or \code{CreateDesignPlot}. Some study design such as snippet data (where each subject is 
 #' observed only on a sub-interval of the period of study) will have an ill-covered design plot, in which case the nonparametric 
 #' covariance estimate will be unreliable.
-#' WARNING! Slow computation times may occur if the dataType argument is incorrect. If FPCA is taking a while, please double check that a dense design is not mistakenly coded as 'Sparse'.
+#' WARNING! Slow computation times may occur if the dataType argument is incorrect. If FPCA is taking a while, please double check that a dense design is not mistakenly coded as 'Sparse'. Applying FPCA to a mixture of very dense and sparse curves may result in computational issues.
 #' 
 #' Available control options are 
 #' \describe{
@@ -48,7 +48,7 @@
 #' \item{verbose}{Display diagnostic messages; logical - default: FALSE}
 #' }
 #' @return A list containing the following fields:
-#' \item{sigma2}{Variance for measure error.}
+#' \item{sigma2}{Variance for measurement error.}
 #' \item{lambda}{A vector of length \emph{K} containing eigenvalues.}
 #' \item{phi}{An nWorkGrid by \emph{K} matrix containing eigenfunctions, supported on workGrid.}
 #' \item{xiEst}{A \emph{n} by \emph{K} matrix containing the FPC estimates.} 

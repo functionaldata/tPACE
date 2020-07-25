@@ -212,8 +212,10 @@ MultiFAM <- function(Y,X,ker='epan',nEval=51,XTest=NULL,bwMethod=0,alpha=0.7,sup
       }
       
     } else {
-      XijStdTest <- predict.FPCA(tmpFPCA,newLy=XTest[[j]]$Ly,newLt=XTest[[j]]$Lt,K=dj[j])%*%diag(1/sqrt(tmpFPCA$lambda))
+      predobj <- predict.FPCA(tmpFPCA,newLy=XTest[[j]]$Ly,newLt=XTest[[j]]$Lt,K=dj[j])
       
+      XijStdTest <- predobj$scores%*%diag(1/sqrt(tmpFPCA$lambda))
+        
       N <- nrow(XijStdTest)
       xiStdGrid <- cbind(xiStdGrid,XijStdTest)
     }

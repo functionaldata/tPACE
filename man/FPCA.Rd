@@ -7,7 +7,7 @@
 FPCA(Ly, Lt, optns = list())
 }
 \arguments{
-\item{Ly}{A list of \emph{n} vectors containing the observed values for each individual. Missing values specified by \code{NA}s are supported for dense case (\code{dataType='dense'}).}
+\item{Ly}{A list of \emph{n} vectors containing the observed values for each individual. Missing values specified by \code{NA}s are supported for dense case (\code{dataType='Dense'}).}
 
 \item{Lt}{A list of \emph{n} vectors containing the observation time points for each individual corresponding to y. Each vector should be sorted in ascending order.}
 
@@ -15,7 +15,7 @@ FPCA(Ly, Lt, optns = list())
 }
 \value{
 A list containing the following fields:
-\item{sigma2}{Variance for measure error.}
+\item{sigma2}{Variance for measurement error.}
 \item{lambda}{A vector of length \emph{K} containing eigenvalues.}
 \item{phi}{An nWorkGrid by \emph{K} matrix containing eigenfunctions, supported on workGrid.}
 \item{xiEst}{A \emph{n} by \emph{K} matrix containing the FPC estimates.} 
@@ -43,7 +43,7 @@ If the input is sparse data, make sure you check the design plot is dense and th
 by support points, using \code{plot} or \code{CreateDesignPlot}. Some study design such as snippet data (where each subject is 
 observed only on a sub-interval of the period of study) will have an ill-covered design plot, in which case the nonparametric 
 covariance estimate will be unreliable.
-WARNING! Slow computation times may occur if the dataType argument is incorrect. If FPCA is taking a while, please double check that a dense design is not mistakenly coded as 'Sparse'.
+WARNING! Slow computation times may occur if the dataType argument is incorrect. If FPCA is taking a while, please double check that a dense design is not mistakenly coded as 'Sparse'. Applying FPCA to a mixture of very dense and sparse curves may result in computational issues.
 
 Available control options are 
 \describe{
