@@ -3,6 +3,7 @@ fdapace v0.5.5 (Release date: 25-July-2020)
 Changes:
 * Updated documentation for FPCA and DynCorr.
 * Added GetMeanCI for confidence bands.
+* Added `deduplicate` argument to MakeFPCAInputs.
 * Updated predict.FPCA to handle the prediction of new curves.
 * Added GetMeanCurve and GetCovSurface, which modularize FPCA.
 * Adjusted FPCA dataType selection methods.
