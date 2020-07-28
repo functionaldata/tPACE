@@ -5,7 +5,7 @@ Changes:
 * Added GetMeanCI for confidence bands.
 * Added `deduplicate` argument to MakeFPCAInputs.
 * Updated predict.FPCA to handle the prediction of new curves.
-* Added GetMeanCurve and GetCovSurface, which modularize FPCA.
+* Added GetMeanCurve and GetCovSurface, which modularize the FPCA routine.
 * Adjusted FPCA dataType selection methods.
 
 fdapace v0.5.4 (Release date: 17-June-2020)

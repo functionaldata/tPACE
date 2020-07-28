@@ -8,7 +8,7 @@
 0 errors | 0 warnings | 0 notes
 
 ## Downstream dependencies
-I have run R CMD check on downstream dependencies of fdapace: fdadensity, fgm, and LCox.
+I have run R CMD check on downstream dependencies of fdapace: fdadensity, fgm, frechet, and LCox.
 
 All packages passed.
 

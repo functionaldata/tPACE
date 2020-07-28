@@ -52,6 +52,7 @@ Suggests:
     ks,
     gtools,
     knitr,
+    rmarkdown,
     EMCluster,
     minqa,
     testthat
