@@ -29,7 +29,7 @@ GetRawCov <- function(y,t,obsGridnew, mu, dataType, error){
   indx = NULL 
   diag = NULL
 
-  if(dataType %in% c('Sparse', 'DenseWithMV')){
+  if(dataType %in% c('Sparse')){
   
     Ys = lapply(X = y, FUN=pracma::meshgrid) #pracma
     Xs = lapply(X = t, FUN=pracma::meshgrid) #pracma
@@ -68,36 +68,36 @@ GetRawCov <- function(y,t,obsGridnew, mu, dataType, error){
 
     # win = pracma::ones(1, length(cxxn));
     # count = GetCount(tPairs)...
-
-  }else if(dataType == 'Dense'){
-    
-    yy = t(matrix(unlist(y), length(y[[1]]), ncohort))
-    MU = t(matrix( rep(mu, times=length(y)), ncol=length(y)))
-    t1 = t[[1]]
-    yy = yy - MU;
-    cyy = t(yy) %*% yy / ncohort
-    cyy = as.vector(t(cyy))
-    cxxn = cyy;
-    xxyy = pracma::meshgrid(t1); # pracma
-
-    tPairs =  (matrix( c(c(xxyy$X), c(xxyy$Y)), ncol = 2))
-
-    if(error){
-      tneq = which(tPairs[,1] != tPairs[,2])
-      teq = which(tPairs[,1] == tPairs[,2])
-      diag = matrix(c(tPairs[teq,1], cyy[teq]), ncol = 2)
-      tPairs = tPairs[tneq,];
-      cxxn = cyy[tneq];     
-    }else{
-      cxxn = cyy;     
+  }
+  else{
+    if(dataType == 'Dense'){
+      yy = t(matrix(unlist(y), length(y[[1]]), ncohort))
+      MU = t(matrix( rep(mu, times=length(y)), ncol=length(y)))
+      t1 = t[[1]]
+      yy = yy - MU;
+      cyy = t(yy) %*% yy / ncohort
+      cyy = as.vector(t(cyy))
+      cxxn = cyy;
+      xxyy = pracma::meshgrid(t1); # pracma
+      
+      tPairs =  (matrix( c(c(xxyy$X), c(xxyy$Y)), ncol = 2))
+      
+      if(error){
+        tneq = which(tPairs[,1] != tPairs[,2])
+        teq = which(tPairs[,1] == tPairs[,2])
+        diag = matrix(c(tPairs[teq,1], cyy[teq]), ncol = 2)
+        tPairs = tPairs[tneq,];
+        cxxn = cyy[tneq];     
+      }else{
+        cxxn = cyy;     
+      }
+      
+      # win = pracma::ones(1, length(cxxn));
     }
-
-   # win = pracma::ones(1, length(cxxn));
-  }else if(dataType == 'RegularWithMV'){
-    stop("This is not implemented yet. Contact Pantelis!")
-  }else {
-    stop("Invalid 'dataType' argument type")
-  } 
+    else{
+      stop("Invalid 'dataType' argument type")
+    }
+  }
     
   result <- list( 'tPairs' = tPairs, 'cxxn' = cxxn, 'indx' = indx, # 'win' = win,
    'cyy' = cyy, 'diag' = diag, 'count' = count, 'error' = error, 'dataType' = dataType);  

@@ -60,7 +60,7 @@ CheckOptions = function(t,optns,n){
   #    stop("FPCA is aborted because the argument: numComponents is invalid!\n");   
   #  }
   #} 
-  if( !( is.null(optns[['dataType']]) || any(optns[['dataType']]==c("Sparse","DenseWithMV","Dense","p>>n")) )){ 
+  if( !( is.null(optns[['dataType']]) || any(optns[['dataType']]==c("Sparse","Dense")) )){ 
     #do we have regualr or sparse functional data
     stop("FPCA is aborted because the argument: dataType is invalid!\n");     
   }   

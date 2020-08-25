@@ -105,10 +105,10 @@ SetOptions = function(y, t, optns){
       error = TRUE;    
   }
   if(is.null(nRegGrid)){ # number of support points in each direction of covariance surface 
-    if(dataType == 'Dense' || dataType == 'DenseWithMV'){
+    if(dataType == 'Dense'){
       tt = unlist(t)
       nRegGrid = length(unique(signif(tt[!is.na(tt)],6)));
-    } else { # for Sparse and p>>n
+    } else { # for Sparse data
       nRegGrid = 51;
     }    
   }
@@ -129,18 +129,32 @@ SetOptions = function(y, t, optns){
   if(!is.null(methodXi) && !(methodXi %in% methodNames)){
     message(paste('methodXi', methodXi, 'is unrecognizable! Reset to automatic selection now!\n')); 
     methodXi = NULL; 
-  }   
+  }
   if(is.null(methodXi)){ # method to estimate the PC scores
     if(dataType == 'Dense'){
       methodXi = "IN";
-    } else if(dataType == 'Sparse'){
-      methodXi = "CE";
-    } else if(dataType == 'DenseWithMV'){
-      methodXi = "CE"; # We will see how IN can work here
-    } else { # for dataType = p>>n
-      methodXi = "IN";
+    }
+    else{
+      if(min(sapply(1:length(t),function(i){length(t[[i]])}))>20){
+        #Compute spacing
+        tt = unlist(t);
+        T_min=range(tt)[1]; #minimum time point across all subjects
+        T_max=range(tt)[2]; #maximum time points across all subjects
+        #Max spacing among all subjects: This includes spacing from Tmin to first subject's observation and last subject's observation to Tmax
+        Spacing_max=max(sapply(1:length(t),function(i){max(c(t[[i]][1]-T_min,diff(t[[i]]),T_max-t[[i]][length(t[[i]])]))}));
+        if(Spacing_max<=(max(tt)-min(tt))*0.06){
+          methodXi = "IN";
+        }
+        else{
+          methodXi = "CE";
+        }
+      }
+      else{
+        methodXi = "CE";
+      }
     }
   }
+  
    if(is.null(shrink)){ 
      # apply shrinkage to estimates of random coefficients (dataType data
      # only)

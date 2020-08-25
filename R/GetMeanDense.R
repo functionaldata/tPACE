@@ -16,8 +16,8 @@
 
 GetMeanDense <- function(ymat, obsGrid, optns){
   # Check optns
-  if(!(optns$dataType %in% c('Dense', 'DenseWithMV'))){
-    stop('Cross sectional mean is only applicable for option: dataType = "Dense" or "DenseWithMV"!')
+  if(!(optns$dataType %in% c('Dense'))){
+    stop('Cross sectional mean is only applicable for option: dataType = "Dense"!')
   }
 
   if ( is.null(optns$userMu) ){

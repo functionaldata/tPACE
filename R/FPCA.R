@@ -18,7 +18,7 @@
 #' \item{methodBwCov}{The bandwidth choice method for the smoothed covariance function; 'GMeanAndGCV' (the geometric mean of the GCV bandwidth and the minimum bandwidth),'CV','GCV' - default: 10\% of the support}
 #' \item{userBwMu}{The bandwidth value for the smoothed mean function (using 'CV' or 'GCV'); positive numeric - default: determine automatically based on 'methodBwMu'}
 #' \item{methodBwMu}{The bandwidth choice method for the mean function; 'GMeanAndGCV' (the geometric mean of the GCV bandwidth and the minimum bandwidth),'CV','GCV' - default: 5\% of the support} 
-#' \item{dataType}{The type of design we have (usually distinguishing between sparse or dense functional data); 'Sparse', 'Dense', 'DenseWithMV', 'p>>n' - default:  determine automatically based on 'IsRegular'}
+#' \item{dataType}{The type of design we have: 'Sparse' or 'Dense' - default:  determine automatically}
 #' \item{diagnosticsPlot}{Deprecated. Same as the option 'plot'}
 #' \item{plot}{Plot FPCA results (design plot, mean, scree plot and first K (<=3) eigenfunctions); logical - default: FALSE}
 #' \item{error}{Assume measurement error in the dataset; logical - default: TRUE}
@@ -28,13 +28,13 @@
 #' \item{kFoldMuCov}{The number of folds to be used for mean and covariance smoothing. Default: 10}
 #' \item{lean}{If TRUE the 'inputData' field in the output list is empty. Default: FALSE}
 #' \item{maxK}{The maximum number of principal components to consider - default: min(20, N-1), N:# of curves}
-#' \item{methodXi}{The method to estimate the PC scores; 'CE' (Conditional Expectation), 'IN' (Numerical Integration) - default: 'CE' for sparse data and dense data with missing values, 'IN' for dense data.}
+#' \item{methodXi}{The method to estimate the PC scores; 'CE' (Conditional Expectation), 'IN' (Numerical Integration) - default: 'CE' for sparse data and 'IN' for dense data. If time points are irregular but spacing is small enough, 'IN' method is utilized.}
 #' \item{methodMuCovEst}{The method to estimate the mean and covariance in the case of dense functional data; 'cross-sectional', 'smooth' - default: 'cross-sectional'}
 #' \item{nRegGrid}{The number of support points in each direction of covariance surface; numeric - default: 51}
 #' \item{numBins}{The number of bins to bin the data into; positive integer > 10, default: NULL}
 #' \item{methodSelectK}{The method of choosing the number of principal components K; 'FVE','AIC','BIC', or a positive integer as specified number of components: default 'FVE')}
 #' \item{shrink}{Whether to use shrinkage method to estimate the scores in the dense case (see Yao et al 2003) - default FALSE}
-#' \item{outPercent}{A 2-element vector in [0,1] indicating the outPercent data in the boundary - default (0,1)}
+#' \item{outPercent}{A 2-element vector in [0,1] indicating the percentages of the time range to be considered as left and right boundary regions of the time window of observation - default (0,1) which corresponds to no boundary}
 #' \item{methodRho}{The method of regularization (add to diagonal of covariance surface) in estimating principal component scores; 'trunc': rho is truncation of sigma2, 'ridge': rho is a ridge parameter, 'no': no regularization - default "trunc" if error == TRUE, and "no" if error == FALSE.}
 #' \item{rotationCut}{The 2-element vector in [0,1] indicating the percent of data truncated during sigma^2 estimation; default  (0.25, 0.75))}
 #' \item{useBinnedData}{Should the data be binned? 'FORCE' (Enforce the # of bins), 'AUTO' (Select the # of  bins automatically), 'OFF' (Do not bin) - default: 'AUTO'}

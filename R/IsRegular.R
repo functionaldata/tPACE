@@ -1,6 +1,6 @@
 IsRegular = function(t){
   
-  # Check the data type in terms of dense-sparse. Classification is dense (2), or  data with missing values (1) or sparse (0) data
+  # Check the data type in terms of dense-sparse.
   # t : n-by-1 list of vectors 
   
   tt = unlist(t);
@@ -10,11 +10,10 @@ IsRegular = function(t){
       return('Sparse');
     }
     else{
-      return('Dense'); # for either regular and irregular data
+      return('Dense'); # for either regular and irregular data observed over the same time grid
     }
-  } else if(f > 0.80){
-    return('DenseWithMV');
-  } else {
+  }
+  else{
     return('Sparse');
   }
 }

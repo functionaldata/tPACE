@@ -302,8 +302,9 @@ if (Sys.getenv('TRAVIS') != 'true') {
     resErrCSCE <- FPCA(tmp$Ly, tmp$Lt, list(error=TRUE, dataType='Dense', lean=TRUE, methodMuCovEst='cross-sectional', methodXi='CE'))
     resErrCE <- FPCA(tmp$Ly, tmp$Lt, list(error=TRUE, dataType='Dense', lean=TRUE, methodMuCovEst='smooth', methodXi='CE'))
     resErrIN <- FPCA(tmp$Ly, tmp$Lt, list(error=TRUE, dataType='Dense', lean=TRUE, methodMuCovEst='smooth', methodXi='IN'))
-    resErrCEMV <- FPCA(tmpMV$Ly, tmpMV$Lt, list(error=TRUE, dataType='DenseWithMV', lean=TRUE, methodMuCovEst='smooth', methodXi='CE'))
-    resErrINMV <- FPCA(tmpMV$Ly, tmpMV$Lt, list(error=TRUE, dataType='DenseWithMV', lean=TRUE, methodMuCovEst='smooth', methodXi='IN'))
+    resErrCEMV <- FPCA(tmpMV$Ly, tmpMV$Lt, list(error=TRUE, dataType='Sparse', lean=TRUE, methodMuCovEst='smooth', methodXi='CE'))#removed DenseWithMV
+    resErrINMV <- FPCA(tmpMV$Ly, tmpMV$Lt, list(error=TRUE, dataType='Sparse', lean=TRUE, methodMuCovEst='smooth', methodXi='IN'))#removed DenseWithMV
+    resErr_smallSpacing <- FPCA(tmpMV$Ly, tmpMV$Lt, list(error=TRUE, lean=TRUE))#Should automatically detect small spacing data: perform smoothing for mu/cov and use IN method for score estimation
     
     trueCov <- outer(pts, pts, pmin)
     expect_true(max(abs(resErrCE$smoothedCov - trueCov)) < 0.1)
@@ -311,8 +312,10 @@ if (Sys.getenv('TRAVIS') != 'true') {
     expect_equal(resErrCE$xiEst[, 1], resErrIN$xiEst[, 1], tolerance=1e-2)
     expect_equal(resErrCE$xiEst[, 2], resErrIN$xiEst[, 2], tolerance=6e-2)
     expect_equal(resErrCE$xiEst[, 3], resErrIN$xiEst[, 3], tolerance=1e-1)
-    expect_equal(resErrCE$fittedCov, resErrCEMV$fittedCov, tolerance=1e-1)
+    #expect_equal(resErrCE$fittedCov, resErrCEMV$fittedCov, tolerance=1e-1)
     expect_equal(resErrIN$xiEst[, 1:4], resErrINMV$xiEst[, 1:4], tolerance=1e-1)
+    expect_equal(resErr_smallSpacing$xiEst[, 1:4], resErrINMV$xiEst[, 1:4], tolerance=1e-14)
+    expect_equal(resErr_smallSpacing$fittedCov, resErrINMV$fittedCov, tolerance=1e-14)
   })
   
   
