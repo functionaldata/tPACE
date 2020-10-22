@@ -315,6 +315,16 @@ if (Sys.getenv('TRAVIS') != 'true') {
     expect_equal(resErrIN$xiEst[, 1:4], resErrINMV$xiEst[, 1:4], tolerance=1e-1)
   })
   
+  test_that('Dense irregular data with small spacing', {
+    #this example has max spacing slightly below 6%
+    set.seed(1)
+    Lt=lapply(1:40,function(i){seq(0,1,by=0.02)+abs(rnorm(length(seq(0,1,by=0.02)),mean=0,sd=0.005))})
+    Ly=lapply(1:40,function(i) rnorm(length(Lt[[i]])))
+    resErrSparse <- FPCA(Ly, Lt, list(error=TRUE, dataType='Sparse', lean=TRUE, methodMuCovEst='smooth', methodXi='IN'))
+    resErr_smallSpacing <- FPCA(Ly, Lt, list(error=TRUE, lean=TRUE)) #Should automatically detect small spacing data and then perform smoothing for mu/cov and use IN method for score estimation
+    expect_equal(resErr_smallSpacing$xiEst[, 1:4], resErrSparse$xiEst[, 1:4], tolerance=1e-14)
+    expect_equal(resErr_smallSpacing$fittedCov, resErrSparse$fittedCov, tolerance=1e-14)
+  })
   
   test_that('CV/useBW1SE works', {
     set.seed(1)

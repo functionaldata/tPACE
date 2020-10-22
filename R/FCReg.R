@@ -16,11 +16,17 @@
 #' 
 #' @details If measurement error is assumed, the diagonal elements of the raw covariance will be removed. This could result in highly unstable estimate if the design is very sparse, or strong seasonality presents. 
 #' WARNING! For very sparse functional data, setting measurementError = TRUE is not recommended.
+#' @return A list containing the following fields:
+#' \item{beta}{A matrix for the concurrent regression effects, where rows correspond to different predictors and columns to different time points.}
+#' \item{beta0}{A vector containing the time-varying intercept.}
+#' \item{outGrid}{A vector of the output time points.}
+#' \item{cov}{A 4-dimensional array for the (cross-)covariance surfaces, with the (i, j, k, l) entry being Cov(X_k(t_i), X_l(t_j))}
+#' \item{R2}{A vector of the time-varying R2.}
+#' \item{n}{The sample size.}
 #' @references
 #' \cite{Yao, F., Müller, H.G., Wang, J.L. "Functional Linear Regression Analysis for Longitudinal Data." Annals of Statistics 33, (2005): 2873-2903.(Dense data)} 
 #' \cite{Sentürk, D., Müller, H.G. "Functional varying coefficient models for longitudinal data." J. American Statistical Association, 10, (2010): 1256--1264.}
 #' \cite{Sentürk, D., Nguyen, D.V. "Varying Coefficient Models for Sparse Noise-contaminated Longitudinal Data", Statistica Sinica 21(4), (2011): 1831-1856. (Sparse data)} 
-#' @export
 #' @examples 
 #' # Y(t) = \beta_0(t) + \beta_1(t) X_1(t) + \beta_2(t) Z_2 + \epsilon
 #' 
@@ -56,6 +62,7 @@
 #' Ysp <- Sparsify(Y, T, sparsity)
 #' vars <- list(X_1=X_1sp, Z_2=Z[, 2], Y=Ysp)
 #' withError2D <- FCReg(vars, bw, bw, outGrid)
+#' @export
 
 
 FCReg <- function(vars, userBwMu, userBwCov, outGrid, kern='gauss', measurementError=TRUE, diag1D='none', useGAM = FALSE, returnCov=TRUE) {
