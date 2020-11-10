@@ -10,7 +10,7 @@ GetRho <- function(y, t, optns, mu,muwork, obsGrid, fittedCov, lambda, phi, phiw
   y = y[ls >0]
   t= t[ls > 0]
   
-  if(optns$methodRho == 'trunc'){
+  if(optns$methodRho == 'ridge'){
     R <- sqrt((trapzRcpp(obsGrid, mu ^ 2) + sum(lambda)) / diff(range(obsGrid)))
     a1 <- -13; a2 <- -1.5
     etaCand <- seq(a1, a2, length.out=50)
