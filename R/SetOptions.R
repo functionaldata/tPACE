@@ -144,7 +144,7 @@ SetOptions = function(y, t, optns){
           #Max spacing among all subjects: This includes spacing from Tmin to first subject's observation and last subject's observation to Tmax
           Spacing_max=max(sapply(1:length(t),function(i){max(c(t[[i]][1]-T_min,diff(t[[i]]),T_max-t[[i]][length(t[[i]])]))}));
           if(Spacing_max<=(max(tt)-min(tt))*0.06){
-            methodXi = "IN";
+            methodXi = "IN"; #If number of observations per subject at least 20 and spacing below 6% of time range
           }
           else{
             methodXi = "CE";
@@ -156,7 +156,7 @@ SetOptions = function(y, t, optns){
       }#end if dataType is sparse
       else{
         if(dataType == 'DenseWithMV'){
-          methodXi = "IN"
+          methodXi = "CE"
         }
         else{# for dataType = p>>n
           methodXi = "IN"
@@ -217,7 +217,7 @@ SetOptions = function(y, t, optns){
   if(is.null(methodRho)){ # truncation threshold for the iterative residual that is used
     # no regularization if sigma2 is specified or assume no measurement error.
     if (!is.null(userSigma2) || error == FALSE) { 
-      methodRho <- 'no'
+      methodRho <- 'vanilla'
     } else {
       methodRho <- 'trunc'
     }

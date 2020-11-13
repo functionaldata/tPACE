@@ -35,14 +35,14 @@
 #' \item{methodSelectK}{The method of choosing the number of principal components K; 'FVE','AIC','BIC', or a positive integer as specified number of components: default 'FVE')}
 #' \item{shrink}{Whether to use shrinkage method to estimate the scores in the dense case (see Yao et al 2003) - default FALSE}
 #' \item{outPercent}{A 2-element vector in [0,1] indicating the percentages of the time range to be considered as left and right boundary regions of the time window of observation - default (0,1) which corresponds to no boundary}
-#' \item{methodRho}{The method of regularization (add to diagonal of covariance surface) in estimating principal component scores; 'trunc': rho is truncation of sigma2, 'ridge': rho is a ridge parameter, 'no': no regularization - default "trunc" if error == TRUE, and "no" if error == FALSE.}
+#' \item{methodRho}{The method of regularization (add to diagonal of covariance surface) in estimating principal component scores; 'trunc': rho is truncation of sigma2, 'ridge': rho is a ridge parameter, 'vanilla': vanilla approach or no regularization - default "trunc" if error == TRUE, and "vanilla" if error == FALSE.}
 #' \item{rotationCut}{The 2-element vector in [0,1] indicating the percent of data truncated during sigma^2 estimation; default  (0.25, 0.75))}
 #' \item{useBinnedData}{Should the data be binned? 'FORCE' (Enforce the # of bins), 'AUTO' (Select the # of  bins automatically), 'OFF' (Do not bin) - default: 'AUTO'}
 #' \item{useBinnedCov}{Whether to use the binned raw covariance for smoothing; logical - default:TRUE}
 #' \item{usergrid}{Whether to use observation grid for fitting, if false will use equidistant grid. logical - default:FALSE}
 #' \item{userCov}{The user-defined smoothed covariance function; list of two elements: numerical vector 't' and matrix 'cov', 't' must cover the support defined by 'Ly' - default: NULL}
 #' \item{userMu}{The user-defined smoothed mean function; list of two numerical vector 't' and 'mu' of equal size, 't' must cover the support defined 'Ly' - default: NULL}
-#' \item{userSigma2}{The user-defined measurement error variance. A positive scalar. If specified then no regularization is used (rho is set to 'no', unless specified otherwise). Default to `NULL`}
+#' \item{userSigma2}{The user-defined measurement error variance. A positive scalar. If specified then the vanilla approach is used (methodRho is set to 'vanilla', unless specified otherwise). Default to `NULL`}
 #' \item{userRho}{The user-defined measurement truncation threshold used for the calculation of functional principal components scores. A positive scalar. Default to `NULL`}
 #' \item{useBW1SE}{Pick the largest bandwidth such that CV-error is within one Standard Error from the minimum CV-error, relevant only if methodBwMu ='CV' and/or methodBwCov ='CV'; logical - default: FALSE}
 #' \item{verbose}{Display diagnostic messages; logical - default: FALSE}
@@ -211,7 +211,7 @@ FPCA = function(Ly, Lt, optns = list()){
   
   # Get scores  
   if (optns$methodXi == 'CE') {
-    if (optns$methodRho != 'no') { 
+    if (optns$methodRho != 'vanilla'){
       if( is.null(optns$userRho) ){
         if( length(Ly) > 2048 ){
           randIndx <- sample( length(Ly), 2048)
@@ -241,7 +241,7 @@ FPCA = function(Ly, Lt, optns = list()){
   ret <- MakeResultFPCA(optns, smcObj, muObs, scsObj, eigObj, 
                         inputData = inputData, 
                         scoresObj, truncObsGrid, workGrid, 
-                        rho = if (optns$methodRho != 'no') rho else 0, 
+                        rho = if (optns$methodRho != 'vanilla') rho else 0, 
                         fitLambda=fitLambda, 
                         timestamps = c(lasttsMu, lasttsCov, lasttsPACE, firsttsFPCA, firsttsMu, firsttsCov, firsttsPACE) )
   

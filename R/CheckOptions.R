@@ -102,7 +102,7 @@ CheckOptions = function(t,optns,n){
     # make plot 
     stop("FPCA is aborted because the argument: plot is invalid!\n");    
   }
-  if(!(any(optns[['methodRho']] == c('trunc','ridge', 'no')))){ 
+  if(!(any(optns[['methodRho']] == c('trunc','ridge', 'vanilla')))){ 
     # truncation threshold for the iterative residual that is used 
     stop("FPCA is aborted because the argument: methodRho is invalid!\n");     
   }
