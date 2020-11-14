@@ -190,7 +190,7 @@ test_that('Sparse, scalar response case works', {
   
   
   # Errors are properly small
-  expect_lt(sparseEstErr, 3.1) 
+  expect_lt(sparseEstErr, 2) 
   expect_lt(sparsePredErr, 1) 
 })
 
@@ -513,7 +513,7 @@ test_that('Sparse, functional response case works', {
   
   
   # Errors are properly small
-  expect_lt(sparseEstErr, 3.6) 
+  expect_lt(sparseEstErr, 3) 
   # expect_lt(sparsePredErr, 3) 
 })
 
