@@ -180,6 +180,7 @@ FPCA = function(Ly, Lt, optns = list()){
     scsObj$outGrid <- cutRegGrid
   }
   sigma2 <- scsObj[['sigma2']]
+  
   lasttsCov <- Sys.time()
   firsttsPACE <- Sys.time() #First time-stamp for calculation of PACE
   # workGrid: possibly truncated version of the regGrid
@@ -208,6 +209,16 @@ FPCA = function(Ly, Lt, optns = list()){
   if (optns$methodXi == 'CE') {
     CovObs <- ConvertSupport(workGrid, truncObsGrid, Cov=eigObj$fittedCov)
   }
+  
+  ##Update sigma2 using Bitao update loop
+  optnsTmp <- optns
+  optnsTmp$verbose <- FALSE
+  for (j in 1:2) {
+    yhat <- GetCEScores(Ly, Lt, optnsTmp, muObs, truncObsGrid, CovObs, eigObj$lambda, phiObs, sigma2)[3, ] 
+    sigma2 <- mean(mapply(function(a, b) mean((a - b)^2, na.rm=TRUE), yhat, Ly), na.rm=TRUE)
+  }
+  scsObj$sigma2=sigma2
+  
   
   # Get scores  
   if (optns$methodXi == 'CE') {
