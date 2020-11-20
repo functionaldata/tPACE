@@ -4,6 +4,9 @@
 #' 
 #' @param Ly A list of \emph{n} vectors containing the observed values for each individual. Missing values specified by \code{NA}s are supported for dense case (\code{dataType='Dense'}).
 #' @param Lt A list of \emph{n} vectors containing the observation time points for each individual corresponding to y. Each vector should be sorted in ascending order.
+#' @param use_Loop Boolean TRUE if Loop is used in getRho function and FALSE otherwise
+#' @param use_FVE_fittedCov Boolean TRUE if fitted cov object uses K=K_FVE and FALSE if it used K=K_max (as currently in fdapace)
+#' @param use_SigmaBitUpdate Boolean TRUE if vanilla sigma2 is updated using Bitao loop and FALSE otherwise
 #' @param optns A list of options control parameters specified by \code{list(name=value)}. See `Details'.
 #'
 #' @details If the input is sparse data, make sure you check the design plot is dense and the 2D domain is well covered
@@ -91,7 +94,7 @@
 #' sample curves." Technometrics 28, no. 4, 329-337. (modes of variation for dense data FPCA)}
 #' @export
 
-FPCA = function(Ly, Lt, optns = list()){
+FPCA = function(Ly, Lt,use_Loop=FALSE,use_FVE_fittedCov=FALSE,use_SigmaBitUpdate=FALSE, optns = list()){
   
   firsttsFPCA <- Sys.time() #First time-stamp for FPCA
   # Check the data validity for further analysis
@@ -190,7 +193,7 @@ FPCA = function(Ly, Lt, optns = list()){
   muWork <- ConvertSupport(obsGrid, toGrid = workGrid, mu=smcObj$mu)
   
   # Get the results for the eigen-analysis
-  eigObj = GetEigenAnalysisResults(smoothCov = scsObj$smoothCov, workGrid, optns, muWork = muWork)
+  eigObj = GetEigenAnalysisResults(use_FVE_fittedCov,smoothCov = scsObj$smoothCov, workGrid, optns, muWork = muWork)
   
   # Truncated obsGrid, and observations. Empty observation due to truncation has length 0.
   truncObsGrid <- obsGrid
@@ -209,15 +212,27 @@ FPCA = function(Ly, Lt, optns = list()){
     CovObs <- ConvertSupport(workGrid, truncObsGrid, Cov=eigObj$fittedCov)
   }
   
+  if(use_SigmaBitUpdate){ #This is supposed to run only to get the updated vanilla sigma2 when comparing the three methods of sigma2 estimation
+    optnsTmp <- optns
+    optnsTmp$verbose <- FALSE
+    for (j in 1:2) {
+      yhat <- GetCEScores(Ly, Lt, optnsTmp, muObs, truncObsGrid, CovObs, eigObj$lambda, phiObs, sigma2)[3, ] 
+      sigma2 <- mean(mapply(function(a, b) mean((a - b)^2, na.rm=TRUE), yhat, Ly), na.rm=TRUE)
+    }
+    scsObj$sigma2=sigma2
+  }
+  
+  
+  
   # Get scores  
   if (optns$methodXi == 'CE') {
     if (optns$methodRho != 'vanilla'){
       if( is.null(optns$userRho) ){
         if( length(Ly) > 2048 ){
           randIndx <- sample( length(Ly), 2048)
-          rho <- GetRho(Ly[randIndx], Lt[randIndx], optns, muObs,muWork, truncObsGrid, CovObs, eigObj$lambda, phiObs,eigObj$phi,workGrid, sigma2)
+          rho <- GetRho(use_Loop,Ly[randIndx], Lt[randIndx], optns, muObs,muWork, truncObsGrid, CovObs, eigObj$lambda, phiObs,eigObj$phi,workGrid, sigma2)
         } else {
-          rho <- GetRho(Ly, Lt, optns, muObs,muWork , truncObsGrid, CovObs, eigObj$lambda, phiObs,eigObj$phi,workGrid, sigma2)
+          rho <- GetRho(use_Loop,Ly, Lt, optns, muObs,muWork , truncObsGrid, CovObs, eigObj$lambda, phiObs,eigObj$phi,workGrid, sigma2)
         }
       } else {
         rho = optns$userRho;

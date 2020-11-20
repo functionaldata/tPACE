@@ -1,7 +1,7 @@
 # phi: a nRegGrid * no_FVE
 # The input smoothCov may be truncated.
 
-GetEigenAnalysisResults <- function(smoothCov, regGrid, optns, muWork = NULL) {
+GetEigenAnalysisResults <- function(use_FVE_fittedCov,smoothCov, regGrid, optns, muWork = NULL) {
 
   maxK <- optns$maxK
   FVEthreshold <- optns$FVEthreshold
@@ -34,21 +34,37 @@ GetEigenAnalysisResults <- function(smoothCov, regGrid, optns, muWork = NULL) {
   FVE <- cumsum(d) / sum(d) * 100  # cumulative FVE for all available eigenvalues from fitted cov
   no_opt <- min(which(FVE >= FVEthreshold * 100)) # final number of component chosen based on FVE
   
-  # normalization
-  if (is.null(muWork)) {
-    muWork = 1:dim(eigenV)[1]
+  if(use_FVE_fittedCov){
+    # normalization
+    if (is.null(muWork)) {
+      muWork = 1:dim(eigenV[, 1:no_opt, drop=FALSE])[1]
+    }
+    phi <- apply(eigenV[, 1:no_opt, drop=FALSE], 2, function(x) {
+      x <- x / sqrt(trapzRcpp(regGrid, x^2)) 
+      if ( 0 <= sum(x*muWork) )
+        return(x)
+      else
+        return(-x)
+    })
+    lambda <- gridSize * d;
+    lambda=lambda[1:no_opt]
+    fittedCov <- phi %*% diag(x=lambda[1:no_opt], nrow = length(lambda[1:no_opt])) %*% t(phi)
+  }else{
+    # normalization
+    if (is.null(muWork)) {
+      muWork = 1:dim(eigenV)[1]
+    }
+    phi <- apply(eigenV, 2, function(x) {
+      x <- x / sqrt(trapzRcpp(regGrid, x^2)) 
+      if ( 0 <= sum(x*muWork) )
+        return(x)
+      else
+        return(-x)
+    })
+    lambda <- gridSize * d;
+    fittedCov <- phi %*% diag(x=lambda, nrow = length(lambda)) %*% t(phi)
   }
-  
-  phi <- apply(eigenV, 2, function(x) {
-                    x <- x / sqrt(trapzRcpp(regGrid, x^2)) 
-                    if ( 0 <= sum(x*muWork) )
-                      return(x)
-                    else
-                      return(-x)
-  })
-  lambda <- gridSize * d;
-
-  fittedCov <- phi %*% diag(x=lambda, nrow = length(lambda)) %*% t(phi)
+ 
 
   return(list(lambda = lambda[1:no_opt], phi = phi[,1:no_opt, drop=FALSE], 
               cumFVE = FVE, kChoosen=no_opt, fittedCov=fittedCov))
