@@ -27,7 +27,7 @@
 #' \item{kernel}{Smoothing kernel choice, common for mu and covariance; "rect", "gauss", "epan", "gausvar", "quar" - default: "gauss"; dense data are assumed noise-less so no smoothing is performed. }
 #' \item{kFoldMuCov}{The number of folds to be used for mean and covariance smoothing. Default: 10}
 #' \item{lean}{If TRUE the 'inputData' field in the output list is empty. Default: FALSE}
-#' \item{maxK}{The maximum number of principal components to consider - default: min(20, N-1), N:# of curves}
+#' \item{maxK}{The maximum number of principal components to consider - default: min(20, N-2,nRegGrid-2), N:# of curves, nRegGrid:# of support points in each direction of covariance surface}
 #' \item{methodXi}{The method to estimate the PC scores; 'CE' (Conditional Expectation), 'IN' (Numerical Integration) - default: 'CE' for sparse data, 'IN' for dense data and dense data with missing values. If time points are irregular but spacing is small enough, 'IN' method is utilized by default.}
 #' \item{methodMuCovEst}{The method to estimate the mean and covariance in the case of dense functional data; 'cross-sectional', 'smooth' - default: 'cross-sectional'}
 #' \item{nRegGrid}{The number of support points in each direction of covariance surface; numeric - default: 51}
@@ -63,7 +63,7 @@
 #' \item{bwMu}{The selected (or user specified) bandwidth for smoothing the mean function.}
 #' \item{bwCov}{The selected (or user specified) bandwidth for smoothing the covariance function.}
 #' \item{rho}{A regularizing scalar for the measurement error variance estimate.}
-#' \item{cumFVE}{A vector with the fraction of the total variance explained by each FPC.}
+#' \item{cumFVE}{A vector with the fraction of the cumulative total variance explained with each additional FPC.}
 #' \item{FVE}{A fraction indicating the total variance explained by chosen FPCs with corresponding 'FVEthreshold'.}
 #' \item{criterionValue}{A scalar specifying the criterion value obtained by the selected number of components with specific methodSelectK: FVE, AIC, BIC values or NULL for fixed K.}
 #' \item{inputData}{A list containing the original 'Ly' and 'Lt' lists used as inputs to FPCA. NULL if 'lean' was specified to be TRUE.}
