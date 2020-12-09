@@ -16,7 +16,7 @@
 #' \item{showSlices}{logical specifying if during slicing we should show the outline of the slice (default: FALSE)}
 #' \item{colSpectrum}{character vector to be use as input in the 'colorRampPalette' function defining the outliers colours (default: c("red",  "yellow", 'blue'), relevant only for groupingType='slice') }
 #' \item{groupingType}{string specifying if a slice grouping ('slice') or a standard percentile/bagplot grouping ('standard') should be returned (default: 'standard')} 
-#' \item{fIndeces}{a two-component vector with the index of the mode of variation to consider (default: c(1,2) for FPCA and c(1,1) for FSVD)}
+#' \item{fIndices}{a two-component vector with the index of the mode of variation to consider (default: c(1,2) for FPCA and c(1,1) for FSVD)}
 #' }
 #'
 #' @return An (temporarily) invisible copy of a list containing the labels associated with each of sample curves. 
@@ -48,7 +48,7 @@ CreateOutliersPlot <- function(fObj, optns = NULL, ...){
   newOptns <- CheckAndCreateCOPoptions(optns,fObjClass);
   
   nSlices = newOptns$nSlices;    ifactor = newOptns$ifactor; 
-  colFunc = newOptns$colFunc;    fIndeces = newOptns$fIndeces; 
+  colFunc = newOptns$colFunc;    fIndices = newOptns$fIndeces; #note the typo in newOptns "Indeces"
   variant = newOptns$variant;    groupingType = newOptns$groupingType; 
   unimodal = newOptns$unimodal;  outlierList = newOptns$outlierList;
   maxVar = newOptns$maxVar;      showSlices = newOptns$showSlices
@@ -60,17 +60,17 @@ CreateOutliersPlot <- function(fObj, optns = NULL, ...){
     fVarAlls <-  (fObj$sValues)^2  
   }
   
-  if(fIndeces[2] > length(fVarAlls)){
+  if(fIndices[2] > length(fVarAlls)){
     stop("You requested a mode of variation that is not available.")
   }
   
   fScores1 <- fScores2 <- c();
   if(fObjClass == 'FPCA'){
-    fScores1 <- fObj$xiEst[,fIndeces[1]]
-    fScores2 <- fObj$xiEst[,fIndeces[2]]
+    fScores1 <- fObj$xiEst[,fIndices[1]]
+    fScores2 <- fObj$xiEst[,fIndices[2]]
   } else { 
-    fScores1 <- fObj$sScores1[,fIndeces[1]]
-    fScores2 <- fObj$sScores2[,fIndeces[2]]
+    fScores1 <- fObj$sScores1[,fIndices[1]]
+    fScores2 <- fObj$sScores2[,fIndices[2]]
   }
   fScoresAll <- cbind(fScores1, fScores2) 
   
@@ -79,12 +79,12 @@ CreateOutliersPlot <- function(fObj, optns = NULL, ...){
   
   args1 <- list();
   if(fObjClass == 'FSVD'){
-    args1 <- list(  pch=10,  xlab=paste('S1 FSC', fIndeces[1] ,' scores ', sep=''   ),
-                    ylab=paste('S2 FSC', fIndeces[2] ,' scores ', sep='' ),  
+    args1 <- list(  pch=10,  xlab=paste('S1 FSC', fIndices[1] ,' scores ', sep=''   ),
+                    ylab=paste('S2 FSC', fIndices[2] ,' scores ', sep='' ),  
                     xlim = c(-xedge, xedge), ylim =c(-yedge, yedge), lwd= 2)
   } else {
-    args1 <- list(  pch=10,  xlab=paste('FPC', fIndeces[1] ,' scores ', round(fObj$cumFVE[fIndeces[1]]), '%', sep=''   ),
-                    ylab=paste('FPC', fIndeces[2] ,' scores ', round( diff( fObj$cumFVE[c(fIndeces[2]-1, fIndeces[2])])), '%', sep='' ),  
+    args1 <- list(  pch=10,  xlab=paste('FPC', fIndices[1] ,' scores ', round(100* fObj$cumFVE[fIndices[1]]), '%', sep=''   ),
+                    ylab=paste('FPC', fIndices[2] ,' scores ', round( diff( 100* fObj$cumFVE[c(fIndices[2]-1, fIndices[2])])), '%', sep='' ),  
                     xlim = c(-xedge, xedge), ylim =c(-yedge, yedge), lwd= 2)
   } 
   inargs <- list(...)
@@ -121,9 +121,9 @@ CreateOutliersPlot <- function(fObj, optns = NULL, ...){
     } else { # groupingType : slice
       
       N <- nrow(fScoresAll) 
-      kNNindeces95plus <- (1:N %in% match( apply(bgObj$pxy.outlier,1, prod) ,apply( bgObj$xydata,1, prod)))
-      return( makeSlicePlot(nSlices, colFunc, p95plusInd = kNNindeces95plus, N, args1, 
-                            scoreEsts = fScoresAll , varEsts = fVarAlls[fIndeces], 
+      kNNIndices95plus <- (1:N %in% match( apply(bgObj$pxy.outlier,1, prod) ,apply( bgObj$xydata,1, prod)))
+      return( makeSlicePlot(nSlices, colFunc, p95plusInd = kNNIndices95plus, N, args1, 
+                            scoreEsts = fScoresAll , varEsts = fVarAlls[fIndices], 
                             useDirOfMaxVar = maxVar, showSlices = showSlices) )
       
     } 
@@ -159,9 +159,9 @@ CreateOutliersPlot <- function(fObj, optns = NULL, ...){
                                'p99plus' = which(qq <=  fhat$cont[99]) )))
     } else { # groupingType : slice 
       
-      kNNindeces95plus <- qq <=  fhat$cont[95]
-      return( makeSlicePlot(nSlices, colFunc, p95plusInd = kNNindeces95plus, N, args1, 
-                            scoreEsts = fScoresAll , varEsts = fVarAlls[fIndeces], 
+      kNNIndices95plus <- qq <=  fhat$cont[95]
+      return( makeSlicePlot(nSlices, colFunc, p95plusInd = kNNIndices95plus, N, args1, 
+                            scoreEsts = fScoresAll , varEsts = fVarAlls[fIndices], 
                             useDirOfMaxVar = maxVar, showSlices = showSlices) )
       
     }
@@ -175,33 +175,33 @@ CreateOutliersPlot <- function(fObj, optns = NULL, ...){
     k50 <- floor(0.50*N);
     scaledXi <- apply(fScoresAll, 2, scale)
     distances <- apply(scaledXi, 1, function(aRow) dist(x = rbind(aRow, centrePoint), method = distName) ) 
-    kNNindeces0to99  <- sort(x = distances, index.return = TRUE)$ix[1:k99] # Partial sort should be better
-    kNNindeces0to50  <- kNNindeces0to99[1:k50] 
-    kNNindeces50to95 <- kNNindeces0to99[(1+k50):k95]  
-    kNNindeces95to99 <- kNNindeces0to99[(1+k95):k99]  
-    kNNindeces99plus <- setdiff(1:N, kNNindeces0to99)
+    kNNIndices0to99  <- sort(x = distances, index.return = TRUE)$ix[1:k99] # Partial sort should be better
+    kNNIndices0to50  <- kNNIndices0to99[1:k50] 
+    kNNIndices50to95 <- kNNIndices0to99[(1+k50):k95]  
+    kNNIndices95to99 <- kNNIndices0to99[(1+k95):k99]  
+    kNNIndices99plus <- setdiff(1:N, kNNIndices0to99)
     
     if(groupingType =='standard'){ 
       
       args2 = list (x = fScores1, y = fScores2, cex= .33,  type='n' )
       do.call(plot, c(args2, args1))   
       grid(col = "#e6e6e6")
-      points(fScoresAll[kNNindeces99plus,],cex=0.5, col='orange', pch=10 , lwd =2 ) 
-      points(fScoresAll[kNNindeces95to99,],cex=0.33, col='red', pch=10, lwd =2 ) 
-      points(fScoresAll[kNNindeces50to95,],cex=0.33, col='blue', pch=10 , lwd =2 ) 
-      points(fScoresAll[kNNindeces0to50, ],cex=0.33, col='black' , pch=10, lwd =2 ) 
+      points(fScoresAll[kNNIndices99plus,],cex=0.5, col='orange', pch=10 , lwd =2 ) 
+      points(fScoresAll[kNNIndices95to99,],cex=0.33, col='red', pch=10, lwd =2 ) 
+      points(fScoresAll[kNNIndices50to95,],cex=0.33, col='blue', pch=10 , lwd =2 ) 
+      points(fScoresAll[kNNIndices0to50, ],cex=0.33, col='black' , pch=10, lwd =2 ) 
       legend('bottomleft', c('< 50%','50%-95%','95%-99%','> 99%'), pch = 19, 
              col= c('black','blue','red', 'orange'), pt.cex=1.5, bg='white' )
       
-      return( invisible( list( 'p0to50'= kNNindeces0to50,
-                               'p50to95' = kNNindeces50to95,
-                               'p95to99' = kNNindeces95to99,
-                               'p99plus' = kNNindeces99plus)))
+      return( invisible( list( 'p0to50'= kNNIndices0to50,
+                               'p50to95' = kNNIndices50to95,
+                               'p95to99' = kNNIndices95to99,
+                               'p99plus' = kNNIndices99plus)))
     } else { # groupingType : slice
       
-      kNNindeces95plus <- (1:N %in% setdiff(1:N, kNNindeces0to99[1:k95]))
-      return( makeSlicePlot(nSlices, colFunc, p95plusInd = kNNindeces95plus, N, args1, 
-                            scoreEsts = fScoresAll, varEsts = fVarAlls[fIndeces],
+      kNNIndices95plus <- (1:N %in% setdiff(1:N, kNNIndices0to99[1:k95]))
+      return( makeSlicePlot(nSlices, colFunc, p95plusInd = kNNIndices95plus, N, args1, 
+                            scoreEsts = fScoresAll, varEsts = fVarAlls[fIndices],
                             useDirOfMaxVar = maxVar, showSlices = showSlices) )
       
     }
@@ -211,7 +211,7 @@ CreateOutliersPlot <- function(fObj, optns = NULL, ...){
 makeSlicePlot <- function( nSlices, colFunc, p95plusInd, N, args1, args2, scoreEsts, varEsts, useDirOfMaxVar, showSlices){
   
   
-  kNNindeces95plus <- p95plusInd
+  kNNIndices95plus <- p95plusInd
   
   args2 = list (x = scoreEsts[,1], y = scoreEsts[,2], cex= .33,  type='n' )
   do.call(plot, c(args2, args1))   
@@ -244,7 +244,7 @@ makeSlicePlot <- function( nSlices, colFunc, p95plusInd, N, args1, args2, scoreE
     multiplier2 = sign( cos( angle + pi/ (nSlices/2)))
     qrtIndx =  multiplier1 * Qstr[,2] > multiplier1 * tan(angle) * Qstr[,1] & 
       multiplier2 * Qstr[,2] < multiplier2 * tan(angle + pi/ (nSlices/2) ) * Qstr[,1] 
-    outlierList[[i]] = qrtIndx & kNNindeces95plus
+    outlierList[[i]] = qrtIndx & kNNIndices95plus
     points(scoreEsts[ outlierList[[i]], c(1,2), drop=FALSE], cex=0.93, col= colPal[i], pch=3, lwd =2 )
     if(showSlices){
       bigNumber = 10 * max(abs(as.vector(scoreEsts)))
@@ -260,9 +260,9 @@ makeSlicePlot <- function( nSlices, colFunc, p95plusInd, N, args1, args2, scoreE
 }
 
 quickNNeval <- function(xin,yin, zin, xout, yout){
-  xindeces = sapply( xout, function(myArg) which.min( abs( xin - myArg) ), simplify = TRUE)
-  yindeces = sapply( yout, function(myArg) which.min( abs( yin - myArg) ), simplify = TRUE )
-  return( zin[ cbind(xindeces,yindeces)] )
+  xIndices = sapply( xout, function(myArg) which.min( abs( xin - myArg) ), simplify = TRUE)
+  yIndices = sapply( yout, function(myArg) which.min( abs( yin - myArg) ), simplify = TRUE )
+  return( zin[ cbind(xIndices,yIndices)] )
 }
 
 monotonise <- function(x, maxIndex = NULL){

@@ -6,7 +6,7 @@
 #' @param newLy  A list of \emph{n} vectors containing the observed values for each individual.
 #' @param newLt A list of \emph{n} vectors containing the observation time points for each individual corresponding to y.
 #' @param sigma2 The user-defined measurement error variance. A positive scalar. (default: rho if applicable, otherwise sigma2 if applicable, otherwise 0 if no error. )
-#' @param K The scalar defining the number of clusters to define; (default: 1).
+#' @param K The scalar defining the number of clusters to define; (default: from user-specified FPCA Object).
 #' @param xiMethod The integration method used to calculate the functional principal component scores 
 #' (standard numerical integration 'IN' or conditional expectation 'CE'); default: 'CE'.
 #' @param ... Not used.
@@ -27,14 +27,14 @@
 #' train <- Sparsify(sampWiener[seq_len(n), , drop=FALSE], pts, sparsity)
 #' test <- Sparsify(sampWiener[seq(n + 1, 2 * n), , drop=FALSE], pts, sparsity)
 #' res <- FPCA(train$Ly, train$Lt)
-#' pred <- predict(res, test$Ly, test$Lt, K=5)
+#' pred <- predict(res, test$Ly, test$Lt, K=3)
 #' plot(pred$predGrid, pred$predCurves[1,])
 #' }
 #' 
 #' @method predict FPCA
 #' @export
 
-predict.FPCA <- function(object, newLy, newLt, sigma2 = NULL, K = 1, xiMethod = 'CE', ...){
+predict.FPCA <- function(object, newLy, newLt, sigma2 = NULL, K = NULL, xiMethod = 'CE', ...){
   fpcaObj = object;
   
   if(class(fpcaObj) != "FPCA"){
@@ -44,6 +44,7 @@ predict.FPCA <- function(object, newLy, newLt, sigma2 = NULL, K = 1, xiMethod = 
   if(! all.equal( sapply(newLt, length), sapply(newLy, length) ) ){
     stop('The size of the vectors in newLt and newLy differ. They must be equal.')
   } 
+  
   
   # Standard data checks/massasing as in FPCA()
   CheckData(newLy, newLt)
@@ -57,8 +58,12 @@ predict.FPCA <- function(object, newLy, newLt, sigma2 = NULL, K = 1, xiMethod = 
                               ifelse( !fpcaObj$optns$error, 0, stop('sigma2 cannot be determined.'))))  
   } else {
     if(!is.numeric(sigma2) ){
-      stop('sigma2 is not numeric, we sure about this? :D')
+      stop('sigma2 is not numeric; are you sure?')
     }
+  }
+  
+  if(is.null(K)){
+    K = fpcaObj$selectK
   }
   
   if(K > fpcaObj$selectK){

@@ -83,7 +83,7 @@ SetOptions = function(y, t, optns){
     methodSelectK = "FVE";
   }
   if(is.null(FVEthreshold)){  # Default Value for the Fraction-of-Variance-Explained
-     FVEthreshold = 0.9999;
+     FVEthreshold = 0.99;
   }
   if(is.null(dataType)){ #do we have dataType or sparse functional data
     dataType = IsRegular(t);    

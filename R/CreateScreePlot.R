@@ -18,27 +18,27 @@
 
 CreateScreePlot <-function(fpcaObj, ...){ 
  
-  args1 <- list( main="Scree-plot", ylab='Fraction of Variance Explained', xlab='Number of components')  
+  args1 <- list( main="Scree plot", ylab='Fraction of variance explained', xlab='Number of components')  
   inargs <- list(...)
   args1[names(inargs)] <- inargs
  
-  ys <- fpcaObj$cumFVE;
+  ys <- fpcaObj$cumFVE ;
   
   
   if( !is.vector(ys) ){ 
     stop('Please use a vector as input.')   
   }
-  if(max(ys) > 100){
-    warning('The maximum number in the input vector is larger than 100; are sure it is right?');
+  if(max(ys) > 1){
+    warning('The maximum number in the input vector is larger than 1; are you sure it is right?');
   }
   if(any(ys < 0) || any(diff(ys) <0) ){
-    stop('This does not appear to be a valid cumulative FVE vector. Please check it carefully.')
+    stop('This is not a valid cumulative FVE vector.')
   }
 
-  dfbar <- do.call( barplot, c( args1, list( ylim=c(0,105)), list(axes=FALSE), list(height =  rep(NA,length(ys))) ) )
+  dfbar <- do.call( barplot, c( args1, list( ylim=c(0,1.05)), list(axes=FALSE), list(height =  rep(NA,length(ys))) ) )
     
-  abline(h=(seq(0,100,5)), col="lightgray", lty="dotted")
-  barplot(c(ys[1], diff(ys)), add = TRUE )
+  abline(h=(seq(0,1,.05)), col="lightgray", lty="dotted")
+  barplot(c(ys[1], diff(ys)), add = TRUE , names.arg = as.character(1:fpcaObj$selectK))
   lines(dfbar, y= ys, col='red')
   points(dfbar, y= ys, col='red')
   legend("right", "Cumul. FVE", col='red', lty=1, pch=1, bty='n') 

@@ -31,8 +31,9 @@ GetEigenAnalysisResults <- function(smoothCov, regGrid, optns, muWork = NULL) {
   # thresholding for corresponding FVE option 
   #(not before to avoid not being able to reach the FVEthreshold when pos eigenvalues > maxk)
   # i.e. default FVE 0.9999 outputs all components remained here.
-  FVE <- cumsum(d) / sum(d) * 100  # cumulative FVE for all available eigenvalues from fitted cov
-  no_opt <- min(which(FVE >= FVEthreshold * 100)) # final number of component chosen based on FVE
+  FVE <- cumsum(d) / sum(d) #* 100  # cumulative FVE for all available eigenvalues from fitted cov
+  no_opt <- min(which(FVE >= FVEthreshold #* 100
+                      )) # final number of component chosen based on FVE
   
   # normalization
   if (is.null(muWork)) {

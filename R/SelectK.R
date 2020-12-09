@@ -5,7 +5,7 @@
 #' @param criterion A string or positive integer specifying selection criterion for the number of functional principal components.
 #' Available options: 'FVE', 'AIC', 'BIC', or the specified number of components - default: 'FVE'
 #' For explanations of these criteria, see Yao et al (2005, JASA)
-#' @param FVEthreshold A threshold percentage to be specified by the user when using "FVE" as selection criterion: (0,1] - default: NULL
+#' @param FVEthreshold A threshold fraction to be specified by the user when using "FVE" as selection criterion: (0,1] - default: NULL
 #' @param Ly A list of \emph{n} vectors containing the observed values for each individual - default: NULL
 #' @param Lt A list of \emph{n} vectors containing the observation time points for each individual corresponding to Ly - default: NULL
 #'
@@ -69,9 +69,11 @@ SelectK = function(fpcaObj, criterion = 'FVE', FVEthreshold = 0.95, Ly = NULL, L
     # select FVE based on cumFVE in fpcaObj and specified FVEthreshold
     if(is.null(FVEthreshold)){stop('Need to specify FVEthreshold to choose number of components via FVE.')}
     cumFVE = fpcaObj$cumFVE
-    buff <- .Machine[['double.eps']] * 100
-    K <- min( which(cumFVE > FVEthreshold * 100 - buff) )
-    criterion <- cumFVE[min(which(cumFVE > FVEthreshold * 100 - buff))]
+    buff <- .Machine[['double.eps']] #* 100
+    K <- min( which(cumFVE > FVEthreshold #* 100 
+                    - buff) )
+    criterion <- cumFVE[min(which(cumFVE > FVEthreshold #* 100 
+                                  - buff))]
   } else if (is.numeric(criterion) && criterion > 0) { # fixed K is specified.
     if(criterion > length(fpcaObj$lambda)){
       stop("Specified number of components is more than available components.")
