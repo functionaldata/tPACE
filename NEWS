@@ -1,3 +1,9 @@
+fdapace v0.5.5 (Release date: 17-Dec-2020)
+=============
+Changes:
+* Updated FPCA methods for DenseWithMV dataType.
+* Minor changes to FPCA and predict.FPCA defaults and documentation.
+
 fdapace v0.5.5 (Release date: 25-July-2020)
 =============
 Changes:

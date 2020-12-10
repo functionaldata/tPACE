@@ -30,8 +30,8 @@ A list containing the following fields:
 \item{bwMu}{The selected (or user specified) bandwidth for smoothing the mean function.}
 \item{bwCov}{The selected (or user specified) bandwidth for smoothing the covariance function.}
 \item{rho}{A regularizing scalar for the measurement error variance estimate.}
-\item{cumFVE}{A vector with the percentages of the total variance explained by each FPC. Increase to almost 1.}
-\item{FVE}{A percentage indicating the total variance explained by chosen FPCs with corresponding 'FVEthreshold'.}
+\item{cumFVE}{A vector with the fraction of the cumulative total variance explained with each additional FPC.}
+\item{FVE}{A fraction indicating the total variance explained by chosen FPCs with corresponding 'FVEthreshold'.}
 \item{criterionValue}{A scalar specifying the criterion value obtained by the selected number of components with specific methodSelectK: FVE, AIC, BIC values or NULL for fixed K.}
 \item{inputData}{A list containing the original 'Ly' and 'Lt' lists used as inputs to FPCA. NULL if 'lean' was specified to be TRUE.}
 }
@@ -56,26 +56,26 @@ Available control options are
 \item{plot}{Plot FPCA results (design plot, mean, scree plot and first K (<=3) eigenfunctions); logical - default: FALSE}
 \item{error}{Assume measurement error in the dataset; logical - default: TRUE}
 \item{fitEigenValues}{Whether also to obtain a regression fit of the eigenvalues - default: FALSE}
-\item{FVEthreshold}{Fraction-of-Variance-Explained threshold used during the SVD of the fitted covariance function; numeric (0,1] - default: 0.9999}
+\item{FVEthreshold}{Fraction-of-Variance-Explained threshold used during the SVD of the fitted covariance function; numeric (0,1] - default: 0.99}
 \item{kernel}{Smoothing kernel choice, common for mu and covariance; "rect", "gauss", "epan", "gausvar", "quar" - default: "gauss"; dense data are assumed noise-less so no smoothing is performed. }
 \item{kFoldMuCov}{The number of folds to be used for mean and covariance smoothing. Default: 10}
 \item{lean}{If TRUE the 'inputData' field in the output list is empty. Default: FALSE}
-\item{maxK}{The maximum number of principal components to consider - default: min(20, N-1), N:# of curves}
-\item{methodXi}{The method to estimate the PC scores; 'CE' (Conditional Expectation), 'IN' (Numerical Integration) - default: 'CE' for sparse data and dense data with missing values, 'IN' for dense data.}
+\item{maxK}{The maximum number of principal components to consider - default: min(20, N-2,nRegGrid-2), N:# of curves, nRegGrid:# of support points in each direction of covariance surface}
+\item{methodXi}{The method to estimate the PC scores; 'CE' (Conditional Expectation), 'IN' (Numerical Integration) - default: 'CE' for sparse data, 'IN' for dense data and dense data with missing values. If time points are irregular but spacing is small enough, 'IN' method is utilized by default.}
 \item{methodMuCovEst}{The method to estimate the mean and covariance in the case of dense functional data; 'cross-sectional', 'smooth' - default: 'cross-sectional'}
 \item{nRegGrid}{The number of support points in each direction of covariance surface; numeric - default: 51}
 \item{numBins}{The number of bins to bin the data into; positive integer > 10, default: NULL}
 \item{methodSelectK}{The method of choosing the number of principal components K; 'FVE','AIC','BIC', or a positive integer as specified number of components: default 'FVE')}
 \item{shrink}{Whether to use shrinkage method to estimate the scores in the dense case (see Yao et al 2003) - default FALSE}
-\item{outPercent}{A 2-element vector in [0,1] indicating the outPercent data in the boundary - default (0,1)}
-\item{methodRho}{The method of regularization (add to diagonal of covariance surface) in estimating principal component scores; 'trunc': rho is truncation of sigma2, 'ridge': rho is a ridge parameter, 'no': no regularization - default "trunc" if error == TRUE, and "no" if error == FALSE.}
+\item{outPercent}{A 2-element vector in [0,1] indicating the percentages of the time range to be considered as left and right boundary regions of the time window of observation - default (0,1) which corresponds to no boundary}
+\item{methodRho}{The method of regularization (add to diagonal of covariance surface) in estimating principal component scores; 'trunc': rho is truncation of sigma2, 'ridge': rho is a ridge parameter, 'vanilla': vanilla approach or no regularization - default "trunc" if error == TRUE, and "vanilla" if error == FALSE.}
 \item{rotationCut}{The 2-element vector in [0,1] indicating the percent of data truncated during sigma^2 estimation; default  (0.25, 0.75))}
 \item{useBinnedData}{Should the data be binned? 'FORCE' (Enforce the # of bins), 'AUTO' (Select the # of  bins automatically), 'OFF' (Do not bin) - default: 'AUTO'}
 \item{useBinnedCov}{Whether to use the binned raw covariance for smoothing; logical - default:TRUE}
 \item{usergrid}{Whether to use observation grid for fitting, if false will use equidistant grid. logical - default:FALSE}
 \item{userCov}{The user-defined smoothed covariance function; list of two elements: numerical vector 't' and matrix 'cov', 't' must cover the support defined by 'Ly' - default: NULL}
 \item{userMu}{The user-defined smoothed mean function; list of two numerical vector 't' and 'mu' of equal size, 't' must cover the support defined 'Ly' - default: NULL}
-\item{userSigma2}{The user-defined measurement error variance. A positive scalar. If specified then no regularization is used (rho is set to 'no', unless specified otherwise). Default to `NULL`}
+\item{userSigma2}{The user-defined measurement error variance. A positive scalar. If specified then the vanilla approach is used (methodRho is set to 'vanilla', unless specified otherwise). Default to `NULL`}
 \item{userRho}{The user-defined measurement truncation threshold used for the calculation of functional principal components scores. A positive scalar. Default to `NULL`}
 \item{useBW1SE}{Pick the largest bandwidth such that CV-error is within one Standard Error from the minimum CV-error, relevant only if methodBwMu ='CV' and/or methodBwCov ='CV'; logical - default: FALSE}
 \item{verbose}{Display diagnostic messages; logical - default: FALSE}

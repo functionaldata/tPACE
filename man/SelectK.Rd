@@ -14,7 +14,7 @@ SelectK(fpcaObj, criterion = "FVE", FVEthreshold = 0.95, Ly = NULL, Lt = NULL)
 Available options: 'FVE', 'AIC', 'BIC', or the specified number of components - default: 'FVE'
 For explanations of these criteria, see Yao et al (2005, JASA)}
 
-\item{FVEthreshold}{A threshold percentage to be specified by the user when using "FVE" as selection criterion: (0,1] - default: NULL}
+\item{FVEthreshold}{A threshold fraction to be specified by the user when using "FVE" as selection criterion: (0,1] - default: NULL}
 
 \item{Ly}{A list of \emph{n} vectors containing the observed values for each individual - default: NULL}
 

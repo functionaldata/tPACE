@@ -30,7 +30,7 @@ Available control options are
 \item{showSlices}{logical specifying if during slicing we should show the outline of the slice (default: FALSE)}
 \item{colSpectrum}{character vector to be use as input in the 'colorRampPalette' function defining the outliers colours (default: c("red",  "yellow", 'blue'), relevant only for groupingType='slice') }
 \item{groupingType}{string specifying if a slice grouping ('slice') or a standard percentile/bagplot grouping ('standard') should be returned (default: 'standard')} 
-\item{fIndeces}{a two-component vector with the index of the mode of variation to consider (default: c(1,2) for FPCA and c(1,1) for FSVD)}
+\item{fIndices}{a two-component vector with the index of the mode of variation to consider (default: c(1,2) for FPCA and c(1,1) for FSVD)}
 }
 }
 \examples{

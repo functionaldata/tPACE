@@ -4,7 +4,7 @@
 \alias{predict.FPCA}
 \title{Predict FPC scores and curves for a new sample given an FPCA object}
 \usage{
-\method{predict}{FPCA}(object, newLy, newLt, sigma2 = NULL, K = 1, xiMethod = "CE", ...)
+\method{predict}{FPCA}(object, newLy, newLt, sigma2 = NULL, K = NULL, xiMethod = "CE", ...)
 }
 \arguments{
 \item{object}{An FPCA object.}
@@ -15,7 +15,7 @@
 
 \item{sigma2}{The user-defined measurement error variance. A positive scalar. (default: rho if applicable, otherwise sigma2 if applicable, otherwise 0 if no error. )}
 
-\item{K}{The scalar defining the number of clusters to define; (default: 1).}
+\item{K}{The scalar defining the number of clusters to define; (default: from user-specified FPCA Object).}
 
 \item{xiMethod}{The integration method used to calculate the functional principal component scores 
 (standard numerical integration 'IN' or conditional expectation 'CE'); default: 'CE'.}
@@ -42,7 +42,7 @@ sparsity <- 2:5
 train <- Sparsify(sampWiener[seq_len(n), , drop=FALSE], pts, sparsity)
 test <- Sparsify(sampWiener[seq(n + 1, 2 * n), , drop=FALSE], pts, sparsity)
 res <- FPCA(train$Ly, train$Lt)
-pred <- predict(res, test$Ly, test$Lt, K=5)
+pred <- predict(res, test$Ly, test$Lt, K=3)
 plot(pred$predGrid, pred$predCurves[1,])
 }
 

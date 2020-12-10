@@ -37,6 +37,15 @@ FCReg(
 \item{returnCov}{Indicator to return the covariance surfaces, which is a four dimensional array. The first two dimensions correspond to outGrid
 and the last two correspond to the covariates and the response, i.e. (i, j, k, l) entry being Cov(X_k(t_i), X_l(t_j)) (default: FALSE)}
 }
+\value{
+A list containing the following fields:
+\item{beta}{A matrix for the concurrent regression effects, where rows correspond to different predictors and columns to different time points.}
+\item{beta0}{A vector containing the time-varying intercept.}
+\item{outGrid}{A vector of the output time points.}
+\item{cov}{A 4-dimensional array for the (cross-)covariance surfaces, with the (i, j, k, l) entry being Cov(X_k(t_i), X_l(t_j))}
+\item{R2}{A vector of the time-varying R2.}
+\item{n}{The sample size.}
+}
 \description{
 Functional concurrent regression with dense or sparse functional data for scalar or functional dependent variables. Note: function-to-scalar regression can also be handled using the VCAM function in fdapace.
 }
