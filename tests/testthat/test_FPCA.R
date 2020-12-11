@@ -312,7 +312,7 @@ if (Sys.getenv('TRAVIS') != 'true') {
     expect_equal(resErrCE$xiEst[, 2], resErrIN$xiEst[, 2], tolerance=6e-2)
     expect_equal(resErrCE$xiEst[, 3], resErrIN$xiEst[, 3], tolerance=1e-1)
     expect_equal(resErrCE$fittedCov, resErrCEMV$fittedCov, tolerance=1e-1)
-    expect_equal(resErrIN$xiEst[, 1:4], resErrINMV$xiEst[, 1:4], tolerance=1e-1)
+    expect_equal(resErrIN$xiEst[, 1:3], resErrINMV$xiEst[, 1:3], tolerance=1e-1)
   })
   
   test_that('Dense irregular data with small spacing', {
