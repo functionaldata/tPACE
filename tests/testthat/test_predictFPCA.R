@@ -46,7 +46,7 @@ test_that('consistent estimates for sparse case using CE', {
   sampWiener <- Wiener(n, pts)
   sampWiener <- Sparsify(sampWiener, pts, 4)
   resC <- FPCA(sampWiener$Ly, sampWiener$Lt)
-  testK = 4
+  testK = 3
   
   CCC <- predict(resC, newLy = sampWiener$Ly, newLt =  sampWiener$Lt, K = testK)
   
