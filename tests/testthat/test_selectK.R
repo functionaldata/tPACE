@@ -3,9 +3,9 @@ library(mvtnorm)
 # devtools::load_all()
 
 test_that("SelectK works for dense FPCA Wiener process with measurement error",{
-  n = 100; K = 10; pts = seq(0, 1, length=50)
+  n = 100; K = 3; pts = seq(0, 1, length=50)
   lambda <- (1 / (1:K - 1/2) / pi)^2
-  TrueFVE <- cumsum(lambda)/sum(lambda) * 100
+  TrueFVE <- cumsum(lambda)/sum(lambda) #* 100
   phi <- sqrt(2) * sin( pts %*% matrix(1:K - 1/2, 1, K) * pi )
   set.seed(1)
   scores <- t(diag(1 / (1:K - 1/2) / pi) %*% matrix(rnorm(K * n), K, n))
@@ -38,7 +38,7 @@ test_that("SelectK works for dense FPCA Wiener process with measurement error",{
   test4FPCA_AIC <- FPCA(test4$Ly, test4$Lt, optnDenseErrorAIC)
   test4FPCA_BIC <- FPCA(test4$Ly, test4$Lt, optnDenseErrorBIC)
   test4FPCA_FVE <- FPCA(test4$Ly, test4$Lt, optnDenseErrorFVE)
-  expect_equal(test4FPCA_FVE$selectK, min(which(TrueFVE >= 85)))
+  expect_equal(test4FPCA_FVE$selectK, min(which(TrueFVE >= .85)))
   expect_equal(test4FPCA_AIC$selectK, which(TrueAIC == min(TrueAIC)))
   expect_equal(test4FPCA_BIC$selectK, which(TrueBIC == min(TrueBIC)))
 })
