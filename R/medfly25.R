@@ -14,7 +14,7 @@
 #' \item{nEggs}{: Number of eggs laid at that particular day} 
 #' \item{nEggsRemain}{: Remaining total number of eggs laid}
 #' } 
-#' @source \url{http://anson.ucdavis.edu/~mueller/data/medfly1000.html}
+#' @source \url{https://anson.ucdavis.edu/~mueller/data/medfly1000.html}
 #' @references
 #' {Carey, J.R., Liedo, P., Müller, H.G., Wang, J.L., Chiou, J.M. (1998). Relationship of age patterns of fecundity to mortality, longevity, and lifetime reproduction in a large cohort of Mediterranean fruit fly females. J. of Gerontology --Biological Sciences 53, 245-251. }
 NULL

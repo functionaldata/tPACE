@@ -14,7 +14,7 @@ A data frame with 19725 rows and 3 variables:
 }
 }
 \source{
-\url{http://anson.ucdavis.edu/~mueller/data/medfly1000.html}
+\url{https://anson.ucdavis.edu/~mueller/data/medfly1000.html}
 }
 \description{
 A dataset containing the eggs laid from 789 medflies (Mediterranean fruit flies,
