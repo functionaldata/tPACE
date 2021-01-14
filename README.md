@@ -4,8 +4,8 @@ PACE package for Functional Data Analysis and Empirical Dynamics
 
 [![Build Status](https://travis-ci.org/functionaldata/tPACE.svg?branch=master)](https://travis-ci.org/functionaldata/tPACE)
 [![cran version](https://CRAN.R-project.org/package=fdapace)](https://CRAN.R-project.org/package=fdapace)
-[![downloads](http://cranlogs.r-pkg.org/badges/fdapace)](http://cranlogs.r-pkg.org/badges/fdapace)
-[![total downloads](http://cranlogs.r-pkg.org/badges/grand-total/fdapace)](http://cranlogs.r-pkg.org/badges/grand-total/fdapace)
+[![downloads](https://cranlogs.r-pkg.org:443/badges/fdapace)](https://cranlogs.r-pkg.org:443/badges/fdapace)
+[![total downloads](https://cranlogs.r-pkg.org:443/badges/grand-total/fdapace)](https://cranlogs.r-pkg.org:443/badges/grand-total/fdapace)
 
 ## Installation of the current development version
 You can install the development version of the package in R using:

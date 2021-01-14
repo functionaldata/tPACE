@@ -8,6 +8,7 @@ GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, optns, useBinned
   methodBwCov <- optns$methodBwCov
   verbose <- optns$verbose
   rotationCut <- optns$rotationCut
+  useLWSigma2 <- optns$useLWSigma2
   
   # get the truncation of the output grids.
   outPercent <- optns$outPercent
@@ -83,24 +84,31 @@ GetSmoothedCovarSurface <- function(y, t, mu, obsGrid, regGrid, optns, useBinned
     if (!is.null(optns[['userSigma2']])) {
       sigma2 <- optns[['userSigma2']]
     } else if (!is.null(optns[['userCov']])) {
-      a0 = min(regGrid)
-      b0 = max(regGrid)
-      lint = b0 - a0
-      middleCutRegGrid <- cutRegGrid > a0 + lint * rotationCut[1] - buff & 
-        cutRegGrid < a0 + lint * rotationCut[2] + buff
-      if (useBinnedCov) {
-        diagT <- rcov[['tDiag']]
-        diagVal <- rcov[['diagMeans']]
-      } else {
-        diagTV <- aggregate(rcov[['diag']][, 2], list(rcov[['diag']][, 1]), mean)
-        diagT <- diagTV[, 1]
-        diagVal <- diagTV[, 2]
+      if(useLWSigma2){
+        sigma2 <- GetLWSigma2(y,t)
+      }else{
+        a0 = min(regGrid)
+        b0 = max(regGrid)
+        lint = b0 - a0
+        middleCutRegGrid <- cutRegGrid > a0 + lint * rotationCut[1] - buff & 
+          cutRegGrid < a0 + lint * rotationCut[2] + buff
+        if (useBinnedCov) {
+          diagT <- rcov[['tDiag']]
+          diagVal <- rcov[['diagMeans']]
+        } else {
+          diagTV <- aggregate(rcov[['diag']][, 2], list(rcov[['diag']][, 1]), mean)
+          diagT <- diagTV[, 1]
+          diagVal <- diagTV[, 2]
+        }
+        diagEst <- approx(diagT, diagVal, cutRegGrid[middleCutRegGrid])[['y']]
+        sigma2 <- mean(diagEst - diag(smoothCov)[middleCutRegGrid])
       }
-      diagEst <- approx(diagT, diagVal, cutRegGrid[middleCutRegGrid])[['y']]
-      sigma2 <- mean(diagEst - diag(smoothCov)[middleCutRegGrid])
-      
     } else { # has to estimate sigma2 from scratch
-      sigma2 <- PC_CovE(obsGrid, regGrid, bwCov, rotationCut=rotationCut, kernel=kern, rcov=rcov)$sigma2
+      if(useLWSigma2){
+        sigma2 <- GetLWSigma2(y,t)
+      }else{
+        sigma2 <- PC_CovE(obsGrid, regGrid, bwCov, rotationCut=rotationCut, kernel=kern, rcov=rcov)$sigma2
+      }
     }
     
     if(sigma2 < 0) {

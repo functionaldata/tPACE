@@ -43,6 +43,7 @@ SetOptions = function(y, t, optns){
   outPercent =optns[['outPercent']];  
   userCov =optns[['userCov']];
   userSigma2 = optns[['userSigma2']]
+  useLWSigma2 = optns[['useLWSigma2']]
   rotationCut =optns[['rotationCut']];    
   useBinnedData =optns[['useBinnedData']];
   useBinnedCov = optns[['useBinnedCov']]
@@ -268,6 +269,13 @@ SetOptions = function(y, t, optns){
   if(is.null(useBW1SE)){ 
     useBW1SE = FALSE;
   }
+  if(is.null(useLWSigma2)){ #method to get sigma2, dense data: PACE; sparse data: LW
+    if(dataType %in% c( "Dense", "DenseWithMV")){
+      useLWSigma2 = FALSE;   # kernel: Epanechnikov
+    }else{
+      useLWSigma2 = TRUE;  # kernel: Gaussian
+    }
+  }
   # if (!all.equal(outPercent, c(0, 1)) && methodMuCovEst == 'cross-sectional') {
     # stop('outPercent not supported for cross-sectional covariance estimate')
   # }
@@ -278,7 +286,7 @@ SetOptions = function(y, t, optns){
           nRegGrid = nRegGrid, rotationCut = rotationCut, methodXi = methodXi, kernel = kernel, 
           lean = lean, diagnosticsPlot = diagnosticsPlot, plot=plot, numBins = numBins, useBinnedCov = useBinnedCov, 
           usergrid = usergrid, yname = yname,  methodRho = methodRho, verbose = verbose, userMu = userMu, userCov = userCov, methodMuCovEst = methodMuCovEst,
-          userRho = userRho, userSigma2 = userSigma2, outPercent = outPercent, useBinnedData = useBinnedData, useBW1SE = useBW1SE)
+          userRho = userRho, userSigma2 = userSigma2, useLWSigma2 = useLWSigma2, outPercent = outPercent, useBinnedData = useBinnedData, useBW1SE = useBW1SE)
 
   invalidNames <- !names(optns) %in% names(retOptns)
   if (any(invalidNames)) {
