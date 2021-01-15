@@ -32,7 +32,7 @@ GetLWSigma2 <- function(y,t){
         mu_est <- function(x,grid,mu){
           res <- c()
           for (i in 1:length(x)) {
-            res[i] <- mu[which(min(abs(x[i]-grid))==abs(x[i]-grid))]
+            res[i] <- mu[which(min(abs(x[i]-grid))==abs(x[i]-grid))[1]]
           }
           return(res)
         }
@@ -119,7 +119,7 @@ GetLWSigma2 <- function(y,t){
       
       L <- L1+L3-2*L2
       L <- L^2
-      sig2 <- mean(L)/(2*3)
+      sig2 <- mean(L)/6
   }else stop('unsupported data type')
   return(sig2)
 }
