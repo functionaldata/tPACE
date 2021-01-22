@@ -25,6 +25,10 @@ GetINScores <- function(yvec, tvec, optns,obsGrid, mu, lambda, phi, sigma2=NULL)
   cy = yvec - mu
   phi = apply(phi,2,function(phivec){return(approx(obsGrid,phivec,tvec)$y)})
   
+  if(!is.matrix(phi)){
+    phi=matrix(as.numeric(phi),nrow=1,ncol=length(phi))
+  }
+  
   xiEst = matrix(0,length(lambda)) 
   # Get Scores xiEst
   for(i in 1:length(lambda)){
