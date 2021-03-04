@@ -50,6 +50,14 @@ CheckOptions = function(t,optns,n){
       stop("FPCA is aborted because the argument: FVEthreshold is invalid!\n"); 
     } 
   }
+  
+  if(  ( (length(optns[['FVEfittedCov']])==1) &&  is.numeric(optns[['FVEfittedCov']]) ) ){
+    if (!( (0<=optns[['FVEfittedCov']]) && (optns[['FVEfittedCov']]<=1) ) ){  
+      # the Fraction-of-Variance-Explained
+      stop("FPCA is aborted because the argument: FVEfittedCov is invalid!\n"); 
+    } 
+  }
+  
   if( !( (length(optns[['maxK']])==1) &&  is.numeric(optns[['maxK']]) && (1<=optns[['maxK']]) && (optns[['maxK']]<=n) )){  
     # maximum number of principal components to consider
     stop("FPCA is aborted because the argument: maxK is invalid!\n");   

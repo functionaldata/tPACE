@@ -18,6 +18,7 @@ SetOptions = function(y, t, optns){
   kFoldMuCov = optns[['kFoldMuCov']]
   methodSelectK =optns[['methodSelectK']];  
   FVEthreshold =optns[['FVEthreshold']];
+  FVEfittedCov =optns[['FVEfittedCov']];
   fitEigenValues <- optns[['fitEigenValues']];
   maxK =optns[['maxK']];                
   dataType =optns[['dataType']];          
@@ -85,6 +86,9 @@ SetOptions = function(y, t, optns){
   }
   if(is.null(FVEthreshold)){  # Default Value for the Fraction-of-Variance-Explained
      FVEthreshold = 0.99;
+  }
+  if(is.null(FVEfittedCov)){ 
+    FVEfittedCov = NULL;
   }
   if(is.null(dataType)){ #do we have dataType or sparse functional data
     dataType = IsRegular(t);    
@@ -263,6 +267,7 @@ SetOptions = function(y, t, optns){
   if(is.null(usergrid)){ 
     usergrid = FALSE;
   }
+
   if(is.null(lean)){ 
     lean = FALSE;
   }
@@ -281,7 +286,7 @@ SetOptions = function(y, t, optns){
   # }
     
   retOptns <- list(userBwMu = userBwMu, methodBwMu = methodBwMu, userBwCov = userBwCov, methodBwCov = methodBwCov,
-          kFoldMuCov = kFoldMuCov, methodSelectK = methodSelectK, FVEthreshold = FVEthreshold,
+          kFoldMuCov = kFoldMuCov, methodSelectK = methodSelectK, FVEthreshold = FVEthreshold, FVEfittedCov = FVEfittedCov,
           fitEigenValues = fitEigenValues, maxK = maxK, dataType = dataType, error = error, shrink = shrink,
           nRegGrid = nRegGrid, rotationCut = rotationCut, methodXi = methodXi, kernel = kernel, 
           lean = lean, diagnosticsPlot = diagnosticsPlot, plot=plot, numBins = numBins, useBinnedCov = useBinnedCov, 

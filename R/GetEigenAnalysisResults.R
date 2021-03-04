@@ -5,6 +5,7 @@ GetEigenAnalysisResults <- function(smoothCov, regGrid, optns, muWork = NULL) {
 
   maxK <- optns$maxK
   FVEthreshold <- optns$FVEthreshold
+  FVEfittedCov <- optns$FVEfittedCov
   verbose <- optns$verbose
   
   gridSize <- regGrid[2] - regGrid[1]
@@ -34,7 +35,7 @@ GetEigenAnalysisResults <- function(smoothCov, regGrid, optns, muWork = NULL) {
   FVE <- cumsum(d) / sum(d) #* 100  # cumulative FVE for all available eigenvalues from fitted cov
   no_opt <- min(which(FVE >= FVEthreshold #* 100
                       )) # final number of component chosen based on FVE
-  
+                      
   # normalization
   if (is.null(muWork)) {
     muWork = 1:dim(eigenV)[1]
@@ -49,7 +50,12 @@ GetEigenAnalysisResults <- function(smoothCov, regGrid, optns, muWork = NULL) {
   })
   lambda <- gridSize * d;
 
-  fittedCov <- phi %*% diag(x=lambda, nrow = length(lambda)) %*% t(phi)
+  if(!is.null(FVEfittedCov)){
+    no_fittedCov <- min(which(FVE >= FVEfittedCov)) # number of components used to construct fittedCov
+  }else{
+    no_fittedCov <- dim(phi)[2]
+  }
+  fittedCov <- phi[,1:no_fittedCov, drop=FALSE] %*% diag(x=lambda[1:no_fittedCov], nrow = length(lambda[1:no_fittedCov])) %*% t(phi[,1:no_fittedCov, drop=FALSE])
 
   return(list(lambda = lambda[1:no_opt], phi = phi[,1:no_opt, drop=FALSE], 
               cumFVE = FVE, kChoosen=no_opt, fittedCov=fittedCov))
