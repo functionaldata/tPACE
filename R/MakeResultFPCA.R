@@ -22,9 +22,13 @@
 
 MakeResultFPCA <- function(optns, smcObj, mu, scsObj, eigObj, 
                            scoresObj, obsGrid, workGrid, rho=NULL, fitLambda=NULL, inputData, timestamps = NULL){
-  
-  xiEst <- t(do.call(cbind, scoresObj[1, ])) 
-  xiVar <- scoresObj[2, ]
+  if(optns$isScores==TRUE){
+    xiEst <- t(do.call(cbind, scoresObj[1, ])) 
+    xiVar <- scoresObj[2, ]
+  }else{
+    xiEst <- NULL 
+    xiVar <- NULL
+  }
   if(optns$usergrid == TRUE){
     ret <- list(sigma2 = scsObj$sigma2, 
                 lambda = eigObj$lambda, 

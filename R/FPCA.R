@@ -47,6 +47,7 @@
 #' \item{useLWSigma2}{Estimation measurement error variance from Z Lin and JL Wang (2021+). logical - default: TRUE (sparse data), FALSE (dense data).}
 #' \item{userRho}{The user-defined measurement truncation threshold used for the calculation of functional principal components scores. A positive scalar. Default to `NULL`}
 #' \item{useBW1SE}{Pick the largest bandwidth such that CV-error is within one Standard Error from the minimum CV-error, relevant only if methodBwMu ='CV' and/or methodBwCov ='CV'; logical - default: FALSE}
+#' \item{isScores}{Whether only provide eigenfunctions and eigenvalues, but no scores; isScores='TRUE': scores, isScores='FALSE': no scores - default: 'TRUE'}
 #' \item{verbose}{Display diagnostic messages; logical - default: FALSE}
 #' }
 #' @return A list containing the following fields:
@@ -226,10 +227,18 @@ FPCA = function(Ly, Lt, optns = list()){
       }
       sigma2 <- rho
     }
-    scoresObj <- GetCEScores(Ly, Lt, optns, muObs, truncObsGrid, CovObs, eigObj$lambda, phiObs, sigma2)
+      if(optns$isScores==TRUE){
+      scoresObj <- GetCEScores(Ly, Lt, optns, muObs, truncObsGrid, CovObs, eigObj$lambda, phiObs, sigma2)
+  }else{
+    scoresObj<-NULL
+    }
   } else if (optns$methodXi == 'IN') {
+    if(optns$isScores==TRUE){
     scoresObj <- mapply(function(yvec,tvec)
       GetINScores(yvec, tvec,optns= optns,obsGrid,mu = muObs,lambda =eigObj$lambda ,phi = phiObs,sigma2 = sigma2),Ly,Lt)
+    }else{
+      scoresObj<-NULL
+    }
   }
   
   if (optns$fitEigenValues) {

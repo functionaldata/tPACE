@@ -57,6 +57,7 @@ Available control options are
 \item{error}{Assume measurement error in the dataset; logical - default: TRUE}
 \item{fitEigenValues}{Whether also to obtain a regression fit of the eigenvalues - default: FALSE}
 \item{FVEthreshold}{Fraction-of-Variance-Explained threshold used during the SVD of the fitted covariance function; numeric (0,1] - default: 0.99}
+\item{FVEfittedCov}{Fraction-of-Variance explained by the components that are used to construct fittedCov; numeric (0,1] - default: NULL (all components available will be used)}
 \item{kernel}{Smoothing kernel choice, common for mu and covariance; "rect", "gauss", "epan", "gausvar", "quar" - default: "gauss"; dense data are assumed noise-less so no smoothing is performed. }
 \item{kFoldMuCov}{The number of folds to be used for mean and covariance smoothing. Default: 10}
 \item{lean}{If TRUE the 'inputData' field in the output list is empty. Default: FALSE}
@@ -76,6 +77,7 @@ Available control options are
 \item{userCov}{The user-defined smoothed covariance function; list of two elements: numerical vector 't' and matrix 'cov', 't' must cover the support defined by 'Ly' - default: NULL}
 \item{userMu}{The user-defined smoothed mean function; list of two numerical vector 't' and 'mu' of equal size, 't' must cover the support defined 'Ly' - default: NULL}
 \item{userSigma2}{The user-defined measurement error variance. A positive scalar. If specified then the vanilla approach is used (methodRho is set to 'vanilla', unless specified otherwise). Default to `NULL`}
+\item{useLWSigma2}{Estimation measurement error variance from Z Lin and JL Wang (2021+). logical - default: TRUE (sparse data), FALSE (dense data).}
 \item{userRho}{The user-defined measurement truncation threshold used for the calculation of functional principal components scores. A positive scalar. Default to `NULL`}
 \item{useBW1SE}{Pick the largest bandwidth such that CV-error is within one Standard Error from the minimum CV-error, relevant only if methodBwMu ='CV' and/or methodBwCov ='CV'; logical - default: FALSE}
 \item{verbose}{Display diagnostic messages; logical - default: FALSE}
