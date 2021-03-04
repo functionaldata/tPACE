@@ -55,8 +55,9 @@ GetEigenAnalysisResults <- function(smoothCov, regGrid, optns, muWork = NULL) {
   }else{
     no_fittedCov <- dim(phi)[2]
   }
-  fittedCov <- phi[,1:no_fittedCov, drop=FALSE] %*% diag(x=lambda[1:no_fittedCov], nrow = length(lambda[1:no_fittedCov])) %*% t(phi[,1:no_fittedCov, drop=FALSE])
-
+  fittedCovUser <- phi[,1:no_fittedCov, drop=FALSE] %*% diag(x=lambda[1:no_fittedCov], nrow = length(lambda[1:no_fittedCov])) %*% t(phi[,1:no_fittedCov, drop=FALSE])
+  fittedCov <- phi %*% diag(x=lambda, nrow = length(lambda)) %*% t(phi)
+  
   return(list(lambda = lambda[1:no_opt], phi = phi[,1:no_opt, drop=FALSE], 
-              cumFVE = FVE, kChoosen=no_opt, fittedCov=fittedCov))
+              cumFVE = FVE, kChoosen=no_opt, fittedCov=fittedCov, fittedCovUser=fittedCovUser))
 }
