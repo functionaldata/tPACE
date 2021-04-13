@@ -15,6 +15,11 @@
 ##########################################################################
 
 GetINScores <- function(yvec, tvec, optns,obsGrid, mu, lambda, phi, sigma2=NULL){
+  if(is.vector(phi)){
+    phi <- as.matrix(phi)
+  }
+  
+  
   if(length(lambda) != ncol(phi)){
     stop('No. of eigenvalues is not the same as the no. of eigenfunctions.')
   }
