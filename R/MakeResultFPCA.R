@@ -22,7 +22,7 @@
 
 MakeResultFPCA <- function(optns, smcObj, mu, scsObj, eigObj, 
                            scoresObj, obsGrid, workGrid, rho=NULL, fitLambda=NULL, inputData, timestamps = NULL){
-  if(optns$isScores==TRUE){
+  if(optns$imputeScores==TRUE){
     xiEst <- t(do.call(cbind, scoresObj[1, ])) 
     xiVar <- scoresObj[2, ]
   }else{

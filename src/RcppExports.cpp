@@ -24,31 +24,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// cumtrapzRcpp
-Rcpp::NumericVector cumtrapzRcpp(const Rcpp::NumericVector X, const Rcpp::NumericVector Y);
-RcppExport SEXP _fdapace_cumtrapzRcpp(SEXP XSEXP, SEXP YSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Rcpp::NumericVector >::type X(XSEXP);
-    Rcpp::traits::input_parameter< const Rcpp::NumericVector >::type Y(YSEXP);
-    rcpp_result_gen = Rcpp::wrap(cumtrapzRcpp(X, Y));
-    return rcpp_result_gen;
-END_RCPP
-}
-// dropZeroElementsXYWin
-Eigen::MatrixXd dropZeroElementsXYWin(const Eigen::Map<Eigen::VectorXd>& win, const Eigen::Map<Eigen::VectorXd>& xin, const Eigen::Map<Eigen::VectorXd>& yin);
-RcppExport SEXP _fdapace_dropZeroElementsXYWin(SEXP winSEXP, SEXP xinSEXP, SEXP yinSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type win(winSEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type xin(xinSEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type yin(yinSEXP);
-    rcpp_result_gen = Rcpp::wrap(dropZeroElementsXYWin(win, xin, yin));
-    return rcpp_result_gen;
-END_RCPP
-}
 // GetIndCEScoresCPP
 Rcpp::List GetIndCEScoresCPP(const Eigen::Map<Eigen::VectorXd>& yVec, const Eigen::Map<Eigen::VectorXd>& muVec, const Eigen::Map<Eigen::VectorXd>& lamVec, const Eigen::Map<Eigen::MatrixXd>& phiMat, const Eigen::Map<Eigen::MatrixXd>& SigmaYi);
 RcppExport SEXP _fdapace_GetIndCEScoresCPP(SEXP yVecSEXP, SEXP muVecSEXP, SEXP lamVecSEXP, SEXP phiMatSEXP, SEXP SigmaYiSEXP) {
@@ -81,21 +56,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// interp2lin
-Eigen::VectorXd interp2lin(const Eigen::Map<Eigen::VectorXd>& xin, const Eigen::Map<Eigen::VectorXd>& yin, const Eigen::Map<Eigen::VectorXd>& zin, const Eigen::Map<Eigen::VectorXd>& xou, const Eigen::Map<Eigen::VectorXd>& you);
-RcppExport SEXP _fdapace_interp2lin(SEXP xinSEXP, SEXP yinSEXP, SEXP zinSEXP, SEXP xouSEXP, SEXP youSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type xin(xinSEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type yin(yinSEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type zin(zinSEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type xou(xouSEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type you(youSEXP);
-    rcpp_result_gen = Rcpp::wrap(interp2lin(xin, yin, zin, xou, you));
-    return rcpp_result_gen;
-END_RCPP
-}
 // RCPPmean
 double RCPPmean(const Rcpp::NumericVector X);
 RcppExport SEXP _fdapace_RCPPmean(SEXP XSEXP) {
@@ -104,6 +64,17 @@ BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const Rcpp::NumericVector >::type X(XSEXP);
     rcpp_result_gen = Rcpp::wrap(RCPPmean(X));
+    return rcpp_result_gen;
+END_RCPP
+}
+// RCPPvar
+double RCPPvar(const Rcpp::NumericVector X);
+RcppExport SEXP _fdapace_RCPPvar(SEXP XSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector >::type X(XSEXP);
+    rcpp_result_gen = Rcpp::wrap(RCPPvar(X));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -128,17 +99,6 @@ BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type v(vSEXP);
     rcpp_result_gen = Rcpp::wrap(Rcppsort(v));
-    return rcpp_result_gen;
-END_RCPP
-}
-// RCPPvar
-double RCPPvar(const Rcpp::NumericVector X);
-RcppExport SEXP _fdapace_RCPPvar(SEXP XSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Rcpp::NumericVector >::type X(XSEXP);
-    rcpp_result_gen = Rcpp::wrap(RCPPvar(X));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -256,6 +216,46 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cumtrapzRcpp
+Rcpp::NumericVector cumtrapzRcpp(const Rcpp::NumericVector X, const Rcpp::NumericVector Y);
+RcppExport SEXP _fdapace_cumtrapzRcpp(SEXP XSEXP, SEXP YSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector >::type X(XSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector >::type Y(YSEXP);
+    rcpp_result_gen = Rcpp::wrap(cumtrapzRcpp(X, Y));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dropZeroElementsXYWin
+Eigen::MatrixXd dropZeroElementsXYWin(const Eigen::Map<Eigen::VectorXd>& win, const Eigen::Map<Eigen::VectorXd>& xin, const Eigen::Map<Eigen::VectorXd>& yin);
+RcppExport SEXP _fdapace_dropZeroElementsXYWin(SEXP winSEXP, SEXP xinSEXP, SEXP yinSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type win(winSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type xin(xinSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type yin(yinSEXP);
+    rcpp_result_gen = Rcpp::wrap(dropZeroElementsXYWin(win, xin, yin));
+    return rcpp_result_gen;
+END_RCPP
+}
+// interp2lin
+Eigen::VectorXd interp2lin(const Eigen::Map<Eigen::VectorXd>& xin, const Eigen::Map<Eigen::VectorXd>& yin, const Eigen::Map<Eigen::VectorXd>& zin, const Eigen::Map<Eigen::VectorXd>& xou, const Eigen::Map<Eigen::VectorXd>& you);
+RcppExport SEXP _fdapace_interp2lin(SEXP xinSEXP, SEXP yinSEXP, SEXP zinSEXP, SEXP xouSEXP, SEXP youSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type xin(xinSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type yin(yinSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type zin(zinSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type xou(xouSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd>& >::type you(youSEXP);
+    rcpp_result_gen = Rcpp::wrap(interp2lin(xin, yin, zin, xou, you));
+    return rcpp_result_gen;
+END_RCPP
+}
 // trapzRcpp
 double trapzRcpp(const Rcpp::NumericVector X, const Rcpp::NumericVector Y);
 RcppExport SEXP _fdapace_trapzRcpp(SEXP XSEXP, SEXP YSEXP) {
@@ -271,21 +271,21 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_fdapace_CPPlwls1d", (DL_FUNC) &_fdapace_CPPlwls1d, 8},
-    {"_fdapace_cumtrapzRcpp", (DL_FUNC) &_fdapace_cumtrapzRcpp, 2},
-    {"_fdapace_dropZeroElementsXYWin", (DL_FUNC) &_fdapace_dropZeroElementsXYWin, 3},
     {"_fdapace_GetIndCEScoresCPP", (DL_FUNC) &_fdapace_GetIndCEScoresCPP, 5},
     {"_fdapace_GetIndCEScoresCPPnewInd", (DL_FUNC) &_fdapace_GetIndCEScoresCPPnewInd, 7},
-    {"_fdapace_interp2lin", (DL_FUNC) &_fdapace_interp2lin, 5},
     {"_fdapace_RCPPmean", (DL_FUNC) &_fdapace_RCPPmean, 1},
+    {"_fdapace_RCPPvar", (DL_FUNC) &_fdapace_RCPPvar, 1},
     {"_fdapace_RcppPseudoApprox", (DL_FUNC) &_fdapace_RcppPseudoApprox, 3},
     {"_fdapace_Rcppsort", (DL_FUNC) &_fdapace_Rcppsort, 1},
-    {"_fdapace_RCPPvar", (DL_FUNC) &_fdapace_RCPPvar, 1},
     {"_fdapace_Rmullwlsk", (DL_FUNC) &_fdapace_Rmullwlsk, 9},
     {"_fdapace_RmullwlskCC", (DL_FUNC) &_fdapace_RmullwlskCC, 8},
     {"_fdapace_RmullwlskCCsort2", (DL_FUNC) &_fdapace_RmullwlskCCsort2, 8},
     {"_fdapace_RmullwlskUniversal", (DL_FUNC) &_fdapace_RmullwlskUniversal, 9},
     {"_fdapace_RmullwlskUniversalDeriv", (DL_FUNC) &_fdapace_RmullwlskUniversalDeriv, 12},
     {"_fdapace_Rrotatedmullwlsk", (DL_FUNC) &_fdapace_Rrotatedmullwlsk, 8},
+    {"_fdapace_cumtrapzRcpp", (DL_FUNC) &_fdapace_cumtrapzRcpp, 2},
+    {"_fdapace_dropZeroElementsXYWin", (DL_FUNC) &_fdapace_dropZeroElementsXYWin, 3},
+    {"_fdapace_interp2lin", (DL_FUNC) &_fdapace_interp2lin, 5},
     {"_fdapace_trapzRcpp", (DL_FUNC) &_fdapace_trapzRcpp, 2},
     {NULL, NULL, 0}
 };

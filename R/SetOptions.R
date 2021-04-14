@@ -50,7 +50,7 @@ SetOptions = function(y, t, optns){
   useBinnedCov = optns[['useBinnedCov']]
   lean = optns[['lean']];
   useBW1SE =optns[['useBW1SE']]; 
-  isScores = optns[['isScores']];
+  imputeScores = optns[['imputeScores']];
 
   if(is.null(methodBwMu)){ # bandwidth choice for mean function is GCV if userBwMu = 0
     #methodBwMu = 'GMeanAndGCV';  
@@ -282,8 +282,8 @@ SetOptions = function(y, t, optns){
       useLWSigma2 = TRUE;  # kernel: Gaussian
     }
   }
-  if(is.null(isScores)){ # check for scores output
-    isScores=TRUE; 
+  if(is.null(imputeScores)){ # check for scores imputation
+    imputeScores=TRUE; 
   }
   # if (!all.equal(outPercent, c(0, 1)) && methodMuCovEst == 'cross-sectional') {
     # stop('outPercent not supported for cross-sectional covariance estimate')
@@ -296,7 +296,7 @@ SetOptions = function(y, t, optns){
           lean = lean, diagnosticsPlot = diagnosticsPlot, plot=plot, numBins = numBins, useBinnedCov = useBinnedCov, 
           usergrid = usergrid, yname = yname,  methodRho = methodRho, verbose = verbose, userMu = userMu, userCov = userCov, methodMuCovEst = methodMuCovEst,
           userRho = userRho, userSigma2 = userSigma2, useLWSigma2 = useLWSigma2, outPercent = outPercent, useBinnedData = useBinnedData, useBW1SE = useBW1SE,
-          isScores = isScores)
+          imputeScores = imputeScores)
 
   invalidNames <- !names(optns) %in% names(retOptns)
   if (any(invalidNames)) {

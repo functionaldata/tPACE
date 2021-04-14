@@ -80,6 +80,7 @@ Available control options are
 \item{useLWSigma2}{Estimation measurement error variance from Z Lin and JL Wang (2021+). logical - default: TRUE (sparse data), FALSE (dense data).}
 \item{userRho}{The user-defined measurement truncation threshold used for the calculation of functional principal components scores. A positive scalar. Default to `NULL`}
 \item{useBW1SE}{Pick the largest bandwidth such that CV-error is within one Standard Error from the minimum CV-error, relevant only if methodBwMu ='CV' and/or methodBwCov ='CV'; logical - default: FALSE}
+\item{imputeScores}{Whether to impute the FPC scores or not; default: 'TRUE'}
 \item{verbose}{Display diagnostic messages; logical - default: FALSE}
 }
 }
