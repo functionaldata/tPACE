@@ -1,3 +1,10 @@
+fdapace v0.5.7 (Release date: 17-May-2021)
+=============
+Changes:
+* Option for eigenfunctions/values without score estimation
+* Options for covariance surface output
+* Minor bug fixes in FPCA edge cases.
+
 fdapace v0.5.6 (Release date: 10-Jan-2021)
 =============
 Changes:

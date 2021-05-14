@@ -3,11 +3,11 @@ Type: Package
 Title: Functional Data Analysis and Empirical Dynamics
 URL: https://github.com/functionaldata/tPACE
 BugReports: https://github.com/functionaldata/tPACE/issues
-Version: 0.5.6
+Version: 0.5.7
 Encoding: UTF-8
-Date: 2021-01-10,
-Authors@R: c(person("Cody","Carroll", email="cjcarroll@ucdavis.edu", role=c("aut","cre"), comment =  c(ORCID = "0000-0003-3525-8653")),
-    person("Alvaro", "Gajardo", email="aegajardo@ucdavis.edu", role=c("aut")),
+Date: 2021-05-17,
+Authors@R: c(person("Alvaro", "Gajardo", email="aegajardo@ucdavis.edu", role=c("aut","cre")),
+    person("Cody","Carroll", email="cjcarroll@ucdavis.edu", role=c("aut"), comment =  c(ORCID = "0000-0003-3525-8653")),
     person("Yaqing","Chen", email="yaqchen@ucdavis.edu", role=c("aut")),
     person("Xiongtao","Dai", email="dai@ucdavis.edu", role=c("aut")),
     person("Jianing","Fan", role=c("aut")),
@@ -18,7 +18,7 @@ Authors@R: c(person("Cody","Carroll", email="cjcarroll@ucdavis.edu", role=c("aut
     person("Paromita", "Dubey", role="ctb"),
     person("Hans-Georg", "Mueller", role=c("cph","ths","aut")),
     person("Jane-Ling", "Wang", role=c("cph","ths","aut"))) 
-Maintainer: Cody Carroll <cjcarroll@ucdavis.edu>
+Maintainer: Alvaro Gajardo <aegajardo@ucdavis.edu>
 Description: A versatile package that provides implementation of various
     methods of Functional Data Analysis (FDA) and Empirical Dynamics. The core of this
     package is Functional Principal Component Analysis (FPCA), a key technique for
