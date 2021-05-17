@@ -1,7 +1,3 @@
-## Resubmission
-This is a resubmission. In this version I have:
-
-* Corrected possibly invalid URLs to their proper locations.
 
 ## Test environments
 * local R installation, R 4.0.2
@@ -10,10 +6,12 @@ This is a resubmission. In this version I have:
 
 ## R CMD check results
 
-0 errors | 0 warnings | 0 notes
+0 errors | 0 warnings | 1 notes
+
+Note indicates a change in maintainer from Cody Carroll to Alvaro Gajardo.
 
 ## Downstream dependencies
-I have run R CMD check on downstream dependencies of fdapace: fdadensity, fgm, frechet, LCox, and WRI.
+I have run R CMD check on downstream dependencies of fdapace: fdadensity, fdaPOIFD, fgm, frechet, KFPCA, LCox, and WRI.
 
 All packages passed.
 
