@@ -53,9 +53,13 @@ predict.FPCA <- function(object, newLy, newLt, sigma2 = NULL, K = NULL, xiMethod
   newLt <- inputData$Lt;
   
   if(is.null(sigma2)){
-    sigma2 <- ifelse( !is.null(fpcaObj$rho), fpcaObj$rho, 
-                      ifelse( !is.null(fpcaObj$sigma2), fpcaObj$sigma2,
-                              ifelse( !fpcaObj$optns$error, 0, stop('sigma2 cannot be determined.'))))  
+    if(fpcaObj$optns$methodRho=="vanilla"){
+      sigma2=fpcaObj$sigma2
+    }else{
+      sigma2 <- ifelse( !is.null(fpcaObj$rho), fpcaObj$rho, 
+                        ifelse( !is.null(fpcaObj$sigma2), fpcaObj$sigma2,
+                                ifelse( !fpcaObj$optns$error, 0, stop('sigma2 cannot be determined.'))))
+    }
   } else {
     if(!is.numeric(sigma2) ){
       stop('sigma2 is not numeric; are you sure?')

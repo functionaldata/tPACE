@@ -219,13 +219,8 @@ SetOptions = function(y, t, optns){
   if(is.null(plot)){ # make corrplot
     plot = FALSE;
   }
-  if(is.null(methodRho)){ # truncation threshold for the iterative residual that is used
-    # no regularization if sigma2 is specified or assume no measurement error.
-    if (!is.null(userSigma2) || error == FALSE) { 
-      methodRho <- 'vanilla'
-    } else {
-      methodRho <- 'trunc'
-    }
+  if(is.null(methodRho)){
+    methodRho <- 'vanilla' #vanilla method is the default method for the CE score estimation step
   }
   if(is.null(userRho)){
     userRho = NULL

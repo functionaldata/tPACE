@@ -36,7 +36,7 @@
 #' \item{methodSelectK}{The method of choosing the number of principal components K; 'FVE','AIC','BIC', or a positive integer as specified number of components: default 'FVE')}
 #' \item{shrink}{Whether to use shrinkage method to estimate the scores in the dense case (see Yao et al 2003) - default FALSE}
 #' \item{outPercent}{A 2-element vector in [0,1] indicating the percentages of the time range to be considered as left and right boundary regions of the time window of observation - default (0,1) which corresponds to no boundary}
-#' \item{methodRho}{The method of regularization (add to diagonal of covariance surface) in estimating principal component scores; 'trunc': rho is truncation of sigma2, 'ridge': rho is a ridge parameter, 'vanilla': vanilla approach or no regularization - default "trunc" if error == TRUE, and "vanilla" if error == FALSE.}
+#' \item{methodRho}{The method of regularization (add to diagonal of covariance surface) in estimating principal component scores; 'trunc': rho is truncation of sigma2, 'ridge': rho is a ridge parameter, 'vanilla': vanilla approach - default "vanilla".}
 #' \item{rotationCut}{The 2-element vector in [0,1] indicating the percent of data truncated during sigma^2 estimation; default  (0.25, 0.75))}
 #' \item{useBinnedData}{Should the data be binned? 'FORCE' (Enforce the # of bins), 'AUTO' (Select the # of  bins automatically), 'OFF' (Do not bin) - default: 'AUTO'}
 #' \item{useBinnedCov}{Whether to use the binned raw covariance for smoothing; logical - default:TRUE}
@@ -67,6 +67,7 @@
 #' \item{rho}{A regularizing scalar for the measurement error variance estimate.}
 #' \item{cumFVE}{A vector with the fraction of the cumulative total variance explained with each additional FPC.}
 #' \item{FVE}{A fraction indicating the total variance explained by chosen FPCs with corresponding 'FVEthreshold'.}
+#' \item{selectK}{Number \emph{K} of selected components.}
 #' \item{criterionValue}{A scalar specifying the criterion value obtained by the selected number of components with specific methodSelectK: FVE, AIC, BIC values or NULL for fixed K.}
 #' \item{inputData}{A list containing the original 'Ly' and 'Lt' lists used as inputs to FPCA. NULL if 'lean' was specified to be TRUE.}
 #' @examples
@@ -252,7 +253,6 @@ FPCA = function(Ly, Lt, optns = list()){
                         rho = if (optns$methodRho != 'vanilla') rho else 0, 
                         fitLambda=fitLambda, 
                         timestamps = c(lasttsMu, lasttsCov, lasttsPACE, firsttsFPCA, firsttsMu, firsttsCov, firsttsPACE) )
-  
   # Plot the results
   if(optns$plot){
     plot.FPCA(ret)

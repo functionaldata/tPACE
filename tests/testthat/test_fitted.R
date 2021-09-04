@@ -10,8 +10,8 @@ res <- FPCA(sampWiener$Ly, sampWiener$Lt )
 test_that("fitted with QUO and FPC give similar results", {  
   
   fittedY <- fitted(res)
-  fittedYe <- fitted(res, K=4, derOptns = list(p=1, method='FPC'))
-  fittedYq <- fitted(res, K=4, derOptns = list(p=1, method='QUO'))
+  fittedYe <- fitted(res, K=3, derOptns = list(p=1, method='FPC'))
+  fittedYq <- fitted(res, K=3, derOptns = list(p=1, method='QUO'))
   
   if(1==3){
     par(mfrow=c(1,3))
@@ -20,7 +20,7 @@ test_that("fitted with QUO and FPC give similar results", {
     matplot(t(fittedYq[1:3,]),t='l')
   }
   
-  expect_warning(fitted(res, k=4, derOptns = list(p=1, method='FPC')), "specifying 'k' is deprecated. Use 'K' instead!")
+  expect_warning(fitted(res, k=3, derOptns = list(p=1, method='FPC')), "specifying 'k' is deprecated. Use 'K' instead!")
   expect_equal( fittedYe, fittedYq, tolerance =0.01, scale= 1 ) #absolute difference
   
 })

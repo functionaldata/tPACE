@@ -41,6 +41,11 @@ CheckData = function(y,t){
   if( any(sapply(t[seq_len(min(1001, length(t)))], is.unsorted, na.rm=TRUE)) ) {
     stop('Each vector in t should be in ascending order')
   }
-  
+  if(min(unlist(y),na.rm=TRUE)==-Inf){
+    stop('There are entries in Ly which are -Inf')
+  }
+  if(max(unlist(y),na.rm=TRUE)==Inf){
+    stop('There are entries in Ly which are Inf')
+  }
 }
 
