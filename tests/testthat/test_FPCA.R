@@ -341,4 +341,18 @@ if (Sys.getenv('TRAVIS') != 'true') {
     expect_true( res51$bwMu  >= res5$bwMu  )
   })
   
+  test_that('fittedCorr works',{
+    set.seed(1)
+    n <- 100
+    M <- 51
+    pts <- seq(0, 1, length.out=M)
+    mu <- rep(0, length(pts))
+    sampDense <- Wiener(n, pts)
+    samp <- Sparsify(sampDense, pts, 10)
+    res <- FPCA(samp$Ly, samp$Lt)
+    M1 = res$fittedCorr
+    expect_true( all(diag(M1)==1))
+    expect_true(!any((M1<=-1)&&(M1>=1)))
+    expect_true(all((M1>=-1)&&(M1<=1)))
+  })
 }

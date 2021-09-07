@@ -60,6 +60,7 @@
 #' \item{workGrid}{A vector of length nWorkGrid. The internal regular grid on which the eigen analysis is carried on.}
 #' \item{smoothedCov}{A nWorkGrid by nWorkGrid matrix of the smoothed covariance surface.}
 #' \item{fittedCov}{A nWorkGrid by nWorkGrid matrix of the fitted covariance surface, which is guaranteed to be non-negative definite.}
+#' \item{fittedCorr}{A nWorkGrid by nWorkGrid matrix of the fitted correlation surface computed from fittedCov.}
 #' \item{optns}{A list of actually used options.}
 #' \item{timings}{A vector with execution times for the basic parts of the FPCA call.}
 #' \item{bwMu}{The selected (or user specified) bandwidth for smoothing the mean function.}
@@ -80,6 +81,7 @@
 #'             list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
 #' plot(res) # The design plot covers [0, 1] * [0, 1] well.
 #' CreateCovPlot(res, 'Fitted')
+#' CreateCovPlot(res, corr = TRUE)
 #' @references
 #' \cite{Yao, F., Müller, H.G., Clifford, A.J., Dueker, S.R., Follett, J., Lin, Y., Buchholz, B., Vogel, J.S. (2003). "Shrinkage estimation 
 #' for functional principal component scores, with application to the population kinetics of plasma folate." Biometrics 59, 676-685. (Shrinkage estimates for dense data)}
