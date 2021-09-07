@@ -16,7 +16,7 @@ Authors@R: c(person("Alvaro", "Gajardo", email="aegajardo@ucdavis.edu", role=c("
     person("Hao","Ji", role=c("aut")),
     person("Shu-Chin", "Lin", role="ctb"),
     person("Paromita", "Dubey", role="ctb"),
-    person("Hans-Georg", "Mueller", role=c("cph","ths","aut")),
+    person("Hans-Georg", "Müller", role=c("cph","ths","aut")),
     person("Jane-Ling", "Wang", role=c("cph","ths","aut"))) 
 Maintainer: Alvaro Gajardo <aegajardo@ucdavis.edu>
 Description: A versatile package that provides implementation of various
