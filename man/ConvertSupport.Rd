@@ -4,14 +4,8 @@
 \alias{ConvertSupport}
 \title{Convert support of a mu/phi/cov etc. to and from obsGrid and workGrid}
 \usage{
-ConvertSupport(
-  fromGrid,
-  toGrid,
-  mu = NULL,
-  Cov = NULL,
-  phi = NULL,
-  isCrossCov = FALSE
-)
+ConvertSupport(fromGrid, toGrid, mu = NULL, Cov = NULL, phi = NULL,
+  isCrossCov = FALSE)
 }
 \arguments{
 \item{fromGrid}{vector of points with input grid to interpolate from}

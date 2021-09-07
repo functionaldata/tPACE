@@ -4,14 +4,8 @@
 \alias{MakeFPCAInputs}
 \title{Format FPCA input}
 \usage{
-MakeFPCAInputs(
-  IDs = NULL,
-  tVec,
-  yVec,
-  na.rm = FALSE,
-  sort = FALSE,
-  deduplicate = FALSE
-)
+MakeFPCAInputs(IDs = NULL, tVec, yVec, na.rm = FALSE, sort = FALSE,
+  deduplicate = FALSE)
 }
 \arguments{
 \item{IDs}{np-by-1 vector of subject IDs (Default: NULL)}

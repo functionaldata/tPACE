@@ -25,6 +25,7 @@ A list containing the following fields:
 \item{workGrid}{A vector of length nWorkGrid. The internal regular grid on which the eigen analysis is carried on.}
 \item{smoothedCov}{A nWorkGrid by nWorkGrid matrix of the smoothed covariance surface.}
 \item{fittedCov}{A nWorkGrid by nWorkGrid matrix of the fitted covariance surface, which is guaranteed to be non-negative definite.}
+\item{fittedCorr}{A nWorkGrid by nWorkGrid matrix of the fitted correlation surface computed from fittedCov.}
 \item{optns}{A list of actually used options.}
 \item{timings}{A vector with execution times for the basic parts of the FPCA call.}
 \item{bwMu}{The selected (or user specified) bandwidth for smoothing the mean function.}
@@ -32,6 +33,7 @@ A list containing the following fields:
 \item{rho}{A regularizing scalar for the measurement error variance estimate.}
 \item{cumFVE}{A vector with the fraction of the cumulative total variance explained with each additional FPC.}
 \item{FVE}{A fraction indicating the total variance explained by chosen FPCs with corresponding 'FVEthreshold'.}
+\item{selectK}{Number \emph{K} of selected components.}
 \item{criterionValue}{A scalar specifying the criterion value obtained by the selected number of components with specific methodSelectK: FVE, AIC, BIC values or NULL for fixed K.}
 \item{inputData}{A list containing the original 'Ly' and 'Lt' lists used as inputs to FPCA. NULL if 'lean' was specified to be TRUE.}
 }
@@ -69,7 +71,7 @@ Available control options are
 \item{methodSelectK}{The method of choosing the number of principal components K; 'FVE','AIC','BIC', or a positive integer as specified number of components: default 'FVE')}
 \item{shrink}{Whether to use shrinkage method to estimate the scores in the dense case (see Yao et al 2003) - default FALSE}
 \item{outPercent}{A 2-element vector in [0,1] indicating the percentages of the time range to be considered as left and right boundary regions of the time window of observation - default (0,1) which corresponds to no boundary}
-\item{methodRho}{The method of regularization (add to diagonal of covariance surface) in estimating principal component scores; 'trunc': rho is truncation of sigma2, 'ridge': rho is a ridge parameter, 'vanilla': vanilla approach or no regularization - default "trunc" if error == TRUE, and "vanilla" if error == FALSE.}
+\item{methodRho}{The method of regularization (add to diagonal of covariance surface) in estimating principal component scores; 'trunc': rho is truncation of sigma2, 'ridge': rho is a ridge parameter, 'vanilla': vanilla approach - default "vanilla".}
 \item{rotationCut}{The 2-element vector in [0,1] indicating the percent of data truncated during sigma^2 estimation; default  (0.25, 0.75))}
 \item{useBinnedData}{Should the data be binned? 'FORCE' (Enforce the # of bins), 'AUTO' (Select the # of  bins automatically), 'OFF' (Do not bin) - default: 'AUTO'}
 \item{useBinnedCov}{Whether to use the binned raw covariance for smoothing; logical - default:TRUE}
@@ -93,6 +95,7 @@ res <- FPCA(sampWiener$Ly, sampWiener$Lt,
             list(dataType='Sparse', error=FALSE, kernel='epan', verbose=TRUE))
 plot(res) # The design plot covers [0, 1] * [0, 1] well.
 CreateCovPlot(res, 'Fitted')
+CreateCovPlot(res, corr = TRUE)
 }
 \references{
 \cite{Yao, F., Müller, H.G., Clifford, A.J., Dueker, S.R., Follett, J., Lin, Y., Buchholz, B., Vogel, J.S. (2003). "Shrinkage estimation 

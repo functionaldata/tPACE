@@ -4,13 +4,8 @@
 \alias{CreateModeOfVarPlot}
 \title{Functional Principal Component Analysis: Mode of variation plot}
 \usage{
-CreateModeOfVarPlot(
-  fpcaObj,
-  k = 1,
-  rainbowPlot = FALSE,
-  colSpectrum = NULL,
-  ...
-)
+CreateModeOfVarPlot(fpcaObj, k = 1, rainbowPlot = FALSE,
+  colSpectrum = NULL, ...)
 }
 \arguments{
 \item{fpcaObj}{An FPCA class object returned by FPCA().}

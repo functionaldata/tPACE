@@ -4,15 +4,13 @@
 \name{medfly25}
 \alias{medfly25}
 \title{Number of eggs laid daily from medflies}
-\format{
-A data frame with 19725 rows and 3 variables:
+\format{A data frame with 19725 rows and 3 variables:
 \describe{
 \item{ID}{: Medfly ID according to the original dataset}
 \item{Days}{: Day of measurement}
 \item{nEggs}{: Number of eggs laid at that particular day} 
 \item{nEggsRemain}{: Remaining total number of eggs laid}
-}
-}
+}}
 \source{
 \url{https://anson.ucdavis.edu/~mueller/data/medfly1000.html}
 }

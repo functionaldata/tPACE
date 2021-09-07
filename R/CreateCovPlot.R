@@ -36,7 +36,11 @@ CreateCovPlot = function(fpcaObj, covPlotType = 'Fitted', corr= FALSE, isInterac
     if(covPlotType != 'Fitted'){
       stop("Correlation surface is computed only for the positive definite fitted covariance surface")
     }
+    if(is.null(fpcaObj$fittedCorr)){
+      stop("Correlation cannot be computed- covariance matrix has zero diagonals.")
+    }
     corrSurf = fpcaObj$fittedCorr
+    
   } else{
     if(!(class(fpcaObj) %in% c('FPCA','FSVD','FPCAder'))){
       stop("Input object must be class: 'FPCA','FSVD' or 'FPCAder'.")
@@ -97,7 +101,11 @@ CreateCovPlot = function(fpcaObj, covPlotType = 'Fitted', corr= FALSE, isInterac
         args1$main = 'Fitted covariance surface';
       }
       else if(corr == TRUE){
+        if(is.null(fpcaObj$fittedCorr)){
+          stop("Correlation cannot be computed-covariance matrix has zero diagonals.")
+        } else{
         args1$main = 'Fitted correlation surface';
+        }
       }
     }
   } else {
@@ -112,8 +120,12 @@ CreateCovPlot = function(fpcaObj, covPlotType = 'Fitted', corr= FALSE, isInterac
     if(corr == FALSE){
       args2 = list (x = fpcaObj$grid1, y = fpcaObj$grid2, z = covSurf)
     }
-    else if(corr ==TRUE){
-      args2 = list (x = fpcaObj$grid1, y = fpcaObj$grid2, z = corrSurf)
+    else if(corr == TRUE){
+      if(is.null(fpcaObj$fittedCorr)){
+        stop("Correlation cannot be computed-covariance matrix has zero diagonals.")
+      } else{
+        args2 = list (x = fpcaObj$grid1, y = fpcaObj$grid2, z = corrSurf)
+      }
     }
     
   } else {
@@ -122,7 +134,11 @@ CreateCovPlot = function(fpcaObj, covPlotType = 'Fitted', corr= FALSE, isInterac
       args2 = list (x = workGrid, y = workGrid, z = covSurf)
     }
     else if(corr == TRUE){
-      args2 = list (x = workGrid, y = workGrid, z = corrSurf)
+      if(is.null(fpcaObj$fittedCorr)){
+        stop("Correlation cannot be computed-covariance matrix has zero diagonals.")
+      } else{
+          args2 = list (x = workGrid, y = workGrid, z = corrSurf)
+      }
     }
     
   }
