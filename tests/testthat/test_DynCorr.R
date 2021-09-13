@@ -45,7 +45,7 @@ test_that('first generate y_i[t] - mean(y[t]) = 2(x_i[t]-mean(x[t])) then add no
   }
 
   dyn1_quad=DynCorr(x1_quad,y1_quad,t)
-  expect_equal(max(1-dyn1_quad) < 0.1,T)
+  expect_equal(max(1-dyn1_quad) < 0.1,TRUE)
 })
 
 #positive test 3
@@ -76,7 +76,7 @@ test_that('setting same as test #1 but with 1/5 missings in each observation, ex
   }
   
   dyn1_quad=DynCorr(x1_quad,y1_quad,t)
-  expect_equal(max(1-dyn1_quad) < 0.1,T)
+  expect_equal(max(1-dyn1_quad) < 0.1,TRUE)
 })
 
 #negative test
