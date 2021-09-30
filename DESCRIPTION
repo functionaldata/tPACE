@@ -7,6 +7,7 @@ Version: 0.5.7
 Encoding: UTF-8
 Date: 2021-05-17,
 Authors@R: c(person("Alvaro", "Gajardo", email="aegajardo@ucdavis.edu", role=c("aut","cre")),
+    person("Satarupa","Bhattacharjee", role=c("aut")),
     person("Cody","Carroll", email="cjcarroll@ucdavis.edu", role=c("aut"), comment =  c(ORCID = "0000-0003-3525-8653")),
     person("Yaqing","Chen", email="yaqchen@ucdavis.edu", role=c("aut")),
     person("Xiongtao","Dai", email="dai@ucdavis.edu", role=c("aut")),
@@ -14,6 +15,7 @@ Authors@R: c(person("Alvaro", "Gajardo", email="aegajardo@ucdavis.edu", role=c("
     person("Pantelis Z.","Hadjipantelis", role=c("aut")),
     person("Kyunghee","Han", role="aut"),
     person("Hao","Ji", role=c("aut")),
+    person("Changbo","Zhu", role=c("aut")),
     person("Shu-Chin", "Lin", role="ctb"),
     person("Paromita", "Dubey", role="ctb"),
     person("Hans-Georg", "Müller", role=c("cph","ths","aut")),
