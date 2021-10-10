@@ -1,7 +1,6 @@
 ---
 title: "Functional PCA in R"
-author: "Hadjipantelis, Dai, Ji, Han, Muller & Wang - UC Davis, USA"
-date: "1 December 2017"
+date: "1 October 2021"
 bibliography: 
   - roxygen.bib
 output: rmarkdown::html_vignette
@@ -17,7 +16,7 @@ knitr::opts_chunk$set(echo = TRUE, fig.width = 7, fig.height = 7)
 
 ##  Overview 
 
-This is a brief introduction to the package <tt>`fdapace`</tt> [@Carroll20]. For a general overview on functional data analysis (FDA) see [@Wang16] and key references for the PACE approach and the associated dynamics are [@Yao03; @Yao05; @Liu09; @Yao10; @Li10; @Zhang16; @Zhang18]. The basic work-flow behind the PACE approach for sparse functional data is as follows (see e.g. [@Yao05; @Liu09] for more information):
+This is a brief introduction to the package <tt>`fdapace`</tt> [@Gajardo21]. For a general overview on functional data analysis (FDA) see [@Wang16] and key references for the PACE approach and the associated dynamics are [@Yao03; @Yao05; @Liu09; @Yao10; @Li10; @Zhang16; @Zhang18]. The basic work-flow behind the PACE approach for sparse functional data is as follows (see e.g. [@Yao05; @Liu09] for more information):
 
 1. Calculate the smoothed mean $\hat{\mu}$ (using local linear smoothing) aggregating all the available readings together.
 2. Calculate for each curve separately its own raw covariance and then aggregate all these raw covariances to generate the sample raw covariance.
