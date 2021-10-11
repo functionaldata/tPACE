@@ -16,7 +16,6 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 
 ```{r include=FALSE}
 library(fdapace)
-library(ggplot2)
 ```
 
 ## Overview
