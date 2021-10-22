@@ -4,9 +4,17 @@
 \alias{CreatePathPlot}
 \title{Create the fitted sample path plot based on the results from FPCA().}
 \usage{
-CreatePathPlot(fpcaObj, subset, K = NULL,
-  inputData = fpcaObj[["inputData"]], showObs = !is.null(inputData),
-  obsOnly = FALSE, showMean = FALSE, derOptns = list(p = 0), ...)
+CreatePathPlot(
+  fpcaObj,
+  subset,
+  K = NULL,
+  inputData = fpcaObj[["inputData"]],
+  showObs = !is.null(inputData),
+  obsOnly = FALSE,
+  showMean = FALSE,
+  derOptns = list(p = 0),
+  ...
+)
 }
 \arguments{
 \item{fpcaObj}{Returned object from FPCA().}

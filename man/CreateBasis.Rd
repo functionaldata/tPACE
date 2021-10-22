@@ -4,8 +4,11 @@
 \alias{CreateBasis}
 \title{Create an orthogonal basis of K functions in [0, 1], with nGrid points.}
 \usage{
-CreateBasis(K, pts = seq(0, 1, length.out = 50), type = c("cos", "sin",
-  "fourier", "legendre01", "poly"))
+CreateBasis(
+  K,
+  pts = seq(0, 1, length.out = 50),
+  type = c("cos", "sin", "fourier", "legendre01", "poly")
+)
 }
 \arguments{
 \item{K}{A positive integer specifying the number of eigenfunctions to generate.}

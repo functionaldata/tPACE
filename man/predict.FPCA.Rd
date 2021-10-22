@@ -4,8 +4,7 @@
 \alias{predict.FPCA}
 \title{Predict FPC scores and curves for a new sample given an FPCA object}
 \usage{
-\method{predict}{FPCA}(object, newLy, newLt, sigma2 = NULL, K = NULL,
-  xiMethod = "CE", ...)
+\method{predict}{FPCA}(object, newLy, newLt, sigma2 = NULL, K = NULL, xiMethod = "CE", ...)
 }
 \arguments{
 \item{object}{An FPCA object.}

@@ -4,8 +4,15 @@
 \alias{FSVD}
 \title{Functional Singular Value Decomposition}
 \usage{
-FSVD(Ly1, Lt1, Ly2, Lt2, FPCAoptns1 = NULL, FPCAoptns2 = NULL,
-  SVDoptns = list())
+FSVD(
+  Ly1,
+  Lt1,
+  Ly2,
+  Lt2,
+  FPCAoptns1 = NULL,
+  FPCAoptns2 = NULL,
+  SVDoptns = list()
+)
 }
 \arguments{
 \item{Ly1}{A list of \emph{n} vectors containing the observed values for each individual. Missing values specified by \code{NA}s are supported for dense case (\code{dataType='dense'}).}

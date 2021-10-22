@@ -3,7 +3,6 @@
 \docType{package}
 \name{fdapace}
 \alias{fdapace}
-\alias{fdapace-package}
 \title{fdapace: Principal Analysis by Conditional Expectation and Applications in
 Functional Data Analysis (revised version 16 August 2019)}
 \description{
@@ -42,7 +41,7 @@ the demands of a user, for example if one has densely sampled functional predict
 response, such as in a GLM, the predictor functions can be replaced by their first couple of principal component scores that
 will then be used as predictors; one can also easily fit polynomial functional models by using powers (usually squares) 
 and interactions of functional principal 
-components among the predictors for a scalar response.
+components among the predictors for a scalar response. 
 
 fda-pace is a comprehensive package that directly implements fitting of the following models:
 -- functional linear regression 
@@ -56,6 +55,8 @@ fda-pace is a comprehensive package that directly implements fitting of the foll
 -- optimal designs for longitudinal data analysis (for trajectory prediction and for functional linear regression) 
 -- stringing, a method to convert high-dimensional data into functional data
 -- quantile regression, with functions as predictors
+ 
+ 
 
 Maintainer:  Yaqing Chen \email{yaqchen@ucdavis.edu}
 }

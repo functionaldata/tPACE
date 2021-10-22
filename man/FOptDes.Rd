@@ -5,9 +5,16 @@
 \title{Optimal Designs for Functional and Longitudinal Data
 for Trajectory Recovery or Scalar Response Prediction}
 \usage{
-FOptDes(Ly, Lt, Resp, p = 3, optns = list(),
-  isRegression = !missing(Resp), isSequential = FALSE,
-  RidgeCand = NULL)
+FOptDes(
+  Ly,
+  Lt,
+  Resp,
+  p = 3,
+  optns = list(),
+  isRegression = !missing(Resp),
+  isSequential = FALSE,
+  RidgeCand = NULL
+)
 }
 \arguments{
 \item{Ly}{A list of \emph{n} vectors containing the observed values for each individual. Missing values specified by \code{NA}s are supported for dense case (\code{dataType='dense'}).}
