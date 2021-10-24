@@ -28,6 +28,9 @@ ConvertSupport <- function(fromGrid, toGrid, mu=NULL, Cov=NULL, phi=NULL, isCros
   if (!is.null(mu)) {# convert mu
     return(MapX1D(fromGrid, mu, toGrid))
   } else if (!is.null(Cov)) {
+    mode(fromGrid) <- 'numeric'
+    mode(toGrid) <- 'numeric'
+    mode(Cov) <- 'numeric'
     gd <- expand.grid(X=toGrid, Y=toGrid)
     ret <- matrix(interp2lin(fromGrid, fromGrid, Cov, gd$X, gd$Y), nrow=length(toGrid))
     if (!isCrossCov) { # ensure that covariance is symmetric
