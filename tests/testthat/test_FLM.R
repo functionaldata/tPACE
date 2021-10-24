@@ -324,7 +324,9 @@ test_that('Dense, functional response case works', {
   
   
   ## dense
-  denseFLM <- FLM(Y=denseY,X=denseX,XTest=denseXTest,optnsListX=list(FVEthreshold=0.95))
+  # print(system.time({
+  denseFLM <- FLM(Y=denseY,X=denseX,XTest=denseXTest,optnsListX=list(FVEthreshold=0.95), nPerm=1000)
+  # }))
   
   trueBetaList <- list()
   trueBetaList[[1]] <- cbind(phi1(denseFLM$workGridX[[1]],1),phi1(denseFLM$workGridX[[1]],2))%*%Beta[1:2,]%*%
@@ -358,6 +360,7 @@ test_that('Dense, functional response case works', {
   # Errors are properly small
   expect_lt(denseEstErr, 1) 
   expect_gt(denseFLM$R2, 0.5) 
+  expect_lt(denseFLM$pv, 0.05) 
   expect_equal(denseFLM$alpha, rep(alpha, M), tolerance = 0.2)
   expect_equal(denseFLM$yHat, do.call(rbind, denseY$Ly), tolerance = 1)
   expect_equal(denseFLM$yPred, do.call(rbind, denseYTest$Ly), tolerance = 1)
