@@ -228,9 +228,8 @@ FLM <- function(Y,X,XTest=NULL,optnsListY=NULL,optnsListX=NULL){
     
     return(list(alpha=alpha,betaList=betaList,yHat=yHat,yPred=yPred,#R2=R2,
                 estXi=estXiList,testXi=testXiList,lambdaX=estLambdaX,phiX=estEigenX,workGridX=workGridX,phiY = NULL,workGridY = NULL))
-  }
-  
-  if (class(Y)=='list') {
+
+  } else if (class(Y)=='list') {
     
     if (is.null(optnsListY)==TRUE) {
       optnsListY <- list()
@@ -251,12 +250,18 @@ FLM <- function(Y,X,XTest=NULL,optnsListY=NULL,optnsListX=NULL){
     
     alphaVec <- c()
     bMat <- matrix(nrow=d,ncol=dk)
+    r2k <- numeric(dk)
+    totalVarEtak <- apply(estEtak, 2, var) * (n - 1)
+
     for (k in 1:dk) {
       flm <- lm(estEtak[,k]~estXi)
-      
+      r2k[k] <- summary(flm)$r.squared
       alphaVec[k] <- as.numeric(flm$coef[1])
       bMat[,k] <- as.vector(flm$coef[-1])
     }      
+
+    varExplained <- sum(totalVarEtak * r2k)
+    R2 <- varExplained / sum(totalVarEtak)
     
     bList <- list()
     betaList <- list()
@@ -282,13 +287,14 @@ FLM <- function(Y,X,XTest=NULL,optnsListY=NULL,optnsListX=NULL){
       betaList[[j]] <- estEigenX[[j]]%*%bList[[j]]%*%t(estEigenY)
     }
     
-    alpha <- c(estEigenY%*%alphaVec)
+    alpha <- c(estEigenY%*%alphaVec) + tmpFPCA$mu
     
     yHat <- t(matrix(rep(alpha,n),nrow=length(alpha),ncol=n)) + estXi%*%bMat%*%t(estEigenY)
     yPred <-  t(matrix(rep(alpha,n),nrow=length(alpha),ncol=N)) + testXi%*%bMat%*%t(estEigenY)
     
     
-    return(list(alpha=alpha,betaList=betaList,yHat=yHat,yPred=yPred,
+    return(list(alpha=alpha,betaList=betaList, R2=R2,
+                yHat=yHat,yPred=yPred,
                 estXi=estXiList,testXi=testXiList,
                 lambdaX=estLambdaX,phiX=estEigenX,workGridX=workGridX,
                 lambdaY=estLambdaY,phiY=estEigenY,workGridY=workGridY))
