@@ -282,7 +282,7 @@ FLM <- function(Y,X,XTest=NULL,optnsListY=NULL,optnsListX=NULL){
       betaList[[j]] <- estEigenX[[j]]%*%bList[[j]]%*%t(estEigenY)
     }
     
-    alpha <- c(estEigenY%*%alphaVec)
+    alpha <- c(estEigenY%*%alphaVec) + tmpFPCA$mu
     
     yHat <- t(matrix(rep(alpha,n),nrow=length(alpha),ncol=n)) + estXi%*%bMat%*%t(estEigenY)
     yPred <-  t(matrix(rep(alpha,n),nrow=length(alpha),ncol=N)) + testXi%*%bMat%*%t(estEigenY)
