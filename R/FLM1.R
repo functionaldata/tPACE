@@ -35,10 +35,15 @@
 #' \item{workGridX}{A list of vectors, each is a working grid for a predictor.}
 #' \item{phiY}{A \code{length(workGridY)} by k_y the estimated eigenfunctions of Y's, where k_y is number of eigenfunctions selected for Y. NULL if Y is scalar.}
 #' \item{workGridY}{A vector of working grid of the response Y's. NULL if Y is scalar}
+#' @export
 FLM1 <- function(Y, X, XTest=NULL, optnsListY=NULL, optnsListX=NULL, nPerm=NULL){
 
   # Internally, a scalar predictor is regarded as a constant function
   
+  if (length(X) == 0) {
+    stop('The predictor has length 0')
+  }
+
   isScalar <- vapply(X, is.numeric, FALSE)
   isScalarTest <- vapply(XTest, is.numeric, FALSE)
   isFunctional  <- vapply(X, is.list, FALSE)  
@@ -52,7 +57,6 @@ FLM1 <- function(Y, X, XTest=NULL, optnsListY=NULL, optnsListX=NULL, nPerm=NULL)
     stop('All functional predictors must be specified before the scalar covariates')
   }
 
-  dScalar <- sum(isScalar)
   dFunctional <- sum(isFunctional)
   
   if (is.null(optnsListX) || length(optnsListX) == 0) {
@@ -72,22 +76,23 @@ FLM1 <- function(Y, X, XTest=NULL, optnsListY=NULL, optnsListX=NULL, nPerm=NULL)
     stop('The orders of covariates appear to be different in `X` and `XTest`')
   }
 
-  # estLambdaX <- vector('list', dFunctional)
-  # estEigenX <- vector('list', dFunctional)
-  # workGridX <- vector('list', dFunctional)
-
   # Obtain the FPCA results for x
   xFPCA <- lapply(seq_len(dFunctional), function(j) {
     FPCA(X[[j]]$Ly, X[[j]]$Lt, optns = optnsListX[[j]])
   })
 
   estXiList <- lapply(xFPCA, `[[`, 'xiEst')
+  estEigenX <- lapply(xFPCA, `[[`, 'phi')
   djFunc <- vapply(estXiList, ncol, 1L)
   
   if (any(isScalar)) {
     scalarX <- do.call(cbind, X[isScalar])
+    dTotalScalar <- ncol(scalarX) # a scalar input field may contain multiple columns
+
     estXiList <- c(estXiList, list(scalarX))
-  }
+    # Use the identity matrix for the eigenbasis of a scalar value
+    estEigenX <- c(estEigenX, list(diag(nrow=dTotalScalar)))
+  } 
 
   if (is.null(XTest)) {
     testXiList <- estXiList
@@ -99,14 +104,12 @@ FLM1 <- function(Y, X, XTest=NULL, optnsListY=NULL, optnsListX=NULL, nPerm=NULL)
                               K=djFunc[j])
       predobj$scores
     })
-    testScalarX <- do.call(cbind, XTest[isScalar])
-    testXiList <- c(testXiList, list(testScalarX))
+    if (any(isScalar)) {
+      testScalarX <- do.call(cbind, XTest[isScalar])
+      testXiList <- c(testXiList, list(testScalarX))
+    }
   }
 
-
-  # Use the identity matrix for the eigenbasis of a scalar value
-  estEigenX <- c(lapply(xFPCA, `[[`, 'phi'),
-                 list(diag(nrow=dScalar)))
 
 
   # FPCA for y, if applicable
@@ -149,7 +152,7 @@ optnsListX=list(FVEthreshold=0.95).')
   }
 
   # Obtain alpha and beta functions. If aVec/beta is a matrix, then rows stand for X and columns for Y
-  betaList <- lapply(seq_len(dFunctional + any(isScalar)), function(j) {
+  betaList <- lapply(seq_along(estEigenX), function(j) {
     beta <- estEigenX[[j]] %*% bList[[j]] %*% t(estEigenY)
   })
   muXBeta <- Reduce(`+`, 

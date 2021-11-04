@@ -4,7 +4,7 @@
 \alias{FLM}
 \title{Functional Linear Models}
 \usage{
-FLM(Y, X, XTest = NULL, optnsListY = NULL, optnsListX = NULL)
+FLM(Y, X, XTest = NULL, optnsListY = NULL, optnsListX = NULL, nPerm = NULL)
 }
 \arguments{
 \item{Y}{Either an \emph{n}-dimensional vector whose elements consist of scalar responses, or a list which contains functional responses in the form of a list LY and the time points LT at which they are observed (i.e., list(Ly = LY,Lt = LT)).}
@@ -16,6 +16,8 @@ FLM(Y, X, XTest = NULL, optnsListY = NULL, optnsListX = NULL)
 \item{optnsListY}{A list of options control parameters for the response specified by \code{list(name=value)}. See `Details' in  \code{FPCA}.}
 
 \item{optnsListX}{A list of options control parameters for the predictors specified by \code{list(name=value)}. See `Details' in  \code{FPCA}.}
+
+\item{nPerm}{If this argument is specified, perform a permutation test to obtain the (global) p-value for the test of regression relationship between X and Y. Recommend to set to 1000 or larger if specified.}
 }
 \value{
 A list of the following:
@@ -24,6 +26,8 @@ A list of the following:
 
 Or a list of fitted beta(s,t) matrices, one per predictor, if Y is functional. Each of dimension \code{length(workGridX[[j]])} times \code{length(workGridY)}.
 }
+\item{R2}{The functional R2}
+\item{pv}{Permutation p-value based on the functional R2}
 \item{yHat}{A length n vector if Y is scalar. 
 
 Or an n by \code{length(workGridY)} matrix of fitted Y's from the model if Y is functional.}

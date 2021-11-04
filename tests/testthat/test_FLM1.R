@@ -631,9 +631,13 @@ test_that('nRegGrid works', {
 test_that('A general test', {
 
   respType <- 'functional'
-  predTypeCounts <- c(functional=1, scalar=0)
+  predTypeCounts <- c(functional=0, scalar=2)
   funcType <- 'sparse' #TODO
 
+# for (ff in 0:2) {
+# for (ss in 0:2) {
+#   if (ff + ss == 0) next
+#   predTypeCounts <- c(functional = ff, scalar = ss)
   set.seed(1)
 
   n <- 50
@@ -721,7 +725,7 @@ test_that('A general test', {
   }
 
   a <- FLM1(Y, c(XFunc, XScalar), nPerm=1000)
-  b <- FLM(Y, XFunc, nPerm=1000)
+  # b <- FLM(Y, XFunc, nPerm=1000)
 
   plot(c(a$alpha))
   plot(alpha)
@@ -739,4 +743,6 @@ test_that('A general test', {
   matplot(t(trueYGivenXZ[1:5, ]), type='l', add=TRUE)
 
   # TODO: add checks
+# }
+# }
 })
