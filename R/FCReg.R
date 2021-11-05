@@ -138,7 +138,7 @@ demean <- function(vars, userBwMu, kern) {
       Tin <- sort(unique(unlist(x[['Lt']])))
       xmu <- GetSmoothedMeanCurve(x[['Ly']], x[['Lt']], Tin, Tin[1],
                                   list(userBwMu=userBwMu, kernel=kern))[['mu']]
-      muFun <- approxfun(Tin, xmu)
+      muFun <- approxfun(Tin, xmu, rule=2)
       x[['Ly']] <- lapply(1:length(x[['Ly']]), function(i)
         x[['Ly']][[i]]- muFun(x[['Lt']][[i]]))
       xmu <- muFun
@@ -236,8 +236,9 @@ uniCov <- function(X, Y, userBwCov, outGrid, kern='gauss', rmDiag=FALSE, center=
       Xmu <- rep(0, length(Tin))
       Ymu <- 0
     }
-    res <- GetCrCovYZ(userBwCov, Y, Ymu, X[['Ly']], X[['Lt']], Xmu, Tin, kern)[['smoothedCC']]
-    res <- as.matrix(ConvertSupport(Tin, outGrid, mu=res))
+    res <- GetCrCovYZ(userBwCov, Y, Ymu, X[['Ly']], X[['Lt']], Xmu, outGrid, kern)[['smoothedCC']]
+    res <- as.matrix(res)
+    # res <- as.matrix(ConvertSupport(Tin, outGrid, mu=res))
     if (flagScalerFunc) 
       res <- t(res)
     
@@ -285,18 +286,29 @@ uniCov <- function(X, Y, userBwCov, outGrid, kern='gauss', rmDiag=FALSE, center=
       res <- matrix(NA, noutGrid, noutGrid)
       diag(res) <- covXY
     } else { # use 2D smoothing
-      tmp <- GetCrCovYX(userBwCov, userBwCov, X[['Ly']], X[['Lt']], Xmu, 
-                        Y[['Ly']], Y[['Lt']], Ymu, rmDiag=rmDiag, kern=kern)
-      gd <- tmp[['smoothGrid']]
-      res <- matrix(
-        interp2lin(as.numeric(gd[, 1]), 
-                   as.numeric(gd[, 2]), 
-                   matrix(as.numeric(tmp[['smoothedCC']]),
-                          nrow(tmp[['smoothedCC']]),
-                          ncol(tmp[['smoothedCC']])), 
-                   rep(as.numeric(outGrid), times=noutGrid), 
-                   rep(as.numeric(outGrid), each=noutGrid)), 
-        noutGrid, noutGrid)
+      rawCC <- GetRawCrCovFuncFunc(Ly1 = X[['Ly']], Lt1 = X[['Lt']], Ymu1 = Xmu, Ly2 = Y[['Ly']], Lt2 = Y[['Lt']], Ymu2 = Ymu)
+      if (rmDiag) {
+        diagInd <- rawCC$tpairn[, 1] == rawCC$tpairn[, 2]
+        rawCC$tpairn <- rawCC$tpairn[!diagInd, , drop=FALSE]
+        rawCC$rawCCov <- rawCC$rawCCov[!diagInd]
+      }
+      res <- Lwls2D(userBwCov, kern, rawCC[['tpairn']], rawCC[['rawCCov']], 
+                    xout1=outGrid, xout2=outGrid, crosscov=TRUE)
+  
+      # browser()
+
+      # tmp <- GetCrCovYX(userBwCov, userBwCov, X[['Ly']], X[['Lt']], Xmu, 
+      #                   Y[['Ly']], Y[['Lt']], Ymu, rmDiag=rmDiag, kern=kern)
+      # gd <- tmp[['smoothGrid']]
+      # res <- matrix(
+      #   interp2lin(as.numeric(gd[, 1]), 
+      #              as.numeric(gd[, 2]), 
+      #              matrix(as.numeric(tmp[['smoothedCC']]),
+      #                     nrow(tmp[['smoothedCC']]),
+      #                     ncol(tmp[['smoothedCC']])), 
+      #              rep(as.numeric(outGrid), times=noutGrid), 
+      #              rep(as.numeric(outGrid), each=noutGrid)), 
+      #   noutGrid, noutGrid)
     }
     attr(res, 'covType') <- 'FF'
   }
