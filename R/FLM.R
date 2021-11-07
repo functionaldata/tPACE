@@ -9,7 +9,7 @@
 #' @param optnsListX A list of options control parameters for the predictors specified by \code{list(name=value)}. See `Details' in  \code{FPCA}.
 #' 
 #' @return A list of the following:
-#' \item{alpha}{A length-one numeric if the response Y is scalar. Or a vector of \code{length(workGridY)} of the fitted constant alpha(t) in the linear model if Y is functional.}
+#' \item{muY}{A length-one numeric if the response Y is scalar or a vector of \code{length(workGridY)} of the fitted mean function of Y in the linear model if Y is functional.}
 #' \item{betaList}{A list of fitted beta(s) vectors, one per predictor, if Y is scalar. Each of dimension \code{length(workGridX[[j]])}.
 #' 
 #' Or a list of fitted beta(s,t) matrices, one per predictor, if Y is functional. Each of dimension \code{length(workGridX[[j]])} times \code{length(workGridY)}.
@@ -195,7 +195,7 @@ FLM <- function(Y,X,XTest=NULL,optnsListY=NULL,optnsListX=NULL){
     
     flm <- lm(Y~estXi)
     
-    alpha <- as.numeric(flm$coef[1])
+    muY <- as.numeric(flm$coef[1])
     bVec <- as.vector(flm$coef[-1])
     
     bList <- list()
@@ -224,9 +224,9 @@ FLM <- function(Y,X,XTest=NULL,optnsListY=NULL,optnsListX=NULL){
     # R2 <- summary(flm)$r.sq
     
     yHat <- as.numeric(flm$fitted)
-    yPred <- as.numeric(alpha + testXi%*%bVec)
+    yPred <- as.numeric(muY + testXi%*%bVec)
     
-    return(list(alpha=alpha,betaList=betaList,yHat=yHat,yPred=yPred,#R2=R2,
+    return(list(muY=muY,betaList=betaList,yHat=yHat,yPred=yPred,#R2=R2,
                 estXi=estXiList,testXi=testXiList,lambdaX=estLambdaX,phiX=estEigenX,workGridX=workGridX,phiY = NULL,workGridY = NULL))
   }
   
@@ -282,13 +282,13 @@ FLM <- function(Y,X,XTest=NULL,optnsListY=NULL,optnsListX=NULL){
       betaList[[j]] <- estEigenX[[j]]%*%bList[[j]]%*%t(estEigenY)
     }
     
-    alpha <- c(estEigenY%*%alphaVec) + tmpFPCA$mu
+    muY <- c(estEigenY%*%alphaVec) + tmpFPCA$mu
     
-    yHat <- t(matrix(rep(alpha,n),nrow=length(alpha),ncol=n)) + estXi%*%bMat%*%t(estEigenY)
-    yPred <-  t(matrix(rep(alpha,n),nrow=length(alpha),ncol=N)) + testXi%*%bMat%*%t(estEigenY)
+    yHat <- t(matrix(rep(muY,n),nrow=length(muY),ncol=n)) + estXi%*%bMat%*%t(estEigenY)
+    yPred <-  t(matrix(rep(muY,n),nrow=length(muY),ncol=N)) + testXi%*%bMat%*%t(estEigenY)
     
     
-    return(list(alpha=alpha,betaList=betaList,yHat=yHat,yPred=yPred,
+    return(list(muY=muY,betaList=betaList,yHat=yHat,yPred=yPred,
                 estXi=estXiList,testXi=testXiList,
                 lambdaX=estLambdaX,phiX=estEigenX,workGridX=workGridX,
                 lambdaY=estLambdaY,phiY=estEigenY,workGridY=workGridY))
