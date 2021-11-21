@@ -1,10 +1,11 @@
-fdapace v0.5.8 (Release date: 11-Oct-2021)
+fdapace v0.5.8 (Release date: 22-Nov-2021)
 =============
 Changes:
 * Option for correlation surface output
 * Option for correlation surface plot
 * Default option for score estimation set to vanilla
 * Minor bug fixes in FPCA
+* Updated FLM documentation and output
 * Added vignette.
 
 fdapace v0.5.7 (Release date: 17-May-2021)
