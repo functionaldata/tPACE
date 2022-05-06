@@ -2,6 +2,48 @@ library(MASS)
 library(testthat)
 #devtools::load_all()
 
+test_that('GetBR2 works', {
+
+  set.seed(1)
+  # Scalar Y, scalar X scores with 1 column
+  n <- 20
+  y <- matrix(rnorm(n))
+  x <- lapply(1:1, function(x) cbind(rnorm(n)))
+  res <- GetBR2(y, x)
+  expect_equal(length(res$bList), 1)
+  expect_equal(vapply(res$bList, nrow, 1L), 1L)
+  expect_equal(vapply(res$bList, ncol, 1L), 1L)
+
+  set.seed(1)
+  # Scalar Y, scalar X scores with 2 columns
+  n <- 20
+  y <- matrix(rnorm(n))
+  x <- list(matrix(rnorm(n * 2), n, 2))
+  res <- GetBR2(y, x)
+  expect_equal(length(res$bList), 1)
+  expect_equal(vapply(res$bList, nrow, 1L), 2L)
+  expect_equal(vapply(res$bList, ncol, 1L), 1L)
+
+  # Scalar Y, 2 X scores each with 1 column
+  n <- 20
+  y <- matrix(rnorm(n))
+  x <- lapply(1:2, function(x) cbind(rnorm(n)))
+  res <- GetBR2(y, x)
+  expect_equal(length(res$bList), 2)
+  expect_equal(vapply(res$bList, nrow, 1L), c(1L, 1L))
+  expect_equal(vapply(res$bList, ncol, 1L), c(1L, 1L))
+
+  # Two Y scores, 2 X scores each with 1 column
+  n <- 20
+  y <- matrix(rnorm(n * 2), n, 2)
+  x <- lapply(1:2, function(x) cbind(rnorm(n)))
+  res <- GetBR2(y, x)
+  expect_equal(length(res$bList), 2)
+  expect_equal(vapply(res$bList, nrow, 1L), c(1L, 1L))
+  expect_equal(vapply(res$bList, ncol, 1L), c(2L, 2L))
+
+})
+
 test_that('Dense, scalar response case works', {
   set.seed(1000)
   
@@ -199,6 +241,8 @@ test_that('Sparse, scalar response case works', {
 
 
 test_that('Dense, functional response case works', {
+  
+  M <- 51
   set.seed(1000)
   
   library(MASS)
@@ -216,7 +260,7 @@ test_that('Dense, functional response case works', {
   denseLt <- list(); denseLy <- list()
   sparseLt <- list(); sparseLy <- list()
   
-  t0 <- seq(0,1,length.out=51)
+  t0 <- seq(0,1,length.out=M)
   for (i in 1:n) {
     denseLt[[i]] <- t0
     denseLy[[i]] <- lambdaX[1]*Xi[i,1]*phi1(t0,1) + lambdaX[2]*Xi[i,2]*phi1(t0,2)
@@ -241,7 +285,7 @@ test_that('Dense, functional response case works', {
   
   sparseLtTest <- list(); sparseLyTest <- list()
   
-  t0 <- seq(0,1,length.out=51)
+  t0 <- seq(0,1,length.out=M)
   for (i in 1:N) {
     denseLtTest[[i]] <- t0
     denseLyTest[[i]] <- lambdaX[1]*XiTest[i,1]*phi1(t0,1) + lambdaX[2]*XiTest[i,2]*phi1(t0,2)
@@ -259,6 +303,7 @@ test_that('Dense, functional response case works', {
   
   
   ### functional response
+  alpha <- 1
   Beta <- matrix(c(1,0.5,-1,-1),nrow=2,ncol=2)
 
   # training set
@@ -272,7 +317,7 @@ test_that('Dense, functional response case works', {
   sparseLt <- list()
   sparseLy <- list()
   
-  t0 <- seq(0,1,length.out=51)
+  t0 <- seq(0,1,length.out=M)
   for (i in 1:n) {
     
     # comp 1
@@ -280,7 +325,7 @@ test_that('Dense, functional response case works', {
     # denseLy[[i]] <- lambdaY[1]*Eta[i,1]*phi1(t0,1) + lambdaY[2]*Eta[i,2]*phi2(t0,1) + 
     #   rnorm(1,0,0.25)*phi1(t0,2) + rnorm(1,0,0.25)*phi2(t0,2) 
     denseLy[[i]] <- Eta[i,1]*phi1(t0,1) + Eta[i,2]*phi2(t0,1) + 
-      rnorm(1,0,0.25)*phi1(t0,2) + rnorm(1,0,0.25)*phi2(t0,2) 
+      rnorm(1,0,0.25)*phi1(t0,2) + rnorm(1,0,0.25)*phi2(t0,2) + alpha
     
     ind <- sort(sample(1:length(t0),5))
     sparseLt[[i]] <- t0[ind]
@@ -301,7 +346,7 @@ test_that('Dense, functional response case works', {
   sparseLtTest <- list()
   sparseLyTest <- list()
   
-  t0 <- seq(0,1,length.out=51)
+  t0 <- seq(0,1,length.out=M)
   for (i in 1:N) {
     
     # comp 1
@@ -309,7 +354,7 @@ test_that('Dense, functional response case works', {
     # denseLyTest[[i]] <- lambdaY[1]*EtaTest[i,1]*phi1(t0,1) + lambdaY[2]*EtaTest[i,2]*phi2(t0,1) + 
     #   rnorm(1,0,0.25)*phi1(t0,2) + rnorm(1,0,0.25)*phi2(t0,2) 
     denseLyTest[[i]] <- EtaTest[i,1]*phi1(t0,1) + EtaTest[i,2]*phi2(t0,1) + 
-      rnorm(1,0,0.25)*phi1(t0,2) + rnorm(1,0,0.25)*phi2(t0,2) 
+      rnorm(1,0,0.25)*phi1(t0,2) + rnorm(1,0,0.25)*phi2(t0,2) + alpha
     
     ind <- sort(sample(1:length(t0),5))
     sparseLtTest[[i]] <- t0[ind]
@@ -321,7 +366,9 @@ test_that('Dense, functional response case works', {
   
   
   ## dense
-  denseFLM <- FLM(Y=denseY,X=denseX,XTest=denseXTest,optnsListX=list(FVEthreshold=0.95))
+  # print(system.time({
+  denseFLM <- FLM(Y=denseY,X=denseX,XTest=denseXTest,optnsListX=list(FVEthreshold=0.95), nPerm=1000)
+  # }))
   
   trueBetaList <- list()
   trueBetaList[[1]] <- cbind(phi1(denseFLM$workGridX[[1]],1),phi1(denseFLM$workGridX[[1]],2))%*%Beta[1:2,]%*%
@@ -354,6 +401,11 @@ test_that('Dense, functional response case works', {
   
   # Errors are properly small
   expect_lt(denseEstErr, 1) 
+  expect_gt(denseFLM$R2, 0.5) 
+  expect_lt(denseFLM$pv, 0.05) 
+  expect_equal(denseFLM$alpha, rep(alpha, M), tolerance = 0.2)
+  expect_equal(denseFLM$yHat, do.call(rbind, denseY$Ly), tolerance = 1)
+  expect_equal(denseFLM$yPred, do.call(rbind, denseYTest$Ly), tolerance = 1)
   # expect_lt(densePredErr, 3) 
 })
 
@@ -576,3 +628,121 @@ test_that('nRegGrid works', {
 })
 
 
+test_that('A general test', {
+
+  respType <- 'functional'
+  predTypeCounts <- c(functional=0, scalar=2)
+  funcType <- 'sparse' #TODO
+
+# for (ff in 0:2) {
+# for (ss in 0:2) {
+#   if (ff + ss == 0) next
+#   predTypeCounts <- c(functional = ff, scalar = ss)
+  set.seed(1)
+
+  n <- 50
+  M <- 51
+  K <- 2
+  cBeta <- 1
+  sigma <- 1
+  lambdaY <- c(1, 1) # Must have length K
+  basisType <- 'cos'
+
+  domainX <- c(0, 1)
+  domainY <- c(-0.5, 0.5)
+  gridX <- seq(0, 1, length.out=M)
+  gridY <- seq(domainY[1], domainY[2], length.out=M)
+
+  BasisX <- CreateBasis(K, gridX, type=basisType)
+  if (respType == 'scalar') {
+    BasisY <- matrix(1)
+    KY <- 1
+  } else if (respType == 'functional') {
+    BasisY <- BasisX
+    KY <- K
+  }
+
+  muX <- lapply(seq_len(predTypeCounts['functional']), 
+                function(j) {function(x) x^(j -1) * 1})
+  XFunc <- lapply(seq_len(predTypeCounts['functional']),
+                  function(j) {
+                    MakeSparseGP(n, muFun = muX[[j]], sigma=sigma, basisType=basisType)
+                  })
+  # CreatePathPlot(inputData = XFunc[[2]])
+  XTrue <- lapply(seq_along(XFunc), function(j) {
+                    XFunc[[j]]$xi %*% t(BasisX) + 
+                      matrix(muX[[j]](gridX), n, M, byrow=TRUE)
+                  })
+  XScalar <- lapply(seq_len(predTypeCounts['scalar']), 
+                    function(j) {
+                      -j + rnorm(n)
+                    })
+  betaFunc <- lapply(seq_len(predTypeCounts['functional']),
+                     function(j) {
+                       cBeta * BasisX %*% matrix(rnorm(K^2), K, KY) %*% t(BasisY)
+                     })
+  betaScalar <- lapply(seq_len(predTypeCounts['scalar']), 
+                       function(j) {
+                         matrix(rnorm(K), nrow=1) %*% t(BasisY)
+                       })
+  alpha <- gridY ^ 2 * 20
+
+  if (respType == 'scalar') {
+    alpha <- mean(alpha)
+    MY <- 1
+  } else {
+    MY <- M
+  }
+
+  trueYGivenXZ <- matrix(alpha, n, MY, byrow=TRUE) + 
+    Reduce(`+`, 
+           mapply(function(X, beta) {
+             X %*% beta * (gridX[2] - gridX[1])
+           }, XTrue, betaFunc, SIMPLIFY=FALSE),
+           init=matrix(0, n, MY)) +
+    Reduce(`+`,
+           mapply(function(Z, betaZ) {
+             matrix(Z, ncol=1) %*% betaZ
+           }, XScalar, betaScalar, SIMPLIFY=FALSE),
+           init=matrix(0, n, MY))
+
+  # matplot(t(trueYGivenXZ), type='l')
+
+  # Add noise to Y
+  if (respType == 'scalar') {
+    YNoise <- rnorm(n, sd=sigma)
+    Y <- trueYGivenXZ + YNoise
+  } else if (respType == 'functional') {
+    YNoise <- MakeSparseGP(n, sigma=sigma, lambda=lambdaY, basisType=basisType)
+    YNoise$Lt <- lapply(YNoise$Lt, function(tt) tt * diff(domainY) + domainY[1])
+    YNoise$Ly <- lapply(seq_len(n), function(i) {
+                          tt <- YNoise$Lt[[i]]
+                          yy <- YNoise$Ly[[i]] + 
+                            ConvertSupport(gridY, tt, mu=trueYGivenXZ[i, ])
+                          yy
+                        })
+    Y <- YNoise
+  }
+
+  a <- FLM(Y, c(XFunc, XScalar), nPerm=1000)
+  # b <- FLM(Y, XFunc, nPerm=1000)
+
+  plot(c(a$alpha))
+  plot(alpha)
+  matplot(t(a$betaList[[3]]), type='l', ylim=c(-5, 5))
+  matplot(t(do.call(rbind, betaScalar)), type='l', add=TRUE)
+
+  image(a$betaList[[1]])
+  image(a$betaList[[2]])
+  image(betaFunc[[1]])
+  image(betaFunc[[2]])
+
+  matplot(t(a$betaList[[1]]), type='l', ylim=c(-3, 3))
+  matplot(t(do.call(rbind, betaScalar)), type='l', add=TRUE)
+  matplot(t(a$yHat[1:5, ]), type='l')
+  matplot(t(trueYGivenXZ[1:5, ]), type='l', add=TRUE)
+
+  # TODO: add checks
+# }
+# }
+})
