@@ -33,8 +33,11 @@
 #' \item{testXi}{A list of n by k_j matrices of estimated functional principal component scores of predictors in XTest, with eigenfunctions fitted only with X.}
 #' \item{lambdaX}{A length sum_j k_j vector of estimated eigenvalues for predictors.}
 #' \item{workGridX}{A list of vectors, each is a working grid for a predictor.}
+#' \item{optnsListX}{A list of list of options actually used by the FPCA for the predictor functions}
+#' \item{optnsListY}{A list of options actually used by the FPCA for the response functions}
 #' \item{phiY}{A \code{length(workGridY)} by k_y the estimated eigenfunctions of Y's, where k_y is number of eigenfunctions selected for Y. NULL if Y is scalar.}
 #' \item{workGridY}{A vector of working grid of the response Y's. NULL if Y is scalar}
+#' \item{muY}{The mean or the mean function of the response}
 #' @export
 FLM1 <- function(Y, X, XTest=NULL, optnsListY=NULL, optnsListX=NULL, nPerm=NULL) {
 
