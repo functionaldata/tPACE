@@ -753,7 +753,7 @@ for (ss in 0:2) {
   res <- FLM1(Y, c(XFunc, XScalar), nPerm=1000)
   # b <- FLM(Y, XFunc, nPerm=1000)
 
-  # TODO: add checks
+  # TODO: add checks: optns passed in
 
   expect_equal(res$muY, muY, tolerance=0.5, scale=1)
   expect_equal(c(res$alpha), alpha, tolerance=1, scale=1)
