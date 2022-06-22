@@ -36,7 +36,7 @@
 #' \item{phiY}{A \code{length(workGridY)} by k_y the estimated eigenfunctions of Y's, where k_y is number of eigenfunctions selected for Y. NULL if Y is scalar.}
 #' \item{workGridY}{A vector of working grid of the response Y's. NULL if Y is scalar}
 #' @export
-FLM1 <- function(Y, X, XTest=NULL, optnsListY=NULL, optnsListX=NULL, nPerm=NULL){
+FLM1 <- function(Y, X, XTest=NULL, optnsListY=NULL, optnsListX=NULL, nPerm=NULL) {
 
   # Internally, a scalar predictor is regarded as a constant function
   
@@ -193,12 +193,14 @@ optnsListX=list(FVEthreshold=0.95).')
     res[['lambdaY']] <- yFPCA[['lambda']]
     res[['phiY']] <- yFPCA[['phi']]
     res[['workGridY']] <- yFPCA[['workGrid']]
+    res[['optnsListY']] <- yFPCA$optns
   }
 
   if (dFunctional > 0L) {
     res[['lambdaX']] <- lapply(xFPCA, `[[`, 'lambda')
     res[['phiX']] <- lapply(xFPCA, `[[`, 'phi')
     res[['workGridX']] <- lapply(xFPCA, `[[`, 'workGrid')
+    res[['optnsListX']] <- lapply(xFPCA, `[[`, 'optns')
   }
 
   # TODO: drop dimensions, and give names to the list outputs according to the input names
