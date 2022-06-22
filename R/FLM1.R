@@ -4,7 +4,7 @@
 #' Functional linear models for scalar or functional responses and functional predictors.
 #' 
 #' @param Y Either an \emph{n}-dimensional vector whose elements consist of scalar responses, or a list which contains functional responses in the form of a list LY and the time points LT at which they are observed (i.e., list(Ly = LY,Lt = LT)).
-#' @param X A list of either 1. lists which contains the observed functional predictors list Lxj and the time points list Ltj at which they are observed. It needs to be of the form \code{list(list(Ly = Lx1,Lt = Lxt1),list(Ly = Lx2,Lt = Lxt2),...)}; 2. a matrix containing the scalar covariates; or 3. a mix of 1. and 2., in which case the scalar covariates must come after the functional ones(TODO).
+#' @param X A list of either 1. lists which contains the observed functional predictors list Lxj and the time points list Ltj at which they are observed. It needs to be of the form \code{list(list(Ly = Lx1,Lt = Lxt1),list(Ly = Lx2,Lt = Lxt2),...)}; 2. a matrix containing one or more scalar covariates; or 3. a mix of 1. and 2., in which case the scalar covariates must come after the functional ones(TODO).
 #' @param XTest A list which contains the values of functional predictors for a held-out testing set.
 #' @param optnsListY A list of options control parameters for the response specified by \code{list(name=value)}. See `Details' in  \code{FPCA}.
 #' @param optnsListX Either 1. A list of options control parameters for the predictors specified by \code{list(name=value)}; or 2. A list of list of options, e.g. \code{list(list(name1=value1), list(name2=value2))}. See `Details' in  \code{FPCA}.
@@ -12,12 +12,12 @@
 #' 
 #' @return A list of the following:
 #' \item{alpha}{A length-one numeric if the response Y is scalar. Or a vector of \code{length(workGridY)} of the fitted constant alpha(t) in the linear model if Y is functional.}
-#' \item{betaList}{A list of fitted beta(s) vectors, one per predictor, if Y is scalar. Each of dimension \code{length(workGridX[[j]])}.
+#' \item{betaList}{A list of fitted beta(s) vectors, one entry per functional predictor and one entry for all scalar predictors, if Y is scalar. Each of dimension \code{length(workGridX[[j]])}.
 #' 
 #' Or a list of fitted beta(s,t) matrices, one per predictor, if Y is functional. Each of dimension \code{length(workGridX[[j]])} times \code{length(workGridY)}.
 #' }
 #' \item{R2}{The functional R2}
-#' \item{pv}{Permutation p-value based on the functional R2}
+#' \item{pv}{Permutation p-value based on the functional R2. NA if \code{nPerm} is \code{NULL}}
 #' \item{yHat}{A length n vector if Y is scalar. 
 #' 
 #' Or an n by \code{length(workGridY)} matrix of fitted Y's from the model if Y is functional.}
@@ -73,7 +73,7 @@ FLM1 <- function(Y, X, XTest=NULL, optnsListY=NULL, optnsListX=NULL, nPerm=NULL)
   }
   
   if (!is.null(XTest) && !identical(isScalar, isScalarTest)) {
-    stop('The orders of covariates appear to be different in `X` and `XTest`')
+    stop('The order of covariates appears to be different in `X` and `XTest`')
   }
 
   # Obtain the FPCA results for x
@@ -116,12 +116,14 @@ FLM1 <- function(Y, X, XTest=NULL, optnsListY=NULL, optnsListX=NULL, nPerm=NULL)
   if (is.numeric(Y)) {
     resp <- matrix(Y)
     estEigenY <- matrix(1) 
+    muY <- mean(Y)
   } else if (is.list(Y)) {
     yFPCA <- FPCA(Y$Ly, Y$Lt, optns = optnsListY)
     
     resp <- yFPCA$xiEst
     dk <- length(yFPCA$lambda)
     estEigenY <- yFPCA$phi
+    muY <- yFPCA[['mu']]
   }
 
   n <- nrow(estXiList[[1]])
@@ -170,7 +172,7 @@ optnsListX=list(FVEthreshold=0.95).')
   # browser()
 
   if (is.list(Y)) {
-    alpha <- alpha + yFPCA$mu
+    alpha <- alpha + muY
   }
 
   bMat <- do.call(rbind, bList)
@@ -181,7 +183,9 @@ optnsListX=list(FVEthreshold=0.95).')
   yPred <- matrix(alpha + muXBeta, N, length(alpha), byrow=TRUE) + 
     testXiMat %*% bMat %*% t(estEigenY)
 
-  res <- list(alpha=alpha,betaList=betaList, R2=R2, pv=pv, 
+  res <- list(alpha=alpha,betaList=betaList, 
+              muY=muY, 
+              R2=R2, pv=pv, 
               yHat=yHat,yPred=yPred,
               estXi=estXiList,testXi=testXiList)
 
