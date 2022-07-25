@@ -9,7 +9,9 @@
 #' @param xout1 a p1-vector of first output coordinate grid. Defaults to the input gridpoints if left unspecified.
 #' @param xout2 a p2-vector of second output coordinate grid. Defaults to the input gridpoints if left unspecified.
 #' @param xout alternative to xout1 and xout2. A matrix of p by 2 specifying the output points (may be inefficient if the size of \code{xout} is small).
-#' @param crosscov using function for cross-covariance estimation (Default: FALSE)
+#' @param crosscov using function for cross-covariance estimation (Default: FALSE). FALSE for auto-covariance estimation and 
+#' TRUE for two-dimensional local linear kernel smoothing or cross-covariance estimation. 
+#' For auto-covariance estimation (i.e., when \code{crosscov} is FALSE), \code{xout1} and \code{xout2} should be the same.
 #' @param subset  a vector with the indices of x-/y-/w-in to be used (Default: NULL)
 #' @param method should one try to sort the values xin and yin before using the lwls smoother? if yes ('sort2' - default for non-Gaussian kernels), if no ('plain' - fully stable; de)
 #' @return a p1 by p2 matrix of fitted values if xout is not specified. Otherwise a vector of length p corresponding to the rows of xout. 
@@ -19,6 +21,13 @@ Lwls2D <- function(bw, kern='epan', xin, yin, win=NULL, xout1=NULL, xout2=NULL, 
 
   # only support epan kernel now.
   # stopifnot(kern == 'epan')
+  
+  if ( !crosscov ) {
+    # for auto-cov estimation, return an error if xout1 and xout2 are different
+    if ( !isTRUE( all.equal( xout1, xout2 ) ) ) {
+      stop ( 'xout1 and xout2 should be the same when crosscov is FALSE.' )
+    }
+  }
   
   if (length(bw) == 1){
     bw <- c(bw, bw)

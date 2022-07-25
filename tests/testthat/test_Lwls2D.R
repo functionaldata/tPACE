@@ -8,6 +8,10 @@ try(silent=TRUE, load(system.file('testdata', 'InputFormMllwlskInCpp.RData', pac
 IN = InputFormMllwlskInCpp
 if(1==1){
   
+  test_that('report an error if xout1 and xout2 are different when crosscov is FALSE', {
+    expect_error( Lwls2D( bw = 1, xin = matrix( runif(25*2), ncol = 2 ), yin = rnorm(25), xout1 = seq(0,1,0.1), xout2 = seq(0,1,0.2), crosscov = FALSE ) )
+  })
+  
   test_that('Lwls2D interface is correct using xout1 and xout2', {
     AA = Rmullwlsk(2* IN$bw,t(IN$tPairs),cxxn=IN$cxxn, xgrid=IN$regGrid, ygrid=IN$regGrid, kernel_type='gauss',win=rep(1,38), FALSE)
     BB = Rmullwlsk(2* IN$bw,t(IN$tPairs),cxxn=IN$cxxn, xgrid=sort(unique(IN$tPairs[, 1])), ygrid=sort(unique(IN$tPairs[, 2])), kernel_type='gauss',win=rep(1,38), FALSE)
