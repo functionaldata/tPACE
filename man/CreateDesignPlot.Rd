@@ -7,8 +7,14 @@ data analysis for sparse longitudinal data. J. American Statistical Association 
 for interpretation and usage of these plots. 
 This function will open a new device as default.}
 \usage{
-CreateDesignPlot(Lt, obsGrid = NULL, isColorPlot = TRUE,
-  noDiagonal = TRUE, addLegend = TRUE, ...)
+CreateDesignPlot(
+  Lt,
+  obsGrid = NULL,
+  isColorPlot = TRUE,
+  noDiagonal = TRUE,
+  addLegend = TRUE,
+  ...
+)
 }
 \arguments{
 \item{Lt}{a list of observed time points for functional data}

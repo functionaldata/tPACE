@@ -4,8 +4,18 @@
 \alias{FAM}
 \title{Functional Additive Models}
 \usage{
-FAM(Y, Lx, Lt, nEval = 51, newLx = NULL, newLt = NULL,
-  bwMethod = 0, alpha = 0.7, supp = c(-2, 2), optns = NULL)
+FAM(
+  Y,
+  Lx,
+  Lt,
+  nEval = 51,
+  newLx = NULL,
+  newLt = NULL,
+  bwMethod = 0,
+  alpha = 0.7,
+  supp = c(-2, 2),
+  optns = NULL
+)
 }
 \arguments{
 \item{Y}{An \emph{n}-dimensional vector whose elements consist of scalar responses.}

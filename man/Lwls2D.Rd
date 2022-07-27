@@ -4,9 +4,19 @@
 \alias{Lwls2D}
 \title{Two dimensional local linear kernel smoother.}
 \usage{
-Lwls2D(bw, kern = "epan", xin, yin, win = NULL, xout1 = NULL,
-  xout2 = NULL, xout = NULL, subset = NULL, crosscov = FALSE,
-  method = ifelse(kern == "gauss", "plain", "sort2"))
+Lwls2D(
+  bw,
+  kern = "epan",
+  xin,
+  yin,
+  win = NULL,
+  xout1 = NULL,
+  xout2 = NULL,
+  xout = NULL,
+  subset = NULL,
+  crosscov = FALSE,
+  method = ifelse(kern == "gauss", "plain", "sort2")
+)
 }
 \arguments{
 \item{bw}{A scalar or a vector of length 2 specifying the bandwidth.}

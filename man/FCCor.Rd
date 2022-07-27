@@ -4,8 +4,14 @@
 \alias{FCCor}
 \title{Calculation of functional correlation between two simultaneously observed processes.}
 \usage{
-FCCor(x, y, Lt, bw = stop("bw missing"), kern = "epan",
-  Tout = sort(unique(unlist(Lt))))
+FCCor(
+  x,
+  y,
+  Lt,
+  bw = stop("bw missing"),
+  kern = "epan",
+  Tout = sort(unique(unlist(Lt)))
+)
 }
 \arguments{
 \item{x}{A list of function values corresponding to the first process.}

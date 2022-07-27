@@ -238,6 +238,8 @@ test_that('Test based on previous implementation: simple concurrent regression w
   Xf <- Sparsify(xTrue, s, sparsitySchedule)
 
   outGrid <- s
+  outGrid[1] <- outGrid[1] - 1e-5 # FCReg should extrapolate a little
+  outGrid[length(outGrid)] <- outGrid[length(outGrid)] + 1e-5
   vars <- list(X = Xf, Z = z1, Y = Yf)
 
   Q <- FCReg(vars, 0.5,0.5, outGrid, 'epan', measurementError=FALSE)

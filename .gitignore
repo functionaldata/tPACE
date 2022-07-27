@@ -73,3 +73,6 @@ vignettes/.build.timestamp
 
 # inst folder
 inst/doc
+
+# Development
+experiment/
