@@ -764,15 +764,15 @@ for (ss in 0:2) {
   }
 
   # # Plots
-  matplot(cbind(res$muY, muY), type='l')
-  matplot(cbind(c(res$alpha), alpha), type='l')
+  # matplot(cbind(res$muY, muY), type='l')
+  # matplot(cbind(c(res$alpha), alpha), type='l')
   # matplot(cbind(c(res$beta[[2]]), c(beta[[2]])), type='l')
-  matplot(t(res$betaList[[2]]), type='l', lty=1)
-  matplot(t(betaEval[[2]]), type='l', lty=2, add=TRUE)
+  # matplot(t(res$betaList[[2]]), type='l', lty=1)
+  # matplot(t(betaEval[[2]]), type='l', lty=2, add=TRUE)
 
-  image(res$betaList[[1]])
+  # image(res$betaList[[1]])
   # # image(res$betaList[[2]])
-  image(betaEval[[1]])
+  # image(betaEval[[1]])
   # # image(betaFunc[[2]])
 
   # plot(c(res$alpha))
