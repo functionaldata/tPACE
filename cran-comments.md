@@ -1,17 +1,17 @@
 
 ## Test environments
-* local R installation, R 4.0.2
-* ubuntu 16.04 (on travis-ci), R 4.0.2
+* local R installation, macOS R 4.1.2
+* local ubuntu 20.04, R 4.1.2
 * win-builder (devel and release)
 
 ## R CMD check results
+on macOS:
+0 errors | 0 warnings | 0 notes
 
-0 errors | 0 warnings | 1 notes
-
-Note indicates a change in maintainer from Cody Carroll to Alvaro Gajardo.
+on ubuntu one note is generated regarding installed package size of 1Mb or more in subfolder libs. No notes were generated on windows.
 
 ## Downstream dependencies
-I have run R CMD check on downstream dependencies of fdapace: fdadensity, fdaPOIFD, fgm, frechet, KFPCA, LCox, and WRI.
+I have run R CMD check on ubuntu on downstream dependencies of fdapace: fdadensity,fdapaceShiny, fdaPOIFD, fgm, frechet, ftsa, KFPCA, LCox, mistat, SLFPCA and WRI.
 
 All packages passed.
 
