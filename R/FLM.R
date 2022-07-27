@@ -133,6 +133,8 @@
 
 FLM <- function(Y,X,XTest=NULL,optnsListY=NULL,optnsListX=NULL, nPerm=NULL){
   
+  warning("This function is deprecated and will be removed in a later fdapace version. Please use `FLM1` instead")
+
   d0 <- length(X)
   
   if (is.null(optnsListX)==TRUE) {
