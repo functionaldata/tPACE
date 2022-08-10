@@ -30,7 +30,7 @@
 
 CreateCovPlot = function(fpcaObj, covPlotType = 'Fitted', corr= FALSE, isInteractive = FALSE, colSpectrum = NULL, ...){
   if(corr == TRUE){
-    if(class(fpcaObj) != 'FPCA'){
+    if(toString(class(fpcaObj)) != 'FPCA'){
       stop("Input object must be class: 'FPCA' for fitted correlation surface")
     }
     if(covPlotType != 'Fitted'){

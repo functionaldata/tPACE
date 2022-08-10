@@ -9,14 +9,14 @@ FitEigenValues <- function(rcov, phiGrid, phi, noEig) {
     approx(phiGrid, y, rcov$tPairs[, 1])$y * approx(phiGrid, y, rcov$tPairs[, 2])$y
   )
   
-  if (class(rcov) == 'RawCov') {
+  if (toString(class(rcov)) == 'RawCov') {
     dat <- cbind(y=rcov[['cxxn']], X)
     dat <- dat[rcov$tPairs[, 1] > min(phiGrid) - buff & 
       rcov$tPairs[, 1] < max(phiGrid) + buff & 
       rcov$tPairs[, 2] > min(phiGrid) - buff & 
       rcov$tPairs[, 2] < max(phiGrid) + buff, ]
     mod <- lm(y ~ . - 1, data.frame(dat))
-  } else if (class(rcov) == 'BinnedRawCov') {
+  } else if (toString(class(rcov)) == 'BinnedRawCov') {
     dat <- cbind(y=rcov[['meanVals']], X)
     dat <- dat[rcov$tPairs[, 1] > min(phiGrid) - buff & 
       rcov$tPairs[, 1] < max(phiGrid) + buff & 

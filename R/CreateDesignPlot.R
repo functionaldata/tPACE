@@ -26,7 +26,7 @@
 
 CreateDesignPlot = function(Lt, obsGrid = NULL, isColorPlot=TRUE, noDiagonal=TRUE, addLegend= TRUE, ...){
   
-  if( class(Lt) != 'list'){
+  if( toString(class(Lt)) != 'list'){
     stop("You do need to pass a list argument to 'CreateDesignPlot'!");
   }
   if( is.null(obsGrid)){

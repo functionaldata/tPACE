@@ -67,7 +67,7 @@ GCVLwls2DV2 <- function(obsGrid, regGrid, ngrid=NULL, dataType=rcov$dataType, er
     for (i in rev(seq_along(bw))) {
       h <- bw[i]
       
-      if (class(rcov) == 'BinnedRawCov') {
+      if (toString(class(rcov)) == 'BinnedRawCov') {
         if (CV == FALSE) # GCV
           Scores[i,'SUM'] <- getGCVscoresV2(h, kern, rcov$tPairs, rcov$meanVals, win=rcov$count, regGrid=regGrid, RSS=rcov$RSS, verbose=verbose)
         else # CV

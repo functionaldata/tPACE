@@ -30,7 +30,7 @@
 #' @export
 
 CreateStringingPlot <- function(stringingObj, subset, ...){
-  if(class(stringingObj) != "Stringing"){
+  if(toString(class(stringingObj)) != "Stringing"){
     stop("Invalid input class for the stringing object. Need to be returned from the Stringing function.")
   }
   n <- nrow(stringingObj$Xin)

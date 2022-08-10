@@ -196,7 +196,7 @@ FLM <- function(Y,X,XTest=NULL,optnsListY=NULL,optnsListX=NULL, nPerm=NULL){
          optnsListX=list(FVEthreshold=0.95).')
   }
   
-  if (class(Y)=='numeric') {
+  if (toString(class(Y))=='numeric') {
     
     flm <- lm(Y~estXi)
     
@@ -234,7 +234,7 @@ FLM <- function(Y,X,XTest=NULL,optnsListY=NULL,optnsListX=NULL, nPerm=NULL){
     return(list(alpha=alpha,betaList=betaList,yHat=yHat,yPred=yPred,#R2=R2,
                 estXi=estXiList,testXi=testXiList,lambdaX=estLambdaX,phiX=estEigenX,workGridX=workGridX,phiY = NULL,workGridY = NULL))
 
-  } else if (class(Y)=='list') {
+  } else if (toString(class(Y))=='list') {
     
     if (is.null(optnsListY)==TRUE) {
       optnsListY <- list()

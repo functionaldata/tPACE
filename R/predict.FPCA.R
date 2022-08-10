@@ -37,7 +37,7 @@
 predict.FPCA <- function(object, newLy, newLt, sigma2 = NULL, K = NULL, xiMethod = 'CE', ...){
   fpcaObj = object;
   
-  if(class(fpcaObj) != "FPCA"){
+  if(toString(class(fpcaObj)) != "FPCA"){
     stop('Please provide a valid FPCA object.')
   } 
   

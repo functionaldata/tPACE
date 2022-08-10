@@ -23,7 +23,7 @@
 
 CreateBWPlot <-function(fpcaObj, derOptns = NULL, bwMultipliers = NULL){ 
   
-  if(class(fpcaObj) != 'FPCA'){
+  if(toString(class(fpcaObj)) != 'FPCA'){
     stop("Input class is incorrect; CreateDiagnosticsPlot() is only usable from FPCA objects.")
   }
   oldPar <- par(no.readonly=TRUE)
