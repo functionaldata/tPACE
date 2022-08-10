@@ -128,7 +128,7 @@ test_that('Dense, scalar response case works', {
   # abline(coef=c(0,1),col=8)
   
   # plot(denseFLM$yPred,YTest,xlab='predicted Y', ylab='observed Y')
-  abline(coef=c(0,1),col=8)
+  #abline(coef=c(0,1),col=8)
   
   # prediction error
   densePredErr <- sqrt(mean((YTest - denseFLM$yPred)^2))
