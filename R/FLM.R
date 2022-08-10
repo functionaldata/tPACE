@@ -7,13 +7,16 @@
 #' @param XTest A list which contains the values of functional predictors for a held-out testing set.
 #' @param optnsListY A list of options control parameters for the response specified by \code{list(name=value)}. See `Details' in  \code{FPCA}.
 #' @param optnsListX A list of options control parameters for the predictors specified by \code{list(name=value)}. See `Details' in  \code{FPCA}.
+#' @param nPerm If this argument is specified, perform a permutation test to obtain the (global) p-value for the test of regression relationship between X and Y. Recommend to set to 1000 or larger if specified.
 #' 
 #' @return A list of the following:
-#' \item{muY}{A length-one numeric if the response Y is scalar or a vector of \code{length(workGridY)} of the fitted mean function of Y in the linear model if Y is functional.}
+#' \item{alpha}{A length-one numeric if the response Y is scalar. Or a vector of \code{length(workGridY)} of the fitted constant alpha(t) in the linear model if Y is functional.}
 #' \item{betaList}{A list of fitted beta(s) vectors, one per predictor, if Y is scalar. Each of dimension \code{length(workGridX[[j]])}.
 #' 
 #' Or a list of fitted beta(s,t) matrices, one per predictor, if Y is functional. Each of dimension \code{length(workGridX[[j]])} times \code{length(workGridY)}.
 #' }
+#' \item{R2}{The functional R2}
+#' \item{pv}{Permutation p-value based on the functional R2}
 #' \item{yHat}{A length n vector if Y is scalar. 
 #' 
 #' Or an n by \code{length(workGridY)} matrix of fitted Y's from the model if Y is functional.}
@@ -128,8 +131,10 @@
 
 
 
-FLM <- function(Y,X,XTest=NULL,optnsListY=NULL,optnsListX=NULL){
+FLM <- function(Y,X,XTest=NULL,optnsListY=NULL,optnsListX=NULL, nPerm=NULL){
   
+  warning("This function is deprecated and will be removed in a later fdapace version. Please use `FLM1` instead")
+
   d0 <- length(X)
   
   if (is.null(optnsListX)==TRUE) {
@@ -195,7 +200,7 @@ FLM <- function(Y,X,XTest=NULL,optnsListY=NULL,optnsListX=NULL){
     
     flm <- lm(Y~estXi)
     
-    muY <- as.numeric(flm$coef[1])
+    alpha <- as.numeric(flm$coef[1])
     bVec <- as.vector(flm$coef[-1])
     
     bList <- list()
@@ -224,13 +229,12 @@ FLM <- function(Y,X,XTest=NULL,optnsListY=NULL,optnsListX=NULL){
     # R2 <- summary(flm)$r.sq
     
     yHat <- as.numeric(flm$fitted)
-    yPred <- as.numeric(muY + testXi%*%bVec)
+    yPred <- as.numeric(alpha + testXi%*%bVec)
     
-    return(list(muY=muY,betaList=betaList,yHat=yHat,yPred=yPred,#R2=R2,
+    return(list(alpha=alpha,betaList=betaList,yHat=yHat,yPred=yPred,#R2=R2,
                 estXi=estXiList,testXi=testXiList,lambdaX=estLambdaX,phiX=estEigenX,workGridX=workGridX,phiY = NULL,workGridY = NULL))
-  }
-  
-  if (class(Y)=='list') {
+
+  } else if (class(Y)=='list') {
     
     if (is.null(optnsListY)==TRUE) {
       optnsListY <- list()
@@ -249,15 +253,22 @@ FLM <- function(Y,X,XTest=NULL,optnsListY=NULL,optnsListX=NULL){
     estEigenY <- tmpFPCA$phi
     workGridY <- tmpFPCA$workGrid
     
-    alphaVec <- c()
-    bMat <- matrix(nrow=d,ncol=dk)
-    for (k in 1:dk) {
-      flm <- lm(estEtak[,k]~estXi)
-      
-      alphaVec[k] <- as.numeric(flm$coef[1])
-      bMat[,k] <- as.vector(flm$coef[-1])
-    }      
+    BR2 <- GetBR2(estEtak, estXi)
+    alphaVec <- BR2$alphaVec
+    bMat <- BR2$bMat
+    R2 <- BR2$R2
     
+    if (!is.null(nPerm) && nPerm > 0) {
+      R2Perm <- vapply(seq_len(nPerm), function(i) {
+        ind <- sample(n)
+        tmp <- GetBR2(estEtak, estXi[ind, , drop=FALSE])
+        tmp$R2
+      }, 0.1)
+      pv <- mean(R2Perm >= R2)
+    } else {
+      pv <- NA
+    }
+
     bList <- list()
     betaList <- list()
     estXiList <- testXiList <- c()
@@ -282,16 +293,46 @@ FLM <- function(Y,X,XTest=NULL,optnsListY=NULL,optnsListX=NULL){
       betaList[[j]] <- estEigenX[[j]]%*%bList[[j]]%*%t(estEigenY)
     }
     
-    muY <- c(estEigenY%*%alphaVec) + tmpFPCA$mu
+    alpha <- c(estEigenY%*%alphaVec) + tmpFPCA$mu
     
-    yHat <- t(matrix(rep(muY,n),nrow=length(muY),ncol=n)) + estXi%*%bMat%*%t(estEigenY)
-    yPred <-  t(matrix(rep(muY,n),nrow=length(muY),ncol=N)) + testXi%*%bMat%*%t(estEigenY)
+    yHat <- t(matrix(rep(alpha,n),nrow=length(alpha),ncol=n)) + estXi%*%bMat%*%t(estEigenY)
+    yPred <-  t(matrix(rep(alpha,n),nrow=length(alpha),ncol=N)) + testXi%*%bMat%*%t(estEigenY)
     
     
-    return(list(muY=muY,betaList=betaList,yHat=yHat,yPred=yPred,
+    return(list(alpha=alpha,betaList=betaList, R2=R2, pv=pv, 
+                yHat=yHat,yPred=yPred,
                 estXi=estXiList,testXi=testXiList,
                 lambdaX=estLambdaX,phiX=estEigenX,workGridX=workGridX,
                 lambdaY=estLambdaY,phiY=estEigenY,workGridY=workGridY))
     
   } 
+}
+
+
+GetBR2 <- function(estEtak, estXi) {
+
+  n <- nrow(estEtak)
+  k <- ncol(estEtak)
+  kXi <- ncol(estXi)
+
+  res <- lapply(seq_len(k), function(k) {
+    flm <- lm(estEtak[,k]~estXi)
+    r2 <- summary(flm)$r.squared
+    a <- as.numeric(flm$coef[1])
+    b <- as.vector(flm$coef[-1])
+    list(r2=r2, a=a, b=b)
+  })
+
+  alphaVec <- vapply(res, `[[`, 0, 'a')
+  bMat <- vapply(res, `[[`, rep(0, kXi), 'b')
+  if (kXi <= 1) {
+    bMat <- matrix(bMat, ncol=k)
+  }
+  r2k <- vapply(res, `[[`, 0, 'r2')
+  totalVarEtak <- apply(estEtak, 2, var) * (n - 1)
+  varExplained <- sum(totalVarEtak * r2k)
+
+  R2 <- varExplained / sum(totalVarEtak)
+
+  list(alphaVec=alphaVec, bMat=bMat, R2=R2)
 }

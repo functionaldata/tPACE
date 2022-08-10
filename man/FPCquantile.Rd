@@ -4,8 +4,14 @@
 \alias{FPCquantile}
 \title{Conditional Quantile estimation with functional covariates}
 \usage{
-FPCquantile(Lx, Lt_x, y, outQ = c(0.1, 0.25, 0.5, 0.75, 0.9),
-  optns_x = NULL, isNewSub = NULL)
+FPCquantile(
+  Lx,
+  Lt_x,
+  y,
+  outQ = c(0.1, 0.25, 0.5, 0.75, 0.9),
+  optns_x = NULL,
+  isNewSub = NULL
+)
 }
 \arguments{
 \item{Lx}{A length n list of predictor function where x[[i]] is the row vector of measurements for ith subject, i=1,...,n}

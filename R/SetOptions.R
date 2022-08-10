@@ -55,10 +55,10 @@ SetOptions = function(y, t, optns){
     #methodBwMu = 'GMeanAndGCV';  
     methodBwMu = 'Default'
   }
-  if(is.null(userBwMu) && methodBwMu == 'Default'){ # bandwidth choice for mean function is using CV or GCV
+  if(is.null(userBwMu) && methodBwMu == 'Default'){ 
     userBwMu = 0.05 * diff(range(unlist(t)));   
   } 
-  if(is.null(userBwMu) && methodBwMu != 'Default'){
+  if(is.null(userBwMu) && methodBwMu != 'Default'){# bandwidth choice for mean function is using CV or GCV
     userBwMu = 0.0;
   }
   if(is.null(methodBwCov)){  # bandwidth choice for covariance function is GCV if userBwCov = c(0,0)

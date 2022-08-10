@@ -30,7 +30,7 @@ GetMuPhiSig <- function(t, obsGrid, mu, phi, Sigma_Y) {
     if(length(tvec)!=0){
       return(list(muVec=approx(obsGrid,mu,tvec)$y, phiMat=matrix(apply(phi,2,function(phivec){return(approx(obsGrid,phivec,tvec)$y)}),nrow = length(tvec)), 
                   Sigma_Yi=ConvertSupport(obsGrid, tvec, Cov=Sigma_Y)
-      ))
+                    ))
     }
     else{
       return(list(muVec=numeric(0),phiMat=numeric(0),Sigma_Yi=numeric(0)))

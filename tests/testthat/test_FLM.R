@@ -199,6 +199,8 @@ test_that('Sparse, scalar response case works', {
 
 
 test_that('Dense, functional response case works', {
+  
+  M <- 51
   set.seed(1000)
   
   library(MASS)
@@ -216,7 +218,7 @@ test_that('Dense, functional response case works', {
   denseLt <- list(); denseLy <- list()
   sparseLt <- list(); sparseLy <- list()
   
-  t0 <- seq(0,1,length.out=51)
+  t0 <- seq(0,1,length.out=M)
   for (i in 1:n) {
     denseLt[[i]] <- t0
     denseLy[[i]] <- lambdaX[1]*Xi[i,1]*phi1(t0,1) + lambdaX[2]*Xi[i,2]*phi1(t0,2)
@@ -241,7 +243,7 @@ test_that('Dense, functional response case works', {
   
   sparseLtTest <- list(); sparseLyTest <- list()
   
-  t0 <- seq(0,1,length.out=51)
+  t0 <- seq(0,1,length.out=M)
   for (i in 1:N) {
     denseLtTest[[i]] <- t0
     denseLyTest[[i]] <- lambdaX[1]*XiTest[i,1]*phi1(t0,1) + lambdaX[2]*XiTest[i,2]*phi1(t0,2)
@@ -259,6 +261,7 @@ test_that('Dense, functional response case works', {
   
   
   ### functional response
+  alpha <- 1
   Beta <- matrix(c(1,0.5,-1,-1),nrow=2,ncol=2)
 
   # training set
@@ -272,7 +275,7 @@ test_that('Dense, functional response case works', {
   sparseLt <- list()
   sparseLy <- list()
   
-  t0 <- seq(0,1,length.out=51)
+  t0 <- seq(0,1,length.out=M)
   for (i in 1:n) {
     
     # comp 1
@@ -280,7 +283,7 @@ test_that('Dense, functional response case works', {
     # denseLy[[i]] <- lambdaY[1]*Eta[i,1]*phi1(t0,1) + lambdaY[2]*Eta[i,2]*phi2(t0,1) + 
     #   rnorm(1,0,0.25)*phi1(t0,2) + rnorm(1,0,0.25)*phi2(t0,2) 
     denseLy[[i]] <- Eta[i,1]*phi1(t0,1) + Eta[i,2]*phi2(t0,1) + 
-      rnorm(1,0,0.25)*phi1(t0,2) + rnorm(1,0,0.25)*phi2(t0,2) 
+      rnorm(1,0,0.25)*phi1(t0,2) + rnorm(1,0,0.25)*phi2(t0,2) + alpha
     
     ind <- sort(sample(1:length(t0),5))
     sparseLt[[i]] <- t0[ind]
@@ -301,7 +304,7 @@ test_that('Dense, functional response case works', {
   sparseLtTest <- list()
   sparseLyTest <- list()
   
-  t0 <- seq(0,1,length.out=51)
+  t0 <- seq(0,1,length.out=M)
   for (i in 1:N) {
     
     # comp 1
@@ -309,7 +312,7 @@ test_that('Dense, functional response case works', {
     # denseLyTest[[i]] <- lambdaY[1]*EtaTest[i,1]*phi1(t0,1) + lambdaY[2]*EtaTest[i,2]*phi2(t0,1) + 
     #   rnorm(1,0,0.25)*phi1(t0,2) + rnorm(1,0,0.25)*phi2(t0,2) 
     denseLyTest[[i]] <- EtaTest[i,1]*phi1(t0,1) + EtaTest[i,2]*phi2(t0,1) + 
-      rnorm(1,0,0.25)*phi1(t0,2) + rnorm(1,0,0.25)*phi2(t0,2) 
+      rnorm(1,0,0.25)*phi1(t0,2) + rnorm(1,0,0.25)*phi2(t0,2) + alpha
     
     ind <- sort(sample(1:length(t0),5))
     sparseLtTest[[i]] <- t0[ind]
@@ -321,7 +324,9 @@ test_that('Dense, functional response case works', {
   
   
   ## dense
-  denseFLM <- FLM(Y=denseY,X=denseX,XTest=denseXTest,optnsListX=list(FVEthreshold=0.95))
+  # print(system.time({
+  denseFLM <- FLM(Y=denseY,X=denseX,XTest=denseXTest,optnsListX=list(FVEthreshold=0.95), nPerm=1000)
+  # }))
   
   trueBetaList <- list()
   trueBetaList[[1]] <- cbind(phi1(denseFLM$workGridX[[1]],1),phi1(denseFLM$workGridX[[1]],2))%*%Beta[1:2,]%*%
@@ -354,6 +359,11 @@ test_that('Dense, functional response case works', {
   
   # Errors are properly small
   expect_lt(denseEstErr, 1) 
+  expect_gt(denseFLM$R2, 0.5) 
+  expect_lt(denseFLM$pv, 0.05) 
+  expect_equal(denseFLM$alpha, rep(alpha, M), tolerance = 0.2)
+  expect_equal(denseFLM$yHat, do.call(rbind, denseY$Ly), tolerance = 1)
+  expect_equal(denseFLM$yPred, do.call(rbind, denseYTest$Ly), tolerance = 1)
   # expect_lt(densePredErr, 3) 
 })
 

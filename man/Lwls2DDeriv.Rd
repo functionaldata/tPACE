@@ -4,9 +4,22 @@
 \alias{Lwls2DDeriv}
 \title{Two dimensional local linear kernel smoother to target derivatives.}
 \usage{
-Lwls2DDeriv(bw, kern = "epan", xin, yin, win = NULL, xout1 = NULL,
-  xout2 = NULL, xout = NULL, npoly = 1L, nder1 = 0L, nder2 = 0L,
-  subset = NULL, crosscov = TRUE, method = "sort2")
+Lwls2DDeriv(
+  bw,
+  kern = "epan",
+  xin,
+  yin,
+  win = NULL,
+  xout1 = NULL,
+  xout2 = NULL,
+  xout = NULL,
+  npoly = 1L,
+  nder1 = 0L,
+  nder2 = 0L,
+  subset = NULL,
+  crosscov = TRUE,
+  method = "sort2"
+)
 }
 \arguments{
 \item{bw}{A scalar or a vector of length 2 specifying the bandwidth.}
