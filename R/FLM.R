@@ -1,6 +1,6 @@
 #' Functional Linear Models
 #'
-#' Functional linear models for scalar or functional responses and functional predictors.
+#' Functional linear models for scalar or functional responses and functional predictors. The current implementation performs the regression on the FPC scores.
 #' 
 #' @param Y Either an \emph{n}-dimensional vector whose elements consist of scalar responses, or a list which contains functional responses in the form of a list LY and the time points LT at which they are observed (i.e., list(Ly = LY,Lt = LT)).
 #' @param X A list of lists which contains the observed functional predictors list Lxj and the time points list Ltj at which they are observed. It needs to be of the form \code{list(list(Ly = Lx1,Lt = Lxt1),list(Ly = Lx2,Lt = Lxt2),...)}

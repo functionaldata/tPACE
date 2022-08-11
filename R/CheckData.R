@@ -47,5 +47,11 @@ CheckData = function(y,t){
   if(max(unlist(y),na.rm=TRUE)==Inf){
     stop('There are entries in Ly which are Inf')
   }
+  
+  #check possible time gap across subjects
+  if(max(diff(sort(unlist(t))),na.rm=TRUE)/(max(unlist(t),na.rm=TRUE)-min(unlist(t),na.rm=TRUE))>0.1){
+    warning('There is a time gap of at least 10% of the observed range across subjects')
+  }
+  
 }
 
