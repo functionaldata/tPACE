@@ -6,12 +6,13 @@ BugReports: https://github.com/functionaldata/tPACE/issues
 Version: 0.5.9
 Encoding: UTF-8
 Date: 2022-08-15,
-Authors@R: c(person("Alvaro", "Gajardo", email="aegajardo@ucdavis.edu", role=c("aut","cre")),
+Authors@R: c(person("Yidong", "Zhou", email="ydzhou@ucdavis.edu", role=c("aut","cre")),
     person("Satarupa","Bhattacharjee", role=c("aut")),
     person("Cody","Carroll", email="cjcarroll@ucdavis.edu", role=c("aut"), comment =  c(ORCID = "0000-0003-3525-8653")),
     person("Yaqing","Chen", email="yaqchen@ucdavis.edu", role=c("aut")),
     person("Xiongtao","Dai", email="dai@ucdavis.edu", role=c("aut")),
     person("Jianing","Fan", role=c("aut")),
+    person("Alvaro","Gajardo", role=c("aut")),
     person("Pantelis Z.","Hadjipantelis", role=c("aut")),
     person("Kyunghee","Han", role="aut"),
     person("Hao","Ji", role=c("aut")),
@@ -20,7 +21,7 @@ Authors@R: c(person("Alvaro", "Gajardo", email="aegajardo@ucdavis.edu", role=c("
     person("Paromita", "Dubey", role="ctb"),
     person("Hans-Georg", "Müller", role=c("cph","ths","aut")),
     person("Jane-Ling", "Wang", role=c("cph","ths","aut"))) 
-Maintainer: Alvaro Gajardo <aegajardo@ucdavis.edu>
+Maintainer: Yidong Zhou <ydzhou@ucdavis.edu>
 Description: A versatile package that provides implementation of various
     methods of Functional Data Analysis (FDA) and Empirical Dynamics. The core of this
     package is Functional Principal Component Analysis (FPCA), a key technique for
