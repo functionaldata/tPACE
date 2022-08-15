@@ -38,7 +38,7 @@ For densely observed functional data simplified procedures are available to obta
 
 In the case of sparse FPCA the most computational intensive part is the smoothing of the sample's raw covariance function. For this, we employ a local weighted bilinear smoother.
 
-A sibling MATLAB package for <tt>`fdapace`</tt> can be found [here](http://www.stat.ucdavis.edu/PACE/).
+A sibling MATLAB package for <tt>`fdapace`</tt> can be found [here](https://www.stat.ucdavis.edu/PACE/).
 
 ##  FPCA in R using fdapace 
 
