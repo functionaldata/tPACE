@@ -1,3 +1,7 @@
+## Resubmission
+This is a resubmission. In this version I have:
+* Corrected a possibly invalid URL.
+
 
 ## Test environments
 * local R installation, macOS R 4.2.1
