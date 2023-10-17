@@ -50,7 +50,13 @@ GetCI_FLM = function(Y, X, level = 0.95, R = 999, optnsListY = NULL, optnsListX 
   p <- length(X)
   
   flm_est <- FLM1(Y=Y, X=X, optnsListY=optnsListY, optnsListX=optnsListY)
-  sparsity <- flm_est$optnsListY$dataType
+  sparsityY <- flm_est$optnsListY$dataType
+  sparsityX <- sapply(flm_est$optnsListX, function(x) x$dataType)
+  if("Sparse" %in% c(sparsityY,sparsityX)){
+    sparsity = "Sparse"
+  }else{
+    sparsity = "Dense"
+  }
   beta_est <- flm_est$betaList
   workGridX <- flm_est$workGridX
   
