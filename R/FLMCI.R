@@ -28,7 +28,7 @@
 #' }
 
 
-GetCI_FLM = function(Y, X, level = 0.95, R = 999, optnsListY = NULL, optnsListX = NULL){
+FLMCI = function(Y, X, level = 0.95, R = 999, optnsListY = NULL, optnsListX = NULL){
   require(stats)
   if (length(level) > 1) {
     level = level[1]
