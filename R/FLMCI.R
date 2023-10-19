@@ -1,31 +1,27 @@
 #' @title Bootstrap pointwise confidence intervals for the coefficient functions for functional linear model.
 #' 
-#' @param Y Either an n-dimensional vector whose elements consist of scalar responses, or a list which contains functional responses in the form of a list LY and the time points LT at which they are observed (i.e., list(Ly = LY,Lt = LT)).
-#' @param X A list of lists which contains the observed functional predictors list Lxj and the time points list Ltj at which they are observed. It needs to be of the form list(list(Ly = Lx1,Lt = Lxt1),list(Ly = Lx2,Lt = Lxt2),...).
-#' @param outGrid A vector with the output time points, which need to be within 5% and 95% of the range of functional covariates. If NULL, \code{outGrid} will be generated from 5% to 95% of the range of functional covariates with 51 grids for fitting. Default: NULL.
+#' @param Y Either an n-dimensional vector whose elements consist of scalar responses, or a list which contains functional responses in the form of a list LY and the time points LT at which they are observed (i.e., \code{list(Ly = LY,Lt = LT)}).
+#' @param X A list of lists which contains the observed functional predictors list Lxj and the time points list Ltj at which they are observed. It needs to be of the form \code{list(list(Ly = Lx1,Lt = Lxt1),list(Ly = Lx2,Lt = Lxt2),...)}.
 #' @param level A number taking values in [0,1] determining the confidence level. Default: 0.95.
 #' @param R An integer holding the number of bootstrap replicates. Default: 999.
-#' @param optnsListY A list of options control parameters for the response specified by list(name=value). See 'Details' in FPCA.
-#' @param optnsListX A list of options control parameters for the predictors specified by list(name=value). See 'Details' in FPCA.
+#' @param optnsListY A list of options control parameters for the response specified by \code{list(name=value)}. See 'Details' in FPCA.
+#' @param optnsListX A list of options control parameters for the predictors specified by \code{list(name=value)}. See 'Details' in FPCA.
 
 #' @details If measurement error is assumed, the diagonal elements of the raw covariance will be removed. This could result in highly unstable estimate 
 #' if the design is very sparse, or strong seasonality presents. 
 #' WARNING! For very sparse functional data, setting measurementError = TRUE is not recommended.
 #' @return A list containing the following fields: 
-#' \describe{
 #' \item{CI_alpha}{CI for the intercept function --- A data frame holding three variables: 
 #' \code{CI_grid} --- the time grid where the CIs are evaluated,
 #' \code{CI_lower} and \code{CI_upper} --- the lower and upper bounds of the CIs 
 #' for the intercept function on \code{CIgrid}.}
-#' 
 #' \item{CI_beta}{ A list containing CIs for the slope functions --- the length of
 #' the list is the same as the number of covariates. Each list contains the following fields:
 #' A data frame holding three variables: \code{CI_grid} --- the time grid where the CIs are evaluated,
 #' \code{CI_lower} and \code{CI_upper} --- the lower and upper bounds of the CIs 
 #' for the coefficient function on \code{CIgrid} for \eqn{j = 1,2,\dots}.}
-
 #' \item{level}{The confidence level of the CIs.}
-#' }
+#' @export
 
 
 FLMCI = function(Y, X, level = 0.95, R = 999, optnsListY = NULL, optnsListX = NULL){
