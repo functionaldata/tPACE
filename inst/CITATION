@@ -1,0 +1,8 @@
+bibentry(
+  bibtype  = "manual",
+  title    = "{fdapace: Functional Data Analysis and Empirical Dynamics}",
+  author   = c(person("Yidong", "Zhou"), person("Han", "Chen"), person("Su I", "Iao"), person("Poorbita", "Kundu"), person("Hang", "Zhou"), person("Satarupa", "Bhattacharjee"), person("Cody", "Carroll"), person("Yaqing", "Chen"), person("Xiongtao", "Dai"), person("Jianing", "Fan"), person("Alvaro", "Gajardo"), person("Pantelis Z.", "Hadjipantelis"), person("Kyunghee", "Han"), person("Hao", "Ji"), person("Changbo", "Zhu"), person("Hans-Georg", "Müller"), person("Jane-Ling", "Wang")),
+  year     = "2024",
+  note     = "R package version 0.6.0",
+  url      = "https://cran.r-project.org/web/packages/fdapace"
+)

@@ -37,7 +37,9 @@ Lwls2D(
 
 \item{subset}{a vector with the indices of x-/y-/w-in to be used (Default: NULL)}
 
-\item{crosscov}{using function for cross-covariance estimation (Default: FALSE)}
+\item{crosscov}{using function for cross-covariance estimation (Default: FALSE). FALSE for auto-covariance estimation and 
+TRUE for two-dimensional local linear kernel smoothing or cross-covariance estimation. 
+For auto-covariance estimation (i.e., when \code{crosscov} is FALSE), \code{xout1} and \code{xout2} should be the same.}
 
 \item{method}{should one try to sort the values xin and yin before using the lwls smoother? if yes ('sort2' - default for non-Gaussian kernels), if no ('plain' - fully stable; de)}
 }

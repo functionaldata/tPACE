@@ -25,7 +25,7 @@
 
 CreateModeOfVarPlot <-function(fpcaObj,  k = 1, rainbowPlot = FALSE, colSpectrum = NULL, ...){ 
   
-  args1 <- list( main="Default Title", xlab='s', ylab='')  
+  args1 <- list(main="Mode of variation", xlab='t', ylab='')  
   inargs <- list(...)
   
   if(k> length(fpcaObj$lambda) ){
@@ -57,10 +57,10 @@ CreateModeOfVarPlot <-function(fpcaObj,  k = 1, rainbowPlot = FALSE, colSpectrum
     do.call(plot, c(list(type='n'), list(x=s), list(y=s), args1))
     grid()    
     polygon(x=c(s, rev(s)), y = c( -2* sigma * phi + mu, 
-                                   rev(2* sigma * phi + mu)), col= 'lightgrey',border=NA)
+                                   rev(2* sigma * phi + mu)), col= 'lightgrey',lty=3)
     polygon(x=c(s, rev(s)), y = c( -1* sigma * phi + mu, 
-                                   rev(1* sigma * phi + mu)), col= 'darkgrey',border=NA)  
-    lines(x=s, y=mu , col='red') 
+                                   rev(1* sigma * phi + mu)), col= 'darkgrey',lty=2)  
+    lines(x=s, y=mu , col='red')
   } else {
     # The numver of modes as well as the colour palette could/shoud be possibly user-defined
     numOfModes = 257 # Just a large number of make things look "somewhat solid".

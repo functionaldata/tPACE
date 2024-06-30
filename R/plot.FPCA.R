@@ -53,7 +53,7 @@ plot.FPCA <- function(x, openNewDev = FALSE, addLegend=TRUE, ...){
     CreateDesignPlot(t, addLegend=addLegend, noDiagonal=fpcaObj$optns$error)
     
     ## Make Mean trajectory plot
-    plot( workGrid, mu, type='l', xlab='s',ylab='', main='Mean Function', panel.first = grid(), axes = TRUE)   
+    plot( workGrid, mu, type='l', xlab='s',ylab='', main='Mean function', panel.first = grid(), axes = TRUE)   
 
     ## Make Scree plot
     CreateScreePlot(fpcaObj);
@@ -76,7 +76,7 @@ plot.FPCA <- function(x, openNewDev = FALSE, addLegend=TRUE, ...){
       par(plt=newplt)
     }
     matplot(workGrid, fpcaObj$phi[,1:k], type='n', 
-            main=paste(collapse='', c("First ", as.character(k), " Eigenfunctions"))  , xlab='s', ylab='') 
+            main=paste(collapse='', c("First ", as.character(k), " eigenfunctions"))  , xlab='s', ylab='') 
     abline(h=0, col='gray9')
     grid()
     matlines(workGrid, fpcaObj$phi[,1:k] ) 

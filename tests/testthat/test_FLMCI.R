@@ -1,4 +1,3 @@
-
 test_that('test the confidence level R', {
   set.seed(1000)
   # Test 1: scalar response ~ Functional + scalar predictors
