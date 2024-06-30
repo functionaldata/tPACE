@@ -45,7 +45,7 @@ FLMCI = function(Y, X, level = 0.95, R = 999, optnsListY = NULL, optnsListX = NU
   
   p <- length(X)
   
-  flm_est <- FLM1(Y=Y, X=X, optnsListY=optnsListY, optnsListX=optnsListY)
+  flm_est <- FLM(Y=Y, X=X, optnsListY=optnsListY, optnsListX=optnsListY)
   sparsityY <- flm_est$optnsListY$dataType
   sparsityX <- sapply(flm_est$optnsListX, function(x) x$dataType)
   if("Sparse" %in% c(sparsityY,sparsityX)){
@@ -159,7 +159,7 @@ FLMCI = function(Y, X, level = 0.95, R = 999, optnsListY = NULL, optnsListX = NU
         X_ind[[j]] <- X[[j]][ind]
       }
     }
-    res <- FLM1(Y = Y_ind, X = X_ind, optnsListY = optnsListY, optnsListX = optnsListX)
+    res <- FLM(Y = Y_ind, X = X_ind, optnsListY = optnsListY, optnsListX = optnsListX)
     length(res$betaList)
     if(is.list(Y)){
       return(list(alpha = res$alpha, beta = res$betaList, R2 = res$R2, workGridX = res$workGridX, workGridY = res$workGridY))

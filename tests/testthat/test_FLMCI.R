@@ -172,7 +172,7 @@ test_that('functional response ~ Functional + scalar predictors', {
                   X2 = list(Ly=sparseLy2,Lt=sparseLt2), 
                   Z = rnorm(n,10,2))
   Y = list(Ly = YLy, Lt = YLt)
-  flm_est = FLM1(Y=Y,X=sparseX,optnsListX=list(FVEthreshold=0.95))
+  flm_est = FLM(Y=Y,X=sparseX,optnsListX=list(FVEthreshold=0.95))
   
   CI2 = FLMCI(Y=Y,X=sparseX,optnsListX=list(FVEthreshold=0.95), R = 200)
   
