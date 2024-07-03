@@ -3,3 +3,4 @@
 ^ISSUE_TEMPLATE\.md$
 ^tests$
 ^cran-comments\.md$
+^CRAN-SUBMISSION$

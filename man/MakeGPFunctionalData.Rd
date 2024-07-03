@@ -31,7 +31,7 @@ MakeGPFunctionalData(
 }
 \value{
 A list containing the following fields:
-\item{Y}{A vector of .}
+\item{Y}{A vector of noiseless observations.}
 \item{Yn}{A vector of noisy observations if \code{sigma} > 0.}
 }
 \description{
