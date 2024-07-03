@@ -352,7 +352,7 @@ if (Sys.getenv('TRAVIS') != 'true') {
     res <- FPCA(samp$Ly, samp$Lt)
     M1 = res$fittedCorr
     expect_true( all(diag(M1)==1))
-    expect_true(!any((M1<=-1)&&(M1>=1)))
-    expect_true(all((M1>=-1)&&(M1<=1)))
+    expect_true(!any((M1<=-1)&(M1>=1)))
+    expect_true(all((M1>=-1)&(M1<=1)))
   })
 }

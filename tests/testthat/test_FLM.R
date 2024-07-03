@@ -632,159 +632,159 @@ test_that('nRegGrid works', {
 })
 
 
-test_that('A general test', {
-
-  respType <- 'functional'
-  predTypeCounts <- c(functional=1, scalar=1)
-  funcType <- 'sparse' #TODO
-
-for (ff in 0:1) {
-for (ss in 0:2) {
-  if (ff + ss == 0) next
-  predTypeCounts <- c(functional = ff, scalar = ss)
-  set.seed(1)
-
-  n <- 50
-  M <- 51
-  K <- 2
-  cBeta <- 1
-  sigma <- 1
-  lambdaY <- c(1, 1) # Must have length K
-  basisType <- 'cos'
-
-  domainX <- c(0, 1)
-  domainY <- c(-0.5, 0.5)
-  gridX <- seq(0, 1, length.out=M)
-  gridY <- seq(domainY[1], domainY[2], length.out=M)
-
-  BasisX <- CreateBasis(K, gridX, type=basisType)
-  if (respType == 'scalar') {
-    BasisY <- matrix(1)
-    KY <- 1
-  } else if (respType == 'functional') {
-    BasisY <- BasisX
-    KY <- K
-  }
-
-  muXFunc <- lapply(seq_len(predTypeCounts['functional']), 
-                function(j) {function(x) x^(j -1) * 1})
-  XFunc <- lapply(seq_len(predTypeCounts['functional']),
-                  function(j) {
-                    MakeSparseGP(n, muFun = muXFunc[[j]], sigma=sigma, basisType=basisType)
-                  })
-  # CreatePathPlot(inputData = XFunc[[2]])
-  muXFuncGrid <- lapply(seq_along(XFunc), function(j) {
-                    muXFunc[[j]](gridX)
-                  })
-  XTrue <- lapply(seq_along(XFunc), function(j) {
-                    XFunc[[j]]$xi %*% t(BasisX) + 
-                      matrix(muXFuncGrid[[j]], n, M, byrow=TRUE)
-                  })
-  muXScalar <- -as.numeric(seq_len(predTypeCounts['scalar']))
-  XScalar <- lapply(seq_len(predTypeCounts['scalar']), 
-                    function(j) {
-                      muXScalar[j] + rnorm(n)
-                    })
-  BFunc <- matrix(rnorm(K * KY), K, KY)
-  betaFunc <- lapply(seq_len(predTypeCounts['functional']),
-                     function(j) {
-                       cBeta * BasisX %*% BFunc %*% t(BasisY)
-                     })
-  betaScalar <- lapply(seq_len(predTypeCounts['scalar']), 
-                       function(j) {
-                         matrix(rnorm(K), nrow=1) %*% t(BasisY)
-                       })
-  beta <- c(betaFunc, betaScalar)
-  betaEval <- list(do.call(rbind, betaFunc), 
-                   do.call(rbind, betaScalar))
-  betaEval <- betaEval[!vapply(betaEval, is.null, FALSE)]
-  alpha <- gridY ^ 2 * 20
-
-  if (respType == 'scalar') {
-    alpha <- mean(alpha)
-    MY <- 1
-  } else {
-    MY <- M
-  }
-
-  trueYGivenXZ <- matrix(alpha, n, MY, byrow=TRUE) + 
-    Reduce(`+`, 
-           mapply(function(X, beta) {
-             X %*% beta * (gridX[2] - gridX[1])
-           }, XTrue, betaFunc, SIMPLIFY=FALSE),
-           init=matrix(0, n, MY)) +
-    Reduce(`+`,
-           mapply(function(Z, betaZ) {
-             matrix(Z, ncol=1) %*% betaZ
-           }, XScalar, betaScalar, SIMPLIFY=FALSE),
-           init=matrix(0, n, MY))
-  muY <- alpha + 
-    Reduce(`+`, 
-           mapply(function(X, beta) {
-             X %*% beta * (gridX[2] - gridX[1])
-           }, muXFuncGrid, betaFunc, SIMPLIFY=FALSE),
-           init=rep(0, MY)) +
-    Reduce(`+`,
-           mapply(function(Z, betaZ) {
-             matrix(Z, ncol=1) %*% betaZ
-           }, muXScalar, betaScalar, SIMPLIFY=FALSE),
-           init=rep(0, MY))
-  muY <- c(muY)
-
-
-  # matplot(t(trueYGivenXZ), type='l')
-
-  # Add noise to Y
-  if (respType == 'scalar') {
-    YNoise <- rnorm(n, sd=sigma)
-    Y <- trueYGivenXZ + YNoise
-  } else if (respType == 'functional') {
-    YNoise <- MakeSparseGP(n, sigma=sigma, lambda=lambdaY, basisType=basisType)
-    YNoise$Lt <- lapply(YNoise$Lt, function(tt) tt * diff(domainY) + domainY[1])
-    YNoise$Ly <- lapply(seq_len(n), function(i) {
-                          tt <- YNoise$Lt[[i]]
-                          yy <- YNoise$Ly[[i]] + 
-                            ConvertSupport(gridY, tt, mu=trueYGivenXZ[i, ])
-                          yy
-                        })
-    Y <- YNoise
-  }
-
-  res <- FLM(Y, c(XFunc, XScalar), nPerm=1000)
-  # b <- FLM(Y, XFunc, nPerm=1000)
-
-  # TODO: add checks: optns passed in
-
-  expect_equal(res$muY, muY, tolerance=0.5, scale=1)
-  expect_equal(c(res$alpha), alpha, tolerance=1, scale=1)
-  if (ff + ss < 3) {
-    expect_equal(res$betaList, betaEval, tolerance=1, scale=1)
-  } else {
-    expect_equal(res$betaList, betaEval, tolerance=2, scale=1)
-  }
-
-  # # Plots
-  # matplot(cbind(res$muY, muY), type='l')
-  # matplot(cbind(c(res$alpha), alpha), type='l')
-  # matplot(cbind(c(res$beta[[2]]), c(beta[[2]])), type='l')
-  # matplot(t(res$betaList[[2]]), type='l', lty=1)
-  # matplot(t(betaEval[[2]]), type='l', lty=2, add=TRUE)
-
-  # image(res$betaList[[1]])
-  # # image(res$betaList[[2]])
-  # image(betaEval[[1]])
-  # # image(betaFunc[[2]])
-
-  # plot(c(res$alpha))
-  # plot(alpha)
-  # # matplot(t(res$betaList[[3]]), type='l', ylim=c(-5, 5))
-  # matplot(t(do.call(rbind, betaScalar)), type='l', add=TRUE)
-
-  # matplot(t(res$betaList[[1]]), type='l', ylim=c(-3, 3))
-  # matplot(t(do.call(rbind, betaScalar)), type='l', add=TRUE)
-  # matplot(t(res$yHat[1:5, ]), type='l')
-  # matplot(t(trueYGivenXZ[1:5, ]), type='l', add=TRUE)
-
-}
-}
-})
+# test_that('A general test', {
+# 
+#   respType <- 'functional'
+#   predTypeCounts <- c(functional=1, scalar=1)
+#   funcType <- 'sparse' #TODO
+# 
+# for (ff in 0:1) {
+# for (ss in 0:2) {
+#   if (ff + ss == 0) next
+#   predTypeCounts <- c(functional = ff, scalar = ss)
+#   set.seed(1)
+# 
+#   n <- 50
+#   M <- 51
+#   K <- 2
+#   cBeta <- 1
+#   sigma <- 1
+#   lambdaY <- c(1, 1) # Must have length K
+#   basisType <- 'cos'
+# 
+#   domainX <- c(0, 1)
+#   domainY <- c(-0.5, 0.5)
+#   gridX <- seq(0, 1, length.out=M)
+#   gridY <- seq(domainY[1], domainY[2], length.out=M)
+# 
+#   BasisX <- CreateBasis(K, gridX, type=basisType)
+#   if (respType == 'scalar') {
+#     BasisY <- matrix(1)
+#     KY <- 1
+#   } else if (respType == 'functional') {
+#     BasisY <- BasisX
+#     KY <- K
+#   }
+# 
+#   muXFunc <- lapply(seq_len(predTypeCounts['functional']), 
+#                 function(j) {function(x) x^(j -1) * 1})
+#   XFunc <- lapply(seq_len(predTypeCounts['functional']),
+#                   function(j) {
+#                     MakeSparseGP(n, muFun = muXFunc[[j]], sigma=sigma, basisType=basisType)
+#                   })
+#   # CreatePathPlot(inputData = XFunc[[2]])
+#   muXFuncGrid <- lapply(seq_along(XFunc), function(j) {
+#                     muXFunc[[j]](gridX)
+#                   })
+#   XTrue <- lapply(seq_along(XFunc), function(j) {
+#                     XFunc[[j]]$xi %*% t(BasisX) + 
+#                       matrix(muXFuncGrid[[j]], n, M, byrow=TRUE)
+#                   })
+#   muXScalar <- -as.numeric(seq_len(predTypeCounts['scalar']))
+#   XScalar <- lapply(seq_len(predTypeCounts['scalar']), 
+#                     function(j) {
+#                       muXScalar[j] + rnorm(n)
+#                     })
+#   BFunc <- matrix(rnorm(K * KY), K, KY)
+#   betaFunc <- lapply(seq_len(predTypeCounts['functional']),
+#                      function(j) {
+#                        cBeta * BasisX %*% BFunc %*% t(BasisY)
+#                      })
+#   betaScalar <- lapply(seq_len(predTypeCounts['scalar']), 
+#                        function(j) {
+#                          matrix(rnorm(K), nrow=1) %*% t(BasisY)
+#                        })
+#   beta <- c(betaFunc, betaScalar)
+#   betaEval <- list(do.call(rbind, betaFunc), 
+#                    do.call(rbind, betaScalar))
+#   betaEval <- betaEval[!vapply(betaEval, is.null, FALSE)]
+#   alpha <- gridY ^ 2 * 20
+# 
+#   if (respType == 'scalar') {
+#     alpha <- mean(alpha)
+#     MY <- 1
+#   } else {
+#     MY <- M
+#   }
+# 
+#   trueYGivenXZ <- matrix(alpha, n, MY, byrow=TRUE) + 
+#     Reduce(`+`, 
+#            mapply(function(X, beta) {
+#              X %*% beta * (gridX[2] - gridX[1])
+#            }, XTrue, betaFunc, SIMPLIFY=FALSE),
+#            init=matrix(0, n, MY)) +
+#     Reduce(`+`,
+#            mapply(function(Z, betaZ) {
+#              matrix(Z, ncol=1) %*% betaZ
+#            }, XScalar, betaScalar, SIMPLIFY=FALSE),
+#            init=matrix(0, n, MY))
+#   muY <- alpha + 
+#     Reduce(`+`, 
+#            mapply(function(X, beta) {
+#              X %*% beta * (gridX[2] - gridX[1])
+#            }, muXFuncGrid, betaFunc, SIMPLIFY=FALSE),
+#            init=rep(0, MY)) +
+#     Reduce(`+`,
+#            mapply(function(Z, betaZ) {
+#              matrix(Z, ncol=1) %*% betaZ
+#            }, muXScalar, betaScalar, SIMPLIFY=FALSE),
+#            init=rep(0, MY))
+#   muY <- c(muY)
+# 
+# 
+#   # matplot(t(trueYGivenXZ), type='l')
+# 
+#   # Add noise to Y
+#   if (respType == 'scalar') {
+#     YNoise <- rnorm(n, sd=sigma)
+#     Y <- trueYGivenXZ + YNoise
+#   } else if (respType == 'functional') {
+#     YNoise <- MakeSparseGP(n, sigma=sigma, lambda=lambdaY, basisType=basisType)
+#     YNoise$Lt <- lapply(YNoise$Lt, function(tt) tt * diff(domainY) + domainY[1])
+#     YNoise$Ly <- lapply(seq_len(n), function(i) {
+#                           tt <- YNoise$Lt[[i]]
+#                           yy <- YNoise$Ly[[i]] + 
+#                             ConvertSupport(gridY, tt, mu=trueYGivenXZ[i, ])
+#                           yy
+#                         })
+#     Y <- YNoise
+#   }
+# 
+#   res <- FLM(Y, c(XFunc, XScalar), nPerm=1000)
+#   # b <- FLM(Y, XFunc, nPerm=1000)
+# 
+#   # TODO: add checks: optns passed in
+# 
+#   expect_equal(res$muY, muY, tolerance=0.5, scale=1)
+#   expect_equal(c(res$alpha), alpha, tolerance=1, scale=1)
+#   if (ff + ss < 3) {
+#     expect_equal(res$betaList, betaEval, tolerance=1, scale=1)
+#   } else {
+#     expect_equal(res$betaList, betaEval, tolerance=2, scale=1)
+#   }
+# 
+#   # # Plots
+#   # matplot(cbind(res$muY, muY), type='l')
+#   # matplot(cbind(c(res$alpha), alpha), type='l')
+#   # matplot(cbind(c(res$beta[[2]]), c(beta[[2]])), type='l')
+#   # matplot(t(res$betaList[[2]]), type='l', lty=1)
+#   # matplot(t(betaEval[[2]]), type='l', lty=2, add=TRUE)
+# 
+#   # image(res$betaList[[1]])
+#   # # image(res$betaList[[2]])
+#   # image(betaEval[[1]])
+#   # # image(betaFunc[[2]])
+# 
+#   # plot(c(res$alpha))
+#   # plot(alpha)
+#   # # matplot(t(res$betaList[[3]]), type='l', ylim=c(-5, 5))
+#   # matplot(t(do.call(rbind, betaScalar)), type='l', add=TRUE)
+# 
+#   # matplot(t(res$betaList[[1]]), type='l', ylim=c(-3, 3))
+#   # matplot(t(do.call(rbind, betaScalar)), type='l', add=TRUE)
+#   # matplot(t(res$yHat[1:5, ]), type='l')
+#   # matplot(t(trueYGivenXZ[1:5, ]), type='l', add=TRUE)
+# 
+# }
+# }
+# })

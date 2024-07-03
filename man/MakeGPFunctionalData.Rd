@@ -30,7 +30,9 @@ MakeGPFunctionalData(
 \item{basisType}{string specifying the basis type used; possible options are: 'sin', 'cos' and 'fourier' (default: 'cos') (See code of 'CreateBasis' for implementation details.)}
 }
 \value{
-Y: X(t_{j}), Yn: noisy observations
+A list containing the following fields:
+\item{Y}{A vector of .}
+\item{Yn}{A vector of noisy observations if \code{sigma} > 0.}
 }
 \description{
 For a Gaussian process, create a dense functional data sample of size n over a [0,1] support.

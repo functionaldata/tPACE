@@ -1,3 +1,14 @@
+fdapace v0.6.0 (Release date: 02-Jul-2024)
+=============
+Changes:
+* Remove the old FLM function
+* Update FLM1 function and its documentation, which is now the FLM function
+* Add FLMCI function to construct confidence intervals for functional linear models
+* Change @docType package to _PACKAGE in R/pkgname.R
+* Add title and legend to CreateModeOfVarPlot function
+* Update figure titles in several plot functions (capitalize only the first word)
+
+
 fdapace v0.5.9 (Release date: 15-Aug-2022)
 =============
 Changes:

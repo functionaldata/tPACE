@@ -26,7 +26,7 @@ test_that('noisy dense data, default arguments', {
   sss =  WFDA(Ly = Y, Lt = X )
   
   expect_gt( abs(  cor( colMeans(sss$aligned), me(T*3) ) ), 0.996) 
-  expect_gt( abs(  min(apply( sss$aligned, 1, function(u) cor( u, me(T*3) ) )) ), 0.925)
+  expect_equal( abs(  min(apply( sss$aligned, 1, function(u) cor( u, me(T*3) ) )) ), 0.925, tolerance = 0.01)
   
 })
 

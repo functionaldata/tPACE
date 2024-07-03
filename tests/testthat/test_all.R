@@ -1,5 +1,3 @@
-
-library(devtools)
 devtools::load_all("../../")
 devtools::document("../../")
 data=list.files(path="./",pattern="*.R")

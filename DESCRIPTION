@@ -5,7 +5,7 @@ URL: https://github.com/functionaldata/tPACE
 BugReports: https://github.com/functionaldata/tPACE/issues
 Version: 0.6.0
 Encoding: UTF-8
-Date: 2024-06-30
+Date: 2024-07-02
 Language: en-US
 Authors@R: c(person("Yidong", "Zhou", email="ydzhou@ucdavis.edu", role=c("cre","aut"), comment=c(ORCID="0000-0003-1423-1857")),
     person("Han", "Chen", role=c("aut")),

@@ -9,7 +9,7 @@
 
 #' @details If measurement error is assumed, the diagonal elements of the raw covariance will be removed. This could result in highly unstable estimate 
 #' if the design is very sparse, or strong seasonality presents. 
-#' WARNING! For very sparse functional data, setting measurementError = TRUE is not recommended.
+#' WARNING! For very sparse functional data, setting \code{measurementError=TRUE} is not recommended.
 #' @return A list containing the following fields: 
 #' \item{CI_alpha}{CI for the intercept function --- A data frame holding three variables: 
 #' \code{CI_grid} --- the time grid where the CIs are evaluated,
@@ -24,8 +24,7 @@
 #' @export
 
 
-FLMCI = function(Y, X, level = 0.95, R = 999, optnsListY = NULL, optnsListX = NULL){
-  require(stats)
+FLMCI <- function(Y, X, level = 0.95, R = 999, optnsListY = NULL, optnsListX = NULL){
   if (length(level) > 1) {
     level = level[1]
     warning("The input level has more than 1 element; only the first one is used.")

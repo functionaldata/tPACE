@@ -2,20 +2,20 @@
 % Please edit documentation in R/NormCurveToArea.R
 \name{NormCurvToArea}
 \alias{NormCurvToArea}
-\title{Normalise a curve to a particular area, by multiplication with a factor}
+\title{Normalize a curve to a particular area, by multiplication with a factor}
 \usage{
 NormCurvToArea(y, x = seq(0, 1, length.out = length(y)), area = 1)
 }
 \arguments{
-\item{y}{values of curve at time-points x}
+\item{y}{values of curve at time-points \code{x}}
 
-\item{x}{design time-points (default: seq(0,1, length.out=length(y)))}
+\item{x}{design time-points (default: \code{seq(0,1, length.out=length(y))})}
 
-\item{area}{value to normalise the curve onto (default: 1)}
+\item{area}{value to normalize the curve onto (default: 1)}
 }
 \value{
-yNew values of curve at times x such that [\\int{yNew}dx = area]
+values of curve at times \code{x} such that its integration over \code{x} equals \code{area}.
 }
 \description{
-Normalise a curve such that \\int{yNew}dx = area (according to trapezoid integration)
+Normalize a curve such that its integration over the design time-points equals a particular value (according to trapezoid integration).
 }

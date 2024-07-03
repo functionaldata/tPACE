@@ -38,5 +38,5 @@ Bootstrap pointwise confidence intervals for the coefficient functions in functi
 \details{
 If measurement error is assumed, the diagonal elements of the raw covariance will be removed. This could result in highly unstable estimate 
 if the design is very sparse, or strong seasonality presents. 
-WARNING! For very sparse functional data, setting measurementError = TRUE is not recommended.
+WARNING! For very sparse functional data, setting \code{measurementError=TRUE} is not recommended.
 }

@@ -1,12 +1,12 @@
-#' Normalise a curve to a particular area, by multiplication with a factor
+#' Normalize a curve to a particular area, by multiplication with a factor
 #' 
-#' Normalise a curve such that \\int{yNew}dx = area (according to trapezoid integration)
+#' Normalize a curve such that its integration over the design time-points equals a particular value (according to trapezoid integration).
 #' 
-#' @param y values of curve at time-points x
-#' @param x design time-points (default: seq(0,1, length.out=length(y)))
-#' @param area value to normalise the curve onto (default: 1)
+#' @param y values of curve at time-points \code{x}
+#' @param x design time-points (default: \code{seq(0,1, length.out=length(y))})
+#' @param area value to normalize the curve onto (default: 1)
 #'
-#' @return yNew values of curve at times x such that [\\int{yNew}dx = area]
+#' @return values of curve at times \code{x} such that its integration over \code{x} equals \code{area}.
 #' @export
 
 NormCurvToArea <- function(y, x = seq(0, 1, length.out = length(y)), area = 1){
