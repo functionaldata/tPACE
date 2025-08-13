@@ -6,7 +6,7 @@
 #' @param userBwMu A scalar with bandwidth used for smoothing the mean
 #' @param userBwCov A scalar with bandwidth used for smoothing the auto- and cross-covariances
 #' @param outGrid A vector with the output time points
-#' @param kern Smoothing kernel choice, common for mu and covariance; "rect", "gauss", "epan", "gausvar", "quar" (default: "gauss")
+#' @param kern Smoothing kernel choice, common for mu and covariance; "rect", "gauss", "epan", "gausvar", "quar", "triangular", "triweight", "tricube", "cosine", "logistic", "sigmoid", "silverman" (default: "gauss")
 #' @param measurementError Indicator measurement errors on the functional observations should be assumed. If TRUE the diagonal raw covariance will be removed when smoothing. (default: TRUE)
 #' @param diag1D  A string specifying whether to use 1D smoothing for the diagonal line of the covariance. 
 #' 'none': don't use 1D smoothing; 'cross': use 1D only for cross-covariances; 'all': use 1D for both auto- and cross-covariances. (default : 'none')

@@ -23,6 +23,13 @@ Eigen::MatrixXd RmullwlskCC( const Eigen::Map<Eigen::VectorXd> & bw, const std::
   possibleKernels["epan"]    = 1;   possibleKernels["rect"]    = 2;
   possibleKernels["gauss"]   = 3;   possibleKernels["gausvar"] = 4; 
   possibleKernels["quar"]    = 5; 
+  possibleKernels["triangular"] = 6; // Added triangular kernel
+  possibleKernels["triweight"] = 7; // Added triweight kernel
+  possibleKernels["tricube"] = 8; // Added tricube kernel
+  possibleKernels["cosine"] = 9; // Added cosine kernel
+  possibleKernels["logistic"] = 10; // Added logistic kernel
+  possibleKernels["sigmoid"] = 11; // Added sigmoid kernel
+  possibleKernels["silverman"] = 12; // Added silverman kernel
    
   // The following test is here for completeness, we mightwant to move it up a 
   // level (in the wrapper) in the future. 
@@ -59,7 +66,7 @@ Eigen::MatrixXd RmullwlskCC( const Eigen::Map<Eigen::VectorXd> & bw, const std::
       //locating local window (LOL) (bad joke)
       std::vector <unsigned int> indx; 
       //if the kernel is not Gaussian
-      if ( KernelName != 3) { 
+      if ( KernelName != 3 && KernelName != 10 && KernelName != 11 && KernelName != 12) { 
         //construct listX as vectors / size is unknown originally
         for (unsigned int y = 0; y != tPairs.cols(); y++){ 
           if (  (std::abs( tPairs(0,y) - xgrid(i) ) <= (bw(0)+ bufSmall ) && std::abs( tPairs(1,y) - ygrid(j) ) <= (bw(1)+ bufSmall)) ) {
@@ -135,6 +142,33 @@ Eigen::MatrixXd RmullwlskCC( const Eigen::Map<Eigen::VectorXd> & bw, const std::
                      ((1.-llx.row(0).array().pow(2)).array().pow(2)).array() *
                      ((1.-llx.row(1).array().pow(2)).array().pow(2)).array() * (225./256.);
             break;
+        case 6 : // truangular
+          temp = (lw.transpose().array()) * (1.-llx.row(0).array().abs()).array() * (1.-llx.row(1).array().abs()).array();
+          break;
+        case 7 : // triweight
+          temp = (lw.transpose().array()) * (1.-llx.row(0).array().pow(2)).array().pow(3) * (35./32.) *
+            (1.-llx.row(1).array().pow(2)).array().pow(3) * (35./32.);
+          break;
+        case 8 : // tricube
+          temp = (lw.transpose().array()) * (1.-llx.row(0).array().abs().pow(3)).array().pow(3) * (70./81.) *
+            (1.-llx.row(1).array().abs().pow(3)).array().pow(3) * (70./81.);
+          break;
+        case 9 : // cosine
+          temp = (lw.transpose().array()) * M_PI / 4.0 * (llx.row(0).array() * M_PI / 2.0).cos().array() *
+            M_PI / 4.0 * (llx.row(1).array() * M_PI / 2.0).cos().array();
+          break;
+        case 10 : // logistic
+          temp = (lw.transpose().array()) / ((-llx.row(0).array()).exp() + 2. + llx.row(0).array().exp()).array() /
+            ((-llx.row(1).array()).exp() + 2. + llx.row(1).array().exp()).array();
+          break;
+        case 11 : // sigmoid
+          temp = (lw.transpose().array()) / ((-llx.row(0).array()).exp() + llx.row(0).array().exp()).array() * 2.0 / M_PI /
+            ((-llx.row(1).array()).exp() + llx.row(1).array().exp()).array() * 2.0 / M_PI;
+          break;
+        case 12 : // silverman
+          temp = (lw.transpose().array()) * 0.5 * (-llx.row(0).array().abs() / sqrt(2)).exp() * (M_PI / 4.0 + llx.row(0).array().abs() * sqrt(2)).sin().array() *
+            0.5 * (-llx.row(1).array().abs() / sqrt(2)).exp() * (M_PI / 4.0 + llx.row(1).array().abs() * sqrt(2)).sin().array();
+          break;
         } 
 
         // make the design matrix

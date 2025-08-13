@@ -4,7 +4,7 @@
 #' @param y A list of function values corresponding to the second process.
 #' @param Lt A list of time points for both \code{x} and \code{y}.
 #' @param bw A numeric vector for bandwidth of length either 5 or 1, specifying the bandwidths for E(X), E(Y), var(X), var(Y), and cov(X, Y). If \code{bw} is a scalar then all five bandwidths are chosen to be the same. 
-#' @param kern Smoothing kernel for mu and covariance; "rect", "gauss", "epan", "gausvar", "quar" (default: "gauss")
+#' @param kern Smoothing kernel for mu and covariance; "rect", "gauss", "epan", "gausvar", "quar", "triangular", "triweight", "tricube", "cosine", "logistic", "sigmoid", "silverman" (default: "gauss")
 #' @param Tout Output time points. Default to the sorted unique time points. 
 #'
 #' @details \code{FCCor} calculate only the concurrent correlation corr(X(t), Y(t)) (note that the time points t are the same). It assumes no measurement error in the observed values.

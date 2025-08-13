@@ -49,6 +49,13 @@ Eigen::VectorXd CPPlwls1d( const double & bw, const std::string kernel_type, con
   possibleKernels["epan"]    = 1;   possibleKernels["rect"]    = 2;
   possibleKernels["gauss"]   = 3;   possibleKernels["gausvar"] = 4;
   possibleKernels["quar"]    = 5;
+  possibleKernels["triangular"] = 6; // Added triangular kernel
+  possibleKernels["triweight"] = 7; // Added triweight kernel
+  possibleKernels["tricube"] = 8; // Added tricube kernel
+  possibleKernels["cosine"] = 9; // Added cosine kernel
+  possibleKernels["logistic"] = 10; // Added logistic kernel
+  possibleKernels["sigmoid"] = 11; // Added sigmoid kernel
+  possibleKernels["silverman"] = 12; // Added silverman kernel
 
   // If the kernel_type key exists set KernelName appropriately
   int KernelName = 0;
@@ -84,7 +91,7 @@ Eigen::VectorXd CPPlwls1d( const double & bw, const std::string kernel_type, con
     const double* upper ;
 
     //if the kernel is not Gaussian
-    if ( KernelName != 3 && KernelName != 4) {
+    if ( KernelName != 3 && KernelName != 4 && KernelName != 10 && KernelName != 11 && KernelName != 12) {
       //construct listX as vectors / size is unknown originally
       // for (unsigned int y = 0; y != nXGrid; ++y){ if ( std::fabs( xout(i) - xin(y) ) <= bw ) { indx.push_back(y); }  }
       // Get iterator pointing to the first element which is not less than xou(u)
@@ -141,6 +148,27 @@ Eigen::VectorXd CPPlwls1d( const double & bw, const std::string kernel_type, con
         temp = (lw.array()) *
                ((1.-llx.array().pow(2)).array().pow(2)).array() * (15./16.);
         break;
+    case 6 : // truangular
+      temp = (lw.array()) * (1.-llx.array().abs()).array();
+      break;
+    case 7 : // triweight
+      temp = (lw.array()) * (1.-llx.array().pow(2)).array().pow(3) * (35./32.);
+      break;
+    case 8 : // tricube
+      temp = (lw.array()) * (1.-llx.array().abs().pow(3)).array().pow(3) * (70./81.);
+      break;
+    case 9 : // cosine
+      temp = (lw.array()) * M_PI / 4.0 * (llx.array() * M_PI / 2.0).cos().array();
+      break;
+    case 10 : // logistic
+      temp = (lw.array()) / ((-llx.array()).exp() + 2. + llx.array().exp()).array();
+      break;
+    case 11 : // sigmoid
+      temp = (lw.array()) / ((-llx.array()).exp() + llx.array().exp()).array() * 2.0 / M_PI;
+      break;
+    case 12 : // silverman
+      temp = (lw.array()) * 0.5 * (-llx.array().abs() / sqrt(2)).exp() * (M_PI / 4.0 + llx.array().abs() * sqrt(2)).sin().array();
+      break;
     }
 
     if(nder >= indxSize){

@@ -2,7 +2,7 @@
 #'
 #' Two dimensional local weighted least squares smoother. Only a local linear smoother for estimating the original curve is available (no higher order)
 #' @param bw A scalar or a vector of length 2 specifying the bandwidth.
-#' @param kern Kernel used: 'gauss', 'rect', 'gausvar', 'epan' (default), 'quar'.
+#' @param kern Kernel used: 'gauss', 'rect', 'gausvar', 'epan' (default), 'quar', "triangular", "triweight", "tricube", "cosine", "logistic", "sigmoid", "silverman".
 #' @param xin An n by 2 data frame or matrix of x-coordinate.
 #' @param yin A vector of y-coordinate.
 #' @param win A vector of weights on the observations. 

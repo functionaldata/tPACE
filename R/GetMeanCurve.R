@@ -12,7 +12,7 @@
 #' \item{methodBwMu}{The bandwidth choice method for the mean function; 'GMeanAndGCV' (the geometric mean of the GCV bandwidth and the minimum bandwidth),'CV','GCV' - default: 5\% of the support} 
 #' \item{dataType}{The type of design we have (usually distinguishing between sparse or dense functional data); 'Sparse', 'Dense', 'DenseWithMV', 'p>>n' - default:  determine automatically based on 'IsRegular'}
 #' \item{plot}{Plot mean curve; logical - default: FALSE}
-#' \item{kernel}{Smoothing kernel choice, common for mu and covariance; "rect", "gauss", "epan", "gausvar", "quar" - default: "gauss"; dense data are assumed noise-less so no smoothing is performed. }
+#' \item{kernel}{Smoothing kernel choice, common for mu and covariance; "rect", "gauss", "epan", "gausvar", "quar", "triangular", "triweight", "tricube", "cosine", "logistic", "sigmoid", "silverman" - default: "gauss"; dense data are assumed noise-less so no smoothing is performed. }
 #' \item{kFoldMuCov}{The number of folds to be used for mean and covariance smoothing. Default: 10}
 #' \item{methodMuCovEst}{The method to estimate the mean and covariance in the case of dense functional data; 'cross-sectional', 'smooth' - default: 'cross-sectional'}
 #' \item{numBins}{The number of bins to bin the data into; positive integer > 10, default: NULL}

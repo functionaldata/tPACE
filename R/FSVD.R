@@ -18,7 +18,7 @@
 #' \item{userMu1}{The user defined mean of sample 1 used to centre it prior to the cross-covariance estimation. - default: determine automatically based by the FPCA of sample 1}
 #' \item{userMu2}{The user defined mean of sample 2 used to centre it prior to the cross-covariance estimation. - default: determine automatically based by the FPCA of sample 2}
 #' \item{maxK}{The maximum number of singular components to consider; default: min(20, N-1), N:# of curves.}
-#' \item{kernel}{Smoothing kernel choice, common for mu and covariance; "rect", "gauss", "epan", "gausvar", "quar" - default: "gauss"; dense data are assumed noise-less so no smoothing is performed.}
+#' \item{kernel}{Smoothing kernel choice, common for mu and covariance; "rect", "gauss", "epan", "gausvar", "quar", "triangular", "triweight", "tricube", "cosine", "logistic", "sigmoid", "silverman" - default: "gauss"; dense data are assumed noise-less so no smoothing is performed.}
 #' \item{rmDiag}{Logical describing if the routine should remove diagonal raw cov for cross cov estimation (default: FALSE) }
 #' \item{noScores}{Logical describing if the routine should return functional singular scores or not (default: TRUE) }
 #' \item{regulRS}{String describing if the regularisation of the composite cross-covariance matrix should be done using 'sigma1' or 'rho' (see ?FPCA for details) (default: 'sigma2') }

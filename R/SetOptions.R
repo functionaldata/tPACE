@@ -186,7 +186,8 @@ SetOptions = function(y, t, optns){
       kernel = "gauss";  # kernel: Gaussian
     }
   }
-  kernNames = c("rect", "gauss", "epan", "gausvar", "quar");
+  kernNames = c("rect", "gauss", "epan", "gausvar", "quar", "triangular", 
+                "triweight", "tricube", "cosine", "logistic", "sigmoid", "silverman");
   if(!(kernel %in% kernNames)){ # Check suitability of kernel
     message(paste('kernel', kernel, 'is unrecognizable! Reset to automatic selection now!\n')); 
     kernel = NULL; 

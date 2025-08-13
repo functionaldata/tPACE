@@ -40,7 +40,7 @@ GCVLwls1D1 <- function(yy,tt, kernel, npoly, nder, dataType, verbose=TRUE) {
     h0 = 1.5 * Minb(t,npoly+1);
   }  
   if ( is.nan(h0) ){
-    if ( kernel == "gauss" ){
+    if ( kernel in c("gauss", "logistic", "sigmoid", "silverman") ){
       h0 = 0.2 * r;
     }else{
       stop("The data is too sparse, no suitable bandwidth can be found! Try Gaussian kernel instead!\n")
@@ -56,7 +56,9 @@ GCVLwls1D1 <- function(yy,tt, kernel, npoly, nder, dataType, verbose=TRUE) {
   # I would write them in a function (equivalent of mykernel.m) if it is worth it 
   # Similarly there is no reason to repeat the FOR-loop twice; this too can go into a seperate function
   k0_candidates <- list('quar' = 0.9375,  'epan' = 0.7500, 'rect' = 0.5000, 
-                        'gausvar' = 0.498677, 'gausvar1' = 0.598413,  'gausvar2' = 0.298415, 'other' = 0.398942)
+                        'gausvar' = 0.498677, 'gausvar1' = 0.598413,  'gausvar2' = 0.298415, 'other' = 0.398942,
+                        'triangular' = 1.000, 'triweight' = 35/32, 'tricube' = 70/81,
+                        'cosine' = 0.7853982, 'logistic' = 0.25, 'sigmoid' = 1/pi, 'silverman' = 0.35355339059)
   if( any(names(k0_candidates) == kernel)){ 
     k0 = as.numeric(k0_candidates[kernel])
   } else { 

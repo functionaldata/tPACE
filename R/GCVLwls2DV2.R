@@ -244,6 +244,20 @@ KernelAt0 <- function(kern) {
     k0 <- 0.498677850501791
   else if (kern == 'gauss')
     k0 <- 0.398942280401433
+  else if (kern == 'triangular')
+    k0 <- 1.0
+  else if (kern == 'triweight')
+    k0 <- 35/32
+  else if (kern == 'tricube')
+    k0 <- 70/81
+  else if (kern == 'cosine')
+    k0 <- 0.7853982
+  else if (kern == 'logistic')
+    k0 <- 0.25
+  else if (kern == 'sigmoid')
+    k0 <- 1/pi
+  else if (kern == 'silverman')
+    k0 <- 0.35355339059
   else
     stop('Unknown kernel')
   
